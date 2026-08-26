@@ -1,0 +1,79 @@
+# Hermes MCP server config — OmniRoute as DigitallyDefined's AI gateway.
+#
+# Adds an omniroute entry to Hermes's existing mcp_servers block so Hermes
+# can call OmniRoute's /v1/chat/completions with the JWT Bearer token.
+#
+# This is a PATCH for:
+#   C:/Users/frank/AppData/Local/hermes/config.yaml
+#
+# Apply with:
+#   patch "C:/Users/frank/AppData/Local/hermes/config.yaml" \
+#     old_string_below new_string_below
+#
+# OR paste the mcp_servers.omniroute block into config.yaml manually under
+# the existing mcp_servers: section (at the same indent level as linear, tavily, etc.).
+#
+# Auth: JWT Bearer token (OMNIROUTE_API_KEY env var or inline api_key).
+# Base URL: http://45.79.180.236:20128  (Linode, NOT localhost).
+#
+# NOTE: Hermes's MCP loader may expect a different shape depending on version.
+#       The universal contract is: base URL + Bearer key + /v1/chat/completions.
+#       If Hermes expects "type: openai-compat" or "endpoint" instead of "url",
+#       adjust the keys below to match what the loader accepts — the values stay.
+
+# ----- OLD STRING (start of mcp_servers block, for patch anchor) -----
+# mcp_servers:
+#   linear:
+#     url: https://mcp.linear.app/mcp
+# ----- NEW STRING (replace the above with this + the existing block) -----
+# mcp_servers:
+#   linear:
+#     url: https://mcp.linear.app/mcp
+#     auth: oauth
+#     enabled: true
+#     default_context: DigitallyDefined
+#     default_team_id: 5697a418-ee30-4440-b08e-71bb0ecee0f0
+#     context_file: C:/Users/frank/AppData/Local/hermes/scripts/dd-linear-context.json
+#   ...
+#   omniroute:
+#     url: http://45.79.180.236:20128
+#     auth: bearer
+#     api_key_env: OMNIROUTE_API_KEY
+#     default_model: auto
+#     transport: httpx
+#     default_context: DigitallyDefined
+#     allowed_tools:
+#       - chat.completions.create
+#       - models.list
+#     timeout_ms: 60000
+
+mcp_servers:
+  omniroute:
+    # Base URL — Linode OmniRoute API (NOT localhost).
+    url: http://45.79.180.236:20128
+    # Auth mode — JWT Bearer token, same shape the backend uses.
+    auth: bearer
+    # The API key is read from the env var OMNIROUTE_API_KEY (set in Hermes .env).
+    # OMNIROUTE_API_KEY must be the JWT Bearer token from the Linode's OmniRoute.
+    # Get it once: open https://<your-domain>/dashboard → Network tab →
+    # trigger a chat → copy Authorization: Bearer <JWT> from /v1/chat/completions.
+    # Paste the JWT into Hermes .env as OMNIROUTE_API_KEY=sk-<JWT> (keep sk- prefix
+    # per the backend's convention — the backend stores keys as sk-<jwt>).
+    api_key_env: OMNIROUTE_API_KEY
+    # Default model — "free" so OmniRoute's own routing picks the provider.
+    # The backend's aiRouter.js always sends upstage/solar-pro4:free; this MCP
+    # entry uses "free" for Hermes-side requests so OmniRoute resolves the model.
+    default_model: auto
+    # Transport — HTTP+JSON, same as the backend's aiRouter.js.
+    transport: httpx
+    # DigitallyDefined context for any tool that uses it.
+    default_context: DigitallyDefined
+    # Tools Hermes may call through OmniRoute.
+    allowed_tools:
+      - chat.completions.create
+      - models.list
+    # Timeout — matches backend default (60s).
+    timeout_ms: 60000
+    # Do NOT add providers, models, or routing here — OmniRoute owns that.
+    # No new providers, no new models, no new routing rules.
+

@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "description": "Input/output schema for Niche & Keyword Discovery Agent",
+  "input": {
+    "type": "object",
+    "properties": {
+      "interests": { "type": "array", "items": { "type": "string" } },
+      "constraints": { "type": "array", "items": { "type": "string" } },
+      "audienceType": { "type": "string" }
+    },
+    "required": ["interests", "constraints", "audienceType"]
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "nicheList": { "type": "array", "items": { "type": "object" } },
+      "keywordClusters": { "type": "array", "items": { "type": "object" } },
+      "difficultyScores": { "type": "object" }
+    }
+  }
+}

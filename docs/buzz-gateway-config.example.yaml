@@ -1,0 +1,38 @@
+# Configuration for Hermes Buzz Integration
+# Generated: 2026-08-12
+# Relay: wss://digitallydefinedlab.communities.buzz.xyz
+
+# Add this to ~/.hermes/config.yaml under gateway.platforms.buzz
+
+gateway:
+  platforms:
+    buzz:
+      enabled: true
+      extra:
+        # Your relay URL
+        relay_url: wss://digitallydefinedlab.communities.buzz.xyz
+        
+        # Watch all channels (empty array = all joined channels)
+        channels: []
+        
+        # Optional: Set your home channel UUID here
+        # Find it with: buzz channels list
+        home_channel: ""
+        
+        # Polling interval (seconds)
+        poll_interval: 4
+        
+        # Path to Buzz CLI
+        cli_path: "C:/Users/frank/AppData/Local/Buzz/buzz.exe"
+        
+        # Credentials (use nsec or hex private key)
+        credentials_file: ""
+        
+        # Access control
+        allowed_users: []
+        require_mention: false
+        allow_all_users: true
+        
+        # Message formatting
+        interim_assistant_messages: false
+        tool_progress: off

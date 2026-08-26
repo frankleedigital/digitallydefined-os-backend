@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "description": "Input/output schema for JSON Schema Generator Agent",
+  "input": {
+    "type": "object",
+    "properties": {
+      "descriptionOfSchema": { "type": "string", "description": "Description of what the schema represents" },
+      "requiredFields": { "type": "array", "items": { "type": "string" }, "description": "List of required field names" }
+    },
+    "required": ["descriptionOfSchema", "requiredFields"]
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "jsonSchema": { "type": "object", "description": "Generated JSON schema object" },
+      "validationRules": { "type": "array", "items": { "type": "string" }, "description": "Validation rules for the schema" }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+# DigitallyDefined OS backend — OmniRoute env vars (Linode)
+#
+# Destination: C:/Users/frank/Documents/DigitallyDefinedClean/digitallydefined-os-backend/.env
+#               (merge these lines into the existing .env; do NOT overwrite it)
+#
+# These make the backend's lib/omniroute.js talk to the Linode's OmniRoute
+# instead of localhost. The backend already has the right fetch pattern:
+#   fetch(${OMNIROUTE_BASE_URL}/v1/chat/completions, {
+#     headers: { Authorization: `Bearer ${OMNIROUTE_API_KEY}` }
+#   })
+#
+# So setting these three values is enough to flip the backend from localhost
+# (or undefined) to the Linode gateway.
+# =============================================================================
+
+# ---- OmniRoute (Linode) — the three values lib/omniroute.js actually reads ----
+OMNIROUTE_BASE_URL=http://45.79.180.236:20128
+OMNIROUTE_API_KEY=sk-<LINODE_JWT_HERE>
+OMNIROUTE_MODEL=free
+
+# ---- Fallback models (leave empty — OmniRoute's own fallback handles it) ----
+OMNIROUTE_FALLBACK_MODEL_1=
+OMNIROUTE_FALLBACK_MODEL_2=
+
+# ---- Management / dashboard URLs (for any backend feature that references them) ----
+MAIN_BASE_URL=http://45.79.180.236:20128
+LINODE_CLI_URL=http://45.79.180.236:20129
+
+# ---- Machine identity (matches the hermes key's machine_id on the Linode) ----
+MACHINE_ID=fcfcf4cfe8fd70e5
+
+# ---- WS bridge (optional — for any backend streaming / agent-ops feature) ----
+OMNIROUTE_WS_BRIDGE_SECRET=
+
+# =============================================================================
+# DO NOT put these in the backend .env unless the backend actually needs them
+# for something beyond chat/completions. The backend's omniroute.js only reads
+# OMNIROUTE_BASE_URL, OMNIROUTE_API_KEY, OMNIROUTE_MODEL, and the fallback vars.
+# =============================================================================
+# JWT_SECRET=<LINODE_JWT_SECRET_HERE>        # only if backend verifies tokens
+# API_KEY_SECRET=<LINODE_API_KEY_SECRET_HERE> # only if backend manages keys
+# STORAGE_ENCRYPTION_KEY=<...>               # only if backend reads OmniRoute storage
+# =============================================================================

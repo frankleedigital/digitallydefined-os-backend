@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "description": "Input/output schema for Roadmap Generator Agent",
+  "input": {
+    "type": "object",
+    "properties": {
+      "superpowerName": { "type": "string" },
+      "userGoals": { "type": "array", "items": { "type": "string" } },
+      "skillLevel": { "type": "string", "enum": ["beginner", "intermediate", "advanced"] }
+    },
+    "required": ["superpowerName", "userGoals", "skillLevel"]
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "30dayRoadmap": { "type": "object", "description": "30-day action plan" },
+      "90dayRoadmap": { "type": "object", "description": "90-day strategic plan" },
+      "recommendedTools": { "type": "array", "items": { "type": "string" } },
+      "milestoneBreakdown": { "type": "array", "items": { "type": "object" } }
+    }
+  }
+}

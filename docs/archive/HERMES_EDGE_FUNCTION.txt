@@ -1,0 +1,220 @@
+// DigitallyDefined OS - Hermes Edge Function
+// Paste this into: Supabase Dashboard → Edge Functions → hermes → index.ts
+// API Keys are embedded below for immediate deployment
+
+import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
+
+serve(async (req: Request) => {
+  // === CORS Headers ===
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, x-api-key',
+  };
+
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders });
+  }
+
+  // === API Keys (embedded for deployment) ===
+  const AGNES_KEY = "sk-R4z...1RDw";  // Replace with your full key
+  const OPENROUTER_KEY = "sk-or-...25b6";  // Replace with your full key
+  const GROQ_KEY = "gsk_S8...XZOz";  // Replace with your full key
+  
+  // Dashboard API Key
+  const DASHBOARD_API_KEY = "DigitallyDefined-OS-2026";
+
+  // === Auth Check ===
+  const apiKey = req.headers.get('x-api-key') || '';
+  if (req.url.includes('/hermes') && apiKey !== DASHBOARD_API_KEY) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  // === Parse Request ===
+  let body = {};
+  try {
+    body = await req.json();
+  } catch (e) {
+    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  const action = body.action || '';
+
+  // === Dashboard Action ===
+  if (action === 'dashboard') {
+    const dashboardData = {
+      revenue: "$12,450",
+      leads: 156,
+      conversionRate: 0.248,
+      assetValue: 48000,
+      topAsset: "Email List",
+      communityGrowth: "+12%",
+      emailGrowth: "+8%",
+      churnRisk: "Low",
+      reviews: [
+        {
+          name: "Sarah M.",
+          reviewText: "This dashboard changed my business! The automation features are incredible.",
+          sentiment: "positive",
+          date: "2024-01-15",
+          aiDraftedResponse: "Thank you Sarah! So glad the automation features are helping you scale.",
+        },
+      ],
+      campaigns: [
+        { name: "Authority Launch Sequence", openRate: "42%", clickRate: "18%" },
+        { name: "Evergreen Reputation Funnel", openRate: "38%", clickRate: "15%" },
+      ],
+      competitors: [
+        { name: "Competitor A", notes: "Similar target audience, different pricing" },
+        { name: "Competitor B", notes: "Stronger social presence, we lead in SEO" },
+      ],
+      email: { subscribers: 1284, openRate: "42%", clickRate: "18%", revenuePerCampaign: "$1,240" },
+      alerts: [{ type: "info", source: "System", message: "All automations running normally" }],
+      sourceHealth: {
+        googleMyBusiness: "Active",
+        facebook: "Active",
+        instagram: "Active",
+        email: "Active",
+      },
+      automations: [
+        { name: "Review Response Auto-Reply", status: "active", lastRun: "2 hours ago" },
+        { name: "Social Media Cross-Post", status: "active", lastRun: "5 hours ago" },
+        { name: "Email Lead Nurturing", status: "paused", lastRun: "1 day ago" },
+      ],
+      aiBrief: {
+        working: ["Email open rates above industry average", "Social engagement increasing"],
+        slipping: ["Review response time could be faster", "Content calendar needs updating"],
+        nextActions: [
+          "Respond to pending reviews",
+          "Schedule next week's social content",
+          "Review email campaign performance",
+        ],
+      },
+      community: [
+        { name: "Rena Walker", date: "Mar 28, 2026", status: "Active" },
+        { name: "Angela Brooks", date: "Mar 31, 2026", status: "Onboarding" },
+      ],
+    };
+    return new Response(JSON.stringify(dashboardData), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  // === Automation List Action ===
+  if (action === 'automation.list') {
+    return new Response(JSON.stringify({
+      automations: [
+        { name: "Review Response Auto-Reply", status: "active", lastRun: "2 hours ago" },
+        { name: "Social Media Cross-Post", status: "active", lastRun: "5 hours ago" },
+        { name: "Email Lead Nurturing", status: "paused", lastRun: "1 day ago" },
+      ],
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  // === Status/Routes Action ===
+  if (action === 'status' || action === 'routes') {
+    return new Response(JSON.stringify({
+      ok: true,
+      status: "running",
+      routes: [
+        { action: "hermes", method: "POST", description: "AI chat gateway" },
+        { action: "dashboard", method: "POST", description: "Dashboard data" },
+        { action: "automation.list", method: "POST", description: "Automation list" },
+      ],
+      timestamp: Date.now()
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  // === AI Chat (Default) ===
+  const message = body.message || body.content || body.text || '';
+  const conversation = body.conversation || body.messages || [];
+  
+  if (!message) {
+    return new Response(JSON.stringify({ error: 'Missing message' }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  const systemPrompt = body.systemPrompt || "You are Hermes, the orchestrator of DigitallyDefined OS.";
+
+  // Build AI candidates (priority order)
+  const candidates = [];
+  if (AGNES_KEY) candidates.push({ model: "sapiens-ai/agnes-2.0-flash", key: AGNES_KEY, base: "https://api.agnes.sapiens.ai/v1/chat/completions", provider: "agnes" });
+  if (GROQ_KEY) candidates.push({ model: "meta-llama/llama-3.3-70b-versatile", key: GROQ_KEY, base: "https://api.groq.com/openai/v1/chat/completions", provider: "groq" });
+  if (OPENROUTER_KEY) candidates.push({ model: "openai/gpt-4o-mini", key: OPENROUTER_KEY, base: "https://openrouter.ai/api/v1/chat/completions", provider: "openrouter" });
+
+  let reply = "";
+  let provider = "";
+  let model = null;
+  let error = "";
+
+  for (const c of candidates) {
+    try {
+      const res = await fetch(c.base, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${c.key}`,
+          'Content-Type': 'application/json',
+          ...(c.provider === 'openrouter' ? { 'HTTP-Referer': 'https://digitallydefined.online', 'X-Title': 'DigitallyDefined OS' } : {})
+        },
+        body: JSON.stringify({
+          model: c.model,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: message }
+          ],
+          max_tokens: 4000,
+          temperature: 0.7
+        }),
+        signal: AbortSignal.timeout(90000)
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        reply = data?.choices?.[0]?.message?.content || "";
+        if (reply) {
+          provider = c.provider;
+          model = c.model;
+          break;
+        }
+      } else {
+        error = `${c.provider}: HTTP ${res.status}`;
+      }
+    } catch (e: any) {
+      error = e.message || "Request failed";
+    }
+  }
+
+  if (!reply) {
+    reply = error ? `AI request failed: ${error}` : "No AI provider configured";
+    provider = "error";
+  }
+
+  return new Response(JSON.stringify({
+    reply,
+    provider,
+    model,
+    success: !!reply,
+    error: error || null,
+    conversationUpdates: [],
+    timestamp: Date.now()
+  }), {
+    status: 200,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+  });
+});

@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "description": "Input/output schema for Digital Wealth Calculator Agent",
+  "input": {
+    "type": "object",
+    "properties": {
+      "niche": { "type": "string" },
+      "audienceSize": { "type": "number" },
+      "productType": { "type": "string" },
+      "pricing": { "type": "number" }
+    },
+    "required": ["niche", "audienceSize", "productType", "pricing"]
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "revenueProjection": { "type": "object", "description": "Revenue projections over time" },
+      "growthModel": { "type": "string", "description": "Growth model description" },
+      "recommendedPricing": { "type": "array", "items": { "type": "string" } }
+    }
+  }
+}

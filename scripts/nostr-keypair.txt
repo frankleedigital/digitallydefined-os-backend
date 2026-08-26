@@ -1,0 +1,10 @@
+Buzz Relay Nostr Keypair
+Generated: 2026-08-12T19:25:11.738933
+
+PRIVATE KEY (nsec):
+048290471e3de8346fbac3c1ffb399ae80754a9491dcad5e093a05c0163a3d33
+
+PUBLIC KEY (hex):
+048290471e3de8346fbac3c1ffb399ae80754a9491dcad5e093a05c0163a3d33
+
+⚠️  Keep this file secure. Do not commit to git.

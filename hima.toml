@@ -1,0 +1,17 @@
+[accounts.main]
+default = true
+email = "frank@example.com"
+display-name = "Frank"
+
+imap.server = "imap.gmail.com"
+imap.sasl.plain.username = "frank@example.com"
+imap.sasl.plain.password.raw = "REDACTED"
+
+smtp.server = "smtp.gmail.com"
+smtp.sasl.plain.username = "frank@example.com"
+smtp.sasl.plain.password.raw = "REDACTED"
+
+folder.aliases.inbox = "INBOX"
+folder.aliases.sent = "Sent"
+folder.aliases.drafts = "Drafts"
+folder.aliases.trash = "Trash"

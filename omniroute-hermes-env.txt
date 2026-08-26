@@ -1,0 +1,32 @@
+# =============================================================================
+# Hermes environment variables — OmniRoute (Linode)
+#
+# Append these to: C:/Users/frank/AppData/Local/hermes/.env
+#
+# These give Hermes (and any Hermes-side script/plugin/spawned agent) the exact
+# values it needs to reach the Linode's OmniRoute. No placeholders except the
+# JWT, which must come from the Linode's .env once.
+# =============================================================================
+
+# ---- OmniRoute base + auth (Linode) ----
+OMNIROUTE_BASE_URL=http://45.79.180.236:20128
+OMNIROUTE_API_KEY=sk-<LINODE_JWT_HERE>
+OMNIROUTE_MODEL=auto
+OMNIROUTE_TIMEOUT_MS=60000
+
+# ---- Machine identity (Hermes + backend bound to this machine ID) ----
+# Source: local instance api_keys table — all keys bound to fcfcf4cfe8fd70e5.
+# Replace with the Linode's hermes-key machine_id if different.
+OMNIROUTE_MACHINE_ID=fcfcf4cfe8fd70e5
+
+# ---- WebSocket bridge (optional — leave empty if Hermes doesn't need streaming) ----
+OMNIROUTE_WS_URL=ws://45.79.180.236:20128
+OMNIROUTE_WS_BRIDGE_SECRET=
+
+# ---- Backend-only secrets (Hermes doesn't need these for chat/completions,
+#      but they're here if a Hermes script needs to verify/decrypt something) ----
+# These must match the Linode's .env exactly. Fill once from the Linode.
+JWT_SECRET=<LINODE_JWT_SECRET_HERE>
+API_KEY_SECRET=<LINODE_API_KEY_SECRET_HERE>
+STORAGE_ENCRYPTION_KEY=<LINODE_STORAGE_ENCRYPTION_KEY_HERE>
+

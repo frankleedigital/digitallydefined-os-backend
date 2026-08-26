@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "description": "Input/output schema for Digital Superpower Quiz Agent",
+  "input": {
+    "type": "object",
+    "properties": {
+      "userAnswers": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "question": { "type": "string" },
+            "answer": { "type": "string" }
+          },
+          "required": ["question", "answer"]
+        },
+        "minItems": 7
+      },
+      "metadata": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "required": ["userAnswers"]
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "superpowerName": {
+        "type": "string",
+        "enum": ["Builder", "Creator", "Educator", "Strategist", "Connector"],
+        "description": "The user's identified digital superpower"
+      },
+      "superpowerDescription": {
+        "type": "string",
+        "description": "Description of the superpower in DigitallyDefined brand voice"
+      },
+      "recommendedPathways": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Recommended digital asset pathways for this superpower"
+      },
+      "confidenceScore": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1,
+        "description": "Model confidence (0-1)"
+      }
+    },
+    "required": ["superpowerName", "superpowerDescription", "recommendedPathways", "confidenceScore"]
+  }
+}

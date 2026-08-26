@@ -1,0 +1,75 @@
+# DigitallyDefined — Hermes routing logic for OmniRoute
+#
+# This is the routing policy Hermes follows when selecting a model through
+# the Linode's OmniRoute. It does NOT register anything in OmniRoute.
+# It only controls what Hermes sends as the model field on each request.
+#
+# OmniRoute resolves "free" to a real provider/model from its existing
+# provider pool. Hermes never picks the actual provider — OmniRoute does.
+# =============================================================================
+
+# ---- Default ----
+# Hermes requests "free" by default. OmniRoute routes it to a healthy
+# free-tier provider from its existing connections.
+default_model: free
+
+# ---- Model selection rules (Hermes-side; OmniRoute still resolves) ----
+# Each rule is a guideline for what model string Hermes sends. OmniRoute
+# resolves "free" to the actual provider/model using its own health/availability
+# logic. Hermes does not pick the provider.
+model_selection_guidelines:
+  - name: fast inference
+    use_for: dashboard, lookup, tool-call, classification, short-answer
+    model: free
+    priority: latency
+    note: "OmniRoute routes free to the lowest-latency healthy free provider"
+
+  - name: high-accuracy content
+    use_for: content, brief, seo, strategy, analysis, writing, planning
+    model: free
+    priority: quality
+    note: "Same free token; OmniRoute prefers a capable model when available"
+
+  - name: low-latency automations
+    use_for: automation, sync, bulk, batch, repeat
+    model: free
+    priority: latency
+    note: "Cost-aware: free tier, minimize per-call cost, let OmniRoute fallback"
+
+  - name: fallback behavior
+    use_for: any request that fails with a specific model
+    model: free
+    note: "Retry once with free; OmniRoute handles the provider fallback"
+
+# ---- When Hermes MAY request a specific model ----
+# Only if the model is already in OmniRoute's catalog (prefixed form, e.g.
+# groq/model, antigravity/model, nous/model). Hermes does NOT guess — it uses
+# a model string only if it already knows it is in the catalog.
+# Since we do not have the live /v1/models catalog from the Linode right now
+# (port unreachable from here), the safe default is free for everything.
+specific_model_allowed: false
+
+# ---- Forbidden (per directive: no new providers, no new models) ----
+forbidden_actions:
+  - register_new_provider
+  - register_new_model
+  - request_model_not_in_omniroute_catalog
+  - bypass_omniroute_for_direct_provider_call
+  - use_api_key_not_bound_to_machine_id
+  - log_jwt_or_api_key_in_plaintext
+
+# ---- Request shape (matches backend lib/omniroute.js exactly) ----
+request_shape:
+  endpoint: /v1/chat/completions
+  base_url_env: OMNIROUTE_BASE_URL
+  base_url_value: http://45.79.180.236:20128
+  auth_header: "Authorization: Bearer ${OMNIROUTE_API_KEY}"
+  default_body:
+    model: free
+    messages:
+      - role: system
+        content: "<system prompt>"
+      - role: user
+        content: "<prompt>"
+  streaming: false
+  timeout_ms: 60000

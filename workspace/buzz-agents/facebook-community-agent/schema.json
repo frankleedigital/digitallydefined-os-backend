@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "description": "Input/output schema for Facebook Community Agent",
+  "input": {
+    "type": "object",
+    "properties": {
+      "communityPosts": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "string" },
+            "content": { "type": "string" },
+            "author": { "type": "string" },
+            "timestamp": { "type": "string", "format": "date-time" },
+            "engagement": { "type": "object", "properties": { "likes": { "type": "number" }, "comments": { "type": "number" }, "shares": { "type": "number" } } }
+          }
+        },
+        "description": "Facebook posts, comments, threads, or scraped community content"
+      },
+      "timeRange": {
+        "type": "string",
+        "description": "Optional date range for analysis (e.g., \"last 7 days\", \"last 30 days\")"
+      },
+      "engagementMetrics": {
+        "type": "object",
+        "description": "Optional metrics such as likes, comments, shares, reach"
+      },
+      "memberQuestions": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Optional list of member questions needing responses"
+      },
+      "moderationFlags": {
+        "type": "array",
+        "items": { "type": "object" },
+        "description": "Optional list of items requiring moderation review"
+      }
+    },
+    "required": ["communityPosts"]
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "trendingTopics": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Themes emerging in the community"
+      },
+      "memberNeeds": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Identified needs or pain points"
+      },
+      "contentRecommendations": {
+        "type": "array",
+        "items": { "type": "object" },
+        "description": "Posts, prompts, or replies to publish"
+      },
+      "communityHealthScore": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 100,
+        "description": "Score from 0-100 representing community health"
+      },
+      "riskAlerts": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Issues needing attention"
+      },
+      "summaryDigest": {
+        "type": "string",
+        "description": "Short-form summary of recent community activity"
+      }
+    },
+    "required": ["trendingTopics", "memberNeeds", "contentRecommendations", "communityHealthScore", "riskAlerts", "summaryDigest"]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "description": "Input/output schema for Reputation Intelligence Agent",
+  "input": {
+    "type": "object",
+    "properties": {
+      "socialProfiles": { "type": "array", "items": { "type": "string" } },
+      "website": { "type": "string" },
+      "contentSamples": { "type": "array", "items": { "type": "string" } }
+    },
+    "required": ["socialProfiles", "website", "contentSamples"]
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "reputationScore": { "type": "number", "minimum": 0, "maximum": 100 },
+      "riskFactors": { "type": "array", "items": { "type": "string" } },
+      "improvementPlan": { "type": "array", "items": { "type": "object" } }
+    }
+  }
+}

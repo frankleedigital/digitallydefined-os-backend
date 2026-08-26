@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "description": "Input/output schema for Content Repurposer Agent",
+  "input": {
+    "type": "object",
+    "properties": {
+      "content": { "type": "string", "description": "Original content to repurpose" },
+      "targetFormats": { "type": "array", "items": { "type": "string" }, "description": "List of target formats (e.g., email, blog, social, script)" }
+    },
+    "required": ["content", "targetFormats"]
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "repurposedContent": {
+        "type": "object",
+        "description": "Object keyed by format containing repurposed content"
+      }
+    }
+  }
+}
