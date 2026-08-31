@@ -1,0 +1,21 @@
+# Only the Vercel serverless surface is deployed (api/ + lib/ + vercel.json).
+# Supabase Edge Functions and local dev tooling live elsewhere / are not needed
+# at runtime, so exclude them from the Vercel bundle to keep deploys fast.
+
+# Supabase edge functions (deployed to Supabase, not Vercel)
+supabase/
+
+# Local dev / tooling (not used by the serverless runtime)
+scripts/
+
+# Environment & local state
+.env
+.env.*
+.vercel
+
+# Docs
+docs/
+
+# Build / cache artifacts
+*.log
+node_modules/
