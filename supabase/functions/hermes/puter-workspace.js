@@ -264,7 +264,7 @@ class PuterWorkspace {
   }
 
   async generateContent(prompt, inputData) {
-    // This would call the AI provider (Agnes, Groq, OpenRouter)
+    // AI generation goes through OmniRoute (see lib/omniroute.js / _shared/omniroute.ts).
     return { generated: prompt, timestamp: new Date().toISOString() };
   }
 }

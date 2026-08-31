@@ -40,7 +40,16 @@ const ALLOWED_ACTIONS = new Set([
   'integration.social',
   'integration.email',
   'integration.community',
+  // Integration start flows (dashboard Connect buttons).
+  'integration.google.start',
+  'integration.social.start',
+  'integration.email.start',
+  'integration.community.start',
   'license.verify',
+  // Live website content store (primary path is the Supabase edge function;
+  // mirrored here for the legacy Vercel dispatcher).
+  'website.content',
+  'website.edit',
 ]);
 
 const GET_ONLY_ACTIONS = new Set([
@@ -459,7 +468,7 @@ async function fetchSheetsData() {
   }
 }
 
-// Multi-provider AI brief with caching and smart priority-based routing
+// AI brief with caching — OmniRoute ONLY (single gateway)
 async function fetchAIBrief(context) {
   const now = Date.now();
   
@@ -468,31 +477,12 @@ async function fetchAIBrief(context) {
     return { ...aiBriefCache.data, fromCache: true };
   }
 
-  // Determine which provider to use based on available API keys and priority
-  // Priority order: omniroute (free routing) -> groq -> nvidia -> openrouter -> antigravity -> others
-  let selectedProvider = null;
-  let apiKey = null;
-  let model = null;
-
-  // Sort providers by priority (lower number = higher priority)
-  const allProviders = Object.keys(AI_PROVIDERS).sort((a, b) => {
-    const priorityA = AI_PROVIDERS[a].priority ?? 999;
-    const priorityB = AI_PROVIDERS[b].priority ?? 999;
-    return priorityA - priorityB;
-  });
-  
-  for (const providerName of allProviders) {
-    const provider = AI_PROVIDERS[providerName];
-    const key = process.env[provider.keyEnv];
-    if (key) {
-      selectedProvider = provider;
-      apiKey = key;
-      // Allow env override for model, otherwise use default
-      const envModel = process.env[`${providerName.toUpperCase()}_MODEL`];
-      model = envModel || provider.defaultModel;
-      break;
-    }
-  }
+  // OmniRoute ONLY — single provider, no fallback providers.
+  const omnirouteProvider = AI_PROVIDERS.omniroute;
+  const apiKey = process.env[omnirouteProvider.keyEnv];
+  const selectedProvider = apiKey ? omnirouteProvider : null;
+  // Allow env override for model, otherwise use default
+  const model = (apiKey && (process.env.OMNIROUTE_MODEL || omnirouteProvider.defaultModel)) || null;
 
   if (!selectedProvider || !apiKey) {
     return {
@@ -694,9 +684,9 @@ export default async function handler(req, res) {
   try {
     if (action === 'status') {
       return res.status(200).json({
-        status: 'ok',
-        message: 'DigitallyDefined OS backend is running',
-        timestamp: new Date().toISOString(),
+        ok: true,
+        service: 'digitallydefined-os-backend',
+        environment: process.env.NODE_ENV === 'production' ? 'production' : process.env.VERCEL_ENV || 'development',
       });
     }
 

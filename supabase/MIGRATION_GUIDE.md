@@ -119,15 +119,14 @@ These are required by the Supabase Edge Functions. Set them in:
 
 REQUIRED:
   DASHBOARD_API_KEY              Your dashboard API key
-  OMNIROUTE_BASE_URL             Your AI gateway URL (or use direct API keys below)
+  OMNIROUTE_BASE_URL             Your AI gateway URL
   OMNIROUTE_API_KEY              AI gateway API key
   OMNIROUTE_MODEL                Default model (e.g., "free", "paid")
   NOTION_SECRET                  Notion integration token
   NOTION_VERSION                 Notion API version (default: "2022-06-28")
 
-OPTIONAL (AI providers - if not using OMNIROUTE):
-  OPENROUTER_API_KEY             For OpenRouter fallback
-  GROQ_API_KEY                   For Groq fallback
+OmniRoute is the ONLY AI provider. There are no fallback providers or
+fallback model variables — all provider routing happens inside OmniRoute.
 
 OPTIONAL (Social media):
   FACEBOOK_ACCESS_TOKEN

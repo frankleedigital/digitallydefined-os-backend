@@ -363,7 +363,8 @@ async function getOverview(days = 30) {
 type Candidate = { provider: string; model: string; key: string; url: string };
 
 const getCandidates = (): Candidate[] => {
-  // OmniRoute ONLY (single-gateway consolidation)
+  // OmniRoute ONLY (single-gateway consolidation) — exactly one candidate,
+  // no fallback models, no other providers.
   const omnirouteKey = Deno.env.get("OMNIROUTE_API_KEY") || "";
   if (!omnirouteKey) {
     console.error("[analytics] OMNIROUTE_API_KEY is not set. AI recommendations will fail.");
@@ -372,17 +373,13 @@ const getCandidates = (): Candidate[] => {
   // Normalize: accept base URL with or without a trailing "/v1".
   const rawBase = (Deno.env.get("OMNIROUTE_BASE_URL") || "https://api.omniroute.ai/v1").trim();
   const baseUrl = rawBase.replace(/\/+$/, "").replace(/\/v1$/, "") + "/v1";
-  const models = [
-    Deno.env.get("OMNIROUTE_MODEL") || "auto",
-    Deno.env.get("OMNIROUTE_FALLBACK_MODEL_1"),
-    Deno.env.get("OMNIROUTE_FALLBACK_MODEL_2"),
-  ].filter((m): m is string => Boolean(m));
-  return models.map((model) => ({
+  const model = (Deno.env.get("OMNIROUTE_MODEL") || "auto").trim();
+  return [{
     provider: "omniroute",
     model,
     key: omnirouteKey,
     url: `${baseUrl}/chat/completions`,
-  }));
+  }];
 };
 
 async function runAI(systemPrompt: string, userPrompt: string) {

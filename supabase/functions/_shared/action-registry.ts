@@ -11,6 +11,9 @@ export const PUBLIC_FORM_ACTIONS = [
   "public.chat",
 ] as const;
 
+/** Public read-only actions (rate-limited) that return site copy, not secrets. */
+export const PUBLIC_READ_ACTIONS = ["website.content"] as const;
+
 /** Action prefixes that are public (rate-limited only). */
 export const PUBLIC_ACTION_PREFIXES = ["agent."] as const;
 
@@ -36,7 +39,12 @@ export const AUTHED_ACTIONS = [
   "integration.social",
   "integration.email",
   "integration.community",
+  "integration.google.start",
+  "integration.social.start",
+  "integration.email.start",
+  "integration.community.start",
   "license.verify",
+  "website.edit",
 ] as const;
 
 /** GET-only actions. */
@@ -60,6 +68,7 @@ export const POST_ONLY_ACTIONS = [
 export function isPublicAction(action: string): boolean {
   return (
     (PUBLIC_FORM_ACTIONS as readonly string[]).includes(action) ||
+    (PUBLIC_READ_ACTIONS as readonly string[]).includes(action) ||
     PUBLIC_ACTION_PREFIXES.some((p) => action.startsWith(p))
   );
 }

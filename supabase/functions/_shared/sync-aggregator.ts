@@ -577,10 +577,6 @@ Respond ONLY with a JSON object in this exact format (no markdown, no extra text
       systemPrompt: 'You are a business analyst AI. Provide concise, actionable insights in JSON format.',
       jsonMode: true,
       timeout: 60000,
-      fallbackModels: [
-        Deno.env.get('OMNIROUTE_FALLBACK_MODEL_1'),
-        Deno.env.get('OMNIROUTE_FALLBACK_MODEL_2'),
-      ].filter(Boolean),
     });
 
     if (result.error) {

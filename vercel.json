@@ -1,4 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2
+  "version": 2,
+  "buildCommand": "",
+  "rewrites": [
+    { "source": "/", "destination": "/api/index.js" },
+    { "source": "/api", "destination": "/api/index.js" },
+    { "source": "/hermes-mcp", "destination": "/api/hermes-mcp" },
+    { "source": "/mcp", "destination": "/api/hermes-mcp" }
+  ]
 }

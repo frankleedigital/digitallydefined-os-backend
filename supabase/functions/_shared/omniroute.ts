@@ -1,9 +1,9 @@
 /**
  * OmniRoute Client
  * Unified AI gateway client for DigitallyDefined OS
- * 
- * Replaces direct calls to Groq, OpenRouter, ZAI, Nous, Gemini, Claude, GPT, etc.
- * All AI requests flow through OmniRoute's single endpoint with auto-fallback.
+ *
+ * OmniRoute ONLY — the single AI gateway. No direct provider calls,
+ * no fallback models, no fallback providers.
  */
 
 import { hermesSystemPrompt } from './hermesSystemPrompt.ts';
@@ -33,20 +33,19 @@ export function omnirouteEndpoint(raw?: string | null): string {
     .replace(/\/v1$/, '');
   return `${base}/v1/chat/completions`;
 }
-const OMNIROUTE_API_KEY = (Deno.env.get('OMNIROUTE_API_KEY') || Deno.env.get('ROUTER_API_KEY') || '').trim();
+const OMNIROUTE_API_KEY = (Deno.env.get('OMNIROUTE_API_KEY') || '').trim();
 const DEFAULT_MODEL = (Deno.env.get('OMNIROUTE_MODEL') || 'auto').trim();
 const DEFAULT_SYSTEM_PROMPT = hermesSystemPrompt;
 
 /**
  * Call OmniRoute with a prompt and optional parameters
- * 
+ *
  * @param {string} prompt - The user prompt/message
  * @param {object} options - Optional configuration
- * @param {string} options.model - Model override (default: OMNIROUTE_MODEL env or 'openai/gpt-4o-mini')
+ * @param {string} options.model - Model override (default: OMNIROUTE_MODEL env or 'auto')
  * @param {string} options.systemPrompt - System prompt override
  * @param {boolean} options.jsonMode - Force JSON response mode
  * @param {number} options.timeout - Request timeout in ms (default: 60000)
- * @param {string[]} options.fallbackModels - Models to try if primary fails
  * @returns {Promise<{reply: string, provider: string, model: string, error: string|null}>}
  */
 type OmniRouteOptions = {
@@ -54,7 +53,6 @@ type OmniRouteOptions = {
   systemPrompt?: string;
   jsonMode?: boolean;
   timeout?: number;
-  fallbackModels?: string[];
 };
 
 /**
@@ -112,112 +110,91 @@ export async function omniRoute(prompt: string, options: OmniRouteOptions = {}) 
   const systemPrompt = options.systemPrompt || DEFAULT_SYSTEM_PROMPT;
   const jsonMode = options.jsonMode || false;
   const timeout = options.timeout || 60000;
-  const fallbackModels = Array.isArray(options.fallbackModels) ? options.fallbackModels : [];
 
-  const modelsToTry = [model, ...fallbackModels];
-  let lastError = null;
-
-  for (const currentModel of modelsToTry) {
-    try {
-      // AgentOps trace for LLM call
-      const trace = agentops?.startTrace('omniroute_llm_call', {
-        metadata: { model: currentModel, systemPrompt: systemPrompt.slice(0, 100) }
-      });
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-      const requestBody: Record<string, unknown> = {
-        model: currentModel,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: prompt.trim() },
-        ],
-      };
-
-      // Add JSON mode if requested
-      if (jsonMode) {
-        requestBody.response_format = { type: 'json_object' };
-      }
-
-      const response = await fetch(omnirouteEndpoint(), {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${OMNIROUTE_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        let errorMessage = `OmniRoute error: ${response.status} ${response.statusText}`;
-        
-        try {
-          const errorJson = JSON.parse(errorText);
-          errorMessage += ` - ${errorJson.error?.message || errorText.slice(0, 200)}`;
-        } catch {
-          errorMessage += ` - ${errorText.slice(0, 200)}`;
-        }
-        
-        throw new Error(errorMessage);
-      }
-
-      const rawReply = await extractReply(response);
-
-      if (!rawReply) {
-        throw new Error('OmniRoute returned empty response');
-      }
-
-      // End trace on success
-      trace?.end({ status: 'success', model: currentModel });
-
-      return {
-        reply: rawReply,
-        provider: 'omniroute',
-        model: currentModel,
-        error: null,
-      };
-
-    } catch (error) {
-      lastError = (error as Error)?.message || String(error);
-      console.error(`[OmniRoute] Model ${currentModel} failed:`, lastError);
-      
-      // End trace on error
-      try {
-        agentops?.startTrace('omniroute_llm_error', {
-          metadata: { model: currentModel, error: lastError }
-        })?.end({ status: 'error' });
-      } catch (e) {
-        // Ignore trace errors
-      }
-      
-      // Continue to next fallback model
-      continue;
-    }
-  }
-
-  // All models failed - log final error
   try {
-    agentops?.startTrace('omniroute_llm_failed')?.end({
-      status: 'failed',
-      error: lastError,
-      modelsTried: modelsToTry.length
+    // AgentOps trace for LLM call
+    const trace = agentops?.startTrace('omniroute_llm_call', {
+      metadata: { model, systemPrompt: systemPrompt.slice(0, 100) }
     });
-  } catch (e) {
-    // Ignore trace errors
-  }
 
-  // All models failed
-  return {
-    reply: '',
-    provider: null,
-    model: null,
-    error: lastError || 'All OmniRoute models failed',
-  };
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    const requestBody: Record<string, unknown> = {
+      model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: prompt.trim() },
+      ],
+    };
+
+    // Add JSON mode if requested
+    if (jsonMode) {
+      requestBody.response_format = { type: 'json_object' };
+    }
+
+    const response = await fetch(omnirouteEndpoint(), {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OMNIROUTE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      let errorMessage = `OmniRoute error: ${response.status} ${response.statusText}`;
+
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorMessage += ` - ${errorJson.error?.message || errorText.slice(0, 200)}`;
+      } catch {
+        errorMessage += ` - ${errorText.slice(0, 200)}`;
+      }
+
+      throw new Error(errorMessage);
+    }
+
+    const rawReply = await extractReply(response);
+
+    if (!rawReply) {
+      throw new Error('OmniRoute returned empty response');
+    }
+
+    // End trace on success
+    trace?.end({ status: 'success', model });
+
+    return {
+      reply: rawReply,
+      provider: 'omniroute',
+      model,
+      error: null,
+    };
+  } catch (error) {
+    const lastError = (error as Error)?.message || String(error);
+    console.error('[OmniRoute] Call failed:', lastError);
+
+    // End trace on error
+    try {
+      agentops?.startTrace('omniroute_llm_error', {
+        metadata: { model, error: lastError }
+      })?.end({ status: 'error' });
+    } catch (e) {
+      // Ignore trace errors
+    }
+
+    // Single OmniRoute attempt — no fallback models, no provider switching.
+    return {
+      reply: '',
+      provider: null,
+      model: null,
+      error: lastError,
+    };
+  }
 }
 
 /**

@@ -114,84 +114,77 @@ const getCandidates = (): Candidate[] => {
   // Normalize: accept base URL with or without a trailing "/v1".
   const rawBase = (Deno.env.get("OMNIROUTE_BASE_URL") || "https://api.omniroute.ai/v1").trim();
   const baseUrl = rawBase.replace(/\/+$/, "").replace(/\/v1$/, "") + "/v1";
-  const models = [
-    Deno.env.get("OMNIROUTE_MODEL") || "auto",
-    Deno.env.get("OMNIROUTE_FALLBACK_MODEL_1"),
-    Deno.env.get("OMNIROUTE_FALLBACK_MODEL_2"),
-  ].filter((m): m is string => Boolean(m));
-  return models.map((model) => ({
+  // OmniRoute ONLY — exactly one candidate. No fallback models, no other providers.
+  const model = (Deno.env.get("OMNIROUTE_MODEL") || "auto").trim();
+  return [{
     provider: "omniroute",
     model,
     key: omnirouteKey,
     url: `${baseUrl}/chat/completions`,
-  }));
+  }];
 };
 
 async function runAI(systemPrompt: string, userPrompt: string, jsonMode = false) {
   const candidates = getCandidates();
   if (!candidates.length) throw new Error("No AI provider is configured in Supabase secrets");
 
-  let lastError = "";
-  for (const candidate of candidates) {
-    try {
-      const response = await fetch(candidate.url, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${candidate.key}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: candidate.model,
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-          ],
-          temperature: jsonMode ? 0.35 : 0.7,
-          max_tokens: jsonMode ? 4000 : 8000,
-          ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
-        }),
-        signal: AbortSignal.timeout(90000),
-      });
+  // Single OmniRoute candidate — one attempt, no fallback, no provider switching.
+  const candidate = candidates[0];
+  try {
+    const response = await fetch(candidate.url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${candidate.key}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: candidate.model,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        temperature: jsonMode ? 0.35 : 0.7,
+        max_tokens: jsonMode ? 4000 : 8000,
+        ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
+      }),
+      signal: AbortSignal.timeout(90000),
+    });
 
-      if (!response.ok) {
-        lastError = `${candidate.provider} HTTP ${response.status}: ${await response.text()}`;
-        continue;
-      }
-
-      // This OmniRoute instance may answer with SSE even when stream:false
-      // (e.g. the "auto" model) — parse both shapes.
-      const bodyText = await response.text();
-      let reply = "";
-      if (bodyText.trimStart().startsWith("data:") ||
-          (response.headers.get("content-type") || "").includes("text/event-stream")) {
-        for (const line of bodyText.split("\n")) {
-          const trimmed = line.trim();
-          if (!trimmed.startsWith("data:")) continue;
-          const payload = trimmed.slice(5).trim();
-          if (!payload || payload === "[DONE]") continue;
-          try {
-            const parsed = JSON.parse(payload);
-            reply += parsed?.choices?.[0]?.delta?.content
-              || parsed?.choices?.[0]?.message?.content
-              || "";
-          } catch { /* skip invalid chunk */ }
-        }
-      } else {
-        const payloadJson = JSON.parse(bodyText);
-        reply = payloadJson?.choices?.[0]?.message?.content || "";
-      }
-      if (!reply) {
-        lastError = `${candidate.provider} returned an empty response`;
-        continue;
-      }
-
-      return { reply, provider: candidate.provider, model: candidate.model };
-    } catch (error) {
-      lastError = error instanceof Error ? error.message : String(error);
+    if (!response.ok) {
+      throw new Error(`${candidate.provider} HTTP ${response.status}: ${await response.text()}`);
     }
-  }
 
-  throw new Error(lastError || "All AI providers failed");
+    // This OmniRoute instance may answer with SSE even when stream:false
+    // (e.g. the "auto" model) — parse both shapes.
+    const bodyText = await response.text();
+    let reply = "";
+    if (bodyText.trimStart().startsWith("data:") ||
+        (response.headers.get("content-type") || "").includes("text/event-stream")) {
+      for (const line of bodyText.split("\n")) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith("data:")) continue;
+        const payload = trimmed.slice(5).trim();
+        if (!payload || payload === "[DONE]") continue;
+        try {
+          const parsed = JSON.parse(payload);
+          reply += parsed?.choices?.[0]?.delta?.content
+            || parsed?.choices?.[0]?.message?.content
+            || "";
+        } catch { /* skip invalid chunk */ }
+      }
+    } else {
+      const payloadJson = JSON.parse(bodyText);
+      reply = payloadJson?.choices?.[0]?.message?.content || "";
+    }
+    if (!reply) {
+      throw new Error(`${candidate.provider} returned an empty response`);
+    }
+
+    return { reply, provider: candidate.provider, model: candidate.model };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(message || "OmniRoute call failed");
+  }
 }
 
 const agentPrompts: Record<string, { schema: string; system: string; user: (input: JsonRecord) => string }> = {
@@ -331,6 +324,145 @@ const dashboardData = {
   community: [],
 };
 
+// ============================================================
+// LIVE WEBSITE CONTENT STORE
+// Editable site copy backed by the `site_content` Supabase table.
+// `website.edit` (authed) writes overrides; `website.content`
+// (public read) returns overrides merged over defaults so the
+// marketing site can render them at runtime.
+//
+// SITE_CONTENT_CATALOG is the single source of truth for which
+// fields Hermes is allowed to change. Keep keys in sync with the
+// frontend defaults (online-local/src/lib/siteContent.js).
+// ============================================================
+
+type SiteContentField = {
+  key: string;
+  label: string;
+  defaultValue: string;
+  description: string;
+};
+
+const SITE_CONTENT_CATALOG: SiteContentField[] = [
+  {
+    key: "nav.tagline",
+    label: "Nav tagline",
+    defaultValue: "Digital Reinvention for Gen X Women",
+    description: "The tagline shown under the DigitallyDefined logo in the site navigation.",
+  },
+  {
+    key: "home.heroEyebrow",
+    label: "Home hero eyebrow",
+    defaultValue: "Start here / not everywhere",
+    description: "The small label above the home page hero headline.",
+  },
+  {
+    key: "home.heroHeadline",
+    label: "Home hero headline",
+    defaultValue: "Build Faceless Digital Assets.",
+    description: "The main home page hero headline.",
+  },
+  {
+    key: "home.heroTagline",
+    label: "Home hero tagline",
+    defaultValue:
+      "Start your path to freedom-based digital ownership. No camera. No invented urgency. No promise of overnight income.",
+    description: "The supporting paragraph under the home page hero headline.",
+  },
+  {
+    key: "home.pathHeading",
+    label: "Home 'One path' heading",
+    defaultValue: "One path from retirement anxiety to an asset you own.",
+    description: "The heading of the 'build path' section on the home page.",
+  },
+  {
+    key: "home.finalCtaHeading",
+    label: "Home final CTA heading",
+    defaultValue: "Start with the truth of your numbers. Then build one useful asset.",
+    description: "The heading of the final call-to-action section on the home page.",
+  },
+];
+
+const siteContentDefault = (key: string): string =>
+  SITE_CONTENT_CATALOG.find((f) => f.key === key)?.defaultValue ?? "";
+
+// Upsert a single content override (content_key is the unique conflict key).
+async function upsertSiteContent(key: string, value: string) {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error("Supabase database credentials are not available to the Edge Function");
+  }
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/site_content?on_conflict=content_key`,
+    {
+      method: "POST",
+      headers: {
+        apikey: serviceRoleKey,
+        Authorization: `Bearer ${serviceRoleKey}`,
+        "Content-Type": "application/json",
+        Prefer: "resolution=merge-duplicates,return=representation",
+      },
+      body: JSON.stringify({ content_key: key, value, updated_at: new Date().toISOString() }),
+    },
+  );
+  if (!response.ok) throw new Error(`Site content write failed: ${response.status} ${await response.text()}`);
+  return response.json();
+}
+
+// Read all overrides from the site_content table.
+async function readSiteContentOverrides(): Promise<Record<string, string>> {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error("Supabase database credentials are not available to the Edge Function");
+  }
+  const response = await fetch(`${supabaseUrl}/rest/v1/site_content?select=content_key,value`, {
+    headers: {
+      apikey: serviceRoleKey,
+      Authorization: `Bearer ${serviceRoleKey}`,
+    },
+  });
+  if (!response.ok) throw new Error(`Site content read failed: ${response.status} ${await response.text()}`);
+  const rows = await response.json() as Array<{ content_key: string; value: string }>;
+  const overrides: Record<string, string> = {};
+  for (const row of rows) {
+    if (row.content_key) overrides[row.content_key] = row.value;
+  }
+  return overrides;
+}
+
+// Merge catalog defaults with stored overrides.
+async function getMergedSiteContent(): Promise<Record<string, string>> {
+  const merged: Record<string, string> = {};
+  for (const field of SITE_CONTENT_CATALOG) merged[field.key] = field.defaultValue;
+  const overrides = await readSiteContentOverrides();
+  for (const [key, value] of Object.entries(overrides)) {
+    if (key in merged) merged[key] = value; // only catalog keys are surfaced
+  }
+  return merged;
+}
+
+// Ask the AI to map a natural-language request to a catalog key + new value.
+async function resolveContentEdit(message: string, merged: Record<string, string>): Promise<{ key: string; value: string }> {
+  const catalogText = SITE_CONTENT_CATALOG
+    .map((f) => `- "${f.key}" (${f.label}): ${f.description}. Current: "${merged[f.key] ?? f.defaultValue}"`)
+    .join("\n");
+  const system = `You translate a website-change request into one content override.
+Choose the single best field key from the catalog. If the request touches more than one field,
+choose the most related one. Preserve the exact meaning of the request's new text.
+Return only JSON: {"key":"...","value":"..."}`;
+  const result = await runAI(`${system}\nFields:\n${catalogText}`, message, true);
+  const parsed = parseJsonReply(result.reply) as { key?: string; value?: string };
+  const key = String(parsed.key || "").trim();
+  const value = String(parsed.value || "").trim();
+  if (!SITE_CONTENT_CATALOG.some((f) => f.key === key)) {
+    throw new Error(`Hermes could not map that request to an editable field. Editable: ${SITE_CONTENT_CATALOG.map((f) => f.key).join(", ")}`);
+  }
+  if (!value) throw new Error("Hermes could not determine the new text.");
+  return { key, value };
+}
+
 serve(async (req) => {
   const origin = req.headers.get("origin") || "";
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders(origin) });
@@ -350,10 +482,71 @@ serve(async (req) => {
     return json({ error: `Unknown action: ${action}` }, 400, origin);
   }
   const expectedKey = (Deno.env.get("DASHBOARD_API_KEY") || "").trim();
-  const providedKey = (req.headers.get("x-api-key") || req.headers.get("authorization") || "").trim();
+  // Accept the dashboard key from any documented channel (x-api-key header, the
+  // Supabase `apikey` header, an `Authorization` Bearer, or a body `key` field).
+  // Every source is still compared against the DASHBOARD_API_KEY secret, so a
+  // wrong key can never authenticate regardless of where it was sent.
+  let providedKey = (req.headers.get("x-api-key") || "").trim();
+  if (!providedKey) providedKey = (req.headers.get("apikey") || "").trim();
+  if (!providedKey) {
+    providedKey = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "").trim();
+  }
+  if (!providedKey) providedKey = String(body?.key || "").trim();
+
+  // Diagnostic logging (masked) — confirms what the dashboard actually sends.
+  // If `provided` shows "(empty)" the deployed build is missing the key env var.
+  const maskKey = (k: string) =>
+    k.length > 6 ? `${k.slice(0, 4)}…${k.slice(-2)}` : (k.length ? "***" : "(empty)");
+  console.log(
+    `[hermes] action=${action || "(none)"} auth=${isPublicAction(action) ? "public" : "authed"} ` +
+      `expected=${expectedKey ? "set" : "UNSET"} provided=${maskKey(providedKey)}`
+  );
 
   if (!isPublicAction(action) && (!expectedKey || providedKey !== expectedKey)) {
     return json({ error: "Unauthorized - Invalid or missing API key" }, 401, origin);
+  }
+
+  // ---- Live website content store --------------------------------
+  if (action === "website.content") {
+    try {
+      const content = await getMergedSiteContent();
+      return json({ ok: true, content }, 200, origin);
+    } catch (error) {
+      return json({ ok: false, error: error instanceof Error ? error.message : String(error) }, 500, origin);
+    }
+  }
+
+  if (action === "website.edit") {
+    const request = String(body.message || body.request || body.text || "").trim();
+    if (!request && !body.key) return json({ error: "Provide a 'message' describing the change, or a 'key' + 'value'." }, 400, origin);
+    try {
+      const merged = await getMergedSiteContent();
+      let key = String(body.key || "").trim();
+      let value = String(body.value || "").trim();
+
+      if (request && (!key || !value)) {
+        // Ask Hermes to translate the natural-language request into { key, value }.
+        const resolved = await resolveContentEdit(request, merged);
+        key = resolved.key;
+        value = resolved.value;
+      }
+
+      const field = SITE_CONTENT_CATALOG.find((f) => f.key === key);
+      if (!field) {
+        return json({ error: `Unknown content key "${key}". Editable: ${SITE_CONTENT_CATALOG.map((f) => f.key).join(", ")}` }, 400, origin);
+      }
+      if (!value) return json({ error: "New value is required." }, 400, origin);
+      if (value.length > 2000) return json({ error: "Value is too long (max 2000 chars)." }, 400, origin);
+
+      await upsertSiteContent(key, value);
+      return json({
+        ok: true,
+        applied: { key, value, label: field.label },
+        content: { ...merged, [key]: value },
+      }, 200, origin);
+    } catch (error) {
+      return json({ ok: false, error: error instanceof Error ? error.message : String(error) }, 500, origin);
+    }
   }
 
   if (action === "subscribe") {
@@ -658,6 +851,19 @@ Return ONLY valid JSON with these keys (include only relevant ones):
   // =============================================
   if (action.startsWith("integration.")) {
     const b = body || {};
+
+    // ---- Start-an-integration flow (placeholder — no real OAuth yet) ----
+    // Called by the dashboard Connect buttons. Each returns a success envelope
+    // so the UI shows a real reaction. OAuth redirects can be added here later.
+    if (
+      action === "integration.google.start" ||
+      action === "integration.social.start" ||
+      action === "integration.email.start" ||
+      action === "integration.community.start"
+    ) {
+      return json({ success: true, message: "Integration flow started" }, 200, origin);
+    }
+
     if (action === "integration.googleAnalytics") {
       if (!b.measurementId || !b.propertyId) {
         return json({ error: "Missing measurementId or propertyId" }, 400, origin);
@@ -830,16 +1036,71 @@ Return ONLY valid JSON with these keys (include only relevant ones):
   if (!message) return json({ error: "Missing or invalid message field" }, 400, origin);
 
   try {
-    const result = await runAI(
-      String(body.systemPrompt || "You are the private DigitallyDefined operations assistant. Be concise, practical, and accurate."),
-      `${conversation.length ? `Conversation: ${JSON.stringify(conversation)}\n\n` : ""}${message}`,
+    const systemPrompt = String(
+      body.systemPrompt ||
+        "You are the private DigitallyDefined operations assistant. Be concise, practical, and accurate.",
     );
+
+    // ---- Detect a website-change request so Hermes can actually apply it ----
+    const editIntent =
+      /\b(change|update|edit|rewrite|replace|set)\b/i.test(message) &&
+      /(website|site|home(?:page)?|hero|headline|tagline|eyebrow|heading|nav(?:igation)?|tagline)\b/i.test(message);
+    let applied = null;
+    let reply = "";
+
+    if (editIntent) {
+      try {
+        const merged = await getMergedSiteContent();
+        const resolved = await resolveContentEdit(message, merged);
+        await upsertSiteContent(resolved.key, resolved.value);
+        const field = SITE_CONTENT_CATALOG.find((f) => f.key === resolved.key);
+        applied = { key: resolved.key, value: resolved.value, label: field?.label || resolved.key };
+        reply = `Done — I updated the ${field?.label || resolved.key} to:\n\n${resolved.value}`;
+      } catch (editError) {
+        // Could not interpret/edit — fall through to normal chat with a note.
+        reply = "";
+        const editNote = editError instanceof Error ? editError.message : String(editError);
+        // Surface as a normal assistant message so the user knows nothing changed.
+        const result = await runAI(
+          `${systemPrompt}\n\nThe user asked to change the website but it could not be applied automatically (${editNote}). Explain briefly, and ask for clarification or suggest a supported change.`,
+          message,
+        );
+        return json({
+          reply: result.reply,
+          provider: result.provider,
+          model: result.model,
+          error: null,
+          conversationUpdates: [],
+          appliedEdit: null,
+          dashboardSnapshotUpdate: body.context || null,
+        }, 200, origin);
+      }
+    }
+
+    if (!reply) {
+      const result = await runAI(
+        systemPrompt,
+        `${conversation.length ? `Conversation: ${JSON.stringify(conversation)}\n\n` : ""}${message}`,
+      );
+      reply = result.reply;
+      return json({
+        reply,
+        provider: result.provider,
+        model: result.model,
+        error: null,
+        conversationUpdates: [],
+        appliedEdit: applied,
+        dashboardSnapshotUpdate: body.context || null,
+      }, 200, origin);
+    }
+
     return json({
-      reply: result.reply,
-      provider: result.provider,
-      model: result.model,
+      reply,
+      provider: "omniroute",
+      model: applied?.key || null,
       error: null,
       conversationUpdates: [],
+      appliedEdit: applied,
       dashboardSnapshotUpdate: body.context || null,
     }, 200, origin);
   } catch (error) {

@@ -4,7 +4,7 @@
  * Tests the backend OmniRoute client to ensure:
  * - API key is configured
  * - Connection to OmniRoute works
- * - Fallback models function correctly
+ * - Single OmniRoute gateway, no fallback providers
  * - Error handling is proper
  */
 
@@ -114,38 +114,6 @@ async function testJSONMode() {
   }
 }
 
-async function testFallbackModels() {
-  log('\n=== Test 4: Fallback Models ===', 'cyan');
-  
-  const fallback1 = process.env.OMNIROUTE_FALLBACK_MODEL_1;
-  const fallback2 = process.env.OMNIROUTE_FALLBACK_MODEL_2;
-  
-  if (!fallback1 && !fallback2) {
-    log('  Skipping: No fallback models configured (OMNIROUTE_FALLBACK_MODEL_1, OMNIROUTE_FALLBACK_MODEL_2)', 'yellow');
-    return true;
-  }
-  
-  try {
-    // Use a non-existent model to trigger fallback
-    const result = await omniRoute('Say "test"', {
-      model: 'nonexistent/model-that-does-not-exist',
-      fallbackModels: [fallback1, fallback2].filter(Boolean),
-      timeout: 30000,
-    });
-    
-    const hasReply = !!result.reply;
-    const usedFallback = result.model !== 'nonexistent/model-that-does-not-exist';
-    
-    logTest('Fallback triggered', usedFallback, `Used model: ${result.model}`);
-    logTest('Fallback succeeded', hasReply, hasReply ? 'Got reply from fallback' : 'No reply');
-    
-    return hasReply;
-  } catch (error) {
-    logTest('Fallback models', false, error.message);
-    return false;
-  }
-}
-
 async function testErrorHandling() {
   log('\n=== Test 5: Error Handling ===', 'cyan');
   
@@ -206,7 +174,6 @@ async function runAllTests() {
     'Configuration': await testOmniRouteConfiguration(),
     'Basic Call': await testBasicCall(),
     'JSON Mode': await testJSONMode(),
-    'Fallback Models': await testFallbackModels(),
     'Error Handling': await testErrorHandling(),
     'Streaming': await testStreaming(),
   };
