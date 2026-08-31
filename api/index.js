@@ -17,7 +17,6 @@ const ALLOWED_ORIGINS = [
 // and cannot import Deno TS modules.
 const ALLOWED_ACTIONS = new Set([
   'status',
-  'routes',
   'auth.verify',
   'test-env',
   'dashboard',
@@ -54,7 +53,6 @@ const ALLOWED_ACTIONS = new Set([
 
 const GET_ONLY_ACTIONS = new Set([
   'status',
-  'routes',
   'auth.verify',
   'test-env',
   'dashboard',
