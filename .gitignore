@@ -1,0 +1,10 @@
+.vercel
+.env*
+
+# Secrets / credentials — never commit
+client_secret_*.json
+nostr-keypair.txt
+omniroute-*.env
+omniroute-*env*.txt
+docs/archive/ENV_VARIABLES_SUMMARY.md
+
