@@ -552,15 +552,43 @@ serve(async (req) => {
   if (action === "subscribe") {
     const email = String(body.email || "").trim().toLowerCase();
     if (!email) return json({ error: "Email is required" }, 400, origin);
+    const leadName = String(body.name || "").trim() || null;
+    const leadSource = String(body.source || "website");
+    const leadTags = Array.isArray(body.tags) ? body.tags : [];
     try {
       await insertRow("website_leads", {
         email,
-        name: String(body.name || "").trim() || null,
-        source: String(body.source || "website"),
-        tags: Array.isArray(body.tags) ? body.tags : [],
+        name: leadName,
+        source: leadSource,
+        tags: leadTags,
         metadata: {},
       }, true);
-      return json({ success: true, message: "You're on the list!" }, 200, origin);
+
+      // Sync the contact to the Brevo list (same list the quiz emails use).
+      // Non-fatal: the Supabase lead is already saved, so a Brevo hiccup
+      // must never block a signup — we just report the sync state back.
+      let brevoSync: { ok: boolean; mode: string; brevoUsed: boolean; error?: string } = {
+        ok: false, mode: "skipped", brevoUsed: false,
+      };
+      try {
+        const { addContactToList, getBrevoConfig } = await import("../_shared/brevo-email.ts");
+        const result = await addContactToList(email, leadName, leadSource, leadTags, getBrevoConfig());
+        brevoSync = { ok: result.ok, mode: result.mode, brevoUsed: result.brevoUsed, error: result.error };
+      } catch (syncError) {
+        console.error("[subscribe] Brevo sync failed:", syncError);
+        brevoSync = {
+          ok: false,
+          mode: "error",
+          brevoUsed: false,
+          error: syncError instanceof Error ? syncError.message : String(syncError),
+        };
+      }
+
+      return json({
+        success: true,
+        message: "You're on the list!",
+        brevoSync,
+      }, 200, origin);
     } catch (error) {
       return json({ error: error instanceof Error ? error.message : String(error) }, 500, origin);
     }
@@ -621,7 +649,33 @@ serve(async (req) => {
         brevoConfig
       );
 
-      console.log(`[quiz.complete] email_mode=${mode} sent=${emailResult.emailSent} skipped=${emailResult.emailSkipped}`);
+      // Subscribe the quiz-taker to the Brevo list too — the transactional
+      // roadmap email above is a one-off; this puts them on the nurture list
+      // so every future tool launch reaches them. Non-fatal.
+      let brevoContactSync: { ok: boolean; mode: string; brevoUsed: boolean; error?: string } = {
+        ok: false, mode: "skipped", brevoUsed: false,
+      };
+      try {
+        const { addContactToList } = await import("../_shared/brevo-email.ts");
+        const sync = await addContactToList(
+          email,
+          name,
+          "digital-superpower-quiz",
+          ["quiz-complete", `superpower-${superpower}`, "roadmap-requested"],
+          brevoConfig
+        );
+        brevoContactSync = { ok: sync.ok, mode: sync.mode, brevoUsed: sync.brevoUsed, error: sync.error };
+      } catch (contactError) {
+        console.error("[quiz.complete] Brevo contact sync failed:", contactError);
+        brevoContactSync = {
+          ok: false,
+          mode: "error",
+          brevoUsed: false,
+          error: contactError instanceof Error ? contactError.message : String(contactError),
+        };
+      }
+
+      console.log(`[quiz.complete] email_mode=${mode} sent=${emailResult.emailSent} skipped=${emailResult.emailSkipped} contact_sync=${brevoContactSync.mode}`);
 
       return json({
         success: true,
@@ -631,6 +685,7 @@ serve(async (req) => {
         emailSent: emailResult.emailSent,
         emailSkipped: emailResult.emailSkipped,
         brevoUsed: emailResult.brevoUsed,
+        brevoContactSync,
       }, 200, origin);
     } catch (error) {
       console.error("[quiz.complete] Error:", error);

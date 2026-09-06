@@ -454,3 +454,95 @@ export function getBrevoConfig(): BrevoConfig {
     fromName: Deno.env.get('BREVO_FROM_NAME') || Deno.env.get('SELLABLE_FROM_NAME') || 'DigitallyDefined',
   };
 }
+
+export interface ContactSyncResult {
+  ok: boolean;
+  mode: EmailMode;
+  brevoUsed: boolean;
+  email?: string;
+  error?: string;
+}
+
+/**
+ * Add (or update) a contact on the Brevo list.
+ *
+ * Used by the public `subscribe` action so every website signup
+ * (launcher CTA, tool funnels, footer) lands in the same Brevo list
+ * the quiz emails already use.
+ *
+ * Mode-aware like the quiz email sender:
+ *  - no apiKey/listId -> 'dev' (skip, log only)
+ *  - blackhole target -> still recorded, sent as the blackhole address
+ *  - otherwise        -> live POST /v3/contacts (updateEnabled: true)
+ */
+export async function addContactToList(
+  email: string,
+  name: string | null,
+  source: string | null,
+  tags: string[] | null,
+  config: BrevoConfig
+): Promise<ContactSyncResult> {
+  const normalized = String(email || '').trim().toLowerCase();
+
+  // Not configured -> skip quietly (dev parity with the email sender).
+  if (!config.apiKey || !config.listId) {
+    console.log('[brevo-contacts] DEV/SKIP — BREVO_API_KEY or BREVO_LIST_ID not set. Would add:', {
+      email: normalized,
+      name,
+      source,
+      tags,
+    });
+    return { ok: true, mode: 'dev', brevoUsed: false, email: normalized };
+  }
+
+  // Guard the Brevo sandbox/quota during testing.
+  const targetEmail = normalized === BLACKHOLE_EMAIL ? BLACKHOLE_EMAIL : normalized;
+  const listIdNumber = Number(config.listId);
+
+  try {
+    const res = await fetch('https://api.brevo.com/v3/contacts', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Api-Key': config.apiKey,
+      },
+      body: JSON.stringify({
+        email: targetEmail,
+        updateEnabled: true, // upsert — never fail because the contact exists
+        listIds: Number.isFinite(listIdNumber) && listIdNumber > 0 ? [listIdNumber] : undefined,
+        attributes: {
+          NAME: name || '',
+          SOURCE: source || 'website',
+          ...(tags && tags.length ? { TAGS: tags.join(', ') } : {}),
+        },
+      }),
+      signal: AbortSignal.timeout(30000),
+    });
+
+    // 201 created, 204 updated, 200 ok — all success paths.
+    if (res.ok) {
+      console.log('[brevo-contacts] Contact synced:', { email: targetEmail, listId: config.listId });
+      return { ok: true, mode: 'live', brevoUsed: true, email: targetEmail };
+    }
+
+    const text = await res.text().catch(() => '');
+    console.error('[brevo-contacts] Sync failed:', res.status, text.slice(0, 200));
+    return {
+      ok: false,
+      mode: 'live',
+      brevoUsed: true,
+      email: targetEmail,
+      error: `Brevo contact sync failed: ${res.status} ${text.slice(0, 100)}`,
+    };
+  } catch (error) {
+    console.error('[brevo-contacts] Sync exception:', error);
+    return {
+      ok: false,
+      mode: 'live',
+      brevoUsed: true,
+      email: targetEmail,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+}
