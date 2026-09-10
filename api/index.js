@@ -1027,13 +1027,36 @@ export default async function handler(req, res) {
           }
         : undefined;
 
-      return res.status(200).json({
+      const legacyDashboardPayload = {
         status: 'ok',
         community,
         assets,
         email,
         topPosts,
         campaigns,
+        revenue,
+        leads,
+        conversionRate,
+        churnRisk,
+        assetValue,
+        topAsset,
+        communityGrowth,
+        emailGrowth,
+        siteHealth,
+        sentiment,
+        sourceHealth: {
+          facebook: fbData?.error ? 'warning' : 'ok',
+          brevo: brevoData?.error ? 'warning' : 'ok',
+          sheets: sheetsResult?.error ? 'warning' : 'ok',
+          ai: aiBrief?.error ? 'warning' : 'ok',
+        },
+        aiBrief: {
+          working: aiBrief.working,
+          slipping: aiBrief.slipping,
+          nextActions: aiBrief.nextActions,
+          provider: aiBrief.provider,
+        },
+        alerts,
         metrics: {
           communityCount,
           communityGrowth,
@@ -1050,13 +1073,10 @@ export default async function handler(req, res) {
           siteHealth,
           sentiment,
         },
-        aiBrief: {
-          working: aiBrief.working,
-          slipping: aiBrief.slipping,
-          nextActions: aiBrief.nextActions,
-          provider: aiBrief.provider,
-        },
-        alerts,
+      };
+
+      return res.status(200).json({
+        ...legacyDashboardPayload,
         ...(debug ? { debug } : {}),
       });
     }
