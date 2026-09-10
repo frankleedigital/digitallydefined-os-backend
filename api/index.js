@@ -56,7 +56,6 @@ const GET_ONLY_ACTIONS = new Set([
   'status',
   'auth.verify',
   'test-env',
-  'dashboard',
   'automation.list',
   'automation.logs',
   'automation.events',
@@ -273,6 +272,15 @@ function validateMethodForAction(req, action) {
     return {
       status: 405,
       body: { error: `Method ${req.method} not allowed for action ${action}. Use POST.` },
+    };
+  }
+
+  // Dashboard uses the JSON POST contract from the frontend, but some older clients
+  // still hit it via GET. Allow either method so the real dashboard remains functional.
+  if (action === 'dashboard' && !['GET', 'POST'].includes(req.method)) {
+    return {
+      status: 405,
+      body: { error: `Method ${req.method} not allowed for action ${action}. Use GET or POST.` },
     };
   }
 
