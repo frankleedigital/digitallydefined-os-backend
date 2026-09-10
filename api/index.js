@@ -478,19 +478,20 @@ async function fetchSheetsData() {
   }
 }
 
-// AI brief with caching — OmniRoute ONLY (single gateway)
+// AI brief with caching — OmniRoute first, direct Gemini fallback (Linode may be down)
 async function runGeminiAgent(message, systemPrompt, options = {}) {
   const resolvedSystemPrompt = String(systemPrompt || 'You are the DigitallyDefined Operations AI. Be concise and actionable.').trim();
   const resolvedMessage = String(message || '').trim();
-  const apiKey = process.env.OMNIROUTE_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-  const model = process.env.OMNIROUTE_MODEL || process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+  const omnirouteKey = (process.env.OMNIROUTE_API_KEY || '').trim();
+  const geminiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '').trim();
+  const omnirouteModel = process.env.OMNIROUTE_MODEL || process.env.GEMINI_MODEL || 'gemini-3.6-flash';
+  const geminiModel = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
 
-  if (!apiKey) {
+  if (!omnirouteKey && !geminiKey) {
     throw new Error('No AI API key configured for Gemini agent responses.');
   }
 
   const requestBody = {
-    model,
     messages: [
       { role: 'system', content: resolvedSystemPrompt },
       { role: 'user', content: resolvedMessage },
@@ -498,31 +499,60 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
     ...(options.jsonMode ? { response_format: { type: 'json_object' } } : {}),
   };
 
-  const res = await fetchWithTimeout(omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL || 'https://api.omniroute.ai/v1'), {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(requestBody),
-  }, 60000);
-
-  const data = await parseJsonSafe(res, {});
-  if (!res.ok) {
-    throw new Error(data?.error?.message || `AI request failed with status ${res.status}`);
+  // Try OmniRoute first, then fall back to Gemini's OpenAI-compatible endpoint.
+  const providers = [];
+  if (omnirouteKey) {
+    providers.push({
+      name: 'omniroute',
+      url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL || 'https://api.omniroute.ai/v1'),
+      key: omnirouteKey,
+      model: omnirouteModel,
+    });
+  }
+  if (geminiKey) {
+    providers.push({
+      name: 'gemini-direct',
+      url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
+      key: geminiKey,
+      model: geminiModel,
+    });
   }
 
-  const raw = data?.choices?.[0]?.message?.content || '';
-  const reply = String(raw).trim();
-  if (!reply) {
-    throw new Error('Gemini agent returned an empty response.');
+  let lastError = 'No AI provider attempted';
+  for (const provider of providers) {
+    try {
+      const res = await fetchWithTimeout(provider.url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${provider.key}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...requestBody, model: provider.model }),
+      }, 60000);
+
+      const data = await parseJsonSafe(res, {});
+      if (!res.ok) {
+        throw new Error(data?.error?.message || `AI request failed with status ${res.status}`);
+      }
+
+      const raw = data?.choices?.[0]?.message?.content || '';
+      const reply = String(raw).trim();
+      if (!reply) {
+        throw new Error('Gemini agent returned an empty response.');
+      }
+
+      return {
+        reply,
+        provider: provider.name,
+        model: provider.model,
+      };
+    } catch (err) {
+      lastError = err instanceof Error ? err.message : String(err);
+      console.error(`[runGeminiAgent] ${provider.name} failed:`, lastError);
+    }
   }
 
-  return {
-    reply,
-    provider: 'gemini-agent',
-    model,
-  };
+  throw new Error(lastError);
 }
 
 async function fetchAIBrief(context) {

@@ -37,6 +37,45 @@ const OMNIROUTE_API_KEY = (Deno.env.get('OMNIROUTE_API_KEY') || '').trim();
 const DEFAULT_MODEL = (Deno.env.get('OMNIROUTE_MODEL') || 'auto').trim();
 const DEFAULT_SYSTEM_PROMPT = hermesSystemPrompt;
 
+// ---- Direct Gemini fallback (Google's OpenAI-compatible endpoint) ----
+// Used only when the OmniRoute call fails (e.g. the Linode gateway is down).
+const GEMINI_API_KEY = (Deno.env.get('GEMINI_API_KEY') || Deno.env.get('GOOGLE_API_KEY') || '').trim();
+const GEMINI_BASE_URL = (Deno.env.get('GEMINI_BASE_URL') || 'https://generativelanguage.googleapis.com/v1beta/openai').trim().replace(/\/+$/, '');
+const GEMINI_MODEL = (Deno.env.get('GEMINI_MODEL') || 'gemini-3.6-flash').trim();
+
+async function geminiFallback(messages: unknown[], jsonMode: boolean, timeout: number) {
+  if (!GEMINI_API_KEY) return null;
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    const requestBody: Record<string, unknown> = {
+      model: GEMINI_MODEL,
+      messages,
+    };
+    if (jsonMode) requestBody.response_format = { type: 'json_object' };
+    const response = await fetch(`${GEMINI_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${GEMINI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Gemini fallback error: ${response.status} ${response.statusText} - ${errorText.slice(0, 200)}`);
+    }
+    const reply = await extractReply(response);
+    if (!reply) return null;
+    return { reply, provider: 'gemini-direct', model: GEMINI_MODEL, error: null };
+  } catch (error) {
+    console.error('[OmniRoute] Gemini fallback failed:', (error as Error)?.message || String(error));
+    return null;
+  }
+}
+
 /**
  * Call OmniRoute with a prompt and optional parameters
  *
@@ -88,7 +127,10 @@ async function extractReply(response: Response): Promise<string> {
 }
 
 export async function omniRoute(prompt: string, options: OmniRouteOptions = {}) {
-  if (!OMNIROUTE_API_KEY) {
+  // When the OmniRoute gateway is known to be down, skip straight to Gemini.
+  const omnirouteDisabled = Deno.env.get('OMNIROUTE_DISABLED') === 'true';
+
+  if (!OMNIROUTE_API_KEY && !omnirouteDisabled) {
     return {
       reply: '',
       provider: null,
@@ -110,6 +152,24 @@ export async function omniRoute(prompt: string, options: OmniRouteOptions = {}) 
   const systemPrompt = options.systemPrompt || DEFAULT_SYSTEM_PROMPT;
   const jsonMode = options.jsonMode || false;
   const timeout = options.timeout || 60000;
+
+  if (omnirouteDisabled) {
+    const fallback = await geminiFallback(
+      [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: prompt.trim() },
+      ],
+      jsonMode,
+      timeout,
+    );
+    if (fallback) return fallback;
+    return {
+      reply: '',
+      provider: null,
+      model: null,
+      error: 'OmniRoute is disabled and the Gemini fallback is not configured/failed',
+    };
+  }
 
   try {
     // AgentOps trace for LLM call
@@ -187,7 +247,16 @@ export async function omniRoute(prompt: string, options: OmniRouteOptions = {}) 
       // Ignore trace errors
     }
 
-    // Single OmniRoute attempt — no fallback models, no provider switching.
+    // Single OmniRoute attempt, then direct Gemini fallback.
+    const fallback = await geminiFallback(
+      [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: prompt.trim() },
+      ],
+      jsonMode,
+      timeout,
+    );
+    if (fallback) return fallback;
     return {
       reply: '',
       provider: null,
@@ -206,7 +275,10 @@ export async function omniRoute(prompt: string, options: OmniRouteOptions = {}) 
  * @returns {Promise<{reply: string, provider: string, model: string, error: string|null}>}
  */
 export async function omniRouteStream(prompt: string, options: OmniRouteOptions = {}, onChunk?: (chunk: string, fullReply: string) => void) {
-  if (!OMNIROUTE_API_KEY) {
+  // When the OmniRoute gateway is known to be down, go straight to Gemini.
+  const omnirouteDisabled = Deno.env.get('OMNIROUTE_DISABLED') === 'true';
+
+  if (!OMNIROUTE_API_KEY && !omnirouteDisabled) {
     return {
       reply: '',
       provider: null,
@@ -228,6 +300,27 @@ export async function omniRouteStream(prompt: string, options: OmniRouteOptions 
   const systemPrompt = options.systemPrompt || DEFAULT_SYSTEM_PROMPT;
   const jsonMode = options.jsonMode || false;
   const timeout = options.timeout || 60000;
+
+  if (omnirouteDisabled) {
+    const fallback = await geminiFallback(
+      [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: prompt.trim() },
+      ],
+      jsonMode,
+      timeout,
+    );
+    if (fallback) {
+      if (typeof onChunk === 'function') onChunk(fallback.reply, fallback.reply);
+      return fallback;
+    }
+    return {
+      reply: '',
+      provider: null,
+      model: null,
+      error: 'OmniRoute is disabled and the Gemini fallback is not configured/failed',
+    };
+  }
 
   try {
     const controller = new AbortController();
@@ -306,6 +399,19 @@ export async function omniRouteStream(prompt: string, options: OmniRouteOptions 
     };
 
   } catch (error) {
+    // OmniRoute failed — non-streamed Gemini fallback delivers the whole reply at once.
+    const fallback = await geminiFallback(
+      [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: prompt.trim() },
+      ],
+      jsonMode,
+      timeout,
+    );
+    if (fallback) {
+      if (typeof onChunk === 'function') onChunk(fallback.reply, fallback.reply);
+      return fallback;
+    }
     return {
       reply: '',
       provider: null,

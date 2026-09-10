@@ -96,95 +96,123 @@ const parseJsonReply = (reply: string) => {
 };
 
 // ============================================================
-// AI PROVIDER: OmniRoute ONLY (single-gateway consolidation)
-// All AI traffic routes through OmniRoute, which fans out to
-// upstream providers on its side. No direct provider calls.
+// AI PROVIDER: OmniRoute first, direct Gemini fallback.
+// All AI traffic prefers OmniRoute (single gateway); when it is
+// unreachable (OMNIROUTE_DISABLED=true or request failure), calls
+// Google's OpenAI-compatible Gemini endpoint directly.
 //
 // Required Supabase secrets:
-//   OMNIROUTE_API_KEY  (required)
+//   OMNIROUTE_API_KEY  (required unless disabled)
 //   OMNIROUTE_BASE_URL (optional, default https://api.omniroute.ai/v1)
 //   OMNIROUTE_MODEL    (optional, default "auto")
+//   OMNIROUTE_DISABLED (optional, "true" while the gateway is down)
+//   GEMINI_API_KEY     (fallback)
+//   GEMINI_MODEL       (optional, default "gemini-3.6-flash")
 // ============================================================
+const OMNIROUTE_DISABLED = Deno.env.get("OMNIROUTE_DISABLED") === "true";
+
 const getCandidates = (): Candidate[] => {
+  const candidates: Candidate[] = [];
+
+  const geminiKey = Deno.env.get("GEMINI_API_KEY") || Deno.env.get("GOOGLE_API_KEY") || "";
   const omnirouteKey = Deno.env.get("OMNIROUTE_API_KEY") || "";
-  if (!omnirouteKey) {
-    console.error("[hermes] OMNIROUTE_API_KEY is not set. AI actions will fail.");
-    return [];
+
+  if (OMNIROUTE_DISABLED) {
+    console.warn("[hermes] OMNIROUTE_DISABLED=true — routing AI straight to the Gemini fallback.");
+  } else if (omnirouteKey) {
+    // Normalize: accept base URL with or without a trailing "/v1".
+    const rawBase = (Deno.env.get("OMNIROUTE_BASE_URL") || "https://api.omniroute.ai/v1").trim();
+    const baseUrl = rawBase.replace(/\/+$/, "").replace(/\/v1$/, "") + "/v1";
+    const model = (Deno.env.get("OMNIROUTE_MODEL") || "auto").trim();
+    candidates.push({
+      provider: "omniroute",
+      model,
+      key: omnirouteKey,
+      url: `${baseUrl}/chat/completions`,
+    });
+  } else {
+    console.error("[hermes] OMNIROUTE_API_KEY is not set. OmniRoute will be skipped.");
   }
-  // Normalize: accept base URL with or without a trailing "/v1".
-  const rawBase = (Deno.env.get("OMNIROUTE_BASE_URL") || "https://api.omniroute.ai/v1").trim();
-  const baseUrl = rawBase.replace(/\/+$/, "").replace(/\/v1$/, "") + "/v1";
-  // OmniRoute ONLY — exactly one candidate. No fallback models, no other providers.
-  const model = (Deno.env.get("OMNIROUTE_MODEL") || "auto").trim();
-  return [{
-    provider: "omniroute",
-    model,
-    key: omnirouteKey,
-    url: `${baseUrl}/chat/completions`,
-  }];
+
+  if (geminiKey) {
+    const geminiBase = (Deno.env.get("GEMINI_BASE_URL") || "https://generativelanguage.googleapis.com/v1beta/openai")
+      .trim().replace(/\/+$/, "");
+    const geminiModel = (Deno.env.get("GEMINI_MODEL") || "gemini-3.6-flash").trim();
+    candidates.push({
+      provider: "gemini-direct",
+      model: geminiModel,
+      key: geminiKey,
+      url: `${geminiBase}/chat/completions`,
+    });
+  }
+
+  return candidates;
 };
 
 async function runAI(systemPrompt: string, userPrompt: string, jsonMode = false) {
   const candidates = getCandidates();
   if (!candidates.length) throw new Error("No AI provider is configured in Supabase secrets");
 
-  // Single OmniRoute candidate — one attempt, no fallback, no provider switching.
-  const candidate = candidates[0];
-  try {
-    const response = await fetch(candidate.url, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${candidate.key}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: candidate.model,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        temperature: jsonMode ? 0.35 : 0.7,
-        max_tokens: jsonMode ? 4000 : 8000,
-        ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
-      }),
-      signal: AbortSignal.timeout(90000),
-    });
+  let lastError = "";
+  for (const candidate of candidates) {
+    try {
+      const response = await fetch(candidate.url, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${candidate.key}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: candidate.model,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          temperature: jsonMode ? 0.35 : 0.7,
+          max_tokens: jsonMode ? 4000 : 8000,
+          ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
+        }),
+        signal: AbortSignal.timeout(90000),
+      });
 
-    if (!response.ok) {
-      throw new Error(`${candidate.provider} HTTP ${response.status}: ${await response.text()}`);
-    }
-
-    // This OmniRoute instance may answer with SSE even when stream:false
-    // (e.g. the "auto" model) — parse both shapes.
-    const bodyText = await response.text();
-    let reply = "";
-    if (bodyText.trimStart().startsWith("data:") ||
-        (response.headers.get("content-type") || "").includes("text/event-stream")) {
-      for (const line of bodyText.split("\n")) {
-        const trimmed = line.trim();
-        if (!trimmed.startsWith("data:")) continue;
-        const payload = trimmed.slice(5).trim();
-        if (!payload || payload === "[DONE]") continue;
-        try {
-          const parsed = JSON.parse(payload);
-          reply += parsed?.choices?.[0]?.delta?.content
-            || parsed?.choices?.[0]?.message?.content
-            || "";
-        } catch { /* skip invalid chunk */ }
+      if (!response.ok) {
+        throw new Error(`${candidate.provider} HTTP ${response.status}: ${await response.text()}`);
       }
-    } else {
-      const payloadJson = JSON.parse(bodyText);
-      reply = payloadJson?.choices?.[0]?.message?.content || "";
-    }
-    if (!reply) {
-      throw new Error(`${candidate.provider} returned an empty response`);
-    }
 
-    return { reply, provider: candidate.provider, model: candidate.model };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    throw new Error(message || "OmniRoute call failed");
+      // This OmniRoute instance may answer with SSE even when stream:false
+      // (e.g. the "auto" model) — parse both shapes.
+      const bodyText = await response.text();
+      let reply = "";
+      if (bodyText.trimStart().startsWith("data:") ||
+          (response.headers.get("content-type") || "").includes("text/event-stream")) {
+        for (const line of bodyText.split("\n")) {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith("data:")) continue;
+          const payload = trimmed.slice(5).trim();
+          if (!payload || payload === "[DONE]") continue;
+          try {
+            const parsed = JSON.parse(payload);
+            reply += parsed?.choices?.[0]?.delta?.content
+              || parsed?.choices?.[0]?.message?.content
+              || "";
+          } catch { /* skip invalid chunk */ }
+        }
+      } else {
+        const payloadJson = JSON.parse(bodyText);
+        reply = payloadJson?.choices?.[0]?.message?.content || "";
+      }
+      if (!reply) {
+        throw new Error(`${candidate.provider} returned an empty response`);
+      }
+
+      return { reply, provider: candidate.provider, model: candidate.model };
+    } catch (error) {
+      lastError = error instanceof Error ? error.message : String(error);
+      console.error(`[hermes] ${candidate.provider} failed:`, lastError);
+    }
   }
+
+  throw new Error(lastError || "AI call failed");
 }
 
 const agentPrompts: Record<string, { schema: string; system: string; user: (input: JsonRecord) => string }> = {
