@@ -42,7 +42,9 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
+        "npm:@modelcontextprotocol/sdk@^1.30.0",
         "npm:@supabase/supabase-js@^2.112.2",
+        "npm:@types/node@^26.4.0",
         "npm:cors@^2.8.5",
         "npm:dotenv@^16.3.1",
         "npm:express@^4.22.2"

@@ -93,6 +93,17 @@ export const AGENT_SCHEMAS: Record<string, AgentSchema> = {
       nextAction: { type: "string" },
     },
   },
+  "business-partner": {
+    title: "DigitallyDefined Business Partner Response",
+    required: ["summary", "opportunities", "riskFlags", "nextActions", "priorityFocus"],
+    properties: {
+      summary: { type: "string" },
+      opportunities: { type: "array" },
+      riskFlags: { type: "array" },
+      nextActions: { type: "array" },
+      priorityFocus: { type: "string" },
+    },
+  },
 };
 
 const actualType = (value: unknown) => {

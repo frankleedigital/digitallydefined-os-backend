@@ -322,7 +322,87 @@ const dashboardData = {
   ],
   aiBrief: { working: [], slipping: [], nextActions: [] },
   community: [],
+  notion: {
+    ideas: [],
+    content: [],
+    automations: [],
+    intakeAlerts: [],
+    publishingQueue: [],
+    approvals: [],
+    buyerSignals: [],
+    aiDrafts: [],
+  },
 };
+
+async function fetchDashboardNotionSnapshot() {
+  const notionKey = (Deno.env.get("NOTION_API_KEY") || "").trim();
+  const idMap = {
+    ideas: Deno.env.get("NOTION_IDEAS_DB_ID") || "",
+    content: Deno.env.get("NOTION_CONTENT_DB_ID") || "",
+    automations: Deno.env.get("NOTION_AUTOMATIONS_DB_ID") || "",
+  };
+
+  if (!notionKey || Object.values(idMap).every((id) => !id)) {
+    return dashboardData.notion;
+  }
+
+  const queryDb = async (key: string, id: string) => {
+    if (!id) return [];
+    try {
+      const res = await fetch(`https://api.notion.com/v1/databases/${id}/query`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${notionKey}`,
+          "Notion-Version": "2022-06-28",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ page_size: 10, sorts: [{ timestamp: "last_edited_time", direction: "descending" }] }),
+      });
+      if (!res.ok) {
+        console.warn(`[hermes] Notion query failed for ${key}: ${res.status}`);
+        return [];
+      }
+      const data = await res.json();
+      const results = Array.isArray(data?.results) ? data.results : [];
+      return results.slice(0, 10).map((page: Record<string, any>) => {
+        const props = page.properties || {};
+        const title =
+          props.Title?.title?.[0]?.plain_text ||
+          props.Name?.title?.[0]?.plain_text ||
+          props.name?.title?.[0]?.plain_text ||
+          "Untitled";
+        const status = props.Status?.select?.name || props.Stage?.select?.name || "New";
+        return {
+          id: page.id,
+          title,
+          status,
+          url: page.url || "",
+          lastEdited: page.last_edited_time || "",
+        };
+      });
+    } catch (error) {
+      console.warn(`[hermes] Notion sync failed for ${key}:`, error);
+      return [];
+    }
+  };
+
+  const [ideas, content, automations] = await Promise.all([
+    queryDb("ideas", idMap.ideas),
+    queryDb("content", idMap.content),
+    queryDb("automations", idMap.automations),
+  ]);
+
+  return {
+    ideas,
+    content,
+    automations,
+    intakeAlerts: [],
+    publishingQueue: [],
+    approvals: [],
+    buyerSignals: [],
+    aiDrafts: [],
+  };
+}
 
 // ============================================================
 // LIVE WEBSITE CONTENT STORE
@@ -728,6 +808,51 @@ HOW TO ANSWER:
     }
   }
 
+  if (action === "chat") {
+    const message = String(body.message || "").trim().slice(0, 2000);
+    if (!message) return json({ error: "A message is required" }, 400, origin);
+    const systemPrompt = String(body.systemPrompt || `You are Hermes, the AI business partner for DigitallyDefined. Give direct, high-level business advice with no fluff.`).trim();
+    const conversation = Array.isArray(body.conversation) ? body.conversation : [];
+    const summaryPrompt = `Current user request: ${message}\n\nRecent conversation:\n${JSON.stringify(conversation.slice(-6))}\n\nUse the live site and dashboard context to answer as the DigitallyDefined business partner. Be blunt, strategic, and practical. No hype. No generic coach language. Keep it short and high level.`;
+
+    try {
+      const result = await runAI(
+        `${systemPrompt}\n\nYou are Hermes. Give the founder a clear, high-level assessment of the business. Focus on the biggest opportunity, biggest risk, and the single most important next move. No fluff. No vague strategy. Keep the answer short and sharp. Return only JSON matching this schema:\n${schemaPrompt("business-partner")}`,
+        summaryPrompt,
+        true,
+      );
+      const parsed = parseJsonReply(result.reply) as Record<string, unknown>;
+      const validation = validateAgentOutput("business-partner", parsed);
+      if (!validation.valid) {
+        throw new Error(`Invalid business-partner output: ${validation.errors.join("; ")}`);
+      }
+
+      const nextActions = Array.isArray(parsed.nextActions) ? parsed.nextActions as string[] : [];
+      const plainReply = [
+        String(parsed.summary || ""),
+        "",
+        nextActions.length ? `Next steps:\n- ${nextActions.map((item) => String(item)).join("\n- ")}` : "",
+        "",
+        `Priority focus: ${String(parsed.priorityFocus || "")}`,
+      ].filter(Boolean).join("\n\n");
+
+      return json({
+        success: true,
+        reply: plainReply,
+        data: parsed,
+        provider: result.provider,
+        model: result.model,
+        schema: "business-partner",
+      }, 200, origin);
+    } catch (error) {
+      return json({
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
+        fallback: "I’m here — but the structured response was not valid. Please retry your question.",
+      }, 502, origin);
+    }
+  }
+
   // =============================================
   // DEVELOPER MODE — dedicated protected endpoint
   // Used by the MentorWidget when dev-mode requests are detected.
@@ -901,10 +1026,11 @@ Return ONLY valid JSON with these keys (include only relevant ones):
   }
 
   // =============================================
-  // INTEGRATION DATA HANDLERS (migrated from dashboard /api/integrations/*)
+  // INTEGRATION + AUTOMATION DATA HANDLERS
+  // (migrated from dashboard /api/integrations/*)
   // Same response shapes as the retired Vercel proxies.
   // =============================================
-  if (action.startsWith("integration.")) {
+  if (action.startsWith("integration.") || action.startsWith("automation.") || action.startsWith("notion.")) {
     const b = body || {};
 
     // ---- Start-an-integration flow (placeholder — no real OAuth yet) ----
@@ -990,6 +1116,193 @@ Return ONLY valid JSON with these keys (include only relevant ones):
         ],
       }, 200, origin);
     }
+
+    // ---- Notion: create a page in a target database ----
+    if (action === "notion.page.create") {
+      const notionKey = (Deno.env.get("NOTION_API_KEY") || "").trim();
+      const databaseId = String(b.database_id || Deno.env.get("NOTION_TARGET_DB_ID") || "").trim();
+      const title = String(b.title || b.Name || "").trim();
+      const pageStatus = String(b.status || "New");
+      const content = String(b.content || "").trim();
+
+      if (!notionKey) return json({ ok: false, error: "NOTION_API_KEY not configured" }, 400, origin);
+      if (!databaseId) return json({ ok: false, error: "No target database_id" }, 400, origin);
+      if (!title) return json({ ok: false, error: "A title is required" }, 400, origin);
+
+      try {
+        const pageRes = await fetch("https://api.notion.com/v1/pages", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${notionKey}`,
+            "Notion-Version": "2022-06-28",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            parent: { database_id: databaseId },
+            properties: {
+              title: [{ text: { content } }],
+              ...(pageStatus ? { Status: { select: { name: pageStatus } } } : {}),
+              ...(content ? { Content: { rich_text: [{ text: { content } }] } } : {}),
+            },
+          }),
+        });
+
+        if (!pageRes.ok) {
+          const errBody = await pageRes.json().catch(() => ({}));
+          return json({ ok: false, error: errBody?.message || `Notion API returned ${pageRes.status}` }, 400, origin);
+        }
+
+        const pageData = await pageRes.json();
+        return json({ ok: true, pageId: pageData.id, url: pageData.url, title }, 200, origin);
+      } catch (err) {
+        return json({ ok: false, error: err instanceof Error ? err.message : String(err) }, 502, origin);
+      }
+    }
+
+    // ---- Notion: report an intake item (quiz result, buyer signal, idea) ----
+    if (action === "notion.intake.report") {
+      const notionKey = (Deno.env.get("NOTION_API_KEY") || "").trim();
+      const intakeDbId = String(b.intake_db_id || Deno.env.get("NOTION_IDEAS_DB_ID") || "").trim();
+      const title = String(b.title || "").trim() || "Untitled";
+      const source = String(b.source || "manual").trim();
+      const intakeStatus = String(b.status || "New");
+      const score = String(b.score || "").trim();
+      const route = String(b.route || "").trim();
+      const customerEmail = String(b.customerEmail || "").trim();
+      const productSlug = String(b.productSlug || "").trim();
+
+      if (!notionKey) return json({ ok: false, error: "NOTION_API_KEY not configured" }, 400, origin);
+      if (!intakeDbId) return json({ ok: false, error: "No intake database — set NOTION_IDEAS_DB_ID" }, 400, origin);
+
+      try {
+        const pageRes = await fetch("https://api.notion.com/v1/pages", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${notionKey}`,
+            "Notion-Version": "2022-06-28",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            parent: { database_id: intakeDbId },
+            properties: {
+              title: [{ text: { content: title } }],
+              ...(intakeStatus ? { Status: { select: { name: intakeStatus } } } : {}),
+              ...(source ? { Source: { select: { name: source } } } : {}),
+              ...(score ? { Score: { select: { name: score } } } : {}),
+              ...(route ? { Route: { select: { name: route } } } : {}),
+              ...(customerEmail ? { CustomerEmail: { rich_text: [{ text: { content: customerEmail } }] } } : {}),
+              ...(productSlug ? { ProductSlug: { rich_text: [{ text: { content: productSlug } }] } } : {}),
+            },
+          }),
+        });
+
+        if (!pageRes.ok) {
+          const errBody = await pageRes.json().catch(() => ({}));
+          return json({ ok: false, error: errBody?.message || `Notion intake create returned ${pageRes.status}` }, 400, origin);
+        }
+
+        const pageData = await pageRes.json();
+        return json({ ok: true, pageId: pageData.id, url: pageData.url, title }, 200, origin);
+      } catch (err) {
+        return json({ ok: false, error: err instanceof Error ? err.message : String(err) }, 502, origin);
+      }
+    }
+
+    // ---- Automation: write an execution record to the Automation Log DB ----
+    if (action === "automation.log") {
+      const notionKey = (Deno.env.get("NOTION_API_KEY") || "").trim();
+      const logDbId = String(b.log_db_id || Deno.env.get("NOTION_AUTOMATIONS_DB_ID") || "").trim();
+      const actionName = String(b.action || b.name || "unknown").trim();
+      const logStatus = String(b.status || "Succeeded");
+      const source = String(b.source || "manual");
+      const meta = String(b.meta || b.description || "").trim();
+
+      if (!notionKey) return json({ ok: false, error: "NOTION_API_KEY not configured" }, 400, origin);
+      if (!logDbId) return json({ ok: false, error: "No automation log database — set NOTION_AUTOMATIONS_DB_ID" }, 400, origin);
+
+      try {
+        const pageRes = await fetch("https://api.notion.com/v1/pages", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${notionKey}`,
+            "Notion-Version": "2022-06-28",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            parent: { database_id: logDbId },
+            properties: {
+              Action: { title: [{ text: { content: actionName } }] },
+              Status: { select: { name: logStatus } },
+              Source: { select: { name: source } },
+              ...(meta ? { Meta: { rich_text: [{ text: { content: meta } }] } } : {}),
+              GeneratedAt: { date: { start: new Date().toISOString() } },
+            },
+          }),
+        });
+
+        if (!pageRes.ok) {
+          const errBody = await pageRes.json().catch(() => ({}));
+          return json({ ok: false, error: errBody?.message || `Automation log write returned ${pageRes.status}` }, 400, origin);
+        }
+
+        const pageData = await pageRes.json();
+        return json({ ok: true, pageId: pageData.id, action: actionName, status: logStatus }, 200, origin);
+      } catch (err) {
+        return json({ ok: false, error: err instanceof Error ? err.message : String(err) }, 502, origin);
+      }
+    }
+
+    // ---- Automation: list known + recent automations ----
+    if (action === "automation.list") {
+      const notionKey = (Deno.env.get("NOTION_API_KEY") || "").trim();
+      const logDbId = Deno.env.get("NOTION_AUTOMATIONS_DB_ID");
+
+      const knownAutomations = [
+        { name: "Daily Notion Intake Sync", description: "Pulls new ideas, buyer signals, and AI drafts from Notion into the dashboard", status: "active" },
+        { name: "Quiz to Superpower to Roadmap", description: "Runs the digital superpower agent and writes the result to the intake database", status: "active" },
+        { name: "Weekly AI Brief", description: "Generates a weekly summary of what is working, slipping, and next actions from dashboard data", status: "active" },
+        { name: "Sellable Product Publisher", description: "Pushes published products to Gumroad and logs the result in Customer Operations", status: "planned" },
+      ];
+
+      if (notionKey && logDbId) {
+        try {
+          const res = await fetch(`https://api.notion.com/v1/databases/${logDbId}/query`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${notionKey}`,
+              "Notion-Version": "2022-06-28",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              page_size: 10,
+              sorts: [{ timestamp: "created_time", direction: "descending" }],
+            }),
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            const recent = Array.isArray(data?.results) ? data.results.slice(0, 10).map((page: { id?: string; properties?: Record<string, { title?: { plain_text?: string }[]; select?: { name?: string }[] }>; last_edited_time?: string }) => {
+              const props = page.properties || {};
+              const extractTitle = (p: string) => { const v = props[p]; if (!v || !Array.isArray(v.title)) return ""; return (v.title[0]?.plain_text || "").trim(); };
+              const extractSelect = (p: string) => { const v = props[p]; if (!v || !Array.isArray(v.select)) return ""; return (v.select[0]?.name || "").trim(); };
+              return {
+                name: extractTitle("Action") || extractTitle("Name") || "Untitled",
+                status: extractSelect("Status") || "unknown",
+                source: extractSelect("Source") || "unknown",
+                lastRun: page.last_edited_time || "",
+                pageId: page.id || "",
+              };
+            }) : [];
+            return json({ ok: true, automations: [...knownAutomations, ...recent] }, 200, origin);
+          }
+        } catch {
+          // Fall through to knownAutomations only.
+        }
+      }
+
+      return json({ ok: true, automations: knownAutomations }, 200, origin);
+    }
+
     return json({ error: `Unknown integration action: ${action}` }, 400, origin);
   }
 
@@ -1051,7 +1364,10 @@ Return ONLY valid JSON with these keys (include only relevant ones):
     }
   }
 
-  if (action === "dashboard") return json(dashboardData, 200, origin);
+  if (action === "dashboard") {
+    const notion = await fetchDashboardNotionSnapshot();
+    return json({ ...dashboardData, notion }, 200, origin);
+  }
   if (action === "automation.list") return json({ automations: dashboardData.automations }, 200, origin);
   if (action === "status" || action === "routes") {
     const routes: string[] = [
