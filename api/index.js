@@ -23,6 +23,7 @@ const ALLOWED_ACTIONS = new Set([
   'ai.recommendations',
   'brain.brief',
   'chat',
+  'public.chat',
   'mentor.dev',
   'hermes.agent',
   'intelligence',
@@ -467,6 +468,52 @@ async function fetchSheetsData() {
 }
 
 // AI brief with caching — OmniRoute ONLY (single gateway)
+async function runGeminiAgent(message, systemPrompt, options = {}) {
+  const resolvedSystemPrompt = String(systemPrompt || 'You are the DigitallyDefined Operations AI. Be concise and actionable.').trim();
+  const resolvedMessage = String(message || '').trim();
+  const apiKey = process.env.OMNIROUTE_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+  const model = process.env.OMNIROUTE_MODEL || process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+
+  if (!apiKey) {
+    throw new Error('No AI API key configured for Gemini agent responses.');
+  }
+
+  const requestBody = {
+    model,
+    messages: [
+      { role: 'system', content: resolvedSystemPrompt },
+      { role: 'user', content: resolvedMessage },
+    ],
+    ...(options.jsonMode ? { response_format: { type: 'json_object' } } : {}),
+  };
+
+  const res = await fetchWithTimeout(omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL || 'https://api.omniroute.ai/v1'), {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestBody),
+  }, 60000);
+
+  const data = await parseJsonSafe(res, {});
+  if (!res.ok) {
+    throw new Error(data?.error?.message || `AI request failed with status ${res.status}`);
+  }
+
+  const raw = data?.choices?.[0]?.message?.content || '';
+  const reply = String(raw).trim();
+  if (!reply) {
+    throw new Error('Gemini agent returned an empty response.');
+  }
+
+  return {
+    reply,
+    provider: 'gemini-agent',
+    model,
+  };
+}
+
 async function fetchAIBrief(context) {
   const now = Date.now();
   
@@ -672,7 +719,11 @@ export default async function handler(req, res) {
     return res.status(rateLimitResult.status).json(rateLimitResult.body);
   }
 
-  const action = typeof req.query?.action === 'string' ? req.query.action : 'status';
+  const action = typeof req.query?.action === 'string'
+    ? req.query.action
+    : typeof req.body?.action === 'string'
+      ? req.body.action
+      : 'status';
   const methodValidation = validateMethodForAction(req, action);
 
   if (methodValidation) {
@@ -713,6 +764,66 @@ export default async function handler(req, res) {
           'Create a new review follow-up workflow for Customer OS.',
           'Sync Vault — 12 new assets detected.',
         ],
+      });
+    }
+
+    if (action === 'chat' || action === 'public.chat' || action === 'hermes.agent') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      const message = String(req.body?.message || '').trim();
+      if (!message) {
+        return res.status(400).json({ error: 'A message is required' });
+      }
+
+      const userSystemPrompt = String(req.body?.systemPrompt || 'You are the DigitallyDefined Operations AI. Be concise, strategic, and actionable.').trim();
+      const conversation = Array.isArray(req.body?.conversation) ? req.body.conversation : [];
+
+      try {
+        const result = await runGeminiAgent(
+          `Current conversation context:\n${JSON.stringify(conversation.slice(-8))}\n\nUser request:\n${message}`,
+          userSystemPrompt,
+        );
+
+        return res.status(200).json({
+          ok: true,
+          reply: result.reply,
+          provider: result.provider,
+          model: result.model,
+        });
+      } catch (error) {
+        return res.status(502).json({
+          error: error instanceof Error ? error.message : 'AI agent request failed',
+        });
+      }
+    }
+
+    if (action === 'intelligence') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      return res.status(200).json({
+        ok: true,
+        success: true,
+        data: {
+          superpower: 'Builder',
+          superpowerDescription: 'You are positioned to turn expertise into a faceless digital asset system.',
+          recommendations: [
+            'Nail a single niche before expanding the offer suite.',
+            'Convert the top review gains into a repeatable content flywheel.',
+            'Create one asset-focused automation instead of layering more work.',
+          ],
+          roadmap: {
+            estimatedTime: '30-60 days',
+            steps: [
+              'Define the narrowest viable offer.',
+              'Build one trusted asset that captures demand.',
+              'Automate the follow-up flow behind that asset.',
+            ],
+          },
+        },
       });
     }
 
