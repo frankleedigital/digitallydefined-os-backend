@@ -399,6 +399,7 @@ async function fetchNotionSnapshot() {
   snapshot.configured = true;
   snapshot.error = null;
 
+  let hadAuthError = false;
   for (const [key, envName] of NOTION_SNAPSHOT_DB_KEYS) {
     const dbId = (process.env[envName] || '').trim();
     if (!dbId) continue;
@@ -415,7 +416,10 @@ async function fetchNotionSnapshot() {
           body: JSON.stringify({ page_size: 25 }),
         },
       );
-      if (!dbRes.ok) continue;
+      if (!dbRes.ok) {
+        if (dbRes.status === 401 || dbRes.status === 403) hadAuthError = true;
+        continue;
+      }
       const data = await parseJsonSafe(dbRes, { results: [] });
       const results = Array.isArray(data.results) ? data.results : [];
       snapshot[key] = results.map((page) => ({
@@ -429,6 +433,12 @@ async function fetchNotionSnapshot() {
     } catch {
       // A single database failing must not fail the whole dashboard sync.
     }
+  }
+
+  if (hadAuthError) {
+    snapshot.error =
+      'Notion token is unauthorized for the configured databases. ' +
+      'Verify NOTION_API_KEY/NOTION_SECRET and share each database with the Notion integration.';
   }
 
   return snapshot;
