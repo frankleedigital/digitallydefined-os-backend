@@ -17,3 +17,9 @@ schedule = "0 6 * * 1"
 # (protected by x-api-key inside the function itself).
 [functions.analytics]
 verify_jwt = false
+
+# Notion sync — push new leads / quiz results / contact messages to Notion.
+# Runs every 6 hours. Dry-run unless NOTION_LIVE_MODE=true.
+[functions.notion-sync]
+verify_jwt = false
+schedule = "0 */6 * * *"

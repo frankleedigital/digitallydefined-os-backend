@@ -4,11 +4,16 @@
 
 Produces the DigitallyDefined authority blueprint (pillars + components) with
 optional schema + package enrichment.
+
+Notion Architect (Phase 4 restoration): the generated blueprint is mirrored
+into the Content Blocks DB through `notion_architect.upsert_notion_record`
+(normalized + deduped + gated by NOTION_LIVE_MODE).
 """
 import logging
 
 from ..models import BlueprintRequest, BlueprintResponse
 from ..storage import storage
+from ..notion_architect import upsert_notion_record
 
 logger = logging.getLogger("digitallydefined.fastapi.authority_blueprint")
 
@@ -46,5 +51,19 @@ async def generate_blueprint(req: BlueprintRequest) -> BlueprintResponse:
         )
     except Exception as exc:  # noqa: BLE001
         logger.warning("Blueprint persist failed: %s", exc)
+
+    # Architect: mirror the blueprint into the Notion OS Content Blocks DB.
+    try:
+        sync_result = await upsert_notion_record("content", {
+            "name": f"{req.keyword} — Authority Blueprint",
+            "status": "Draft",
+            "contentType": "Guide",
+            "niche": req.keyword,
+            "source": "fastapi.authority_blueprint",
+        })
+        if not getattr(sync_result, "get", None) or sync_result.get("dryRun"):
+            logger.info("Blueprint Notion sync (dry-run): %s", sync_result)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Blueprint Notion sync failed (non-fatal): %s", exc)
 
     return resp

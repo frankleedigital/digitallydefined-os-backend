@@ -40,6 +40,34 @@ def validate_schema(schema: dict[str, Any]) -> list[str]:
     return errors
 
 
+# --- Notion Architect bridge (Phase 4 restoration) ----------------------
+# Architect-based normalization / validation / dedup for callers that persist
+# generated records into the Notion OS.
+from ..notion_architect import (  # noqa: E402
+    build_notion_properties,
+    get_notion_dedup_tuple,
+    get_notion_schema_map,
+    normalize_notion_record,
+    upsert_notion_record,
+    validate_notion_record,
+)
+
+
+def validate_notion_os_record(db_key: str, record: dict[str, Any]) -> dict[str, Any]:
+    """Normalize + validate a record against the architect schema for `db_key`."""
+    normalized = normalize_notion_record(db_key, record)
+    if not normalized:
+        return {"valid": False, "error": f"Unknown architect DB key: {db_key}", "normalized": None, "missing": []}
+    result = validate_notion_record(db_key, normalized)
+    return {
+        "valid": result["valid"],
+        "error": result["error"],
+        "normalized": normalized,
+        "missing": result["missing"],
+        "dedupKeys": get_notion_schema_map()[db_key]["dedupKeys"] if db_key in get_notion_schema_map() else [],
+    }
+
+
 def validate_instance(instance: dict[str, Any], schema: dict[str, Any]) -> tuple[bool, list[str]]:
     if _JSONSCHEMA_UNAVAILABLE:
         return True, []

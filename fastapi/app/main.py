@@ -8,8 +8,9 @@ routers.
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.responses import JSONResponse
 
 from .config import settings
 from .deps import check_dependencies
@@ -63,6 +64,24 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# Enforce the shared `x-api-key` on every route except the health/system and
+# OpenAPI docs endpoints. Mirrors the edge `DASHBOARD_API_KEY` contract; the
+# backend proxy forwards the same key, so dashboard/online-local reach it via
+# the proxy. If DASHBOARD_API_KEY is left empty the check is skipped (degrade).
+@app.middleware("http")
+async def enforce_shared_api_key(request: Request, call_next):
+    if request.method == "OPTIONS":
+        return await call_next(request)
+    path = request.url.path
+    if path in {"/", "/health"} or path.startswith(("/docs", "/redoc", "/openapi.json")):
+        return await call_next(request)
+    expected = (settings.dashboard_api_key or "").strip()
+    provided = (request.headers.get("x-api-key") or "").strip()
+    if expected and provided != expected:
+        return JSONResponse(status_code=401, content={"detail": "Unauthorized"})
+    return await call_next(request)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])

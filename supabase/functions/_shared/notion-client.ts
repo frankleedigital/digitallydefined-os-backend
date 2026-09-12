@@ -13,7 +13,7 @@ const NOTION_API_BASE = 'https://api.notion.com/v1';
  * @param {object} payload - Database creation payload
  * @returns {Promise<object>} Created database response
  */
-export async function createDatabase(secret, payload) {
+export async function createDatabase(secret: string, payload: Record<string, unknown>) {
   const res = await fetch(`${NOTION_API_BASE}/databases`, {
     method: 'POST',
     headers: {
@@ -39,7 +39,7 @@ export async function createDatabase(secret, payload) {
  * @param {object} payload - Database update payload
  * @returns {Promise<object>} Updated database response
  */
-export async function updateDatabase(secret, databaseId, payload) {
+export async function updateDatabase(secret: string, databaseId: string, payload: Record<string, unknown>) {
   const res = await fetch(`${NOTION_API_BASE}/databases/${databaseId}`, {
     method: 'PATCH',
     headers: {

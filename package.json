@@ -7,6 +7,8 @@
   "scripts": {
     "dev:supabase": "supabase start",
     "dev:hermes": "supabase functions serve hermes --env-file .env --no-verify-jwt",
+    "serve:fastapi": "cd fastapi && uvicorn app.main:app --host 0.0.0.0 --port 8000",
+    "smoke:notion": "node scripts/smoke-notion-sync.mjs",
     "dev:mcp": "node scripts/hermes-mcp-server.mjs",
     "build": "node scripts/build.js",
     "smoke:mcp": "node scripts/smoke-hermes-mcp.mjs",

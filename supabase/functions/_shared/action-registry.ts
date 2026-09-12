@@ -17,6 +17,21 @@ export const PUBLIC_READ_ACTIONS = ["website.content"] as const;
 /** Action prefixes that are public (rate-limited only). */
 export const PUBLIC_ACTION_PREFIXES = ["agent."] as const;
 
+/**
+ * FastAPI microservice actions.
+ *
+ * These are NOT handled by Hermes. They are routed by the Vercel dispatcher
+ * (`api/index.js`) and/or the `/fastapi/*` proxy to the FastAPI layer
+ * (product-generator / niche / domain / affiliate / rank-rent / blueprint /
+ * roadmap / trends). isKnownAction() deliberately does NOT include them, so a
+ * stray `fastapi.*` sent to this edge function is rejected with 400.
+ */
+export const FASTAPI_ACTION_PREFIX = "fastapi." as const;
+
+export function isFastAPIAction(action: string): boolean {
+  return action.startsWith(FASTAPI_ACTION_PREFIX);
+}
+
 /** Actions any authenticated caller (x-api-key) may use via GET or POST. */
 export const AUTHED_ACTIONS = [
   "status",

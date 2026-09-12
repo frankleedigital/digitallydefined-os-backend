@@ -1,6 +1,12 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { schemaPrompt, validateAgentOutput } from "../_shared/agent-schemas.ts";
 import { isPublicAction, isKnownAction, GET_ONLY_ACTIONS } from "../_shared/action-registry.ts";
+import {
+  buildNotionProperties,
+  getNotionDbId,
+  normalizeNotionRecord,
+  validateNotionRecord,
+} from "../_shared/notion-architect.ts";
 
 type JsonRecord = Record<string, unknown>;
 type Candidate = { provider: string; model: string; key: string; url: string };
@@ -362,12 +368,49 @@ const dashboardData = {
   },
 };
 
+// ---- Notion Architect — gated agent-output sync ----------------------
+// All agent outputs (quiz results, content, templates, assets, ideas) reach the
+// Notion OS through the architect contract, behind the NOTION_LIVE_MODE gate.
+// Non-fatal: a Notion outage must never block a Hermes response.
+async function syncAgentOutputToNotion(dbKey: string, output: Record<string, unknown>): Promise<void> {
+  if ((Deno.env.get("NOTION_LIVE_MODE") || "").trim().toLowerCase() !== "true") return;
+  const dbId = getNotionDbId(dbKey);
+  if (!dbId) return;
+  const normalized = normalizeNotionRecord(dbKey, output);
+  if (!normalized) return;
+  const validation = validateNotionRecord(dbKey, normalized);
+  if (!validation.valid) {
+    console.warn(`[hermes][notion-architect] skipped ${dbKey}: ${validation.error}`);
+    return;
+  }
+  try {
+    const res = await fetch("https://api.notion.com/v1/pages", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${Deno.env.get("NOTION_API_KEY")}`,
+        "Notion-Version": "2022-06-28",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        parent: { type: "database_id", database_id: dbId },
+        properties: buildNotionProperties(dbKey, normalized),
+      }),
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      throw new Error(`${res.status}: ${t.slice(0, 200)}`);
+    }
+  } catch (error) {
+    console.warn(`[hermes][notion-architect] ${dbKey} sync failed:`, error instanceof Error ? error.message : error);
+  }
+}
+
 async function fetchDashboardNotionSnapshot() {
   const notionKey = (Deno.env.get("NOTION_API_KEY") || "").trim();
   const idMap = {
-    ideas: Deno.env.get("NOTION_IDEAS_DB_ID") || "",
-    content: Deno.env.get("NOTION_CONTENT_DB_ID") || "",
-    automations: Deno.env.get("NOTION_AUTOMATIONS_DB_ID") || "",
+    ideas: getNotionDbId("ideas") || "",
+    content: getNotionDbId("content") || "",
+    automations: getNotionDbId("automations") || "",
   };
 
   if (!notionKey || Object.values(idMap).every((id) => !id)) {
@@ -740,6 +783,16 @@ serve(async (req) => {
         answers: body.answers || {},
         roadmap: body.roadmap || {},
         source: String(body.source || "digital-superpower-quiz"),
+      });
+
+      // Architect: mirror the quiz output into the Notion OS (gated, non-fatal).
+      await syncAgentOutputToNotion("automations", {
+        name: email,
+        email,
+        source: body.source || "digital-superpower-quiz",
+        superpower,
+        status: "Done",
+        created: new Date().toISOString(),
       });
 
       // Route email sending based on mode

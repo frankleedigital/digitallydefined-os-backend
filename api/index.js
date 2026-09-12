@@ -254,6 +254,13 @@ function checkDashboardApiKey(req) {
 function validateMethodForAction(req, action) {
   if (!action || action === 'status') return null;
 
+  // FastAPI microservice proxy actions are forwarded verbatim (POST only).
+  if (action.startsWith('fastapi.')) {
+    return req.method !== 'POST'
+      ? { status: 405, body: { error: `Method ${req.method} not allowed for action ${action}. Use POST.` } }
+      : null;
+  }
+
   if (!ALLOWED_ACTIONS.has(action)) {
     return {
       status: 404,
@@ -772,6 +779,47 @@ export default async function handler(req, res) {
   }
 
   try {
+    if (action.startsWith('fastapi.')) {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      // Maps `fastapi.<sub>` to the FastAPI microservice route.
+      const FASTAPI_ROUTES = {
+        product: '/product-generator/generate',
+        niche: '/niche/score',
+        domain: '/domain/analyze',
+        affiliate: '/affiliate/flip',
+        rankrent: '/rank-rent/analyze',
+        blueprint: '/blueprint/generate',
+        roadmap: '/roadmap/generate',
+        trends: '/trends',
+      };
+      const sub = action.replace('fastapi.', '');
+      const route = FASTAPI_ROUTES[sub];
+      if (!route) {
+        return res.status(400).json({ error: `Unknown fastapi action: ${action}` });
+      }
+
+      const base = String(process.env.FASTAPI_BASE_URL || 'http://localhost:8000').replace(/\/+$/, '');
+      const { action: _action, key: _key, ...rest } = req.body || {};
+      // Frontends send { action, inputData }. FastAPI expects request fields at the
+      // top level, so unwrap a single `inputData` envelope when present.
+      const inputData = (rest.inputData && typeof rest.inputData === 'object' && !Array.isArray(rest.inputData))
+        ? rest.inputData
+        : rest;
+      const upstream = await fetchWithTimeout(`${base}${route}`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-api-key': process.env.FASTAPI_API_KEY || process.env.DASHBOARD_API_KEY || '',
+        },
+        body: JSON.stringify(inputData),
+      });
+      const text = await upstream.text();
+      const contentType = upstream.headers.get('content-type') || 'application/json';
+      return res.status(upstream.status).setHeader('content-type', contentType).send(text);
+    }
+
     if (action === 'status') {
       return res.status(200).json({
         ok: true,
