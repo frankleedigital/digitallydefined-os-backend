@@ -62,12 +62,20 @@ export const AUTHED_ACTIONS = [
   "website.edit",
 ] as const;
 
-/** GET-only actions. */
+/** GET-only actions (system probes). */
 export const GET_ONLY_ACTIONS = [
   "status",
   "routes",
   "auth.verify",
   "test-env",
+] as const;
+
+/**
+ * Read-only actions callable via GET or POST. The dashboard issues these over
+ * the JSON POST contract, while some legacy clients still use GET. Kept in sync
+ * with api/index.js (Vercel dispatcher).
+ */
+export const GET_OR_POST_ACTIONS = [
   "dashboard",
   "automation.list",
   "automation.logs",

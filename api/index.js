@@ -56,6 +56,13 @@ const GET_ONLY_ACTIONS = new Set([
   'status',
   'auth.verify',
   'test-env',
+]);
+
+// Read-only actions the dashboard issues over the JSON POST contract as well as
+// via GET (older clients). These are write-free list/read endpoints, so either
+// HTTP verb is safe. Kept in sync with supabase/functions/_shared/action-registry.ts.
+const GET_OR_POST_ACTIONS = new Set([
+  'dashboard',
   'automation.list',
   'automation.logs',
   'automation.events',
@@ -282,9 +289,10 @@ function validateMethodForAction(req, action) {
     };
   }
 
-  // Dashboard uses the JSON POST contract from the frontend, but some older clients
-  // still hit it via GET. Allow either method so the real dashboard remains functional.
-  if (action === 'dashboard' && !['GET', 'POST'].includes(req.method)) {
+  // Read-only dashboard actions are issued over the JSON POST contract from the
+  // frontend, but some older clients still hit them via GET. Allow either method
+  // so the real dashboard remains functional (POST) and legacy callers keep working (GET).
+  if (GET_OR_POST_ACTIONS.has(action) && !['GET', 'POST'].includes(req.method)) {
     return {
       status: 405,
       body: { error: `Method ${req.method} not allowed for action ${action}. Use GET or POST.` },
