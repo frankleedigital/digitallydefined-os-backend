@@ -170,6 +170,38 @@ async function parseJsonSafe(res, fallback = null) {
   }
 }
 
+// Strip common Markdown so AI replies render as clean plain text in the dashboard.
+function stripMarkdown(raw) {
+  let text = String(raw || '');
+  // Remove fenced code blocks markers, keep inner content.
+  text = text.replace(/```[\s\S]*?```/g, (block) => block.replace(/```/g, '').trim());
+  text = text.replace(/`([^`]*)`/g, '$1');
+  // Headings, blockquote, horizontal rules, task boxes.
+  text = text.replace(/^#{1,6}\s+/gm, '');
+  text = text.replace(/^>\s?/gm, '');
+  text = text.replace(/^\s*([-*_])\s*\1\s*\1\s*$/gm, '');
+  text = text.replace(/^\s*[-[\] ]\s*\[\s*[ xX]?\s*\]\s*/gim, '- ');
+  // Emphasis markers (bold/italic/underline/strike), keep inner text.
+  text = text.replace(/\*\*([^*\r\n]+)\*\*/g, '$1');
+  text = text.replace(/__([^_\r\n]+)__/g, '$1');
+  text = text.replace(/\*([^*\r\n]+)\*/g, '$1');
+  text = text.replace(/_([^_\r\n]+)_/g, '$1');
+  text = text.replace(/~~([^~\r\n]+)~~/g, '$1');
+  // Links: keep only the label text.
+  text = text.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1');
+  // Bullet markers -> plain dash.
+  text = text.replace(/^\s*[*+]\s+/gm, '- ');
+  text = text.replace(/[~^]{1,}/g, '');
+  text = text.replace(/\*/g, '');
+  // Orphan markdown fencing.
+  text = text.replace(/^```\s*/gm, '');
+  text = text.replace(/```\s*$/gm, '');
+  // Remove decorative symbols/emoji, keep letters/numbers/safe punctuation.
+  text = text.replace(/[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2600}-\u{27BF}\u{00B7}\u{2022}\u{2023}\u{2043}\u{25A0}-\u{25FF}\u{2B00}-\u{2BFF}]/gu, '');
+  text = text.replace(/\n{3,}/g, '\n\n');
+  return text.trim();
+}
+
 // Fetch with timeout protection
 async function fetchWithTimeout(url, options = {}, timeoutMs = FETCH_TIMEOUT_MS) {
   const controller = new AbortController();
@@ -1004,12 +1036,12 @@ export default async function handler(req, res) {
       try {
         const result = await runGeminiAgent(
           `Current conversation context:\n${JSON.stringify(conversation.slice(-8))}\n\nUser request:\n${message}`,
-          userSystemPrompt,
+          `${userSystemPrompt}\n\nOUTPUT FORMAT (strict): Respond in plain text only. No markdown, no code fences, no backticks, no emojis. Use plain paragraphs or simple dashes.`,
         );
 
         return res.status(200).json({
           ok: true,
-          reply: result.reply,
+          reply: stripMarkdown(result.reply),
           provider: result.provider,
           model: result.model,
         });
