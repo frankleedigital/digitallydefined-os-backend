@@ -4,6 +4,9 @@
   "description": "DigitallyDefined API Backend - Powers the website and dashboard with Hermes AI integration",
   "type": "module",
   "main": "api/index.js",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev:supabase": "supabase start",
     "dev:hermes": "supabase functions serve hermes --env-file .env --no-verify-jwt",
