@@ -6,16 +6,14 @@
 supabase/
 
 # Local dev / tooling (not used by the serverless runtime)
-scripts/
 
 # Environment & local state
 .env
-.env.*
-.vercel
+
 
 # Docs
 docs/
 
 # Build / cache artifacts
-*.log
+
 node_modules/
