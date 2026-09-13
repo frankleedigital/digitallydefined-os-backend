@@ -10,10 +10,9 @@ supabase/
 # Environment & local state
 .env
 
-
 # Docs
 docs/
 
 # Build / cache artifacts
-
+*.log
 node_modules/
