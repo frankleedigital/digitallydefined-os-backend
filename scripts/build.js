@@ -10,7 +10,7 @@
  *
  * It runs three bounded, non-destructive checks and exits:
  *   1. type-checks the TypeScript API functions (tsc --noEmit)
- *   2. syntax-checks every Vercel `api/*.js` serverless entrypoint
+ *   2. syntax-checks every Vercel `api/*.js` serverless entrypoint (recursive)
  *   3. verifies required secrets are present in the env (non-blocking: warns)
  *
  * Usage: npm run build
@@ -55,23 +55,32 @@ if (fs.existsSync(tsconfig)) {
 log("type-check OK");
 
 // ---- 2. Syntax-check the plain-JS serverless entrypoints ------------------
+// Walk all .js files recursively in api/ (includes api/fastapi/, api/intelligence/, etc.)
 log("step 2/3: syntax-checking api/*.js ...");
 const apiDir = path.join(root, "api");
 let jsCount = 0;
 if (fs.existsSync(apiDir)) {
-  const jsFiles = fs.readdirSync(apiDir).filter((f) => f.endsWith(".js"));
-  for (const f of jsFiles) {
-    const r = spawnSync("node", ["--check", path.join(apiDir, f)], {
-      cwd: root,
-      encoding: "utf8",
-      shell: process.platform === "win32",
-    });
-    if (r.status !== 0) {
-      console.error(r.stderr || r.stdout || "");
-      fail(`syntax error in api/${f}`);
+  function walk(dir, base) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const e of entries) {
+      const p = path.join(dir, e.name);
+      if (e.isDirectory()) {
+        walk(p, base);
+      } else if (e.name.endsWith(".js")) {
+        const r = spawnSync("node", ["--check", p], {
+          cwd: root,
+          encoding: "utf8",
+          shell: process.platform === "win32",
+        });
+        if (r.status !== 0) {
+          console.error(r.stderr || r.stdout || "");
+          fail(`syntax error in ${path.relative(base, p)}`);
+        }
+        jsCount += 1;
+      }
     }
-    jsCount += 1;
   }
+  walk(apiDir, apiDir);
 }
 log(`syntax-check OK (${jsCount} api/*.js file(s))`);
 
