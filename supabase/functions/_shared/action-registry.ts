@@ -60,6 +60,13 @@ export const AUTHED_ACTIONS = [
   "integration.community.start",
   "license.verify",
   "website.edit",
+  // Antigravity MCP (Notion Architect)
+  "antigravity",
+  "antigravity.createNotionPage",
+  "antigravity.updateDatabase",
+  "antigravity.buildTemplate",
+  "antigravity.runAutomation",
+  "antigravity.status",
 ] as const;
 
 /** GET-only actions (system probes). */

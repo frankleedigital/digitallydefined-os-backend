@@ -2,6 +2,8 @@
 // Hardened unified API handler for Vercel with method validation, env test route, rate limiting, and masked external errors
 // Optimized with Brevo email, multi-AI provider routing, caching, and timeouts
 
+import { antigravityHandle } from '../lib/antigravity.js';
+
 const ALLOWED_ORIGINS = [
   'https://dashboard.digitallydefined.online',
   'https://digitallydefined.online',
@@ -46,6 +48,13 @@ const ALLOWED_ACTIONS = new Set([
   'integration.email.start',
   'integration.community.start',
   'license.verify',
+  // Antigravity MCP (Notion Architect)
+  'antigravity',
+  'antigravity.createNotionPage',
+  'antigravity.updateDatabase',
+  'antigravity.buildTemplate',
+  'antigravity.runAutomation',
+  'antigravity.status',
   // Live website content store (primary path is the Supabase edge function;
   // mirrored here for the legacy Vercel dispatcher).
   'website.content',
@@ -1422,6 +1431,22 @@ export default async function handler(req, res) {
           { name: 'Nicole James', joinedAt: '2026-04-04', status: 'Engaged' },
         ],
       });
+    }
+
+    // ---- Antigravity MCP (Notion Architect) ----
+    if (action.startsWith('antigravity')) {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const tool = action === 'antigravity' ? (req.body?.tool || 'antigravity.status') : action;
+        const result = await antigravityHandle({ tool, params: req.body?.params || req.body || {} });
+        return res.status(200).json(result);
+      } catch (error) {
+        return res.status(502).json({
+          error: error instanceof Error ? error.message : 'Antigravity MCP request failed',
+        });
+      }
     }
 
     return res.status(404).json({ error: `Unknown action: ${action}` });

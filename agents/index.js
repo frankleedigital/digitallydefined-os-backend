@@ -85,6 +85,18 @@ export const agents = {
     category: "intelligence",
     version: "1.0.0"
   },
+
+  /**
+   * Antigravity — Notion Architect
+   * Creates and manages Notion databases, pages, templates, and automations
+   * via the Antigravity MCP client (lib/antigravity.js).
+   */
+  antigravity: {
+    name: "Antigravity Notion Architect",
+    description: "Builds and manages your Notion workspace architecture. Creates pages, updates databases, builds templates, and runs automations via the Notion MCP.",
+    category: "notion",
+    version: "1.0.0"
+  },
 };
 
 /**
