@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import Button from '../components/ui/Button.jsx';
 
-// TODO: Replace with the actual Facebook group URL
-const FACEBOOK_GROUP_URL = 'https://www.facebook.com/groups/YOUR_GROUP_ID';
+// Facebook Community Group
+const FACEBOOK_GROUP_URL = 'https://www.facebook.com/groups/digitallydefind';
 
 export default function Home() {
   return (
