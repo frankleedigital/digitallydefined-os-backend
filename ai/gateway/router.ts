@@ -29,8 +29,7 @@ export function defaultModelFor(_quality: AiQuality): string {
 /**
  * Parse a JSON reply, tolerating markdown fences and stray prose.
  * Returns null when not parseable.
- */
-export function parseJsonReply(reply: string): unknown | null {
+ */export function parseJsonReply(reply: string): unknown | null {
   if (!reply || typeof reply !== "string") return null;
   let cleaned = reply
     .replace(/^```(?:json)?\s*/i, "")
