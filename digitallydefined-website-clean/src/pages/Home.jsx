@@ -34,14 +34,16 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-            <a
-              href="/quiz"
+            <Link
+              to="/quiz"
               className="px-5 py-3 text-sm font-medium bg-neutral-900 text-[#FFFCF9] border border-neutral-900"
             >
               Take the Quiz
-            </a>
+            </Link>
             <a
               href={FACEBOOK_GROUP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-5 py-3 text-sm font-medium border border-neutral-900 text-neutral-900 bg-transparent"
             >
               Join the Community

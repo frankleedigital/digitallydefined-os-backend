@@ -18,13 +18,23 @@ export default function DashboardPage() {
   const session = getSession();
   const [roadmap, setRoadmap] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [fetchError, setFetchError] = useState(null);
 
   useEffect(() => {
     if (!session?.email) return;
     setLoading(true);
+    setFetchError(null);
+    console.log('[dashboard] fetching roadmap for:', session.email);
     fetchRoadmap(session.email)
-      .then((data) => setRoadmap(data?.roadmap || data?.data?.roadmap || null))
-      .catch(() => setRoadmap(null))
+      .then((data) => {
+        console.log('[dashboard] roadmap loaded:', data);
+        setRoadmap(data?.roadmap || data?.data?.roadmap || null);
+      })
+      .catch((err) => {
+        console.error('[dashboard] roadmap fetch failed:', err.message);
+        setFetchError(err.message || 'Failed to load roadmap');
+        setRoadmap(null);
+      })
       .finally(() => setLoading(false));
   }, [session?.email]);
 
@@ -44,8 +54,9 @@ export default function DashboardPage() {
         <Card className="mt-6">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-brand-muted">Your personalized roadmap</h2>
           {loading && <p className="mt-3 text-sm text-brand-muted">Loading…</p>}
-          {!loading && roadmap == null && <p className="mt-3 text-sm text-brand-muted">No roadmap stored yet for this email.</p>}
-          {!loading && roadmap && (
+          {!loading && fetchError && <p className="mt-3 text-sm text-red-400">⚠ {fetchError}</p>}
+          {!loading && !fetchError && roadmap == null && <p className="mt-3 text-sm text-brand-muted">No roadmap stored yet for this email.</p>}
+          {!loading && !fetchError && roadmap && (
             <pre className="mt-3 max-h-64 overflow-auto rounded-lg bg-brand-bg p-4 text-xs text-brand-muted">
               {JSON.stringify(roadmap, null, 2)}
             </pre>
