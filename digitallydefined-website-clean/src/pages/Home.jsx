@@ -1,21 +1,20 @@
 import { Link } from 'react-router-dom';
-import Button from '../components/ui/Button.jsx';
 
-// Facebook Community Group
 const FACEBOOK_GROUP_URL = 'https://www.facebook.com/groups/digitallydefind';
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="border-b border-brand-border">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-          <Link to="/" className="text-lg font-bold tracking-tight">
-            Digitally<span className="text-brand-accent">Defined</span>
+    <div className="min-h-screen bg-brand-cream">
+      {/* Header */}
+      <header className="border-b-2 border-brand-ink bg-brand-white">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+          <Link to="/" className="text-lg font-heading font-black tracking-tight text-brand-ink">
+            Digitally<span className="text-brand-orange">Defined</span>
           </Link>
           <nav className="flex items-center gap-1">
             <Link
               to="/quiz"
-              className="rounded-lg px-3 py-1.5 text-sm text-brand-muted hover:text-brand-text"
+              className="rounded-none border-2 border-transparent px-3 py-1.5 text-sm font-heading font-semibold text-brand-ink transition-all hover:border-brand-ink hover:bg-brand-cream"
             >
               Superpower Quiz
             </Link>
@@ -23,27 +22,42 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1">
-        <section className="flex min-h-[80vh] items-center justify-center px-4 py-16">
-          <div className="text-center">
-            <h1 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
+      {/* Hero Section */}
+      <main>
+        <section className="hero-section">
+          <div className="hero-content">
+            <span className="label">For Gen X Women</span>
+            <h1 className="hero-title mt-4">
               Faceless Digital Real Estate for Gen X Women
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-lg text-brand-muted">
+            <p className="hero-subtitle mt-6">
               Discover your Digital Superpower and get your personalized roadmap.
             </p>
-            <div className="mt-8 flex justify-center gap-3 flex-wrap">
-              <Button as={Link} to="/quiz">Take the Quiz</Button>
-              <Button as="a" href={FACEBOOK_GROUP_URL} variant="outline" target="_blank" rel="noopener noreferrer">
+            <p className="mt-4 text-base text-brand-muted">
+              Build digital assets quietly, intentionally, and without becoming the brand.
+            </p>
+            <div className="cta-group mt-10">
+              <Link to="/quiz" className="btn btn-primary shadow-hard hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none">
+                Take the Quiz
+              </Link>
+              <a
+                href={FACEBOOK_GROUP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline shadow-hard hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
+              >
                 Join the Community
-              </Button>
+              </a>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-brand-border py-6 text-center text-xs text-brand-muted">
-        © {new Date().getFullYear()} DigitallyDefined — Discover your Digital Superpower.
+      {/* Footer */}
+      <footer className="border-t-2 border-brand-ink bg-brand-white py-6">
+        <p className="text-center text-xs text-brand-muted">
+          © {new Date().getFullYear()} DigitallyDefined — Discover your Digital Superpower.
+        </p>
       </footer>
     </div>
   );
