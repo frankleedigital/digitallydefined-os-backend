@@ -3,7 +3,7 @@
 ## Official DigitallyDefined Accounts
 
 ### Facebook
-- **Group**: https://facebook.com/groups/digitallydefin1
+- **Group**: https://facebook.com/groups/digitallydefind
 - **Page**: https://facebook.com/digitallydefin1
 
 ### Instagram
