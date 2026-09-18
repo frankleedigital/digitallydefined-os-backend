@@ -13,5 +13,17 @@
     { "source": "/api", "destination": "/api/index.js" },
     { "source": "/hermes-mcp", "destination": "/api/hermes-mcp.js" },
     { "source": "/mcp", "destination": "/api/hermes-mcp.js" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "https://dashboard.digitallydefined.online" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS, PUT, DELETE" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization, x-api-key, apikey, x-user-id, Vary" },
+        { "key": "Access-Control-Allow-Credentials", "value": "true" },
+        { "key": "Access-Control-Max-Age", "value": "86400" }
+      ]
+    }
   ]
 }

@@ -1,10 +1,26 @@
 import { storeRoadmap, listRoadmaps, getRoadmapById } from './store.js';
 
-export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+const ALLOWED_ORIGINS = [
+  'https://dashboard.digitallydefined.online',
+  'https://digitallydefined.online',
+  'https://www.digitallydefined.online',
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5173',
+];
+
+function applyCors(res, req) {
+  const origin = (req.headers && req.headers.origin) || '';
+  const corsOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : 'https://dashboard.digitallydefined.online';
+  res.setHeader('Access-Control-Allow-Origin', corsOrigin);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Access-Control-Max-Age', '86400');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-api-key, apikey');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Vary', 'Origin');
+}
+
+export default async function handler(req, res) {
+  applyCors(res, req);
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 

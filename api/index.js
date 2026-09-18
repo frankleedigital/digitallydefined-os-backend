@@ -14,6 +14,24 @@ const ALLOWED_ORIGINS = [
   ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
 ];
 
+function resolveCorsOrigin(req) {
+  const origin = (req.headers && req.headers.origin) || '';
+  if (origin && ALLOWED_ORIGINS.includes(origin)) return origin;
+  return 'https://dashboard.digitallydefined.online';
+}
+
+function applyCors(req, res) {
+  const origin = resolveCorsOrigin(req);
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, x-api-key, apikey, x-user-id, X-User-Id'
+  );
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Vary', 'Origin');
+}
+
 // NOTE: Keep these lists in sync with supabase/functions/_shared/action-registry.ts
 // (single source of truth). Duplicated here because this file is plain Node/Vercel JS
 // and cannot import Deno TS modules.
@@ -227,24 +245,6 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = FETCH_TIMEOUT_MS)
     }
     throw error;
   }
-}
-
-function applyCors(req, res) {
-  const origin = req.headers.origin;
-
-  if (origin && ALLOWED_ORIGINS.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  } else {
-    res.setHeader('Access-Control-Allow-Origin', 'https://dashboard.digitallydefined.online');
-  }
-
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Content-Type, Authorization, x-api-key, apikey, x-user-id, X-User-Id'
-  );
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Vary', 'Origin');
 }
 
 function getClientIp(req) {
@@ -1042,21 +1042,95 @@ export default async function handler(req, res) {
       const userSystemPrompt = String(req.body?.systemPrompt || 'You are the DigitallyDefined Operations AI. Be concise, strategic, and actionable.').trim();
       const conversation = Array.isArray(req.body?.conversation) ? req.body.conversation : [];
 
+      // ---- Website-change detection (same as Hermes edge function) ----
+      const editIntent =
+        /\b(change|update|edit|rewrite|replace|set)\b/i.test(message) &&
+        /(website|site|home(?:page)?|hero|headline|tagline|eyebrow|heading|nav(?:igation)?)/i.test(message);
+      let appliedEdit = null;
+      let editReply = '';
+
+      if (editIntent) {
+        try {
+          const merged = await getMergedSiteContent();
+          const resolved = await resolveContentEdit(message, merged);
+          await upsertSiteContent(resolved.key, resolved.value);
+          const field = SITE_CONTENT_CATALOG.find(f => f.key === resolved.key);
+          appliedEdit = { key: resolved.key, value: resolved.value, label: field?.label || resolved.key };
+          editReply = `Done — I updated the ${field?.label || resolved.key} to:\n\n${resolved.value}`;
+        } catch (editError) {
+          // Fall through to normal chat with a note
+          const editNote = editError instanceof Error ? editError.message : String(editError);
+          userSystemPrompt += `\n\nNOTE: The user asked to change the website but it could not be applied automatically (${editNote}). Explain briefly and ask for clarification.`;
+        }
+      }
+
       try {
+        // Build the summary prompt with conversation context
+        const summaryPrompt = `Current user request: ${message}\n\nRecent conversation:\n${JSON.stringify(conversation.slice(-6))}\n\nUse the live site and dashboard context to answer as the DigitallyDefined business partner. Be blunt, strategic, and practical. No hype. No generic coach language. Keep it short and high level.`;
+
+        // JSON schema for structured business-partner responses
+        const businessPartnerSchema = JSON.stringify({
+          title: "DigitallyDefined Business Partner Response",
+          type: "object",
+          required: ["summary", "opportunities", "riskFlags", "nextActions", "priorityFocus"],
+          properties: {
+            summary: { type: "string" },
+            opportunities: { type: "array", items: { type: "string" } },
+            riskFlags: { type: "array", items: { type: "string" } },
+            nextActions: { type: "array", items: { type: "string" } },
+            priorityFocus: { type: "string" },
+          },
+          additionalProperties: false,
+        });
+
         const result = await runGeminiAgent(
-          `Current conversation context:\n${JSON.stringify(conversation.slice(-8))}\n\nUser request:\n${message}`,
-          `${userSystemPrompt}\n\nOUTPUT FORMAT (strict): Respond in plain text only. No markdown, no code fences, no backticks, no emojis. Use plain paragraphs or simple dashes.`,
+          `${userSystemPrompt}\n\nYou are Hermes. Give the founder a clear, high-level assessment of the business. Focus on the biggest opportunity, biggest risk, and the single most important next move. No fluff. No vague strategy. Keep the answer short and sharp. Return only JSON matching this schema:\n${businessPartnerSchema}`,
+          summaryPrompt,
+          { jsonMode: true },
         );
+
+        let parsed = null;
+        try {
+          parsed = JSON.parse(result.reply);
+        } catch {
+          // Not valid JSON — fall back to plain text
+        }
+
+        const validation = parsed && [
+          'summary', 'opportunities', 'riskFlags', 'nextActions', 'priorityFocus',
+        ].every(key => parsed[key] !== undefined && parsed[key] !== null && parsed[key] !== '');
+
+        if (!validation) {
+          console.warn('[chat] business-partner schema validation failed:', parsed?.summary || 'null response');
+        }
+
+        const nextActions = Array.isArray(parsed?.nextActions) ? parsed.nextActions : [];
+        const plainReply = [
+          String(parsed?.summary || result.reply).trim(),
+          '',
+          nextActions.length ? `Next steps:\n- ${nextActions.map(item => String(item)).join('\n- ')}` : '',
+          '',
+          `Priority focus: ${String(parsed?.priorityFocus || '')}`,
+        ].filter(Boolean).join('\n\n');
+
+        const replyText = appliedEdit
+          ? `✏️ Website change saved (${appliedEdit.label || appliedEdit.key}):\n"${appliedEdit.value}"\n\nIt will appear on the site after the next frontend deploy.\n\n${plainReply}`
+          : plainReply;
 
         return res.status(200).json({
           ok: true,
-          reply: stripMarkdown(result.reply),
+          reply: stripMarkdown(replyText),
+          data: validation ? parsed : null,
           provider: result.provider,
           model: result.model,
+          appliedEdit,
+          fallback: validation ? null : 'Structured response not valid — using raw AI reply.',
         });
       } catch (error) {
         return res.status(502).json({
+          ok: false,
           error: error instanceof Error ? error.message : 'AI agent request failed',
+          fallback: 'I am here but I did not get a response. Try again.',
         });
       }
     }
