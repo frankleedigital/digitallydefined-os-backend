@@ -680,6 +680,8 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
   };
 
   // Try OmniRoute first, then fall back to Gemini's OpenAI-compatible endpoint.
+  // Gemini gets a small model fallback chain because flash models periodically
+  // return 503 "high demand"; a sibling model usually answers immediately.
   const providers = [];
   if (omnirouteKey) {
     providers.push({
@@ -690,66 +692,84 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
     });
   }
   if (geminiKey) {
-    providers.push({
-      name: 'gemini-direct',
-      url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
-      key: geminiKey,
-      model: geminiModel,
-    });
+    const geminiUrl = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
+    // Lighter flash models have more spare capacity and answer when the
+    // flagship flash models are overloaded (503 "high demand").
+    const geminiModels = [...new Set([
+      geminiModel,
+      'gemini-3.5-flash-lite',
+      'gemini-3.1-flash-lite',
+      'gemini-flash-latest',
+    ])];
+    for (const model of geminiModels) {
+      providers.push({
+        name: geminiModel === model ? 'gemini-direct' : `gemini-direct (${model})`,
+        url: geminiUrl,
+        key: geminiKey,
+        model,
+      });
+    }
   }
 
   let lastError = 'No AI provider attempted';
   const attempts = [];
   for (const provider of providers) {
+    // One attempt per provider entry — the chain (OmniRoute → several Gemini
+    // models) is itself the retry mechanism, so the worst case stays well
+    // inside the function's 60s maxDuration.
     try {
-      // Per-provider budget. Kept well under the function's maxDuration so a
-      // slow/blocked provider can never consume the whole request; a faster
-      // provider further down the chain still gets a chance to answer.
-      const res = await fetchWithTimeout(provider.url, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${provider.key}`,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          // Some upstreams reject requests with a bare/node user agent.
-          'User-Agent': 'DigitallyDefined-Backend/1.0 (+https://digitallydefined.online)',
-        },
-        body: JSON.stringify({ ...requestBody, model: provider.model }),
-      }, Math.min(25000, Number(options.timeoutMs) || 25000));
+        // Per-provider budget. Kept well under the function's maxDuration so a
+        // slow/blocked provider can never consume the whole request; a faster
+        // provider further down the chain still gets a chance to answer.
+        const res = await fetchWithTimeout(provider.url, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${provider.key}`,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            // Some upstreams (Cloudflare WAF on the OmniRoute tunnel) reject
+            // requests with a bare/node default user agent.
+            'User-Agent': 'DigitallyDefined-Backend/1.0 (+https://digitallydefined.online)',
+          },
+          body: JSON.stringify({ ...requestBody, model: provider.model }),
+        }, Math.min(12000, Number(options.timeoutMs) || 12000));
 
-      // Read the body as text once, then try JSON — gives a useful diagnostic
-      // even when an upstream returns an HTML block page instead of JSON.
-      const rawText = await res.text();
-      let data = {};
-      try {
-        data = rawText ? JSON.parse(rawText) : {};
-      } catch {
-        data = {};
+        // Read the body as text once, then try JSON — gives a useful diagnostic
+        // even when an upstream returns an HTML block page instead of JSON.
+        const rawText = await res.text();
+        let data = {};
+        try {
+          data = rawText ? JSON.parse(rawText) : {};
+        } catch {
+          data = {};
+        }
+
+        if (!res.ok) {
+          const snippet = rawText.replace(/\s+/g, ' ').slice(0, 180);
+          const detail =
+            data?.error?.message || data?.error?.detail || data?.message || data?.error || snippet;
+          const err = new Error(`HTTP ${res.status} ${detail || '(empty body)'}`);
+          err.status = res.status;
+          throw err;
+        }
+
+        const raw = data?.choices?.[0]?.message?.content || '';
+        const reply = String(raw).trim();
+        if (!reply) {
+          throw new Error('Gemini agent returned an empty response.');
+        }
+
+        return {
+          reply,
+          provider: provider.name,
+          model: provider.model,
+        };
+      } catch (err) {
+        lastError = err instanceof Error ? err.message : String(err);
+        const status = err?.status ? ` [${err.status}]` : '';
+        attempts.push(`${provider.name}${status}: ${lastError}`);
+        console.error(`[runGeminiAgent] ${provider.name} failed:`, lastError);
       }
-
-      if (!res.ok) {
-        const snippet = rawText.replace(/\s+/g, ' ').slice(0, 180);
-        const detail =
-          data?.error?.message || data?.error?.detail || data?.message || data?.error || snippet;
-        throw new Error(`HTTP ${res.status} ${detail || '(empty body)'}`);
-      }
-
-      const raw = data?.choices?.[0]?.message?.content || '';
-      const reply = String(raw).trim();
-      if (!reply) {
-        throw new Error('Gemini agent returned an empty response.');
-      }
-
-      return {
-        reply,
-        provider: provider.name,
-        model: provider.model,
-      };
-    } catch (err) {
-      lastError = err instanceof Error ? err.message : String(err);
-      attempts.push(`${provider.name}: ${lastError}`);
-      console.error(`[runGeminiAgent] ${provider.name} failed:`, lastError);
-    }
   }
 
   const combined = new Error(
@@ -815,81 +835,61 @@ Respond ONLY with a JSON object in this exact format (no markdown, no extra text
   "nextActions": ["one sentence max per item, 1-2 items"]
 }`;
 
-  let lastError = 'No AI provider attempted';
+  // Reuse the exact same resilient provider chain as the chat path
+  // (runGeminiAgent): OmniRoute first, then direct-Gemini across a model
+  // fallback list, with the browser-like headers the Cloudflare tunnel needs.
+  try {
+    const result = await runGeminiAgent(
+      prompt,
+      'You are the DigitallyDefined business analyst. Reply ONLY with the JSON object requested — no markdown, no extra text.',
+      { jsonMode: true, timeoutMs: 12000 }
+    );
 
-  for (const candidate of candidates) {
+    const cleaned = String(result.reply || '').replace(/```json|```/g, '').trim();
+
+    let parsed;
     try {
-      const requestBody = {
-        response_format: { type: 'json_object' },
-        messages: [{ role: 'user', content: prompt }],
-        // OmniRoute auto-selects; Gemini requires an explicit model id.
-        model: candidate.model || 'auto',
+      parsed = JSON.parse(cleaned);
+    } catch {
+      parsed = {
+        working: ['AI returned non-JSON output.'],
+        slipping: [],
+        nextActions: ['Tighten prompt or validate model response.'],
       };
-
-      const res = await fetchWithTimeout(candidate.url, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${candidate.key}`,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          // Some upstreams reject requests with a bare/node user agent.
-          'User-Agent': 'DigitallyDefined-Backend/1.0 (+https://digitallydefined.online)',
-        },
-        body: JSON.stringify(requestBody),
-      }, 45000);
-
-      const data = await parseJsonSafe(res, {});
-      if (!res.ok) {
-        throw new Error(data?.error?.message || `${candidate.name} API error ${res.status}`);
-      }
-
-      const raw = data?.choices?.[0]?.message?.content || '{}';
-      const cleaned = String(raw).replace(/```json|```/g, '').trim();
-
-      let parsed;
-      try {
-        parsed = JSON.parse(cleaned);
-      } catch {
-        parsed = {
-          working: ['AI returned non-JSON output.'],
-          slipping: [],
-          nextActions: ['Tighten prompt or validate model response.'],
-        };
-      }
-
-      const result = {
-        working: Array.isArray(parsed?.working) ? parsed.working : [],
-        slipping: Array.isArray(parsed?.slipping) ? parsed.slipping : [],
-        nextActions: Array.isArray(parsed?.nextActions) ? parsed.nextActions : [],
-        error: null,
-        debug: null,
-        provider: candidate.name,
-      };
-
-      // Cache for 20 minutes
-      aiBriefCache.data = result;
-      aiBriefCache.expiry = now + 20 * 60 * 1000;
-
-      return result;
-    } catch (err) {
-      lastError = err instanceof Error ? err.message : String(err);
-      console.error(`[fetchAIBrief] ${candidate.name} failed:`, lastError);
     }
+
+    const briefResult = {
+      working: Array.isArray(parsed?.working) ? parsed.working : [],
+      slipping: Array.isArray(parsed?.slipping) ? parsed.slipping : [],
+      nextActions: Array.isArray(parsed?.nextActions) ? parsed.nextActions : [],
+      error: null,
+      debug: null,
+      provider: result.provider,
+    };
+
+    // Cache for 20 minutes
+    aiBriefCache.data = briefResult;
+    aiBriefCache.expiry = now + 20 * 60 * 1000;
+
+    return briefResult;
+  } catch (err) {
+    const lastError = err instanceof Error ? err.message : String(err);
+    console.error('[fetchAIBrief] all providers failed:', lastError);
+
+    const errorResult = {
+      working: ['Community is active and syncing.'],
+      slipping: ['AI brief could not be generated right now.'],
+      nextActions: ['Verify AI gateway credentials and model settings if this persists.'],
+      error: maskErrorDetails(lastError, 'AI'),
+      debug: process.env.NODE_ENV !== 'production' ? lastError : null,
+    };
+
+    // Cache error briefly
+    aiBriefCache.data = errorResult;
+    aiBriefCache.expiry = now + 5 * 60 * 1000;
+
+    return errorResult;
   }
-
-  const errorResult = {
-    working: ['Community is active and syncing.'],
-    slipping: ['AI brief could not be generated right now.'],
-    nextActions: ['Verify AI gateway credentials and model settings if this persists.'],
-    error: maskErrorDetails(lastError, 'AI'),
-    debug: process.env.NODE_ENV !== 'production' ? lastError : null,
-  };
-
-  // Cache error briefly
-  aiBriefCache.data = errorResult;
-  aiBriefCache.expiry = now + 5 * 60 * 1000;
-
-  return errorResult;
 }
 
 function buildAlerts(checks) {
