@@ -699,20 +699,39 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
   }
 
   let lastError = 'No AI provider attempted';
+  const attempts = [];
   for (const provider of providers) {
     try {
+      // Per-provider budget. Kept well under the function's maxDuration so a
+      // slow/blocked provider can never consume the whole request; a faster
+      // provider further down the chain still gets a chance to answer.
       const res = await fetchWithTimeout(provider.url, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${provider.key}`,
           'Content-Type': 'application/json',
+          Accept: 'application/json',
+          // Some upstreams reject requests with a bare/node user agent.
+          'User-Agent': 'DigitallyDefined-Backend/1.0 (+https://digitallydefined.online)',
         },
         body: JSON.stringify({ ...requestBody, model: provider.model }),
-      }, 60000);
+      }, Math.min(25000, Number(options.timeoutMs) || 25000));
 
-      const data = await parseJsonSafe(res, {});
+      // Read the body as text once, then try JSON — gives a useful diagnostic
+      // even when an upstream returns an HTML block page instead of JSON.
+      const rawText = await res.text();
+      let data = {};
+      try {
+        data = rawText ? JSON.parse(rawText) : {};
+      } catch {
+        data = {};
+      }
+
       if (!res.ok) {
-        throw new Error(data?.error?.message || `AI request failed with status ${res.status}`);
+        const snippet = rawText.replace(/\s+/g, ' ').slice(0, 180);
+        const detail =
+          data?.error?.message || data?.error?.detail || data?.message || data?.error || snippet;
+        throw new Error(`HTTP ${res.status} ${detail || '(empty body)'}`);
       }
 
       const raw = data?.choices?.[0]?.message?.content || '';
@@ -728,11 +747,16 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
       };
     } catch (err) {
       lastError = err instanceof Error ? err.message : String(err);
+      attempts.push(`${provider.name}: ${lastError}`);
       console.error(`[runGeminiAgent] ${provider.name} failed:`, lastError);
     }
   }
 
-  throw new Error(lastError);
+  const combined = new Error(
+    attempts.length ? `All AI providers failed — ${attempts.join(' | ')}` : lastError
+  );
+  combined.attempts = attempts;
+  throw combined;
 }
 
 async function fetchAIBrief(context) {
@@ -743,14 +767,29 @@ async function fetchAIBrief(context) {
     return { ...aiBriefCache.data, fromCache: true };
   }
 
-  // OmniRoute ONLY — single provider, no fallback providers.
-  const omnirouteProvider = AI_PROVIDERS.omniroute;
-  const apiKey = process.env[omnirouteProvider.keyEnv];
-  const selectedProvider = apiKey ? omnirouteProvider : null;
-  // Allow env override for model, otherwise use default
-  const model = (apiKey && (process.env.OMNIROUTE_MODEL || omnirouteProvider.defaultModel)) || null;
+  // AI providers in priority order. OmniRoute is the canonical gateway; the
+  // direct-Gemini path is a fallback for when the OmniRoute tunnel is
+  // unreachable (e.g. its Cloudflare WAF rejecting serverless egress IPs).
+  const candidates = [];
+  if (process.env.OMNIROUTE_API_KEY) {
+    candidates.push({
+      name: 'omniroute',
+      url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL),
+      key: process.env.OMNIROUTE_API_KEY,
+      model: process.env.OMNIROUTE_MODEL || 'auto',
+    });
+  }
+  const briefGeminiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '').trim();
+  if (briefGeminiKey) {
+    candidates.push({
+      name: 'gemini-direct',
+      url: `${(process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta/openai').replace(/\/+$/, '')}/chat/completions`,
+      key: briefGeminiKey,
+      model: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
+    });
+  }
 
-  if (!selectedProvider || !apiKey) {
+  if (!candidates.length) {
     return {
       working: ['AI brief unavailable — No AI provider API key set.'],
       slipping: [],
@@ -776,79 +815,81 @@ Respond ONLY with a JSON object in this exact format (no markdown, no extra text
   "nextActions": ["one sentence max per item, 1-2 items"]
 }`;
 
-  try {
-    // For OmniRoute and similar auto-routing providers, don't specify model to let them choose
-    const requestBody = {
-      response_format: { type: 'json_object' },
-      messages: [{ role: 'user', content: prompt }],
-    };
-    
-    // Only add model if it's not 'auto' (for providers like OmniRoute that auto-select)
-    if (model !== 'auto') {
-      requestBody.model = model;
-    } else {
-      // Some providers need a model field even for auto-selection
-      requestBody.model = 'auto';
-    }
+  let lastError = 'No AI provider attempted';
 
-    const res = await fetchWithTimeout(omnirouteEndpoint(selectedProvider.baseUrl), {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    const data = await parseJsonSafe(res, {});
-    if (!res.ok) {
-      throw new Error(data?.error?.message || `${selectedProvider.keyEnv || selectedProvider.defaultModel} API error`);
-    }
-
-    const raw = data?.choices?.[0]?.message?.content || '{}';
-    const cleaned = String(raw).replace(/```json|```/g, '').trim();
-
-    let parsed;
+  for (const candidate of candidates) {
     try {
-      parsed = JSON.parse(cleaned);
-    } catch {
-      parsed = {
-        working: ['AI returned non-JSON output.'],
-        slipping: [],
-        nextActions: ['Tighten prompt or validate model response.'],
+      const requestBody = {
+        response_format: { type: 'json_object' },
+        messages: [{ role: 'user', content: prompt }],
+        // OmniRoute auto-selects; Gemini requires an explicit model id.
+        model: candidate.model || 'auto',
       };
+
+      const res = await fetchWithTimeout(candidate.url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${candidate.key}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          // Some upstreams reject requests with a bare/node user agent.
+          'User-Agent': 'DigitallyDefined-Backend/1.0 (+https://digitallydefined.online)',
+        },
+        body: JSON.stringify(requestBody),
+      }, 45000);
+
+      const data = await parseJsonSafe(res, {});
+      if (!res.ok) {
+        throw new Error(data?.error?.message || `${candidate.name} API error ${res.status}`);
+      }
+
+      const raw = data?.choices?.[0]?.message?.content || '{}';
+      const cleaned = String(raw).replace(/```json|```/g, '').trim();
+
+      let parsed;
+      try {
+        parsed = JSON.parse(cleaned);
+      } catch {
+        parsed = {
+          working: ['AI returned non-JSON output.'],
+          slipping: [],
+          nextActions: ['Tighten prompt or validate model response.'],
+        };
+      }
+
+      const result = {
+        working: Array.isArray(parsed?.working) ? parsed.working : [],
+        slipping: Array.isArray(parsed?.slipping) ? parsed.slipping : [],
+        nextActions: Array.isArray(parsed?.nextActions) ? parsed.nextActions : [],
+        error: null,
+        debug: null,
+        provider: candidate.name,
+      };
+
+      // Cache for 20 minutes
+      aiBriefCache.data = result;
+      aiBriefCache.expiry = now + 20 * 60 * 1000;
+
+      return result;
+    } catch (err) {
+      lastError = err instanceof Error ? err.message : String(err);
+      console.error(`[fetchAIBrief] ${candidate.name} failed:`, lastError);
     }
-
-    const result = {
-      working: Array.isArray(parsed?.working) ? parsed.working : [],
-      slipping: Array.isArray(parsed?.slipping) ? parsed.slipping : [],
-      nextActions: Array.isArray(parsed?.nextActions) ? parsed.nextActions : [],
-      error: null,
-      debug: null,
-      provider: Object.keys(AI_PROVIDERS).find(key => AI_PROVIDERS[key] === selectedProvider) || 'unknown',
-    };
-
-    // Cache for 20 minutes
-    aiBriefCache.data = result;
-    aiBriefCache.expiry = now + 20 * 60 * 1000;
-
-    return result;
-  } catch (err) {
-    const providerKey = Object.keys(AI_PROVIDERS).find(key => AI_PROVIDERS[key] === selectedProvider) || 'AI';
-    const errorResult = {
-      working: ['Community is active and syncing.'],
-      slipping: ['AI brief could not be generated right now.'],
-      nextActions: [`Verify ${providerKey} credentials and model settings if this persists.`],
-      error: maskErrorDetails(err, `${providerKey} API`),
-      debug: process.env.NODE_ENV !== 'production' ? err.message || 'AI request failed' : null,
-    };
-    
-    // Cache error briefly
-    aiBriefCache.data = errorResult;
-    aiBriefCache.expiry = now + 5 * 60 * 1000;
-    
-    return errorResult;
   }
+
+  const errorResult = {
+    working: ['Community is active and syncing.'],
+    slipping: ['AI brief could not be generated right now.'],
+    nextActions: ['Verify AI gateway credentials and model settings if this persists.'],
+    error: maskErrorDetails(lastError, 'AI'),
+    debug: process.env.NODE_ENV !== 'production' ? lastError : null,
+  };
+
+  // Cache error briefly
+  aiBriefCache.data = errorResult;
+  aiBriefCache.expiry = now + 5 * 60 * 1000;
+
+  return errorResult;
 }
 
 function buildAlerts(checks) {
@@ -1526,6 +1567,21 @@ export default async function handler(req, res) {
     return res.status(404).json({ error: `Unknown action: ${action}` });
   } catch (err) {
     console.error('Dashboard error:', err);
+    const origin = (req.headers && req.headers.origin) || '';
+    const allowed = [
+      'https://dashboard.digitallydefined.online',
+      'https://digitallydefined.online',
+      'https://www.digitallydefined.online',
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:5173',
+    ];
+    const corsOrigin = allowed.includes(origin) ? origin : 'https://dashboard.digitallydefined.online';
+    res.setHeader('Access-Control-Allow-Origin', corsOrigin);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-api-key, apikey, x-user-id');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Vary', 'Origin');
     return res.status(500).json({
       error: 'Dashboard fetch failed',
       details: process.env.NODE_ENV !== 'production' ? err?.message || 'Unknown error' : 'An internal error occurred.',

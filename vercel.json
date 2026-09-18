@@ -1,7 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "builds": [
-    { "src": "api/**/*.js", "use": "@vercel/node" }
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node",
+      "config": { "maxDuration": 60 }
+    }
   ],
   "buildCommand": "npm run build",
   "outputDirectory": "",
