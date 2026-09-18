@@ -40,19 +40,34 @@ setTimeout(() => {
 log("step 1/3: type-checking api/*.ts (tsc --noEmit) ...");
 const tsconfig = path.join(root, "tsconfig.json");
 if (fs.existsSync(tsconfig)) {
-  const tsc = spawnSync(
-    "npx",
-    ["--no-install", "tsc", "--noEmit", "-p", tsconfig],
-    { cwd: root, encoding: "utf8", shell: process.platform === "win32" }
-  );
-  if (tsc.status !== 0) {
-    console.error(tsc.stdout || tsc.stderr || "(tsc produced no output)");
-    fail("tsc type-check failed");
+  // Only run tsc if there are actual .ts files in the project
+  const tsFiles = [];
+  function walkTs(dir) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const e of entries) {
+      const p = path.join(dir, e.name);
+      if (e.isDirectory()) walkTs(p);
+      else if (e.name.endsWith(".ts")) tsFiles.push(p);
+    }
+  }
+  walkTs(root);
+  if (tsFiles.length > 0) {
+    const tsc = spawnSync(
+      "npx",
+      ["--no-install", "tsc", "--noEmit", "-p", tsconfig],
+      { cwd: root, encoding: "utf8", shell: process.platform === "win32" }
+    );
+    if (tsc.status !== 0) {
+      console.error(tsc.stdout || tsc.stderr || "(tsc produced no output)");
+      fail("tsc type-check failed");
+    }
+    log(`type-check OK (${tsFiles.length} .ts file(s))`);
+  } else {
+    log("no TypeScript files found — skipping type-check");
   }
 } else {
   log("tsconfig.json not found — skipping type-check");
 }
-log("type-check OK");
 
 // ---- 2. Syntax-check the plain-JS serverless entrypoints ------------------
 // Walk all .js files recursively in api/ (includes api/fastapi/, api/intelligence/, etc.)

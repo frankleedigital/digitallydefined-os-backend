@@ -16,3 +16,7 @@ docs/
 # Build / cache artifacts
 *.log
 node_modules/
+
+# Reference TypeScript files (JS is the canonical source)
+api/hermes-mcp.ts
+
