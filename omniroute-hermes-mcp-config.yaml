@@ -14,7 +14,7 @@
 # the existing mcp_servers: section (at the same indent level as linear, tavily, etc.).
 #
 # Auth: JWT Bearer token (OMNIROUTE_API_KEY env var or inline api_key).
-# Base URL: http://45.79.180.236:20128  (Linode, NOT localhost).
+# Base URL: https://ai.digitallydefined.online/v1  (Cloudflare tunnel).
 #
 # NOTE: Hermes's MCP loader may expect a different shape depending on version.
 #       The universal contract is: base URL + Bearer key + /v1/chat/completions.
@@ -36,7 +36,7 @@
 #     context_file: C:/Users/frank/AppData/Local/hermes/scripts/dd-linear-context.json
 #   ...
 #   omniroute:
-#     url: http://45.79.180.236:20128
+#     url: https://ai.digitallydefined.online/v1
 #     auth: bearer
 #     api_key_env: OMNIROUTE_API_KEY
 #     default_model: auto
@@ -49,20 +49,19 @@
 
 mcp_servers:
   omniroute:
-    # Base URL — Linode OmniRoute API (NOT localhost).
-    url: http://45.79.180.236:20128
+    # Base URL — Cloudflare tunnel to your OmniRoute instance.
+    url: https://ai.digitallydefined.online/v1
     # Auth mode — JWT Bearer token, same shape the backend uses.
     auth: bearer
     # The API key is read from the env var OMNIROUTE_API_KEY (set in Hermes .env).
-    # OMNIROUTE_API_KEY must be the JWT Bearer token from the Linode's OmniRoute.
-    # Get it once: open https://<your-domain>/dashboard → Network tab →
+    # OMNIROUTE_API_KEY must be the JWT Bearer token from your OmniRoute instance.
+    # Get it once: open your OmniRoute dashboard → Network tab →
     # trigger a chat → copy Authorization: Bearer <JWT> from /v1/chat/completions.
     # Paste the JWT into Hermes .env as OMNIROUTE_API_KEY=sk-<JWT> (keep sk- prefix
     # per the backend's convention — the backend stores keys as sk-<jwt>).
     api_key_env: OMNIROUTE_API_KEY
-    # Default model — "free" so OmniRoute's own routing picks the provider.
-    # The backend's aiRouter.js always sends upstage/solar-pro4:free; this MCP
-    # entry uses "free" for Hermes-side requests so OmniRoute resolves the model.
+    # Default model — "auto" so OmniRoute's own routing picks the provider.
+    # OmniRoute will resolve the actual model based on your account/credentials.
     default_model: auto
     # Transport — HTTP+JSON, same as the backend's aiRouter.js.
     transport: httpx
@@ -76,4 +75,3 @@ mcp_servers:
     timeout_ms: 60000
     # Do NOT add providers, models, or routing here — OmniRoute owns that.
     # No new providers, no new models, no new routing rules.
-
