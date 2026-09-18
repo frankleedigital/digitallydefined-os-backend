@@ -662,10 +662,9 @@ async function fetchSheetsData() {
 async function runGeminiAgent(message, systemPrompt, options = {}) {
   const resolvedSystemPrompt = String(systemPrompt || 'You are the DigitallyDefined Operations AI. Be concise and actionable.').trim();
   const resolvedMessage = String(message || '').trim();
+  const callerModel = String((options && options.model) || process.env.OMNIROUTE_MODEL || 'auto').trim();
   const omnirouteKey = (process.env.OMNIROUTE_API_KEY || '').trim();
   const geminiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '').trim();
-  const omnirouteModel = process.env.OMNIROUTE_MODEL || process.env.GEMINI_MODEL || 'gemini-3.6-flash';
-  const geminiModel = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
 
   if (!omnirouteKey && !geminiKey) {
     throw new Error('No AI API key configured for Gemini agent responses.');
@@ -688,7 +687,7 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
       name: 'omniroute',
       url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL || 'https://api.omniroute.ai/v1'),
       key: omnirouteKey,
-      model: omnirouteModel,
+      model: callerModel,
     });
   }
   if (geminiKey) {
@@ -696,14 +695,14 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
     // Lighter flash models have more spare capacity and answer when the
     // flagship flash models are overloaded (503 "high demand").
     const geminiModels = [...new Set([
-      geminiModel,
+      callerModel,
       'gemini-3.5-flash-lite',
       'gemini-3.1-flash-lite',
       'gemini-flash-latest',
     ])];
     for (const model of geminiModels) {
       providers.push({
-        name: geminiModel === model ? 'gemini-direct' : `gemini-direct (${model})`,
+        name: model === callerModel ? 'gemini-direct' : `gemini-direct (${model})`,
         url: geminiUrl,
         key: geminiKey,
         model,
@@ -1105,6 +1104,10 @@ export default async function handler(req, res) {
         }
       }
 
+      // Allow caller to override the default model via request body.
+      const callerModel = String(req.body?.model || '').trim();
+      const selectedModel = callerModel || (process.env.OMNIROUTE_MODEL || 'auto');
+
       try {
         // Build the summary prompt with conversation context
         const summaryPrompt = `Current user request: ${message}\n\nRecent conversation:\n${JSON.stringify(conversation.slice(-6))}\n\nUse the live site and dashboard context to answer as the DigitallyDefined business partner. Be blunt, strategic, and practical. No hype. No generic coach language. Keep it short and high level.`;
@@ -1127,7 +1130,7 @@ export default async function handler(req, res) {
         const result = await runGeminiAgent(
           `${userSystemPrompt}\n\nYou are Hermes. Give the founder a clear, high-level assessment of the business. Focus on the biggest opportunity, biggest risk, and the single most important next move. No fluff. No vague strategy. Keep the answer short and sharp. Return only JSON matching this schema:\n${businessPartnerSchema}`,
           summaryPrompt,
-          { jsonMode: true },
+          { jsonMode: true, model: selectedModel },
         );
 
         let parsed = null;
