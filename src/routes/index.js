@@ -1,9 +1,7 @@
 // src/routes/index.js
 // Router - maps actions to route handlers
-import { handleStatus, handleTestEnv, handleDashboard, handleChat, handleNotion, handleIntegrationStart, handleIntegrationData, handleAntigravity } from './index';
-
-// This file is just a placeholder - the actual router will be built in the entry point
-// For now, we just need the action list to be visible to the entry point
+// NOTE: This file defines the route catalog. The actual dispatch is handled by
+// the Vercel api/index.js handler which processes all actions directly.
 export const ROUTES = {
   status: 'handleStatus',
   'auth.verify': 'handleAuthVerify',
