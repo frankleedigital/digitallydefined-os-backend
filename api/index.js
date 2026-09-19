@@ -1471,7 +1471,9 @@ export default async function handler(req, res) {
 
     if (action === 'integration.googleAnalytics') {
       const b = req.body || {};
-      if (!b.measurementId || !b.propertyId) {
+      const measurementId = b.measurementId || process.env.VITE_GA_MEASUREMENT_ID || process.env.GA_MEASUREMENT_ID;
+      const propertyId = b.propertyId || process.env.VITE_GA_PROPERTY_ID || process.env.GA_PROPERTY_ID;
+      if (!measurementId || !propertyId) {
         return res.status(400).json({ error: 'Missing measurementId or propertyId' });
       }
       return res.status(200).json({
@@ -1490,7 +1492,13 @@ export default async function handler(req, res) {
 
     if (action === 'integration.social') {
       const b = req.body || {};
-      const entries = Object.entries(b.platforms || {});
+      const serverPlatforms = {};
+      if (process.env.FACEBOOK_PAGE_ID || process.env.FACEBOOK_ACCESS_TOKEN) serverPlatforms.facebook = { enabled: true };
+      if (process.env.INSTAGRAM_BUSINESS_ID || process.env.INSTAGRAM_ACCESS_TOKEN) serverPlatforms.instagram = { enabled: true };
+      if (process.env.YOUTUBE_CHANNEL_ID) serverPlatforms.youtube = { enabled: true };
+      if (process.env.TWITTER_BEARER_TOKEN || process.env.TWITTER_USERNAME) serverPlatforms.twitter = { enabled: true };
+      if (process.env.LINKEDIN_ORG_ID) serverPlatforms.linkedin = { enabled: true };
+      const entries = Object.entries(b.platforms && Object.keys(b.platforms).length ? b.platforms : serverPlatforms);
       if (!entries.length) {
         return res.status(200).json({
           connected: false,
@@ -1517,7 +1525,10 @@ export default async function handler(req, res) {
 
     if (action === 'integration.email') {
       const b = req.body || {};
-      if (!b.provider || (!b.hasBrevo && !b.hasMailchimp)) {
+      const provider = b.provider || process.env.EMAIL_PROVIDER || 'brevo';
+      const hasBrevo = Boolean(b.hasBrevo ?? process.env.BREVO_API_KEY);
+      const hasMailchimp = Boolean(b.hasMailchimp ?? process.env.MAILCHIMP_API_KEY);
+      if (!provider || (!hasBrevo && !hasMailchimp)) {
         return res.status(400).json({ error: 'No email provider available' });
       }
       return res.status(200).json({
@@ -1535,7 +1546,11 @@ export default async function handler(req, res) {
 
     if (action === 'integration.community') {
       const b = req.body || {};
-      if (!b.platform || (!b.hasFacebook && !b.hasDiscord && !b.hasMightyNetworks)) {
+      const platform = b.platform || process.env.COMMUNITY_PLATFORM || 'facebook';
+      const hasFacebook = Boolean(b.hasFacebook ?? process.env.FACEBOOK_GROUP_ID);
+      const hasDiscord = Boolean(b.hasDiscord ?? process.env.DISCORD_BOT_TOKEN);
+      const hasMightyNetworks = Boolean(b.hasMightyNetworks ?? process.env.MIGHTY_NETWORKS_API_KEY);
+      if (!platform || (!hasFacebook && !hasDiscord && !hasMightyNetworks)) {
         return res.status(400).json({ error: 'No community platform available' });
       }
       return res.status(200).json({
