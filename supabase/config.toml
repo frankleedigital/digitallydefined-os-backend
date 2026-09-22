@@ -2,7 +2,7 @@
 # https://supabase.com/docs/guides/local-development/cli/config
 # A string used to distinguish different Supabase projects on the same host. Defaults to the
 # working directory name when running `supabase init`.
-project_id = "DigitallyDefinedClean"
+project_id = "dijjlppdljpcgyoakdnq"
 
 [api]
 enabled = true
@@ -437,4 +437,12 @@ verify_jwt = false
 
 [functions.quiz-roadmap]
 # Public read endpoint: latest stored roadmap for an email.
+verify_jwt = false
+
+[functions.reputation]
+# Niche reputation intelligence: evaluates demand + trust signals.
+verify_jwt = false
+
+[functions.content]
+# Website content store: read/write merged site copy.
 verify_jwt = false
