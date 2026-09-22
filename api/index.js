@@ -71,12 +71,16 @@ const ALLOWED_ACTIONS = new Set([
   'antigravity.createNotionPage',
   'antigravity.updateDatabase',
   'antigravity.buildTemplate',
+  'antigravity.reconcileDatabase',
   'antigravity.runAutomation',
   'antigravity.status',
   // Live website content store (primary path is the Supabase edge function;
   // mirrored here for the legacy Vercel dispatcher).
   'website.content',
   'website.edit',
+  // Model switching (dashboard selector -> backend-clean -> Hermes runtime)
+  'hermes.setActiveModel',
+  'hermes.getActiveModel',
 ]);
 
 const GET_ONLY_ACTIONS = new Set([
@@ -1006,6 +1010,9 @@ export default async function handler(req, res) {
         blueprint: '/blueprint/generate',
         roadmap: '/roadmap/generate',
         trends: '/trends',
+        'asset-plan': '/asset-plan/calculate',
+        'offer-architect': '/offer-architect/generate',
+        wealth: '/wealth/calculate',
       };
       const sub = action.replace('fastapi.', '');
       const route = FASTAPI_ROUTES[sub];

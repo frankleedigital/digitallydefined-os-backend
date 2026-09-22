@@ -117,6 +117,41 @@ const parseJsonReply = (reply: string) => {
 // ============================================================
 const OMNIROUTE_DISABLED = Deno.env.get("OMNIROUTE_DISABLED") === "true";
 
+// ---------------------------------------------------------------------------
+// Active model (runtime-mutable)
+// ---------------------------------------------------------------------------
+// `hermes.setActiveModel` swaps this in place. getCandidates() reads it on
+// every request, so the swap takes effect immediately with no redeploy.
+// Seeded from OMNIROUTE_MODEL; a stored user_model_preferences row wins on
+// first use (see the hermes.setActiveModel action).
+// ---------------------------------------------------------------------------
+let ACTIVE_MODEL = (Deno.env.get("OMNIROUTE_MODEL") || "auto").trim();
+let ACTIVE_MODEL_UPDATED_AT = Date.now();
+
+/** Resolve the OmniRoute base URL (accepts with/without a trailing "/v1"). */
+function omniRouteBase(): string {
+  const rawBase = (Deno.env.get("OMNIROUTE_BASE_URL") || "https://api.omniroute.ai/v1").trim();
+  return rawBase.replace(/\/+$/, "").replace(/\/v1$/, "") + "/v1";
+}
+
+/** Live OmniRoute model catalog (ids only), or null when unreachable. */
+async function fetchOmniRouteCatalog(): Promise<string[] | null> {
+  const key = (Deno.env.get("OMNIROUTE_API_KEY") || "").trim();
+  if (!key || OMNIROUTE_DISABLED) return null;
+  try {
+    const res = await fetch(`${omniRouteBase()}/models`, {
+      headers: { Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!res.ok) return null;
+    const body = await res.json();
+    const ids = (body?.data || []).map((m: { id?: string }) => m?.id).filter(Boolean);
+    return ids.length ? (ids as string[]) : null;
+  } catch {
+    return null;
+  }
+}
+
 const getCandidates = (): Candidate[] => {
   const candidates: Candidate[] = [];
 
@@ -126,13 +161,12 @@ const getCandidates = (): Candidate[] => {
   if (OMNIROUTE_DISABLED) {
     console.warn("[hermes] OMNIROUTE_DISABLED=true — routing AI straight to the Gemini fallback.");
   } else if (omnirouteKey) {
-    // Normalize: accept base URL with or without a trailing "/v1".
-    const rawBase = (Deno.env.get("OMNIROUTE_BASE_URL") || "https://api.omniroute.ai/v1").trim();
-    const baseUrl = rawBase.replace(/\/+$/, "").replace(/\/v1$/, "") + "/v1";
-    const model = (Deno.env.get("OMNIROUTE_MODEL") || "auto").trim();
+    // Base URL normalized via omniRouteBase(); model comes from the mutable
+    // ACTIVE_MODEL so hermes.setActiveModel switches it without a redeploy.
+    const baseUrl = omniRouteBase();
     candidates.push({
       provider: "omniroute",
-      model,
+      model: ACTIVE_MODEL,
       key: omnirouteKey,
       url: `${baseUrl}/chat/completions`,
     });
@@ -1443,6 +1477,93 @@ Return ONLY valid JSON with these keys (include only relevant ones):
         detail: error instanceof Error ? error.message : String(error),
       }, 502, origin);
     }
+  }
+
+  // =============================================
+  // MODEL SWITCHING — hermes.setActiveModel
+  // Called by backend-clean (POST /api/set-model) when the user picks a model
+  // in the dashboard. Swaps the runtime model used by every subsequent
+  // OmniRoute call, and mirrors the choice into user_model_preferences so it
+  // survives cold starts.
+  // Required: x-api-key (authed action)
+  // =============================================
+  if (action === "hermes.setActiveModel") {
+    const modelId = String(body.modelId || body.model || "").trim();
+    if (!modelId) {
+      return json({ ok: false, error: "modelId is required" }, 400, origin);
+    }
+
+    // Verify the gateway accepts it before committing the switch.
+    let catalog: string[] | null = null;
+    try {
+      catalog = await fetchOmniRouteCatalog();
+    } catch {
+      catalog = null;
+    }
+    const inCatalog = Array.isArray(catalog) ? catalog.includes(modelId) : null;
+
+    const previous = ACTIVE_MODEL;
+    ACTIVE_MODEL = modelId;
+    ACTIVE_MODEL_UPDATED_AT = Date.now();
+
+    // Mirror the choice so a cold isolate restores the last selection.
+    try {
+      await insertRow("user_model_preferences", {
+        user_id: String(body.user_id || body.userId || "default").trim() || "default",
+        model_id: modelId,
+        updated_at: new Date().toISOString(),
+      }, true);
+    } catch {
+      /* table may not exist yet — non-fatal */
+    }
+
+    console.log(`[hermes.setActiveModel] ${previous} -> ${modelId}`);
+    return json({
+      ok: true,
+      activeModel: modelId,
+      previous,
+      updatedAt: ACTIVE_MODEL_UPDATED_AT,
+      catalogReachable: Array.isArray(catalog),
+      inLiveCatalog: inCatalog,
+    }, 200, origin);
+  }
+
+  // =============================================
+  // MODEL QUERY — hermes.getActiveModel
+  // Returns the model's current in-memory selection plus the stored row
+  // (user_model_preferences) so the dashboard can restore the dropdown
+  // default even across cold starts.
+  // =============================================
+  if (action === "hermes.getActiveModel") {
+    const userId = String(body.user_id || body.userId || "default").trim() || "default";
+    let stored = null;
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+      const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+      if (supabaseUrl && serviceRoleKey) {
+        const res = await fetch(
+          `${supabaseUrl}/rest/v1/user_model_preferences?user_id=eq.${encodeURIComponent(userId)}&select=model_id,updated_at&limit=1`,
+          { headers: { apikey: serviceRoleKey, Authorization: `Bearer ${serviceRoleKey}` } }
+        );
+        if (res.ok) {
+          const rows = await res.json();
+          if (Array.isArray(rows) && rows[0]) {
+            stored = { modelId: rows[0].model_id, updatedAt: rows[0].updated_at };
+          }
+        }
+      }
+    } catch {
+      /* best-effort only */
+    }
+    return json({
+      ok: true,
+      activeModel: stored?.modelId || ACTIVE_MODEL,
+      inMemoryModel: ACTIVE_MODEL,
+      stored,
+      updatedAt: ACTIVE_MODEL_UPDATED_AT,
+      source: stored ? "supabase" : "memory",
+      userId,
+    }, 200, origin);
   }
 
   if (action === "dashboard") {

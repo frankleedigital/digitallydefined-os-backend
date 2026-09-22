@@ -60,11 +60,15 @@ export const AUTHED_ACTIONS = [
   "integration.community.start",
   "license.verify",
   "website.edit",
+  // Model switching (dashboard selector -> backend-clean -> Hermes runtime)
+  "hermes.setActiveModel",
+  "hermes.getActiveModel",
   // Antigravity MCP (Notion Architect)
   "antigravity",
   "antigravity.createNotionPage",
   "antigravity.updateDatabase",
   "antigravity.buildTemplate",
+  "antigravity.reconcileDatabase",
   "antigravity.runAutomation",
   "antigravity.status",
 ] as const;
