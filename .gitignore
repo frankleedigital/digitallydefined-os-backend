@@ -8,3 +8,6 @@ omniroute-*.env
 omniroute-*env*.txt
 docs/archive/ENV_VARIABLES_SUMMARY.md
 
+# Local scratch / cached API responses — never commit
+_*.txt
+
