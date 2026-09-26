@@ -3,7 +3,7 @@ import Button from '../ui/Button.jsx';
 export default function QuizQuestion({ question, selected, onSelect, onNext, onBack, index, total }) {
   return (
     <div>
-      <p className="text-xs font-medium uppercase tracking-wide text-brand-muted">
+      <p className="text-xs font-medium uppercase tracking-wide text-slate">
         Question {index + 1} of {total}
       </p>
       <h2 className="mt-2 text-2xl font-semibold">{question.label}</h2>
@@ -15,10 +15,10 @@ export default function QuizQuestion({ question, selected, onSelect, onNext, onB
               key={opt.value}
               type="button"
               onClick={() => onSelect(opt.value)}
-              className={`w-full rounded-xl border px-5 py-4 text-left text-sm transition-colors ${
+              className={`w-full  border px-5 py-4 text-left text-sm transition-colors ${
                 active
-                  ? 'border-brand-accent bg-brand-accent/10 text-brand-text'
-                  : 'border-brand-border bg-brand-surface text-brand-muted hover:border-brand-accent/50'
+                  ? 'border-orange bg-orange/10 text-ink'
+                  : 'border-ink bg-white text-slate hover:border-orange/50'
               }`}
             >
               {opt.label}

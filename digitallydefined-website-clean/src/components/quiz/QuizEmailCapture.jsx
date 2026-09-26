@@ -21,7 +21,7 @@ export default function QuizEmailCapture({ onSubmit, submitting, error }) {
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-md text-center">
       <h2 className="text-2xl font-semibold">Where should we send your roadmap?</h2>
-      <p className="mt-2 text-sm text-brand-muted">
+      <p className="mt-2 text-sm text-slate">
         We will email your personalized roadmap, your next 3 steps, and the tool
         we recommend for your superpower type.
       </p>

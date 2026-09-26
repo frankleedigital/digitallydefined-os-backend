@@ -2,11 +2,98 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   DigitallyDefined — Public Site Brand Reset
+   Mirrors the dashboard's index.css tokens. Light mode only,
+   squared edges, thin black frames, no shadows.
+   ============================================================ */
+
+:root {
+  --dd-background: #FFFCF9;   /* Soft Cream */
+  --dd-surface: #FFFFFF;      /* White */
+  --dd-text: #111111;         /* Ink */
+  --dd-slate: #2D3748;        /* Deep Slate Text */
+  --dd-muted: #5F5F5F;
+  --dd-border: #111111;       /* thin black frames */
+  --dd-orange: #F18B25;       /* Brand Orange Accent */
+  --dd-red: #8B1A0A;          /* Danger Red */
+  --dd-font-heading: 'Inter', system-ui, sans-serif;
+  --dd-font-body: 'DM Sans', system-ui, sans-serif;
+  --dd-radius: 0px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-radius: var(--dd-radius);
+}
+
+/* No shadows anywhere — soft brutalism relies on frames, not elevation. */
+*, *::before, *::after {
+  box-shadow: none;
+}
+
+html {
+  min-height: 100%;
+  background: var(--dd-background);
+  color: var(--dd-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body,
+#root {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--dd-background);
+  color: var(--dd-text);
+  font-family: var(--dd-font-body);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--dd-font-heading);
+  font-weight: 800;
+  color: var(--dd-text);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+p, li, label, input, select, textarea {
+  font-family: var(--dd-font-body);
+  color: var(--dd-slate);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img, picture, video, canvas {
+  border: 1px solid var(--dd-border);
+}
+
+input, select, textarea {
+  background: var(--dd-surface);
+  color: var(--dd-text);
+  border: 1px solid var(--dd-border);
+  font-family: var(--dd-font-body);
+}
+
+::selection {
+  background: var(--dd-orange);
+  color: #FFFFFF;
+}
+
 @layer base {
   html { @apply antialiased; }
-  body { @apply bg-brand-bg text-brand-text min-h-screen; }
+  body { @apply bg-cream text-ink; }
 }
 
 @layer components {
-  .container-page { @apply mx-auto w-full max-w-5xl px-4 py-10; }
+  .container-page {
+    @apply mx-auto w-full max-w-container px-4 sm:px-6 py-10;
+  }
 }
+

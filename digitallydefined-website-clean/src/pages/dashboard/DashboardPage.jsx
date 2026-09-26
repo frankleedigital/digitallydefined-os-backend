@@ -45,19 +45,19 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-sm text-brand-muted">Signed in as {session.email}</p>
+          <p className="text-sm text-slate">Signed in as {session.email}</p>
         </div>
         <Button variant="ghost" onClick={() => { clearSession(); window.location.href = '/dashboard'; }}>Sign out</Button>
       </div>
 
       {session.email && (
         <Card className="mt-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-brand-muted">Your personalized roadmap</h2>
-          {loading && <p className="mt-3 text-sm text-brand-muted">Loading…</p>}
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate">Your personalized roadmap</h2>
+          {loading && <p className="mt-3 text-sm text-slate">Loading…</p>}
           {!loading && fetchError && <p className="mt-3 text-sm text-red-400">⚠ {fetchError}</p>}
-          {!loading && !fetchError && roadmap == null && <p className="mt-3 text-sm text-brand-muted">No roadmap stored yet for this email.</p>}
+          {!loading && !fetchError && roadmap == null && <p className="mt-3 text-sm text-slate">No roadmap stored yet for this email.</p>}
           {!loading && !fetchError && roadmap && (
-            <pre className="mt-3 max-h-64 overflow-auto rounded-lg bg-brand-bg p-4 text-xs text-brand-muted">
+            <pre className="mt-3 max-h-64 overflow-auto  bg-cream p-4 text-xs text-slate">
               {JSON.stringify(roadmap, null, 2)}
             </pre>
           )}
@@ -69,7 +69,7 @@ export default function DashboardPage() {
         {AGENTS.map((a) => (
           <Card key={a.key} className="flex flex-col">
             <h3 className="font-semibold">{a.name}</h3>
-            <p className="mt-2 flex-1 text-sm text-brand-muted">{a.description}</p>
+            <p className="mt-2 flex-1 text-sm text-slate">{a.description}</p>
             <Button as={Link} to={`/dashboard/app/${a.key}`} variant="outline" className="mt-4 self-start">Open →</Button>
           </Card>
         ))}

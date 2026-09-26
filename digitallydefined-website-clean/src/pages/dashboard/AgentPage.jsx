@@ -47,9 +47,9 @@ export default function AgentPage() {
         <form onSubmit={run} className="space-y-4">
           {meta.fields.map((f) => (
             <div key={f.name}>
-              <label className="mb-1 block text-xs font-medium text-brand-muted">{f.label}</label>
+              <label className="mb-1 block text-xs font-medium text-slate">{f.label}</label>
               <input
-                className="w-full rounded-lg border border-brand-border bg-brand-bg px-4 py-2.5 text-sm placeholder-brand-muted focus:border-brand-accent focus:outline-none"
+                className="w-full  border border-ink bg-cream px-4 py-2.5 text-sm placeholder-slate focus:border-orange focus:outline-none"
                 placeholder={f.placeholder}
                 value={values[f.name] || ''}
                 onChange={(e) => setValues((v) => ({ ...v, [f.name]: e.target.value }))}
@@ -58,9 +58,9 @@ export default function AgentPage() {
             </div>
           ))}
           <div className="flex items-center gap-3">
-            <label className="text-xs font-medium text-brand-muted">Model mode</label>
+            <label className="text-xs font-medium text-slate">Model mode</label>
             <select
-              className="rounded-lg border border-brand-border bg-brand-bg px-3 py-2 text-sm"
+              className="border border-ink bg-cream px-3 py-2 text-sm"
               value={mode}
               onChange={(e) => setMode(e.target.value)}
             >
@@ -78,10 +78,10 @@ export default function AgentPage() {
       {result && (
         <Card className="mt-6">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-brand-muted">Result</h2>
-            <span className="text-xs text-brand-muted">{result.provider ? `${result.provider} · ${result.model}` : ''}</span>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate">Result</h2>
+            <span className="text-xs text-slate">{result.provider ? `${result.provider} · ${result.model}` : ''}</span>
           </div>
-          <pre className="max-h-[28rem] overflow-auto rounded-lg bg-brand-bg p-4 text-xs leading-relaxed">
+          <pre className="max-h-[28rem] overflow-auto  bg-cream p-4 text-xs leading-relaxed">
             {JSON.stringify(result, null, 2)}
           </pre>
         </Card>

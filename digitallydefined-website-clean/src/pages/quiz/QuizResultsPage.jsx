@@ -24,14 +24,14 @@ export default function QuizResultsPage() {
           {Array.isArray(roadmap.steps) && roadmap.steps.length > 0 ? (
             <ol className="mt-4 space-y-3 text-sm">
               {roadmap.steps.map((s, i) => (
-                <li key={i} className="rounded-lg border border-brand-border p-3">
+                <li key={i} className="border border-ink p-3">
                   <span className="font-semibold">{i + 1}. {s.title || s.step || s.name || 'Step'}</span>
-                  {s.description && <p className="mt-1 text-brand-muted">{s.description}</p>}
+                  {s.description && <p className="mt-1 text-slate">{s.description}</p>}
                 </li>
               ))}
             </ol>
           ) : (
-            <pre className="mt-4 overflow-x-auto rounded-lg bg-brand-bg p-4 text-xs text-brand-muted">
+            <pre className="mt-4 overflow-x-auto  bg-cream p-4 text-xs text-slate">
               {JSON.stringify(roadmap, null, 2)}
             </pre>
           )}

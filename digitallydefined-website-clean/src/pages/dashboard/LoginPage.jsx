@@ -24,7 +24,7 @@ export default function LoginPage() {
     <div className="container-page py-20">
       <Card className="mx-auto max-w-md">
         <h1 className="text-2xl font-bold">Enter the dashboard</h1>
-        <p className="mt-2 text-sm text-brand-muted">
+        <p className="mt-2 text-sm text-slate">
           Sign in with the email you used for the quiz to load your personalized roadmap.
         </p>
         <form onSubmit={handleSubmit} className="mt-6 space-y-3">
@@ -32,8 +32,8 @@ export default function LoginPage() {
           {error && <p className="text-xs text-red-400">{error}</p>}
           <Button type="submit" className="w-full">Continue →</Button>
         </form>
-        <p className="mt-4 text-xs text-brand-muted">
-          No roadmap yet? <Link to="/quiz" className="text-brand-accent hover:underline">Take the quiz</Link> first.
+        <p className="mt-4 text-xs text-slate">
+          No roadmap yet? <Link to="/quiz" className="text-orange hover:underline">Take the quiz</Link> first.
         </p>
       </Card>
     </div>
