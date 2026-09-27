@@ -13,10 +13,11 @@
 
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import {
+  NOTION_OS_DBS,
   buildNotionProperties,
   getNotionDbId,
   getNotionDedupTuple,
-  getNotionSchemaMap,
+  getNotionPropType,
   mapAutomationRecordToNotion,
   mapNotionRecordToAutomation,
   normalizeNotionRecord,
@@ -100,12 +101,6 @@ async function notionPageExists(dbId: string, dbKey: string, record: Record<stri
   }
   const data = await res.json();
   return Array.isArray(data?.results) && data.results.length > 0;
-}
-
-/** Look up the architect type for a property name (for dedup filters). */
-function getNotionPropType(dbKey: string, propName: string): string | null {
-  const spec = getNotionSchemaMap()[dbKey];
-  return spec?.properties.find((p) => p.name === propName)?.type ?? null;
 }
 
 /** Create a Notion page from an architect-normalized record. */
@@ -278,7 +273,6 @@ serve(async (req) => {
   // Only scan records created within the sync window (default 7h to overlap the 6h cron).
   const windowMin = Number(env("NOTION_SYNC_WINDOW_MIN", "420")) || 420;
   const since = new Date(Date.now() - windowMin * 60 * 1000).toISOString();
-  const schemaMap = getNotionSchemaMap();
 
   const report: {
     live: boolean;
@@ -351,7 +345,11 @@ serve(async (req) => {
       dryRun: !live,
     };
     try {
-      if (!dbId) throw new Error(`${schemaMap[source.dbKey]?.envVar} is not configured`);
+      if (!dbId) {
+        const names = [NOTION_OS_DBS[source.dbKey]?.envVar, ...(NOTION_OS_DBS[source.dbKey]?.envVarAliases || [])]
+          .filter(Boolean).join(" or ");
+        throw new Error(`${NOTION_OS_DBS[source.dbKey]?.label || source.dbKey} is not configured (set ${names})`);
+      }
       entry.created = await pullNotionToSupabase({
         supabaseUrl,
         serviceKey,

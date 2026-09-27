@@ -18,13 +18,16 @@ from .llm import close_llm
 from .models import HealthResponse
 from .routers import (
     affiliate_router,
+    asset_plan_router,
     blueprint_router,
     domain_router,
     niche_router,
+    offer_architect_router,
     product_router,
     rankrent_router,
     roadmap_router,
     trends_router,
+    wealth_router,
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -113,3 +116,6 @@ app.include_router(affiliate_router)
 app.include_router(rankrent_router)
 app.include_router(blueprint_router)
 app.include_router(roadmap_router)
+app.include_router(asset_plan_router)
+app.include_router(offer_architect_router)
+app.include_router(wealth_router)

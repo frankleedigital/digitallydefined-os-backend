@@ -13,6 +13,9 @@ const ALLOWED = {
   'blueprint': { path: '/blueprint/generate', method: 'POST' },
   'roadmap': { path: '/roadmap/generate', method: 'POST' },
   'trends': { path: '/trends', method: 'POST' },
+  'asset-plan': { path: '/asset-plan/calculate', method: 'POST' },
+  'offer-architect': { path: '/offer-architect/generate', method: 'POST' },
+  'wealth': { path: '/wealth/calculate', method: 'POST' },
 };
 
 export default async function handler(req, res) {
