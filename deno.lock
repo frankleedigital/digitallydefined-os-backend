@@ -47,7 +47,9 @@
         "npm:@types/node@^26.4.0",
         "npm:cors@^2.8.5",
         "npm:dotenv@^16.3.1",
-        "npm:express@^4.22.2"
+        "npm:express@^4.22.2",
+        "npm:typescript@^7.0.2",
+        "npm:zod@^3.23.8"
       ]
     }
   }

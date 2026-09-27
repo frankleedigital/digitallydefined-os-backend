@@ -11,7 +11,7 @@ const ALLOWED_ACTIONS = new Set([
   '"integration.email"', '"integration.community"', '"integration.google.start"',
   '"integration.social.start"', '"integration.email.start"', '"integration.community.start"',
   '"license.verify"', '"antigravity"', '"antigravity.createNotionPage"',
-  '"antigravity.updateDatabase"', '"antigravity.buildTemplate"', '"antigravity.runAutomation"',
+  '"antigravity.updateDatabase"', '"antigravity.buildTemplate"', '"antigravity.reconcileDatabase"', '"antigravity.runAutomation"',
   '"antigravity.status"', '"website.content"', '"website.edit"',
 ]);
 

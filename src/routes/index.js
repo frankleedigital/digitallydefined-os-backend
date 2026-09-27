@@ -30,6 +30,7 @@ export const ROUTES = {
   'antigravity.createNotionPage': 'handleAntigravity',
   'antigravity.updateDatabase': 'handleAntigravity',
   'antigravity.buildTemplate': 'handleAntigravity',
+  'antigravity.reconcileDatabase': 'handleAntigravity',
   'antigravity.runAutomation': 'handleAntigravity',
   'antigravity.status': 'handleAntigravity',
   'website.content': 'handleWebsiteContent',
