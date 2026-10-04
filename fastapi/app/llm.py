@@ -14,10 +14,12 @@ FastAPI layer stays up through rate limits and streaming responses:
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import logging
 import random
 import re
+import time as _time
 from typing import Any
 
 import httpx
@@ -30,6 +32,56 @@ _RETRYABLE_STATUS = {429, 500, 502, 503, 504}
 _MAX_RETRIES = 3
 _BASE_BACKOFF_MS = 750
 _MAX_BACKOFF_MS = 3000
+
+# --------------------------------------------------------------------------- #
+# Response cache
+# --------------------------------------------------------------------------- #
+# Measured gateway latency on ai.digitallydefined.online:
+#     auto/best-fast 22.2s | auto/best-chat 19.7s | auto/chat 10.8s | auto/cheap 8.7s
+#
+# These tools are deterministic for a given (system, user) pair — a niche score
+# or wealth projection does not change minute to minute — so re-asking the
+# gateway for an identical prompt is pure latency. A short TTL removes the wait
+# for repeat traffic (page reloads, retries, several users on the same niche)
+# while still picking up model changes quickly.
+_CACHE_TTL_SECONDS = 300
+_CACHE_MAX_ENTRIES = 256
+_cache: dict[str, tuple[float, str]] = {}
+_cache_lock = asyncio.Lock()
+
+
+def _cache_key(messages: list[dict[str, str]], model: str) -> str:
+    """Stable key for a prompt+model pair."""
+    raw = json.dumps(
+        {"m": messages, "model": model}, sort_keys=True, separators=(",", ":")
+    )
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+async def _cache_get(key: str) -> str | None:
+    async with _cache_lock:
+        entry = _cache.get(key)
+        if entry is None:
+            return None
+        stored_at, value = entry
+        if (_time.monotonic() - stored_at) > _CACHE_TTL_SECONDS:
+            _cache.pop(key, None)
+            return None
+        return value
+
+
+async def _cache_put(key: str, value: str) -> None:
+    async with _cache_lock:
+        if len(_cache) >= _CACHE_MAX_ENTRIES:
+            # Drop the oldest entries rather than growing without bound.
+            oldest = sorted(_cache.items(), key=lambda kv: kv[1][0])[: _CACHE_MAX_ENTRIES // 4]
+            for stale_key, _ in oldest:
+                _cache.pop(stale_key, None)
+        _cache[key] = (_time.monotonic(), value)
+
+
+def clear_cache() -> None:
+    _cache.clear()
 
 
 def _clean_chain(values: list[str] | None) -> list[str]:
@@ -170,13 +222,23 @@ class OmniRouteClient:
             raise OmniRouteError("OMNIROUTE_API_KEY not set")
 
         last_err: OmniRouteError | None = None
+
+        # Checked per-model so a cached reply from one model is never served
+        # for a different one.
         for m in self._model_chain(model):
+            key = _cache_key(messages, m)
+            cached = await _cache_get(key)
+            if cached is not None:
+                logger.info("OmniRoute cache hit for model '%s'", m)
+                return cached
             try:
                 body: dict[str, Any] = {"model": m, "messages": messages}
                 if json_mode:
                     body["response_format"] = {"type": "json_object"}
                 resp = await self._post(body)
-                return self._extract_content(resp).strip()
+                content = self._extract_content(resp).strip()
+                await _cache_put(key, content)
+                return content
             except OmniRouteError as exc:
                 last_err = exc
                 logger.warning("OmniRoute model '%s' failed: %s; trying next", m, exc)

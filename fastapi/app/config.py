@@ -30,15 +30,19 @@ class Settings(BaseSettings):
     dashboard_api_key: str = "DigitallyDefined-OS-2026"
 
     # --- OmniRoute AI gateway (live backend single provider) ---
-    omniroute_base_url: str = "http://45.79.180.236:20128"
+    omniroute_base_url: str = "https://ai.digitallydefined.online/v1"
     omniroute_api_key: str = ""
-    omniroute_model: str = "auto/best-free"
+    # NOT "auto": the gateway rejects that id with 401 ("No active credentials"),
+    # so every request paid a wasted round-trip before falling through to a
+    # working model.
+    omniroute_model: str = "auto/cheap"
     # Ordered fallback chain tried in turn when a model fails transiently.
-    # Add stable paid models here (e.g. "ddgw/gpt-5.4-mini", "tllm/GPT_5_4")
-    # for guaranteed 24/7 availability.
+    # Ordered fastest-measured-first (see the timing table in app/llm.py): the
+    # 8-22s spread across these ids dominates the latency of an uncached tool
+    # call, so cheap/fast ids must be attempted before best-chat.
     omniroute_fallback_models: list[str] = [
-        "auto/best-fast",
         "auto/cheap",
+        "auto/best-fast",
         "auto/chat",
         "auto/best-chat",
     ]
