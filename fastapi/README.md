@@ -35,7 +35,7 @@ Docs at `http://localhost:8000/docs` (OpenAPI).
 - `app/llm.py` is a hardened OmniRoute client: retries with backoff on
   429/5xx/network, SSE decoding, connection pooling, an ordered model
   **failover chain**, and fence-tolerant JSON parsing. It connects to the
-  Linode gateway (`http://45.79.180.236:20128`).
+  OmniRoute gateway via Cloudflare tunnel (`https://ai.digitallydefined.online/api/v1`).
 - `app/storage.py` prefers Supabase REST and falls back to local JSONL when
   `SUPABASE_SERVICE_KEY` is unset.
 - All services degrade to deterministic output when `OMNIROUTE_API_KEY` is unset.
@@ -44,7 +44,7 @@ Docs at `http://localhost:8000/docs` (OpenAPI).
   `auto/best-chat`) until one succeeds. For guaranteed 24/7 availability, add
   stable provider-backed models (e.g. `tllm/GPT_5_4`, `ddgw/gpt-5.4-mini`,
   `aug/gpt5.4-mini`) to `OMNIROUTE_FALLBACK_MODELS` once a provider route is
-  healthy on the Linode.
+  healthy on the gateway.
 
 ## Converted modules (from `docs/hermes-mcp-archive/hermes`)
 

@@ -1,6 +1,7 @@
 import { storeRoadmap, listRoadmaps, getRoadmapById } from './store.js';
 
 const ALLOWED_ORIGINS = [
+  'https://dashboard.digitallydefined.agency',
   'https://dashboard.digitallydefined.online',
   'https://digitallydefined.online',
   'https://www.digitallydefined.online',
@@ -11,7 +12,7 @@ const ALLOWED_ORIGINS = [
 
 function applyCors(res, req) {
   const origin = (req.headers && req.headers.origin) || '';
-  const corsOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : 'https://dashboard.digitallydefined.online';
+  const corsOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : 'https://dashboard.digitallydefined.agency';
   res.setHeader('Access-Control-Allow-Origin', corsOrigin);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-api-key, apikey');

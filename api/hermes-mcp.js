@@ -34,11 +34,12 @@ function resolveOrigin(req) {
   if (
     ALLOWED_ORIGINS.includes(origin) ||
     origin.endsWith(".digitallydefined.online") ||
+    origin.endsWith(".digitallydefined.agency") ||
     origin.includes("localhost")
   ) {
     return origin;
   }
-  return "https://digitallydefined.online";
+  return "https://dashboard.digitallydefined.agency";
 }
 
 function readSessionId(req) {

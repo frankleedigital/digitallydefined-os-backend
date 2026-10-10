@@ -12,6 +12,7 @@ import { ApiResponse, JsonValue } from "./types.ts";
 
 /** Origin allowlist — keep in sync with cors-utils.ts / hermes/index.ts. */
 export const DEFAULT_ALLOWED_ORIGINS = [
+  "https://dashboard.digitallydefined.agency",
   "https://dashboard.digitallydefined.online",
   "https://digitallydefined.online",
   "https://www.digitallydefined.online",
@@ -34,7 +35,7 @@ export function corsHeaders(
   origin = "",
   allowlist: string[] = DEFAULT_ALLOWED_ORIGINS,
 ): Record<string, string> {
-  const allowed = isAllowed(origin, allowlist) ? origin : "https://dashboard.digitallydefined.online";
+  const allowed = isAllowed(origin, allowlist) ? origin : "https://dashboard.digitallydefined.agency";
   return {
     "Access-Control-Allow-Origin": allowed,
     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",

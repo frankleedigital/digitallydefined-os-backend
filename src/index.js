@@ -14,6 +14,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use((req, res, next) => {
   const origin = req.headers.origin || '';
   const allowed = [
+    'https://dashboard.digitallydefined.agency',
     'https://dashboard.digitallydefined.online',
     'https://digitallydefined.online',
     'https://www.digitallydefined.online',
@@ -24,7 +25,7 @@ app.use((req, res, next) => {
   if (origin && allowed.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   } else {
-    res.setHeader('Access-Control-Allow-Origin', 'https://dashboard.digitallydefined.online');
+    res.setHeader('Access-Control-Allow-Origin', 'https://dashboard.digitallydefined.agency');
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-api-key, apikey, x-user-id');

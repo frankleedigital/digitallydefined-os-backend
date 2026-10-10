@@ -658,7 +658,7 @@ async function fetchSheetsData() {
   }
 }
 
-// AI brief with caching — OmniRoute first, direct Gemini fallback (Linode may be down)
+// AI brief with caching — OmniRoute first, direct Gemini fallback (gateway may be down)
 async function runGeminiAgent(message, systemPrompt, options = {}) {
   const resolvedSystemPrompt = String(systemPrompt || 'You are the DigitallyDefined Operations AI. Be concise and actionable.').trim();
   const resolvedMessage = String(message || '').trim();

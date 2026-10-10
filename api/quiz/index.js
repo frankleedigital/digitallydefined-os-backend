@@ -15,6 +15,7 @@ import { digitalSuperpowerAgent } from '../../agents/digitalSuperpowerAgent.js';
 
 const ALLOWED_ORIGINS = new Set([
   'https://digitallydefined.online',
+  'https://dashboard.digitallydefined.agency',
   'https://dashboard.digitallydefined.online',
   'http://localhost:3000',
   'http://localhost:5173',

@@ -12,6 +12,7 @@ type JsonRecord = Record<string, unknown>;
 type Candidate = { provider: string; model: string; key: string; url: string };
 
 const ALLOWED_ORIGINS = new Set([
+  "https://dashboard.digitallydefined.agency",
   "https://dashboard.digitallydefined.online",
   "https://digitallydefined.online",
   "https://www.digitallydefined.online",
@@ -25,7 +26,7 @@ const corsHeaders = (origin = "") => ({
   "Access-Control-Allow-Origin":
     origin && ALLOWED_ORIGINS.has(origin)
       ? origin
-      : "https://dashboard.digitallydefined.online",
+      : "https://dashboard.digitallydefined.agency",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key, x-user-id, apikey",
   "Vary": "Origin",

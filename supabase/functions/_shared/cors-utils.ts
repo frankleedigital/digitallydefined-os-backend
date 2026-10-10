@@ -1,6 +1,7 @@
 // Shared CORS utilities for Supabase Edge Functions
 // NOTE: Keep the allowlist in sync with api/index.js and hermes/index.ts.
 const ALLOWED_ORIGINS = [
+  "https://dashboard.digitallydefined.agency",
   "https://dashboard.digitallydefined.online",
   "https://digitallydefined.online",
   "https://www.digitallydefined.online",
@@ -12,7 +13,7 @@ const ALLOWED_ORIGINS = [
 export function corsHeaders(origin: string) {
   const allowed = origin && ALLOWED_ORIGINS.includes(origin)
     ? origin
-    : "https://dashboard.digitallydefined.online";
+    : "https://dashboard.digitallydefined.agency";
   return {
     'Access-Control-Allow-Origin': allowed,
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',

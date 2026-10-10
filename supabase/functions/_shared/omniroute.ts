@@ -38,7 +38,7 @@ const DEFAULT_MODEL = (Deno.env.get('OMNIROUTE_MODEL') || 'auto').trim();
 const DEFAULT_SYSTEM_PROMPT = hermesSystemPrompt;
 
 // ---- Direct Gemini fallback (Google's OpenAI-compatible endpoint) ----
-// Used only when the OmniRoute call fails (e.g. the Linode gateway is down).
+// Used only when the OmniRoute call fails (e.g. the gateway is down).
 const GEMINI_API_KEY = (Deno.env.get('GEMINI_API_KEY') || Deno.env.get('GOOGLE_API_KEY') || '').trim();
 const GEMINI_BASE_URL = (Deno.env.get('GEMINI_BASE_URL') || 'https://generativelanguage.googleapis.com/v1beta/openai').trim().replace(/\/+$/, '');
 const GEMINI_MODEL = (Deno.env.get('GEMINI_MODEL') || 'gemini-3.6-flash').trim();

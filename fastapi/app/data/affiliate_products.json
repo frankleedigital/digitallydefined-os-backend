@@ -1,0 +1,182 @@
+[
+  {
+    "product": "Canva Pro",
+    "category": "Design",
+    "price": 12.99,
+    "commission_rate": 0.25,
+    "epc": 0.45,
+    "network": "Impact",
+    "recurring": true
+  },
+  {
+    "product": "Systeme.io",
+    "category": "Marketing",
+    "price": 27.00,
+    "commission_rate": 0.50,
+    "epc": 0.80,
+    "network": "Impact",
+    "recurring": true
+  },
+  {
+    "product": "ClickFunnels",
+    "category": "Marketing",
+    "price": 147.00,
+    "commission_rate": 0.30,
+    "epc": 1.20,
+    "network": "Impact",
+    "recurring": true
+  },
+  {
+    "product": "ConvertKit",
+    "category": "Email Marketing",
+    "price": 29.00,
+    "commission_rate": 0.30,
+    "epc": 0.60,
+    "network": "Impact",
+    "recurring": true
+  },
+  {
+    "product": "Shopify",
+    "category": "E-commerce",
+    "price": 39.00,
+    "commission_rate": 0.58,
+    "epc": 0.75,
+    "network": "Impact",
+    "recurring": true
+  },
+  {
+    "product": "Bluehost",
+    "category": "Web Hosting",
+    "price": 2.95,
+    "commission_rate": 0.65,
+    "epc": 1.10,
+    "network": "Impact",
+    "recurring": false
+  },
+  {
+    "product": "Fiverr",
+    "category": "Freelance Services",
+    "price": 10.00,
+    "commission_rate": 0.15,
+    "epc": 0.35,
+    "network": "Impact",
+    "recurring": false
+  },
+  {
+    "product": "Semrush",
+    "category": "SEO",
+    "price": 119.95,
+    "commission_rate": 0.40,
+    "epc": 1.50,
+    "network": "Impact",
+    "recurring": true
+  },
+  {
+    "product": "GetResponse",
+    "category": "Email Marketing",
+    "price": 19.00,
+    "commission_rate": 0.33,
+    "epc": 0.55,
+    "network": "Impact",
+    "recurring": true
+  },
+  {
+    "product": "Elementor Pro",
+    "category": "WordPress",
+    "price": 49.00,
+    "commission_rate": 0.50,
+    "epc": 0.90,
+    "network": "ShareASale",
+    "recurring": true
+  },
+  {
+    "product": "WP Engine",
+    "category": "Web Hosting",
+    "price": 30.00,
+    "commission_rate": 0.50,
+    "epc": 2.00,
+    "network": "ShareASale",
+    "recurring": false
+  },
+  {
+    "product": "AWeber",
+    "category": "Email Marketing",
+    "price": 20.00,
+    "commission_rate": 0.30,
+    "epc": 0.50,
+    "network": "ShareASale",
+    "recurring": true
+  },
+  {
+    "product": "Grammarly",
+    "category": "Writing Tools",
+    "price": 12.00,
+    "commission_rate": 0.20,
+    "epc": 0.40,
+    "network": "CJ Affiliate",
+    "recurring": false
+  },
+  {
+    "product": "NordVPN",
+    "category": "Cybersecurity",
+    "price": 12.95,
+    "commission_rate": 0.40,
+    "epc": 0.65,
+    "network": "CJ Affiliate",
+    "recurring": false
+  },
+  {
+    "product": "Skillshare",
+    "category": "Online Education",
+    "price": 13.99,
+    "commission_rate": 0.10,
+    "epc": 0.25,
+    "network": "ShareASale",
+    "recurring": false
+  },
+  {
+    "product": "Teachable",
+    "category": "Online Education",
+    "price": 39.00,
+    "commission_rate": 0.30,
+    "epc": 0.70,
+    "network": "Impact",
+    "recurring": true
+  },
+  {
+    "product": "Pinterest Business",
+    "category": "Social Media",
+    "price": 0.00,
+    "commission_rate": 0.00,
+    "epc": 0.30,
+    "network": "Direct",
+    "recurring": false
+  },
+  {
+    "product": "Amazon Associates",
+    "category": "General Retail",
+    "price": 25.00,
+    "commission_rate": 0.04,
+    "epc": 0.15,
+    "network": "Amazon",
+    "recurring": false
+  },
+  {
+    "product": "Notion",
+    "category": "Productivity",
+    "price": 8.00,
+    "commission_rate": 0.50,
+    "epc": 0.55,
+    "network": "PartnerStack",
+    "recurring": true
+  },
+  {
+    "product": "Tailwind",
+    "category": "Social Media",
+    "price": 15.00,
+    "commission_rate": 0.15,
+    "epc": 0.35,
+    "network": "ShareASale",
+    "recurring": false
+  }
+]

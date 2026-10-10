@@ -14,6 +14,7 @@ import { audienceInsightAgent } from './audienceInsightAgent.js';
 import { competitionAnalyzer } from './competitionAnalyzer.js';
 import { trendAnalyzer } from './trendAnalyzer.js';
 import { opportunityScanner } from './opportunityScanner.js';
+import { affiliateFlipAgent } from './affiliateFlipAgent.js';
 
 /**
  * Agent Registry
@@ -82,6 +83,13 @@ export const agents = {
     name: "Opportunity Scanner",
     description: "Identifies gaps, underserved audiences, and unmet needs.",
     fn: opportunityScanner,
+    category: "intelligence",
+    version: "1.0.0"
+  },
+  affiliate_flip: {
+    name: "Affiliate Flip",
+    description: "Dual-mode affiliate analyzer. Accepts a niche/keyword and/or an affiliate product/program; identifies the network, estimates EPC + commission when missing, and returns keywords, niche angles, a page outline, a monetization plan, a 7-day action plan, and a flip score.",
+    fn: affiliateFlipAgent,
     category: "intelligence",
     version: "1.0.0"
   },

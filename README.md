@@ -8,9 +8,11 @@ which is the active, deployed backend (`digitallydefined-backend-clean.vercel.ap
 
 ## Still canonical — do NOT remove or relocate
 
-- **Supabase edge functions** (`supabase/functions/`) remain the **canonical
-  deploy location** for edge functions. Deploy them from this repo. Moving them
-  caused overwrite conflicts in the past.
+- **Supabase edge functions** have been **consolidated into
+  [`digitallydefined-backend-clean/supabase/`](../digitallydefined-backend-clean/supabase/README.md)**
+  (2026-10-09). All 14 functions — including the 9 that used to live here — now
+  live in the active repo. This tree's CLI link state (`.temp`) was retired so it
+  **cannot deploy** and clobber production. Do not add new functions here.
 - The **FastAPI routers** under `fastapi/app/routers/` are still the only
   implementation of `affiliate`, `assetplan`, `blueprint`, `domain`,
   `offerarchitect`, `rankrent` and `wealth`. `niche`, `roadmap`, `product` and

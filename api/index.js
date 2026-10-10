@@ -5,6 +5,7 @@
 import { antigravityHandle } from '../lib/antigravity.js';
 
 const ALLOWED_ORIGINS = [
+  'https://dashboard.digitallydefined.agency',
   'https://dashboard.digitallydefined.online',
   'https://digitallydefined.online',
   'https://www.digitallydefined.online',
@@ -17,7 +18,7 @@ const ALLOWED_ORIGINS = [
 function resolveCorsOrigin(req) {
   const origin = (req.headers && req.headers.origin) || '';
   if (origin && ALLOWED_ORIGINS.includes(origin)) return origin;
-  return 'https://dashboard.digitallydefined.online';
+  return 'https://dashboard.digitallydefined.agency';
 }
 
 function applyCors(req, res) {
@@ -662,7 +663,7 @@ async function fetchSheetsData() {
   }
 }
 
-// AI brief with caching — OmniRoute first, direct Gemini fallback (Linode may be down)
+// AI brief with caching — OmniRoute first, direct Gemini fallback (gateway may be down)
 async function runGeminiAgent(message, systemPrompt, options = {}) {
   const resolvedSystemPrompt = String(systemPrompt || 'You are the DigitallyDefined Operations AI. Be concise and actionable.').trim();
   const resolvedMessage = String(message || '').trim();
@@ -1611,6 +1612,7 @@ export default async function handler(req, res) {
     console.error('Dashboard error:', err);
     const origin = (req.headers && req.headers.origin) || '';
     const allowed = [
+      'https://dashboard.digitallydefined.agency',
       'https://dashboard.digitallydefined.online',
       'https://digitallydefined.online',
       'https://www.digitallydefined.online',
@@ -1618,7 +1620,7 @@ export default async function handler(req, res) {
       'http://localhost:3001',
       'http://localhost:5173',
     ];
-    const corsOrigin = allowed.includes(origin) ? origin : 'https://dashboard.digitallydefined.online';
+    const corsOrigin = allowed.includes(origin) ? origin : 'https://dashboard.digitallydefined.agency';
     res.setHeader('Access-Control-Allow-Origin', corsOrigin);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-api-key, apikey, x-user-id');

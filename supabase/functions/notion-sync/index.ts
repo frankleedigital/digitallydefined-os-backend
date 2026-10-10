@@ -33,7 +33,7 @@ const json = (body: unknown, status = 200, headers: Record<string, string> = {})
 const env = (name: string, def = ""): string => (Deno.env.get(name) || def).trim();
 
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "https://dashboard.digitallydefined.online",
+  "Access-Control-Allow-Origin": "https://dashboard.digitallydefined.agency",
   "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, x-api-key, apikey, Authorization",
 };

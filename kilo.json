@@ -1,0 +1,36 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+
+  "models": {
+    "mix-llama3.1-8b": {
+      "provider": "apiHubMix",
+      "model": "llama-3.1-8b-instruct"
+    },
+    "mix-deepseek-r1": {
+      "provider": "apiHubMix",
+      "model": "deepseek-r1"
+    },
+    "omni-llama3.1-8b": {
+      "provider": "omniroute",
+      "model": "llama-3.1-8b-instruct"
+    },
+    "dahl-minimax-m2.7": {
+      "provider": "dahl",
+      "model": "MiniMaxAI/MiniMax-M2.7"
+    },
+    "dahl-deepseek-flash": {
+      "provider": "dahl",
+      "model": "DeepSeek/DeepSeek-Flash"
+    },
+    "dahl-qwen-flash": {
+      "provider": "dahl",
+      "model": "Qwen/Qwen-3.8-Flash"
+    },
+    "dahl-glm-flash": {
+      "provider": "dahl",
+      "model": "GLM/GLM-5.3-Flash"
+    }
+  },
+
+  "defaultModel": "mix-llama3.1-8b"
+}
