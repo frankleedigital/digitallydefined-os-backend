@@ -6,9 +6,6 @@ import { antigravityHandle } from '../lib/antigravity.js';
 
 const ALLOWED_ORIGINS = [
   'https://dashboard.digitallydefined.agency',
-  'https://dashboard.digitallydefined.online',
-  'https://digitallydefined.online',
-  'https://www.digitallydefined.online',
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:5173',
@@ -136,7 +133,7 @@ const FETCH_TIMEOUT_MS = 5000;
 
 // Accept base URL with or without a trailing "/v1"; always resolve to "<origin>/v1/chat/completions".
 function omnirouteEndpoint(raw) {
-  const base = String(raw || process.env.OMNIROUTE_BASE_URL || 'https://api.omniroute.ai/v1')
+  const base = String(raw || process.env.OMNIROUTE_BASE_URL || 'http://127.0.0.1:20128/v1')
     .trim()
     .replace(/\/+$/, '')
     .replace(/\/v1$/, '');
@@ -148,7 +145,7 @@ function omnirouteEndpoint(raw) {
 // Required env: OMNIROUTE_API_KEY. Optional: OMNIROUTE_BASE_URL, OMNIROUTE_MODEL.
 const AI_PROVIDERS = {
   omniroute: {
-    baseUrl: process.env.OMNIROUTE_BASE_URL || 'https://api.omniroute.ai/v1',
+    baseUrl: process.env.OMNIROUTE_BASE_URL || 'http://127.0.0.1:20128/v1',
     keyEnv: 'OMNIROUTE_API_KEY',
     models: ['auto'], // OmniRoute auto-selects best available model
     defaultModel: 'auto',
@@ -690,7 +687,7 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
   if (omnirouteKey) {
     providers.push({
       name: 'omniroute',
-      url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL || 'https://api.omniroute.ai/v1'),
+      url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL || 'http://127.0.0.1:20128/v1'),
       key: omnirouteKey,
       model: callerModel,
     });
@@ -733,7 +730,7 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
             Accept: 'application/json',
             // Some upstreams (Cloudflare WAF on the OmniRoute tunnel) reject
             // requests with a bare/node default user agent.
-            'User-Agent': 'DigitallyDefined-Backend/1.0 (+https://digitallydefined.online)',
+            'User-Agent': 'DigitallyDefined-Backend/1.0 (+https://digitallydefined.store)',
           },
           body: JSON.stringify({ ...requestBody, model: provider.model }),
         }, Math.min(12000, Number(options.timeoutMs) || 12000));
@@ -841,7 +838,7 @@ Respond ONLY with a JSON object in this exact format (no markdown, no extra text
 
   // Reuse the exact same resilient provider chain as the chat path
   // (runGeminiAgent): OmniRoute first, then direct-Gemini across a model
-  // fallback list, with the browser-like headers the Cloudflare tunnel needs.
+  // fallback list — OmniRoute runs locally in Docker at http://localhost:20128/v1.
   try {
     const result = await runGeminiAgent(
       prompt,
@@ -1613,9 +1610,6 @@ export default async function handler(req, res) {
     const origin = (req.headers && req.headers.origin) || '';
     const allowed = [
       'https://dashboard.digitallydefined.agency',
-      'https://dashboard.digitallydefined.online',
-      'https://digitallydefined.online',
-      'https://www.digitallydefined.online',
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:5173',

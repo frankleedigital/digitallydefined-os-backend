@@ -1,29 +1,64 @@
-import express from "express";
 import { runIntelligencePipeline } from "../../lib/agentOrchestrator.js";
 import { supabase } from "../../lib/supabaseClient.js";
 
-const router = express.Router();
+// Allowed origins for the dashboard & local development.
+const ALLOWED_ORIGINS = [
+  "https://dashboard.digitallydefined.agency",
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "http://localhost:5173",
+];
 
-router.post("/", async (req, res) => {
+function resolveCorsOrigin(req) {
+  const origin = req.headers && req.headers.origin;
+  if (origin && ALLOWED_ORIGINS.includes(origin)) return origin;
+  return "https://dashboard.digitallydefined.agency";
+}
+
+export default async function handler(req, res) {
+  const corsOrigin = resolveCorsOrigin(req);
+  res.setHeader("Access-Control-Allow-Origin", corsOrigin);
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, x-api-key, apikey, x-user-id"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Vary", "Origin");
+
+  if (req.method === "OPTIONS") {
+    res.statusCode = 200;
+    res.end();
+    return;
+  }
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ success: false, error: "Method not allowed" });
+  }
+
+  // Body is already parsed by Vercel when Content-Type is application/json.
+  const { answers, userId } = req.body || {};
+
+  if (!answers) {
+    return res.status(400).json({
+      success: false,
+      error: "Missing quiz answers",
+    });
+  }
+
   try {
-    const { answers, userId } = req.body;
-
-    if (!answers) {
-      return res.status(400).json({
-        success: false,
-        error: "Missing quiz answers"
-      });
-    }
-
     // Run full intelligence pipeline
     const intelligence = await runIntelligencePipeline(answers);
 
-    // Guarded inserts: a missing table never aborts the response (integration-friendly).
+    // Guarded inserts: a missing table never aborts the response.
     const guardInsert = async (table, payload) => {
       try {
         await supabase.from(table).insert(payload);
       } catch (e) {
-        console.warn(`[intelligence] Skipped store to "${table}":`, e?.message || e);
+        console.warn(
+          `[intelligence] Skipped store to "${table}":`,
+          e?.message || e
+        );
       }
     };
 
@@ -37,7 +72,7 @@ router.post("/", async (req, res) => {
       business_model: intelligence.businessModel,
       recommended_pathways: intelligence.recommendedPathways,
       confidence_score: intelligence.confidenceScore,
-      data: intelligence
+      data: intelligence,
     });
 
     // Store quiz results (legacy shape)
@@ -48,19 +83,19 @@ router.post("/", async (req, res) => {
       persona: intelligence.persona,
       strengths: intelligence.strengths,
       blindspots: intelligence.blindspots,
-      business_model: intelligence.businessModel
+      business_model: intelligence.businessModel,
     });
 
     // Store roadmap
     await guardInsert("quiz_roadmaps", {
       user_id: userId,
-      roadmap: intelligence.roadmap
+      roadmap: intelligence.roadmap,
     });
 
     // Store intelligence aggregate
     await guardInsert("intelligence_results", {
       user_id: userId,
-      data: intelligence
+      data: intelligence,
     });
 
     // Store niche scoring
@@ -71,46 +106,43 @@ router.post("/", async (req, res) => {
         competition_level: intelligence.competitionLevel,
         trend_strength: intelligence.trendStrength,
         niche_viability: intelligence.nicheViability,
-        data: intelligence
+        data: intelligence,
       });
     }
 
     // Store trends
     await guardInsert("trends", {
       user_id: userId,
-      data: intelligence.trends
+      data: intelligence.trends,
     });
 
     // Store competition
     await guardInsert("competition", {
       user_id: userId,
-      data: intelligence.competition
+      data: intelligence.competition,
     });
 
     // Store opportunities
     await guardInsert("opportunities", {
       user_id: userId,
-      data: intelligence.opportunities
+      data: intelligence.opportunities,
     });
 
     // Store audience insights
     await guardInsert("audience_insights", {
       user_id: userId,
-      data: intelligence.audience
+      data: intelligence.audience,
     });
 
-    res.json({
+    res.status(200).json({
       success: true,
-      data: intelligence
+      data: intelligence,
     });
   } catch (err) {
     console.error("Intelligence API Error:", err);
-
     res.status(500).json({
       success: false,
-      error: "Failed to generate intelligence package"
+      error: "Failed to generate intelligence package",
     });
   }
-});
-
-export default router;
+}

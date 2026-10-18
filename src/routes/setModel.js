@@ -23,10 +23,13 @@ const TABLE = 'user_model_preferences';
 
 /** Resolve the acting user id (auth-aware, with a shared fallback). */
 function resolveUserId(req) {
-  const body = req.body || {};
+  const body = (req.body && typeof req.body === 'object') ? req.body : {};
   const fromBody = String(body.user_id || body.userId || '').trim();
   const fromHeader = String(req.headers['x-user-id'] || '').trim();
-  const id = fromBody || fromHeader;
+  // The dashboard issues active-model lookups as GET /api/active-model?user_id=…
+  // (no JSON body), so query params must be honored here as well.
+  const fromQuery = String(req.query?.user_id || req.query?.userId || '').trim();
+  const id = fromBody || fromHeader || fromQuery;
   return id || 'default';
 }
 
