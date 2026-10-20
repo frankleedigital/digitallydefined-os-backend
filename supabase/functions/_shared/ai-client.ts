@@ -53,6 +53,6 @@ export async function callGemini(prompt: string): Promise<Record<string, unknown
   const apiKey = Deno.env.get("GEMINI_API_KEY") || Deno.env.get("GOOGLE_API_KEY") || "";
   if (!apiKey) throw new Error("GEMINI_API_KEY not configured");
   const base = "https://generativelanguage.googleapis.com/v1beta/openai";
-  const model = Deno.env.get("GEMINI_MODEL") || "gemini-2.5-flash";
+  const model = Deno.env.get("GEMINI_MODEL") || "gemini-3.8-flash";
   return chatCompletion(base, apiKey, model, prompt);
 }

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DigitallyDefined — Faceless Digital Real Estate for Gen X Women</title>
+    <meta name="description" content="DigitallyDefined is a lightweight AI-powered platform for Gen X women building faceless digital real estate. Free tools, privacy-first, no hype." />
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="DigitallyDefined — Faceless Digital Real Estate for Gen X Women" />
+    <meta property="og:description" content="Start your path to freedom-based digital ownership. No camera. No invented urgency. No promise of overnight income." />
+    <meta property="og:url" content="https://digitallydefined.online" />
+    <meta property="og:image" content="https://digitallydefined.online/og-image.png" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DigitallyDefined — Faceless Digital Real Estate for Gen X Women" />
+    <meta name="twitter:description" content="Start your path to freedom-based digital ownership. No camera. No invented urgency." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet" />
+    <style>
+      /* Inline critical CSS for first-paint — matches global.css theme tokens */
+      *{box-sizing:border-box;margin:0;padding:0}
+      :root{
+        --color-bg:#FFFCF9;--color-surface:#FFFFFF;--color-text:#111111;
+        --color-text-muted:#6B7280;--color-accent:#F18B25;--color-border:#111111;
+        --color-blue:#47B7D4
+      }
+      html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+      body{font-family:'DM Sans',sans-serif;background:var(--color-bg);color:var(--color-text);padding:2rem 1.25rem}
+      .dd-logo{font-family:'Inter',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.04em;line-height:1;border:1px solid var(--color-border);background:var(--color-surface);padding:.5rem .75rem;display:inline-block}
+      .dd-logo em{color:var(--color-accent);font-style:italic}
+      .dd-badge{font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:1px solid var(--color-border);background:var(--color-surface);padding:.35rem .75rem}
+      .dd-privacy{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--color-text-muted);margin-top:.5rem;width:100%;text-align:center}
+      .dd-hero{text-align:center;margin-bottom:3rem}
+      .dd-hero h1{font-family:'Inter',sans-serif;font-weight:800;font-size:clamp(2.5rem,6vw,4.5rem);letter-spacing:-.03em;text-transform:uppercase;line-height:1;color:var(--color-text);max-width:850px;margin:1.4rem auto}
+      .dd-hero h1 span{color:var(--color-accent)}
+      .dd-hero p{font-size:.85rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--color-blue);margin-top:.75rem}
+      .dd-ctas{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:3rem}
+      .dd-btn{display:inline-block;font-family:'Inter',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--color-border);color:var(--color-text);background:var(--color-accent);padding:1rem 1.5rem;text-decoration:none}
+      .dd-btn--outline{background:var(--color-surface);color:var(--color-text)}
+      .dd-footer{text-align:center;font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--color-text-muted);padding:2rem 1rem 1rem;border-top:1px solid #E5E7EB;margin-top:3rem}
+      .dd-footer a{color:var(--color-accent);text-decoration:none}
+      .dd-orient{border-left:2px solid var(--color-accent);padding:.75rem 1.25rem;background:var(--color-surface);margin-bottom:2rem;font-size:.85rem;font-weight:500;color:var(--color-text);line-height:1.6;max-width:600px;margin-left:auto;margin-right:auto}
+      #root>.static-fallback{display:block}#root:not(.hydrated)>.react-content{display:none}
+      #root.hydrated>.static-fallback{display:none}#root.hydrated>.react-content{display:block}
+    </style>
+  </head>
+  <body>
+    <!-- STATIC FALLBACK CONTENT — visible before React hydrates / when JS is blocked -->
+    <!-- This markup mirrors BrandNav.jsx + Home.jsx structure for SEO and instant first paint -->
+    <div id="root">
+      <div class="static-fallback">
+        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--color-border);padding-bottom:1.5rem;margin-bottom:3rem;flex-wrap:wrap;gap:1rem;max-width:1100px;margin-left:auto;margin-right:auto">
+          <div>
+            <div class="dd-logo">Digitally<em>Defined</em></div>
+            <div style="font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--color-text-muted);margin-top:2px">For Gen X Women Reinventing Themselves, Digitally</div>
+          </div>
+          <span class="dd-badge">DigitallyDefined</span>
+          <div class="dd-privacy">Your inputs stay on this device. No sign-up. No tracking.</div>
+        </div>
+
+        <header class="dd-hero">
+          <span style="font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--color-accent);margin-bottom:.75rem;display:block">Start here / not everywhere</span>
+          <h1>Build Faceless <span>Digital Assets.</span></h1>
+          <p>Start your path to freedom-based digital ownership. No camera. No invented urgency. No promise of overnight income.</p>
+          <p style="font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--color-text-muted);margin-top:.5rem">Your inputs stay on this device. Nothing is stored or sent.</p>
+        </header>
+
+        <p class="dd-orient">
+          Take the 2-minute quiz to find your digital asset superpower, or calculate your retirement gap to face the numbers first.
+        </p>
+
+        <div class="dd-ctas">
+          <a href="/quiz?start=true" class="dd-btn">Find Your Superpower →</a>
+          <a href="/gap" class="dd-btn dd-btn--outline">Calculate My Gap →</a>
+        </div>
+
+        <footer class="dd-footer">
+          &copy; 2026 <a href="https://digitallydefined.online">DigitallyDefined</a> — Digital Real Estate Group — All Rights Reserved
+        </footer>
+      </div>
+
+      <!-- REACT MOUNT POINT — hidden until hydration completes -->
+      <div class="react-content">
+        <div id="react-mount"></div>
+      </div>
+    </div>
+    <script>
+      // Hide static fallback, show React content once mounted
+      // If JS fails, the static fallback remains visible
+      var root = document.getElementById('root');
+      root.classList.add('hydrated');
+    </script>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

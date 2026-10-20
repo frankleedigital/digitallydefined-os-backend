@@ -1,0 +1,197 @@
+ALLOWED_ACTIONS (39):
+[
+ "ai.recommendations",
+ "antigravity",
+ "antigravity.buildTemplate",
+ "antigravity.createNotionPage",
+ "antigravity.reconcileDatabase",
+ "antigravity.runAutomation",
+ "antigravity.status",
+ "antigravity.updateDatabase",
+ "auth.verify",
+ "automation.events",
+ "automation.list",
+ "automation.logs",
+ "automation.run",
+ "automation.sync",
+ "brain.brief",
+ "chat",
+ "contact",
+ "dashboard",
+ "hermes.agent",
+ "hermes.getActiveModel",
+ "hermes.setActiveModel",
+ "integration.community",
+ "integration.community.start",
+ "integration.email",
+ "integration.email.start",
+ "integration.google.start",
+ "integration.googleAnalytics",
+ "integration.social",
+ "integration.social.start",
+ "intelligence",
+ "license.verify",
+ "mentor.dev",
+ "public.chat",
+ "quiz.complete",
+ "status",
+ "subscribe",
+ "test-env",
+ "website.content",
+ "website.edit"
+]
+
+=== ACTIONS USED BY FRONTENDS ===
+  ai.recommendations                       os-backend
+  antigravity                              dashboard, os-backend
+  antigravity.buildTemplate                os-backend
+  antigravity.createNotionPage             os-backend
+  antigravity.reconcileDatabase            os-backend
+  antigravity.runAutomation                os-backend
+  antigravity.status                       dashboard, os-backend
+  antigravity.updateDatabase               os-backend
+  auth.verify                              os-backend
+  automation.events                        os-backend
+  automation.list                          dashboard, os-backend
+  automation.logs                          os-backend
+  automation.run                           os-backend
+  automation.sync                          os-backend
+  brain.brief                              os-backend
+  chat                                     dashboard, os-backend
+  contact                                  os-backend
+  dashboard                                dashboard, os-backend, os-workers
+  hermes.agent                             dashboard, os-backend
+  hermes.getActiveModel                    dashboard, os-backend
+  hermes.setActiveModel                    os-backend
+  integration.community                    dashboard, os-backend
+  integration.community.start              dashboard, os-backend
+  integration.email                        dashboard, os-backend
+  integration.email.start                  dashboard, os-backend
+  integration.google.start                 dashboard, os-backend
+  integration.googleAnalytics              dashboard, os-backend
+  integration.social                       dashboard, os-backend
+  integration.social.start                 dashboard, os-backend
+  intelligence                             dashboard, os-backend
+  license.verify                           dashboard, os-backend
+  mentor.dev                               dashboard, os-backend
+  public.chat                              dashboard, os-backend
+  quiz.complete                            dashboard, os-backend
+  status                                   dashboard, os-backend, os-workers
+  subscribe                                dashboard, os-backend
+  test-env                                 os-backend
+  website.content                          dashboard, os-backend
+  website.edit                             os-backend
+
+=== action-registry.ts (42 strings) ===
+['agent.', 'ai.recommendations', 'antigravity', 'antigravity.buildTemplate', 'antigravity.createNotionPage', 'antigravity.reconcileDatabase', 'antigravity.runAutomation', 'antigravity.status', 'antigravity.updateDatabase', 'auth.verify', 'automation.events', 'automation.list', 'automation.logs', 'automation.run', 'automation.sync', 'brain.brief', 'chat', 'contact', 'dashboard', 'fastapi.', 'hermes.agent', 'hermes.getActiveModel', 'hermes.setActiveModel', 'integration.community', 'integration.community.start', 'integration.email', 'integration.email.start', 'integration.google.start', 'integration.googleAnalytics', 'integration.social', 'integration.social.start', 'intelligence', 'license.verify', 'mentor.dev', 'public.chat', 'quiz.complete', 'routes', 'status', 'subscribe', 'test-env', 'website.content', 'website.edit']
+
+In api/index.js but NOT in action-registry.ts: []
+
+=== DashboardPage.jsx: 1526 LOC ===
+imports: 14
+useEffect: 3
+useState: 20
+fetch calls: 3
+inline style objects: 101
+function definitions: 22
+top-level components: ['API_URL', 'API_KEY', 'API_HEADERS', 'ASSISTANT_MODEL', 'MetricCard', 'InfoBlock', 'EmptyState', 'CommandTab', 'ReputationTab', 'IntelTab', 'BrainTab', 'AutomationsTab', 'DashboardAssistant', 'DashboardPage']
+
+=== NOTION CLIENT IMPLEMENTATIONS ===
+  os-backend: api/index.js (1628 LOC)
+  os-backend: fastapi/app/notion_architect.py (446 LOC)
+  os-backend: lib/antigravity.js (315 LOC)
+  os-backend: lib/notion-client.js (59 LOC)
+  os-backend: lib/notion-client.mjs (116 LOC)
+  os-backend: lib/sync-aggregator.js (788 LOC)
+  os-backend: scripts/notion-architect-reconcile.mjs (180 LOC)
+  os-backend: src/config/constants.js (119 LOC)
+  os-backend: src/config/env.js (565 LOC)
+  os-backend: src/routes/_original-index-backup.js (1458 LOC)
+  os-backend: supabase/functions/hermes/index.ts (1709 LOC)
+  os-backend: supabase/functions/notion-sync/index.ts (368 LOC)
+  os-backend: supabase/functions/_shared/notion-client.ts (59 LOC)
+  os-backend: supabase/functions/_shared/notion-write.ts (162 LOC)
+  os-backend: supabase/functions/_shared/sync-aggregator.ts (788 LOC)
+  os-workers: scripts/smoke-test.mjs (102 LOC)
+  os-workers: src/agents/notionArchitect.ts (328 LOC)
+  os-workers: src/api/routes.ts (233 LOC)
+  os-workers: src/config/env.ts (73 LOC)
+  os-workers: src/notion/client.ts (282 LOC)
+
+=== EMAIL PROVIDER IMPLEMENTATIONS ===
+  dashboard: src/lib/integrations/config.js -> ['mailchimp']
+  dashboard: src/lib/integrations/email.js -> ['mailchimp']
+  dashboard: src/lib/integrations/integrations.js -> ['mailchimp']
+  dashboard: src/pages/GrowthTab.jsx -> ['mailchimp']
+  os-backend: api/index.js -> ['brevo', 'mailchimp']
+  os-backend: lib/sync-aggregator.js -> ['brevo']
+  os-backend: src/routes/integrations.js -> ['mailchimp']
+  os-backend: src/routes/integrationsDispatch.js -> ['brevo']
+  os-backend: src/routes/_original-index-backup.js -> ['brevo', 'mailchimp']
+  os-backend: src/services/brevo.js -> ['brevo', 'smtp']
+  os-backend: src/services/integrations.js -> ['brevo']
+  os-backend: supabase/functions/hermes/index.ts -> ['mailchimp']
+  os-backend: supabase/functions/_shared/brevo-email.ts -> ['brevo', 'smtp']
+  os-backend: supabase/functions/_shared/email-publish.ts -> ['sendgrid']
+  os-backend: supabase/functions/_shared/sync-aggregator.ts -> ['brevo']
+
+=== AI ROUTER IMPLEMENTATIONS ===
+  dashboard: public/customer-config.js (191 LOC)
+  dashboard: src/config.js (446 LOC)
+  dashboard: src/configMerge.js (134 LOC)
+  dashboard: src/pages/AssistantPage.jsx (323 LOC)
+  dashboard: src/pages/DashboardPage.jsx (1526 LOC)
+  os-backend: agents/index.js (136 LOC)
+  os-backend: ai/types.ts (82 LOC)
+  os-backend: ai/gateway/client.ts (179 LOC)
+  os-backend: ai/gateway/router.ts (100 LOC)
+  os-backend: api/index.js (1628 LOC)
+  os-backend: api/models/index.js (44 LOC)
+  os-backend: fastapi/app/config.py (74 LOC)
+  os-backend: fastapi/app/deps.py (57 LOC)
+  os-backend: fastapi/app/llm.py (305 LOC)
+  os-backend: fastapi/app/main.py (132 LOC)
+  os-backend: fastapi/app/config/environment.py (124 LOC)
+  os-backend: fastapi/app/data/migration_report.py (44 LOC)
+  os-backend: fastapi/app/routers/niche.py (67 LOC)
+  os-backend: fastapi/app/services/asset_plan_service.py (100 LOC)
+  os-backend: fastapi/app/services/product_generator.py (83 LOC)
+  os-backend: fastapi/app/services/rankrent_service.py (45 LOC)
+  os-backend: fastapi/app/services/wealth_service.py (76 LOC)
+  os-backend: lib/errors.ts (97 LOC)
+  os-backend: lib/hermesMcp.js (330 LOC)
+  os-backend: lib/llmClient.js (292 LOC)
+  os-backend: lib/sync-aggregator.js (788 LOC)
+  os-backend: prompts/hermesSystemPrompt.js (39 LOC)
+  os-backend: prompts/hermesSystemPrompt.ts (39 LOC)
+  os-backend: scripts/build.js (113 LOC)
+  os-backend: scripts/hermes-mcp-server.mjs (84 LOC)
+  os-backend: scripts/push-vercel-env.mjs (151 LOC)
+  os-backend: scripts/smoke-hermes-mcp.mjs (105 LOC)
+  os-backend: scripts/test-hermes-brand-builder.js (84 LOC)
+  os-backend: scripts/test-omniroute-agentops.js (75 LOC)
+  os-backend: scripts/test-omniroute-models.mjs (96 LOC)
+  os-backend: scripts/test-omniroute.js (207 LOC)
+  os-backend: scripts/test-qa-agent.js (105 LOC)
+  os-backend: scripts/test-qa-integration.js (136 LOC)
+  os-backend: src/config/constants.js (119 LOC)
+  os-backend: src/config/env.js (565 LOC)
+  os-backend: src/config/index.js (36 LOC)
+  os-backend: src/config/models.js (168 LOC)
+  os-backend: src/routes/businessPartner.js (257 LOC)
+  os-backend: src/routes/dispatch.js (307 LOC)
+  os-backend: src/routes/setModel.js (212 LOC)
+  os-backend: src/routes/_original-index-backup.js (1458 LOC)
+  os-backend: src/services/ai.js (140 LOC)
+  os-backend: src/services/aiRouter.js (373 LOC)
+  os-backend: src/services/fastapi.js (165 LOC)
+  os-backend: supabase/functions/analytics/index.ts (550 LOC)
+  os-backend: supabase/functions/hermes/index.ts (1709 LOC)
+  os-backend: supabase/functions/hermes/puter-workspace.js (274 LOC)
+  os-backend: supabase/functions/quiz-submit/index.ts (89 LOC)
+  os-backend: supabase/functions/reputation/index.ts (67 LOC)
+  os-backend: supabase/functions/_shared/ai-client.ts (58 LOC)
+  os-backend: supabase/functions/_shared/aiRouter.ts (39 LOC)
+  os-backend: supabase/functions/_shared/hermesSystemPrompt.ts (37 LOC)
+  os-backend: supabase/functions/_shared/omniroute.ts (424 LOC)
+  os-backend: supabase/functions/_shared/sync-aggregator.ts (788 LOC)

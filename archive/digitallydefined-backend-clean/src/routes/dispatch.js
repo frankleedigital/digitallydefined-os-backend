@@ -1,0 +1,307 @@
+// src/routes/dispatch.js — Catch-all action dispatcher
+// The dashboard sends POST / with { action, ...payload }.
+// This routes every action to the correct handler.
+
+import { checkDashboardApiKey } from '../middleware/auth.js';
+import logger from '../utils/logger.js';
+
+export async function handleDispatch(req, res) {
+  if (!checkDashboardApiKey(req)) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const body = req.body || {};
+  const action = body.action || '';
+  if (!action) return res.status(400).json({ error: 'Missing action field' });
+
+  logger.info('Dispatch request', { action });
+  console.log('[dispatch] action:', action);
+
+  // FastAPI microservice tools (fastapi.<tool>).
+  // Checked BEFORE the agent-name branch below: `fastapi.niche` would otherwise
+  // be treated as an agent call, because the code strips a leading `agent.` and
+  // then matches the bare name.
+  if (action.startsWith('fastapi.')) {
+    try {
+      const { default: fastapiRoute } = await import('./fastapiDispatch.js');
+      return await fastapiRoute.handleFastapi(req, res);
+    } catch (err) {
+      logger.error('FastAPI dispatch failed', { action, error: err.message });
+      return res.status(500).json({ success: false, error: err.message || 'FastAPI request failed' });
+    }
+  }
+
+  // Agent endpoints (niche, roadmap, scorecard, product, social, trends,
+  // competition, opportunities, audience).
+  // NOTE: `quiz` is intentionally NOT here — quiz actions route to
+  // quizDispatch below so submissions persist server-side and return the
+  // canonical quiz/roadmap shape. `dashboard` and `chat` are also not agents;
+  // they are named routes delegated below. Including them here caused
+  // guaranteed 500s (Phase 1 fix).
+  const agentNames = ['niche', 'roadmap', 'scorecard', 'product', 'social', 'trends', 'competition', 'opportunities', 'audience'];
+  const agentName = action.startsWith('agent.') ? action.replace('agent.', '') : action;
+  if (agentNames.includes(agentName)) {
+    try {
+      const { executeAgent } = await import('../agents/index.js');
+      const result = await executeAgent(agentName, body.inputData || body);
+      return res.status(200).json({ success: true, data: result, provider: result.provider || null, model: result.model || null, timestamp: Date.now() });
+    } catch (err) {
+      logger.error('Agent dispatch failed', { agent: agentName, error: err.message });
+      return res.status(500).json({ success: false, error: err.message || 'Agent request failed', provider: null, model: null, timestamp: Date.now() });
+    }
+  }
+
+  // Dashboard — delegated to the existing named route (NOT a dispatch agent).
+  if (action === 'dashboard' || action === 'agent.dashboard') {
+    try {
+      const { default: dashboardRoute } = await import('./dashboard.js');
+      const handler = dashboardRoute.handleDashboard || dashboardRoute;
+      return await handler(req, res);
+    } catch (err) {
+      logger.error('Dashboard dispatch failed', { error: err.message });
+      return res.status(500).json({ success: false, error: err.message || 'Dashboard failed' });
+    }
+  }
+
+  // Chat — delegated to the existing named route (NOT a dispatch agent).
+  if (action === 'chat' || action === 'agent.chat') {
+    try {
+      const chatMod = await import('./chat.js');
+      const handler = chatMod.default?.handleChat || chatMod.handleChat;
+      req.body = { ...body, message: body.message || body.content || '', history: body.history || [], systemPrompt: body.systemPrompt || '' };
+      return await handler(req, res);
+    } catch (err) {
+      logger.error('Chat dispatch failed', { error: err.message });
+      return res.status(500).json({ success: false, error: err.message || 'Chat failed' });
+    }
+  }
+
+  // Hermes / Mentor availability.
+  //
+  // The public site polls this to decide whether to show the mentor widget's
+  // live indicator. It must never fail hard: the widget degrades to "offline"
+  // rather than blanking the page, so every branch returns 200 with an
+  // `available` boolean and a reason.
+  if (action === 'hermes.status' || action === 'mentor.status' || action === 'agent.hermes-status') {
+    const status = { available: false, provider: null, model: null, reason: null };
+    try {
+      const { isOmniRouteConfigured, describeRouting } = await import('../services/aiRouter.js');
+      if (isOmniRouteConfigured()) {
+        status.available = true;
+        status.provider = 'omniroute';
+        status.reason = 'gateway configured';
+        try { status.routing = describeRouting(); } catch { /* diagnostics are best effort */ }
+      } else {
+        status.reason = 'AI gateway not configured';
+      }
+    } catch (err) {
+      status.reason = err.message || 'status check failed';
+    }
+    return res.status(200).json({ success: true, ...status, timestamp: Date.now() });
+  }
+
+  // Mentor conversation — answers a build-phase question with the Hermes
+  // business-partner voice. Same persona as business.partner, but scoped to
+  // short, contextual guidance rather than full business analysis.
+  //
+  // Contract: this ALWAYS answers 200. A degraded model chain is a normal
+  // operating state (the gateway can be down or a provider rate-limited), not a
+  // client error — the widget renders a graceful message either way, so a 500
+  // would break the mentor panel.
+  if (action === 'mentor' || action === 'mentor.dev' || action === 'agent.mentor') {
+    const question = String(body.message || body.input || '').trim();
+    if (!question) return res.status(400).json({ success: false, error: 'message is required' });
+
+    const systemPrompt =
+      'You are Hermes, the DigitallyDefined mentor. Answer the build-phase question directly and ' +
+      'practically in under six sentences. Calm, specific, no hype, no emoji, no markdown headings. ' +
+      'If you do not know something, say so.';
+
+    let result = null;
+    try {
+      const { aiRouter } = await import('../services/aiRouter.js');
+      result = await aiRouter.generate(null, question, { job: 'chat', systemPrompt, jsonMode: false });
+    } catch (err) {
+      // Never let a provider throw escape as a 5xx.
+      logger.error('Mentor provider threw', { error: err.message });
+      result = { error: err.message || 'provider threw' };
+    }
+
+    if (result.error || !result.reply) {
+      const reason = result.error || 'provider returned an empty reply';
+      logger.warn('Mentor unavailable', { error: reason });
+      return res.status(200).json({
+        success: false,
+        available: false,
+        degraded: true,
+        reply: 'Hermes is not answering right now. Your work is saved — try again in a moment.',
+        error: reason,
+        data: { reply: null },
+        provider: result.provider || null,
+        model: result.model || null,
+        timestamp: Date.now(),
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      available: true,
+      degraded: false,
+      reply: result.reply,
+      data: { reply: result.reply },
+      provider: result.provider,
+      model: result.model,
+      timestamp: Date.now(),
+    });
+  }
+
+  // Quiz — routes to the real quizDispatch handler (quiz / quiz.complete /
+  // agent.quiz / quiz.submit all persist server-side).
+  if (action === 'quiz' || action === 'quiz.complete' || action === 'quiz.submit' || action === 'agent.quiz') {
+    try {
+      const quizMod = await import('./quizDispatch.js');
+      const handler = quizMod.handleQuiz || quizMod.default?.handleQuiz;
+      return await handler(req, res);
+    } catch (err) {
+      logger.error('Quiz dispatch failed', { error: err.message });
+      return res.status(500).json({ success: false, error: err.message || 'Quiz failed', timestamp: Date.now() });
+    }
+  }
+
+  // Quiz roadmap lookup.
+  if (action === 'quiz.roadmap' || action === 'quiz.roadmap.get') {
+    try {
+      const quizMod = await import('./quizDispatch.js');
+      const handler = quizMod.handleQuizRoadmap || quizMod.default?.handleQuizRoadmap;
+      return await handler(req, res);
+    } catch (err) {
+      logger.error('Quiz roadmap dispatch failed', { error: err.message });
+      return res.status(500).json({ success: false, error: err.message || 'Quiz roadmap failed', timestamp: Date.now() });
+    }
+  }
+
+  // Intelligence & personalize — real composed pipeline.
+  if (action === 'intelligence' || action === 'personalize' || action === 'agent.intelligence') {
+    try {
+      const intelMod = await import('./intelligenceDispatch.js');
+      const handler = intelMod.handleIntelligence || intelMod.default?.handleIntelligence;
+      return await handler(req, res);
+    } catch (err) {
+      logger.error('Intelligence dispatch failed', { error: err.message });
+      return res.status(500).json({ success: false, error: err.message || 'Intelligence failed', timestamp: Date.now() });
+    }
+  }
+
+  // Integrations
+  if (action.startsWith('integration.')) {
+    try {
+      const mod = await import('./integrationsDispatch.js');
+      const handler = action.endsWith('.start') ? mod.handleIntegrationStart : mod.handleIntegrationData;
+      return await handler(req, res, action);
+    } catch (err) {
+      logger.error('Integration dispatch failed', { action, error: err.message });
+      return res.status(500).json({ error: err.message || 'Integration failed' });
+    }
+  }
+
+  // Notion
+  if (action.startsWith('notion.')) {
+    try {
+      const notionMod = await import('../services/notion.js');
+      const innerAction = action.replace('notion.', '');
+      const handler = notionMod[innerAction] || notionMod.default?.[innerAction];
+      if (typeof handler === 'function') return await handler(req, res);
+      const listActions = Object.keys(notionMod.default || notionMod).filter((k) => typeof (notionMod.default || notionMod)[k] === 'function');
+      return res.status(200).json({ success: true, data: { scaffolded: true, action: innerAction, availableActions: listActions }, provider: null, model: null, timestamp: Date.now() });
+    } catch (err) {
+      logger.error('Notion dispatch failed', { action, error: err.message });
+      return res.status(500).json({ success: false, error: err.message || 'Notion dispatch failed', timestamp: Date.now() });
+    }
+  }
+
+    // Antigravity (Notion Architect)
+  if (action.startsWith('antigravity.')) {
+    try {
+      const am = await import('../services/antigravity.js');
+      const innerAction = action.replace('antigravity.', '');
+      req.body = { ...body, action: innerAction };
+      const handler = am.default?.handleAntigravity || am.handleAntigravity;
+      return await handler(req, res);
+    } catch (err) {
+      logger.error('Antigravity dispatch failed', { action, error: err.message });
+      return res.status(500).json({ ok: false, action, error: err.message || 'Antigravity failed' });
+    }
+  }
+
+  // Onboarding
+  if (action.startsWith('onboarding.')) {
+    try {
+      const mod = await import('./onboardingDispatch.js');
+      const handler = mod.handleOnboarding || mod.default?.handleOnboarding;
+      return await handler(req, res);
+    } catch (err) {
+      logger.error('Onboarding dispatch failed', { action, error: err.message });
+      return res.status(500).json({ success: false, error: err.message || 'Onboarding failed', timestamp: Date.now() });
+    }
+  }
+
+  // Website content
+  if (action === 'website.content') {
+    return res.status(200).json({ success: true, data: { content: body.content || null }, provider: null, model: null, timestamp: Date.now() });
+  }
+
+  // Subscribe — wires to Brevo (real) in a later phase; emits canonical envelope.
+  if (action === 'subscribe') {
+    const email = body.email || '';
+    if (!email) return res.status(400).json({ ok: false, error: 'Email required' });
+    logger.info('Subscribe', { email });
+    return res.status(200).json({ ok: true, success: true, message: 'Subscribed', data: { email, provider: 'brevo' }, timestamp: Date.now() });
+  }
+
+  // License verify — delegated to premium service (real Gumroad verification).
+  if (action === 'license.verify') {
+    try {
+      const { verifyLicense } = await import('../services/premium.js');
+      const result = await verifyLicense({ licenseKey: body.licenseKey || body.license_key || '', email: body.email || '', productId: body.productId || body.product_permalink || '' });
+      return res.status(200).json({ ok: true, ...result });
+    } catch (err) {
+      logger.error('License verify dispatch failed', { error: err.message });
+      return res.status(500).json({ ok: true, licensed: false, reason: 'License verification failed: ' + err.message });
+    }
+  }
+
+  // Hermes agent / chat
+  if (['hermes.agent', 'public.chat', 'mentor.dev'].includes(action)) {
+    try {
+      const chatMod = await import('./chat.js');
+      const handler = chatMod.default?.handleChat || chatMod.handleChat;
+      req.body = { ...body, message: body.message || body.content || '' };
+      return await handler(req, res);
+    } catch (err) {
+      logger.error('Chat dispatch failed', { error: err.message });
+      return res.status(500).json({ error: err.message || 'Chat failed' });
+    }
+  }
+
+  // AI Business Partner — structured JSON business intelligence
+  if (action === 'business.partner' || action === 'agent.business-partner') {
+    try {
+      const bpMod = await import('./businessPartner.js');
+      const handler = bpMod.default?.handleBusinessPartner || bpMod.handleBusinessPartner;
+      return await handler(req, res);
+    } catch (err) {
+      logger.error('Business partner dispatch failed', { error: err.message });
+      return res.status(500).json({ error: err.message || 'Business partner failed' });
+    }
+  }
+
+  // Analytics / events / optimization / report — scaffolded (persistence in Phase 2).
+  if (['analytics', 'events', 'optimization', 'report'].includes(action)) {
+    return res.status(200).json({ success: true, data: { action, processed: false, message: 'Received' }, provider: null, model: null, timestamp: Date.now() });
+  }
+
+  logger.warn('Unknown action', { action });
+  return res.status(404).json({ error: 'Unknown action: ' + action });
+}
+
+export default { handleDispatch };

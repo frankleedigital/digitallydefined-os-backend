@@ -1,0 +1,239 @@
+
+=== DashboardPage.jsx (1526 LOC) ===
+  inline style objects : 101
+  useState             : 20
+  useEffect            : 3
+  useMemo              : 1
+  useCallback           : 0
+  JSX components <X     : 38
+  fetch calls          : 3
+  console.log          : 1
+  TODO/FIXME/HACK      : 0
+  action === branches  : 0
+  action.startsWith    : 0
+  try/catch blocks     : 0
+  inline functions =>  : 72
+
+=== NotionTab.jsx (303 LOC) ===
+  inline style objects : 25
+  useState             : 0
+  useEffect            : 0
+  useMemo              : 0
+  useCallback           : 0
+  JSX components <X     : 60
+  fetch calls          : 0
+  console.log          : 0
+  TODO/FIXME/HACK      : 0
+  action === branches  : 0
+  action.startsWith    : 0
+  try/catch blocks     : 0
+  inline functions =>  : 18
+
+=== AntigravityPage.jsx (351 LOC) ===
+  inline style objects : 23
+  useState             : 7
+  useEffect            : 1
+  useMemo              : 0
+  useCallback           : 0
+  JSX components <X     : 5
+  fetch calls          : 0
+  console.log          : 0
+  TODO/FIXME/HACK      : 0
+  action === branches  : 0
+  action.startsWith    : 0
+  try/catch blocks     : 0
+  inline functions =>  : 15
+
+=== AssistantPage.jsx (323 LOC) ===
+  inline style objects : 0
+  useState             : 6
+  useEffect            : 2
+  useMemo              : 0
+  useCallback           : 0
+  JSX components <X     : 0
+  fetch calls          : 0
+  console.log          : 0
+  TODO/FIXME/HACK      : 0
+  action === branches  : 0
+  action.startsWith    : 0
+  try/catch blocks     : 0
+  inline functions =>  : 23
+
+=== config.js (446 LOC) ===
+  inline style objects : 0
+  useState             : 0
+  useEffect            : 0
+  useMemo              : 0
+  useCallback           : 0
+  JSX components <X     : 0
+  fetch calls          : 0
+  console.log          : 0
+  TODO/FIXME/HACK      : 0
+  action === branches  : 0
+  action.startsWith    : 0
+  try/catch blocks     : 0
+  inline functions =>  : 0
+
+=== index.css (705 LOC) ===
+  inline style objects : 0
+  useState             : 0
+  useEffect            : 0
+  useMemo              : 0
+  useCallback           : 0
+  JSX components <X     : 0
+  fetch calls          : 0
+  console.log          : 0
+  TODO/FIXME/HACK      : 0
+  action === branches  : 0
+  action.startsWith    : 0
+  try/catch blocks     : 0
+  inline functions =>  : 0
+
+=== os-backend api/index.js (1628 LOC) ===
+  inline style objects : 0
+  useState             : 0
+  useEffect            : 0
+  useMemo              : 0
+  useCallback           : 0
+  JSX components <X     : 0
+  fetch calls          : 1
+  console.log          : 0
+  TODO/FIXME/HACK      : 0
+  action === branches  : 27
+  action.startsWith    : 3
+  try/catch blocks     : 0
+  inline functions =>  : 13
+
+=== hermes edge fn (1709 LOC) ===
+  inline style objects : 0
+  useState             : 0
+  useEffect            : 0
+  useMemo              : 0
+  useCallback           : 0
+  JSX components <X     : 5
+  fetch calls          : 13
+  console.log          : 4
+  TODO/FIXME/HACK      : 4
+  action === branches  : 28
+  action.startsWith    : 4
+  try/catch blocks     : 0
+  inline functions =>  : 35
+
+=== lib/sync-aggregator.js (788 LOC) ===
+  inline style objects : 0
+  useState             : 0
+  useEffect            : 0
+  useMemo              : 0
+  useCallback           : 0
+  JSX components <X     : 0
+  fetch calls          : 7
+  console.log          : 7
+  TODO/FIXME/HACK      : 0
+  action === branches  : 0
+  action.startsWith    : 0
+  try/catch blocks     : 0
+  inline functions =>  : 26
+
+=== _shared/sync-aggregator.ts (788 LOC) ===
+  inline style objects : 0
+  useState             : 0
+  useEffect            : 0
+  useMemo              : 0
+  useCallback           : 0
+  JSX components <X     : 0
+  fetch calls          : 7
+  console.log          : 7
+  TODO/FIXME/HACK      : 0
+  action === branches  : 0
+  action.startsWith    : 0
+  try/catch blocks     : 0
+  inline functions =>  : 26
+
+=== _original-index-backup.js (1458 LOC) ===
+  inline style objects : 0
+  useState             : 0
+  useEffect            : 0
+  useMemo              : 0
+  useCallback           : 0
+  JSX components <X     : 0
+  fetch calls          : 1
+  console.log          : 0
+  TODO/FIXME/HACK      : 0
+  action === branches  : 27
+  action.startsWith    : 3
+  try/catch blocks     : 0
+  inline functions =>  : 12
+
+=== src/config/env.js (565 LOC) ===
+  inline style objects : 0
+  useState             : 0
+  useEffect            : 0
+  useMemo              : 0
+  useCallback           : 0
+  JSX components <X     : 0
+  fetch calls          : 0
+  console.log          : 2
+  TODO/FIXME/HACK      : 0
+  action === branches  : 0
+  action.startsWith    : 0
+  try/catch blocks     : 0
+  inline functions =>  : 58
+
+=== fastapi/app/main.py (132 LOC) ===
+  inline style objects : 0
+  useState             : 0
+  useEffect            : 0
+  useMemo              : 0
+  useCallback           : 0
+  JSX components <X     : 0
+  fetch calls          : 0
+  console.log          : 0
+  TODO/FIXME/HACK      : 0
+  action === branches  : 0
+  action.startsWith    : 0
+  try/catch blocks     : 0
+  inline functions =>  : 0
+
+=== src/services/aiRouter.js (373 LOC) ===
+  inline style objects : 0
+  useState             : 0
+  useEffect            : 0
+  useMemo              : 0
+  useCallback           : 0
+  JSX components <X     : 0
+  fetch calls          : 4
+  console.log          : 4
+  TODO/FIXME/HACK      : 0
+  action === branches  : 0
+  action.startsWith    : 0
+  try/catch blocks     : 0
+  inline functions =>  : 15
+
+=== src/services/antigravity.js (511 LOC) ===
+  inline style objects : 0
+  useState             : 0
+  useEffect            : 0
+  useMemo              : 0
+  useCallback           : 0
+  JSX components <X     : 0
+  fetch calls          : 2
+  console.log          : 0
+  TODO/FIXME/HACK      : 0
+  action === branches  : 5
+  action.startsWith    : 0
+  try/catch blocks     : 0
+  inline functions =>  : 22
+
+=== index.css specifics ===
+  CSS custom props (--dd-*) : 15
+  box-shadow declarations   : 6
+  border-radius declarations: 2
+  !important               : 35
+  media queries             : 1
+  @keyframes               : 4
+  class selectors           : 31
+
+=== fastapi/app/main.py specifics ===
+  include_router           : 13
+  CORS allow_origins       : []
+  middleware               : 3

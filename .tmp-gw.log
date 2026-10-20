@@ -1,0 +1,1582 @@
+▲ Next.js 16.3.1
+- Local:         http://localhost:20128
+- Network:       http://0.0.0.0:20128
+✓ Ready in 0ms
+✓ Running next.config took 16ms
+[DB] Changing cache_size from 65536KB to 16384KB
+[DB] cache_size changed to 16384KB
+[DB] SQLite database ready: C:\Users\frank\.omniroute\storage.sqlite (DATA_DIR=C:\Users\frank\.omniroute, SQLITE_FILE=C:\Users\frank\.omniroute\storage.sqlite)
+[CREDENTIALS] No external credentials file found, using defaults.
+[STARTUP] Global fetch proxy patch initialized
+[STARTUP] JWT_SECRET auto-generated and persisted (random 64-char secret)
+[STARTUP] API_KEY_SECRET auto-generated and persisted (random 64-char hex secret)
+[proxyLogger] Loaded 200 proxy logs from SQLite
+[Shutdown] Graceful shutdown handlers registered.
+[STARTUP] Spend batch writer started
+[STARTUP] Guardrail registry initialized
+[STARTUP] Builtin skill handlers registered
+[STARTUP] Quota cache background refresh started
+[ProviderLimitsSync] Scheduler started — interval: 70m
+[STARTUP] Provider limits sync scheduler started
+[INFO] [QuotaAutoPing] scheduler started
+[STARTUP] Quota auto-ping scheduler started (opt-in, no-op until enabled)
+[ModelSync] Scheduler started — interval: 24h
+[STARTUP] Cloud/model sync background bootstrap initialized
+[BATCH] Initializing batch processor polling...
+[STARTUP] Batch processor started
+[HealthCheck] Refreshing antigravity/fra***********@******com (token expiring soon)
+[HealthCheck] Refreshing agy/aut***************@******com (token expiring soon)
+[STARTUP] Runtime settings hydrated: payloadRules, modelAliases, backgroundDegradation, cliCompatProviders, cacheControl, usageTracking, healthCheckLogs, thoughtSignature, modelsDevSync, corsOrigins, ccBridgeTransforms, systemTransforms, authzBypass, bannedSignals
+[STARTUP] Model alias seed: applied=0, skipped=5, removed=0, failed=0
+[HOT_RELOAD] Runtime config hot-reload started (poll=5000ms, fsWatch=on)
+[CredentialHealth] Starting credential health check (initial delay 30s, interval 300s)
+[STARTUP] Credential health scheduler started
+[COMPLIANCE] Audit log table initialized
+[COMPLIANCE] Expired log cleanup: {
+  deletedUsage: 0,
+  deletedCallLogs: 0,
+  deletedProxyLogs: 0,
+  deletedRequestDetailLogs: 0,
+  deletedAuditLogs: 2,
+  deletedMcpAuditLogs: 0,
+  trimmedCallLogs: 0,
+  trimmedProxyLogs: 0,
+  appRetentionDays: 7,
+  callRetentionDays: 7,
+  callLogsMaxRows: 100000,
+  proxyLogsMaxRows: 100000
+}
+[STARTUP] Scheduled VACUUM initialized (#4437)
+[Cleanup] Background cleanup scheduler started (every 6 hours).
+[INFO] [MEMORY_MANAGER] Registered backend {"id":"sqlite","displayName":"SQLite"}
+[AutoRefreshDaemon] Started — checking 0 credentials every 900s
+[ARENA_ELO_SYNC] Starting periodic sync every 86400s
+[PRICING_SYNC] Disabled (set PRICING_SYNC_ENABLED=true to enable)
+[STARTUP] Arena ELO sync initialized
+[ConnectionRecovery] Starting proactive cooldown recovery (tick every 60s)
+[OpenRouterProviderStats] Starting periodic sync every 86400s
+[STARTUP] OpenRouter provider stats sync initialized
+[STARTUP] Live dashboard WebSocket daemon bootstrap invoked
+[STARTUP] Embedded services bootstrap complete
+[MODELS_DEV] Disabled (enable via Settings > AI or MODELS_DEV_SYNC_ENABLED=1)
+[INFO] [MEMORY_MANAGER] Configured backends {"primary":"sqlite","fallbacks":[]}
+[INFO] [SQLITE_BACKEND] sqlite.backend.initialized
+[INFO] [MEMORY_MANAGER] Initialized backend {"id":"sqlite"}
+[EmbedWsProxy] Listening on 127.0.0.1:20131
+[LiveWS] Dashboard WebSocket server listening on 127.0.0.1:20132
+[STARTUP] Model catalog cache warmed
+[ModelSync] Starting model sync cycle — 21 connection(s)
+[CredentialHealth] Testing 34/34 connections...
+[Cleanup] Starting auto-cleanup...
+[Cleanup] Deleted 0 quota_snapshots older than 90 days
+[Cleanup] Deleted 0 call_logs older than 90 days
+[Aggregation] usage_history rollup: 0 rows for dates before 2025-09-27
+[Cleanup] Deleted 0 usage_history older than 365 days
+[Cleanup] Deleted 0 compression_analytics older than 30 days
+[Cleanup] Deleted 0 mcp_tool_audit older than 30 days
+[Cleanup] Deleted 0 config_audit_log older than 30 days
+[Cleanup] Deleted 0 a2a_task_events older than 30 days
+[Cleanup] Deleted 0 memory_entries older than 180 days
+[Cleanup] Deleted 0 domain_cost_history older than 30 days
+[Cleanup] Deleted 0 compression_cache_stats older than 30 days
+[Cleanup] Deleted 0 xp_audit_log older than 30 days
+[Cleanup] Deleted 0 compression_run_telemetry older than 30 days
+[Cleanup] Deleted 0 proxy_logs older than 90 days
+[Cleanup] Deleted 0 expired ccr_blocks
+[Cleanup] Auto-cleanup complete: 0 deleted, 0 errors
+[Cleanup] Deleted 0 proxy_logs older than 90 days
+[ProxyHealth] Starting proxy health scheduler (interval: 600000ms)
+[ModelSync] main (3fe78042): ✓ 0 models
+[CredentialHealth] ❌ bluesminds/20f278c8-6dbe-4243-9816-4a9cfb3d54d5 — Invalid API key [3828ms] (failure #1, next check in 600s)
+[CredentialHealth] ❌ nara/02b9702a-3ba2-49ca-b116-364453e40aac — Invalid API key [4383ms] (failure #1, next check in 600s)
+[ModelSync] main (02b9702a): ✓ 3 models
+[ModelSync] main (d6f41d35): ✓ 3 models
+[ModelSync] Dahl Account 1 (e097e7ba): ✓ 2 models
+[ModelSync] main (9d6e061e): ✓ 11 models
+[STARTUP] OpenRouter model catalog cache warmed
+Error fetching models from provider {
+  provider: 'bluesminds',
+  errorText: '{"error":{"code":"","message":"Invalid token (request id: 202609272042315951472168268d9d6DwGAfxNI)","type":"new_api_error"}}'
+}
+[ModelSync] frankielee1971@gmail.com (0fb4fb3b): ✓ 394 models
+[ModelSync] main (46e49891): ✓ 39 models
+[ModelSync] main (01ff3c30): ✓ 3 models
+[ModelSync] main (7102fbc7): ✓ 48 models
+[ModelSync] main (fb90fade): ✓ 3 models
+[CredentialHealth] ❌ g4f-groq/94acb33a-375a-42fc-9e85-8fc4156c730e — Invalid API key [4239ms] (failure #1, next check in 600s)
+Error fetching models from provider {
+  provider: 'agentrouter',
+  errorText: '{"error":{"message":"无效的令牌 (request id: 202609280442341136105468v6bbxhDRZ6oD)","type":"new_api_error"}}'
+}
+Error fetching models from provider {
+  provider: 'naga-ai',
+  errorText: '{"error":{"type":"invalid_api_key","message":"The provided API key is invalid. Please ensure your API key is correct and active. You can find more information about obtaining a key on our website: https://naga.ac If you just created this key, wait a few minutes and try again."}}'
+}
+[CredentialHealth] ❌ agentrouter/b9fd421a-e9e0-4c34-bdeb-a38c1b052ee5 — Invalid API key [6435ms] (failure #1, next check in 600s)
+[ModelSync] main (fd910c7b): ✓ 138 models
+[ModelSync] Codex profile auto-sync skipped for huggingface: catalog_http_401
+[CredentialHealth] ❌ naga-ai/53acc754-440c-41f4-b4b3-27370ff3b357 — Invalid API key [2801ms] (failure #1, next check in 600s)
+[CredentialHealth] ❌ cheaperinference/46e49891-7c67-42b5-98a1-68a84fb16611 — Invalid API key [2908ms] (failure #1, next check in 600s)
+[ModelSync] main (7d43093e): ✓ 9 models
+[ProviderLimitsSync] Cycle complete: 4/4 synced in 15366ms
+[ModelSync] main (a60c5fd0): ✓ 2 models
+[ModelSync] main (11180195): ✓ 7 models
+[ModelSync] Claude profile auto-sync skipped for huggingface: catalog_http_401
+[CredentialHealth] ❌ openrouter/cd3a73ee-ef74-43aa-bb60-746e178cf550 — Invalid API key [6164ms] (failure #1, next check in 600s)
+[CredentialHealth] ❌ openadapter/67141c8b-3c35-4c50-83c3-1348d77b15c2 — Invalid API key [6178ms] (failure #1, next check in 600s)
+[CredentialHealth] ❌ agnes/01ff3c30-2b71-40a1-bc5d-d686511ff0a0 — Invalid API key [6204ms] (failure #1, next check in 600s)
+[ModelSync] main (cd3a73ee): ✓ 21 models
+Error fetching models from provider {
+  provider: 'groq',
+  errorText: '{"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}\n'
+}
+[CredentialHealth] ❌ jules/b00d2f73-0d33-4d27-ae42-6923b8be18ca — Invalid API key [599ms] (failure #1, next check in 600s)
+[ModelSync] Cycle complete: 15/21 synced in 27392ms
+[CredentialHealth] ❌ zai-web/3fe78042-dd01-47ad-b3c5-35299a10f0ae — Invalid or expired Z.ai web-session credential — copy a fresh "token" value from chat.z.ai Local Storage. [785ms] (failure #1, next check in 600s)
+[CredentialHealth] ❌ gemini/e52be291-e1e6-458f-aa39-83af7ecce603 — Invalid API key [162ms] (failure #1, next check in 600s)
+[CredentialHealth] ❌ groq/5ab995be-74f6-444b-be0a-fac52f50fa03 — Invalid API key [279ms] (failure #1, next check in 600s)
+[CredentialHealth] ❌ antigravity/8f74a9ad-f5a8-42fd-9744-902ddd4f6e7d — Token invalid or revoked [334ms] (failure #1, next check in 600s)
+[CredentialHealth] ❌ tokenrouter/5d7b0442-d8ba-4742-a9c4-3ec29e06bbd8 — Invalid API key [876ms] (failure #1, next check in 600s)
+[CredentialHealth] ❌ huggingface/fd910c7b-9a67-4a38-bf7b-dcad72025c93 — Invalid API key [252ms] (failure #1, next check in 600s)
+[CredentialHealth] ❌ aion/704bdb75-62c7-42fa-9ea7-28b755d39cf4 — Invalid API key [488ms] (failure #1, next check in 600s)
+[CredentialHealth] ❌ agy/12886b75-a3a0-4922-bce6-5a80577fd06e — Token invalid or revoked [837ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 18 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-27T20:43:26.940Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.946Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.949Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.952Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.954Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.957Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.961Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.964Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.966Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.969Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.972Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.974Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.977Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.980Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.982Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.985Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.988Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 12886b75 error cleared"}
+{"level":30,"time":"2026-09-27T20:43:26.990Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 8f74a9ad error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[proxyLogger] Loaded 200 proxy logs from SQLite
+[SSE] Translators initialized
+[INFO] [PLUGIN_MANAGER] manager.loadAll {"count":0}
+[bottleneck-patch] Applied doExpire fix for Bottleneck v2.19.5
+[bottleneck-patch] Applied _startHeartbeat fix for Bottleneck v2.19.5
+🛡️ [RATE-LIMIT] Loaded 0 explicit + 31 auto-enabled protection(s)
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":30,"time":"2026-09-27T20:48:17.304Z","service":"omniroute","module":"sse","tag":"HTTP","method":"POST","path":"/v1/chat/completions | omni/free-best | 1 msgs","msg":"📥 POST /v1/chat/completions | omni/free-best | 1 msgs"}
+{"level":30,"time":"2026-09-27T20:48:17.332Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"Combo \"omni/free-best\" [priority] with 8 models"}
+{"level":30,"time":"2026-09-27T20:48:17.372Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"priority with nested resolution: 8 total targets"}
+{"level":30,"time":"2026-09-27T20:48:17.409Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:b259c... has no available affinity target"}
+{"level":40,"time":"2026-09-27T20:48:17.423Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:17.424Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":30,"time":"2026-09-27T20:48:17.425Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:b259c... has no available affinity target"}
+{"level":40,"time":"2026-09-27T20:48:17.431Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:17.432Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:48:17.456Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:17.456Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":30,"time":"2026-09-27T20:48:17.459Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:b259c... has no available affinity target"}
+{"level":30,"time":"2026-09-27T20:48:17.461Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:b259c... has no available affinity target"}
+{"level":40,"time":"2026-09-27T20:48:17.464Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"kiro | 1 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:17.464Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for kiro"}
+{"level":40,"time":"2026-09-27T20:48:17.474Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:17.475Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:48:17.480Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:17.480Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":30,"time":"2026-09-27T20:48:17.484Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:b259c... has no available affinity target"}
+{"level":30,"time":"2026-09-27T20:48:17.485Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 3/8: fastrouter/deepseek/deepseek-v3.2"}
+{"level":30,"time":"2026-09-27T20:48:17.491Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: fastrouter, Model: deepseek/deepseek-v3.2"}
+{"level":30,"time":"2026-09-27T20:48:17.493Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using fastrouter account: ***..."}
+{"level":30,"time":"2026-09-27T20:48:18.103Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=omni/free-best"}
+{"level":30,"time":"2026-09-27T20:48:18.126Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 163840 (source=target)"}
+[MODEL] Treating "deepseek/deepseek-v3.2" as an exact model id
+[31m[ERROR] [401]: Missing API key. Include your key in the Authorization header as: Authorization: Bearer YOUR_API_KEY[0m
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":50,"time":"2026-09-27T20:48:21.383Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for fastrouter"}
+{"level":40,"time":"2026-09-27T20:48:21.383Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"FASTROUTER | refresh failed"}
+{"level":40,"time":"2026-09-27T20:48:21.465Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account a80de610... unavailable (401), trying fallback"}
+{"level":40,"time":"2026-09-27T20:48:21.468Z","service":"omniroute","module":"sse","tag":"CHAT","provider":"fastrouter","model":"deepseek/deepseek-v3.2","lastStatus":401,"msg":"Preserving last upstream error after credential exhaustion"}
+{"level":30,"time":"2026-09-27T20:48:21.470Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider fastrouter connection a80de610-b627-4394-a086-3fec7cd80277 auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:48:21.471Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[401]: Missing API key. Include your key in the Authorization header as: Authorization: [REDACTED] [REDACTED]","msg":"Model fastrouter/deepseek/deepseek-v3.2 failed, trying next"}
+{"level":40,"time":"2026-09-27T20:48:21.478Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:21.478Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":30,"time":"2026-09-27T20:48:21.482Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 5/8: fastrouter/google/gemini-2.5-flash"}
+{"level":30,"time":"2026-09-27T20:48:21.486Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: fastrouter, Model: google/gemini-2.5-flash"}
+{"level":30,"time":"2026-09-27T20:48:21.488Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using fastrouter account: ***..."}
+{"level":30,"time":"2026-09-27T20:48:21.498Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=omni/free-best"}
+{"level":30,"time":"2026-09-27T20:48:21.513Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 1048576 (source=target)"}
+[MODEL] Treating "google/gemini-2.5-flash" as an exact model id
+[31m[ERROR] [401]: Missing API key. Include your key in the Authorization header as: Authorization: Bearer YOUR_API_KEY[0m
+[ProxyEgress] fastrouter status=error
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":50,"time":"2026-09-27T20:48:25.434Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for fastrouter"}
+{"level":40,"time":"2026-09-27T20:48:25.434Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"FASTROUTER | refresh failed"}
+{"level":30,"time":"2026-09-27T20:48:26.005Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"a80de610 terminal status=expired, skipping cooldown overwrite"}
+{"level":40,"time":"2026-09-27T20:48:26.005Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account a80de610... unavailable (401), trying fallback"}
+{"level":40,"time":"2026-09-27T20:48:26.007Z","service":"omniroute","module":"sse","tag":"CHAT","provider":"fastrouter","model":"google/gemini-2.5-flash","lastStatus":401,"msg":"Preserving last upstream error after credential exhaustion"}
+{"level":30,"time":"2026-09-27T20:48:26.009Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider fastrouter connection a80de610-b627-4394-a086-3fec7cd80277 auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:48:26.009Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[401]: Missing API key. Include your key in the Authorization header as: Authorization: [REDACTED] [REDACTED]","msg":"Model fastrouter/google/gemini-2.5-flash failed, trying next"}
+{"level":30,"time":"2026-09-27T20:48:26.026Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:b259c... has no available affinity target"}
+{"level":30,"time":"2026-09-27T20:48:26.028Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 6/8: agnes/agnes-2.0-flash"}
+{"level":30,"time":"2026-09-27T20:48:26.039Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: agnes, Model: agnes-2.0-flash"}
+{"level":30,"time":"2026-09-27T20:48:26.044Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using agnes account: ***..."}
+{"level":30,"time":"2026-09-27T20:48:26.073Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=omni/free-best"}
+{"level":30,"time":"2026-09-27T20:48:26.113Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 262144 (source=target)"}
+[31m[ERROR] [401]: Token not provided (request id: 20260927204826534257540kavm9dFm)[0m
+[ProxyEgress] agnes status=error
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":50,"time":"2026-09-27T20:48:29.680Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for agnes"}
+{"level":40,"time":"2026-09-27T20:48:29.680Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"AGNES | refresh failed"}
+{"level":40,"time":"2026-09-27T20:48:29.720Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30... unavailable (401), trying fallback"}
+{"level":40,"time":"2026-09-27T20:48:29.722Z","service":"omniroute","module":"sse","tag":"CHAT","provider":"agnes","model":"agnes-2.0-flash","lastStatus":401,"msg":"Preserving last upstream error after credential exhaustion"}
+{"level":30,"time":"2026-09-27T20:48:29.723Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider agnes connection 01ff3c30-2b71-40a1-bc5d-d686511ff0a0 auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:48:29.724Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[401]: Token not provided (request id: 20260927204826534257540kavm9dFm)","msg":"Model agnes/agnes-2.0-flash failed, trying next"}
+{"level":30,"time":"2026-09-27T20:48:29.734Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:b259c... has no available affinity target"}
+{"level":30,"time":"2026-09-27T20:48:29.740Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 7/8: kilocode/mistralai/codestral-2508"}
+{"level":30,"time":"2026-09-27T20:48:29.749Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: kilocode, Model: mistralai/codestral-2508"}
+{"level":30,"time":"2026-09-27T20:48:29.759Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:b259c... has no available affinity target"}
+{"level":30,"time":"2026-09-27T20:48:29.763Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using kilocode account: ***..."}
+{"level":30,"time":"2026-09-27T20:48:29.789Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=omni/free-best"}
+{"level":30,"time":"2026-09-27T20:48:29.809Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 256000 (source=target)"}
+[31m[ERROR] [401]: You need to sign in to use this model.[0m
+[ProxyEgress] kilocode status=error
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":50,"time":"2026-09-27T20:48:33.149Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for kilocode"}
+{"level":40,"time":"2026-09-27T20:48:33.150Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"KILOCODE | refresh failed"}
+{"level":40,"time":"2026-09-27T20:48:33.176Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 0fb4fb3b... unavailable (401), trying fallback"}
+{"level":30,"time":"2026-09-27T20:48:33.181Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using kilocode account: ***..."}
+{"level":30,"time":"2026-09-27T20:48:33.190Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=omni/free-best"}
+{"level":30,"time":"2026-09-27T20:48:33.203Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 256000 (source=target)"}
+[31m[ERROR] [401]: You need to sign in to use this model.[0m
+[ProxyEgress] kilocode status=error
+{"level":50,"time":"2026-09-27T20:48:36.482Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for kilocode"}
+{"level":40,"time":"2026-09-27T20:48:36.482Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"KILOCODE | refresh failed"}
+{"level":40,"time":"2026-09-27T20:48:36.613Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account noauth... unavailable (401), trying fallback"}
+{"level":40,"time":"2026-09-27T20:48:36.616Z","service":"omniroute","module":"sse","tag":"CHAT","provider":"kilocode","model":"mistralai/codestral-2508","lastStatus":401,"msg":"Preserving last upstream error after credential exhaustion"}
+{"level":30,"time":"2026-09-27T20:48:36.618Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider kilocode connection noauth auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:48:36.619Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[401]: You need to sign in to use this model.","msg":"Model kilocode/mistralai/codestral-2508 failed, trying next"}
+{"level":40,"time":"2026-09-27T20:48:36.626Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"kiro | 1 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:36.626Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for kiro"}
+{"level":40,"time":"2026-09-27T20:48:36.627Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"All models failed | fastrouter/deepseek/deepseek-v3.2: auth — [401]: Missing API key. Include your key in the Authorization header as: Authorization: [REDACTED] [REDACTED] (HTTP 401); fastrouter/google/gemini-2.5-flash: auth — [401]: Missing API key. Include your key in the Authorization header as: Authorization: [REDACTED] [REDACTED] (HTTP 401); agnes/agnes-2.0-flash: auth — [401]: Token not provided (request id: 20260927204826534257540kavm9dFm) (HTTP 401); kilocode/mistralai/codestral-2508: auth — [401]: You need to sign in to use this model. (HTTP 401)"}
+{"level":30,"time":"2026-09-27T20:48:36.630Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"combo trace combo-0dcff85b-46a7-4586-8036-1616e4117d0e terminal={\"status\":401,\"errorClass\":null} decisions=8"}
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":30,"time":"2026-09-27T20:48:49.397Z","service":"omniroute","module":"sse","tag":"HTTP","method":"POST","path":"/v1/chat/completions | omni/free-best | 1 msgs","msg":"📥 POST /v1/chat/completions | omni/free-best | 1 msgs"}
+{"level":30,"time":"2026-09-27T20:48:49.444Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"Combo \"omni/free-best\" [priority] with 8 models"}
+{"level":30,"time":"2026-09-27T20:48:49.458Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"priority with nested resolution: 8 total targets"}
+{"level":40,"time":"2026-09-27T20:48:49.509Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:49.509Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:48:49.518Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:49.519Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:48:49.533Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:49.533Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:48:49.544Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"kiro | 1 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:49.545Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for kiro"}
+{"level":40,"time":"2026-09-27T20:48:49.557Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:49.557Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:48:49.750Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:49.750Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":30,"time":"2026-09-27T20:48:49.756Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 3/8: fastrouter/deepseek/deepseek-v3.2"}
+{"level":30,"time":"2026-09-27T20:48:49.768Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: fastrouter, Model: deepseek/deepseek-v3.2"}
+{"level":40,"time":"2026-09-27T20:48:49.783Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"[fastrouter] All 1 connection(s) authentication expired — please reconnect in the dashboard"}
+{"level":30,"time":"2026-09-27T20:48:49.787Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider fastrouter auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:48:49.787Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[fastrouter] All 1 connection(s) authentication expired — please reconnect in the dashboard","msg":"Model fastrouter/deepseek/deepseek-v3.2 failed, trying next"}
+{"level":40,"time":"2026-09-27T20:48:49.794Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:49.794Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":30,"time":"2026-09-27T20:48:49.794Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping fastrouter/google/gemini-2.5-flash — provider fastrouter marked exhausted this request (#1731)"}
+{"level":30,"time":"2026-09-27T20:48:49.797Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 6/8: agnes/agnes-2.0-flash"}
+{"level":30,"time":"2026-09-27T20:48:49.801Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: agnes, Model: agnes-2.0-flash"}
+{"level":40,"time":"2026-09-27T20:48:49.804Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"[agnes] All 1 connection(s) authentication expired — please reconnect in the dashboard"}
+{"level":30,"time":"2026-09-27T20:48:49.807Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider agnes auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:48:49.807Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[agnes] All 1 connection(s) authentication expired — please reconnect in the dashboard","msg":"Model agnes/agnes-2.0-flash failed, trying next"}
+{"level":30,"time":"2026-09-27T20:48:49.815Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 7/8: kilocode/mistralai/codestral-2508"}
+{"level":30,"time":"2026-09-27T20:48:49.824Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: kilocode, Model: mistralai/codestral-2508"}
+{"level":30,"time":"2026-09-27T20:48:49.826Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using kilocode account: ***..."}
+{"level":30,"time":"2026-09-27T20:48:49.840Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=omni/free-best"}
+{"level":30,"time":"2026-09-27T20:48:49.857Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 256000 (source=target)"}
+[31m[ERROR] [401]: You need to sign in to use this model.[0m
+[ProxyEgress] kilocode status=error
+{"level":50,"time":"2026-09-27T20:48:53.197Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for kilocode"}
+{"level":40,"time":"2026-09-27T20:48:53.198Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"KILOCODE | refresh failed"}
+{"level":40,"time":"2026-09-27T20:48:53.252Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account noauth... unavailable (401), trying fallback"}
+{"level":40,"time":"2026-09-27T20:48:53.253Z","service":"omniroute","module":"sse","tag":"CHAT","provider":"kilocode","model":"mistralai/codestral-2508","lastStatus":401,"msg":"Preserving last upstream error after credential exhaustion"}
+{"level":30,"time":"2026-09-27T20:48:53.254Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider kilocode connection noauth auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:48:53.255Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[401]: You need to sign in to use this model.","msg":"Model kilocode/mistralai/codestral-2508 failed, trying next"}
+{"level":40,"time":"2026-09-27T20:48:53.267Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"kiro | 1 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:53.267Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for kiro"}
+{"level":40,"time":"2026-09-27T20:48:53.269Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"All models failed | fastrouter/deepseek/deepseek-v3.2: auth — [fastrouter] All 1 connection(s) authentication expired — please reconnect in the dashboard (HTTP 401); agnes/agnes-2.0-flash: auth — [agnes] All 1 connection(s) authentication expired — please reconnect in the dashboard (HTTP 401); kilocode/mistralai/codestral-2508: auth — [401]: You need to sign in to use this model. (HTTP 401)"}
+{"level":30,"time":"2026-09-27T20:48:53.269Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"combo trace combo-7303afd4-a03a-4afb-b0d5-0b49b3f16c03 terminal={\"status\":401,\"errorClass\":null} decisions=8"}
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":30,"time":"2026-09-27T20:48:54.099Z","service":"omniroute","module":"sse","tag":"HTTP","method":"POST","path":"/v1/chat/completions | omni/free-best | 1 msgs","msg":"📥 POST /v1/chat/completions | omni/free-best | 1 msgs"}
+{"level":30,"time":"2026-09-27T20:48:54.215Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"Combo \"omni/free-best\" [priority] with 8 models"}
+{"level":30,"time":"2026-09-27T20:48:54.222Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"priority with nested resolution: 8 total targets"}
+{"level":40,"time":"2026-09-27T20:48:55.037Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:55.038Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:48:55.056Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:55.056Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:48:55.086Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:55.087Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:48:55.103Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"kiro | 1 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:55.103Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for kiro"}
+{"level":40,"time":"2026-09-27T20:48:55.110Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:55.111Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:48:55.222Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:55.222Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":30,"time":"2026-09-27T20:48:55.249Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 3/8: fastrouter/deepseek/deepseek-v3.2"}
+{"level":30,"time":"2026-09-27T20:48:55.298Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: fastrouter, Model: deepseek/deepseek-v3.2"}
+{"level":40,"time":"2026-09-27T20:48:55.336Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"[fastrouter] All 1 connection(s) authentication expired — please reconnect in the dashboard"}
+{"level":30,"time":"2026-09-27T20:48:55.337Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider fastrouter auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:48:55.337Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[fastrouter] All 1 connection(s) authentication expired — please reconnect in the dashboard","msg":"Model fastrouter/deepseek/deepseek-v3.2 failed, trying next"}
+{"level":40,"time":"2026-09-27T20:48:55.551Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:55.551Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":30,"time":"2026-09-27T20:48:55.554Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping fastrouter/google/gemini-2.5-flash — provider fastrouter marked exhausted this request (#1731)"}
+{"level":30,"time":"2026-09-27T20:48:55.608Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 6/8: agnes/agnes-2.0-flash"}
+{"level":30,"time":"2026-09-27T20:48:55.622Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: agnes, Model: agnes-2.0-flash"}
+{"level":40,"time":"2026-09-27T20:48:55.639Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"[agnes] All 1 connection(s) authentication expired — please reconnect in the dashboard"}
+{"level":30,"time":"2026-09-27T20:48:55.645Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider agnes auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:48:55.646Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[agnes] All 1 connection(s) authentication expired — please reconnect in the dashboard","msg":"Model agnes/agnes-2.0-flash failed, trying next"}
+{"level":30,"time":"2026-09-27T20:48:55.700Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 7/8: kilocode/mistralai/codestral-2508"}
+{"level":30,"time":"2026-09-27T20:48:55.784Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: kilocode, Model: mistralai/codestral-2508"}
+{"level":30,"time":"2026-09-27T20:48:55.790Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using kilocode account: ***..."}
+{"level":30,"time":"2026-09-27T20:48:55.870Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=omni/free-best"}
+{"level":30,"time":"2026-09-27T20:48:55.925Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 256000 (source=target)"}
+[31m[ERROR] [401]: You need to sign in to use this model.[0m
+[ProxyEgress] kilocode status=error
+{"level":50,"time":"2026-09-27T20:48:59.342Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for kilocode"}
+{"level":40,"time":"2026-09-27T20:48:59.342Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"KILOCODE | refresh failed"}
+{"level":40,"time":"2026-09-27T20:48:59.382Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account noauth... unavailable (401), trying fallback"}
+{"level":40,"time":"2026-09-27T20:48:59.384Z","service":"omniroute","module":"sse","tag":"CHAT","provider":"kilocode","model":"mistralai/codestral-2508","lastStatus":401,"msg":"Preserving last upstream error after credential exhaustion"}
+{"level":30,"time":"2026-09-27T20:48:59.384Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider kilocode connection noauth auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:48:59.385Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[401]: You need to sign in to use this model.","msg":"Model kilocode/mistralai/codestral-2508 failed, trying next"}
+{"level":40,"time":"2026-09-27T20:48:59.388Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"kiro | 1 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:48:59.388Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for kiro"}
+{"level":40,"time":"2026-09-27T20:48:59.388Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"All models failed | fastrouter/deepseek/deepseek-v3.2: auth — [fastrouter] All 1 connection(s) authentication expired — please reconnect in the dashboard (HTTP 401); agnes/agnes-2.0-flash: auth — [agnes] All 1 connection(s) authentication expired — please reconnect in the dashboard (HTTP 401); kilocode/mistralai/codestral-2508: auth — [401]: You need to sign in to use this model. (HTTP 401)"}
+{"level":30,"time":"2026-09-27T20:48:59.389Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"combo trace combo-edae2e56-e04c-412f-a2fd-d1e559016906 terminal={\"status\":401,\"errorClass\":null} decisions=8"}
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":30,"time":"2026-09-27T20:50:18.380Z","service":"omniroute","module":"sse","tag":"HTTP","method":"POST","path":"/v1/chat/completions | omni/free-best | 1 msgs","msg":"📥 POST /v1/chat/completions | omni/free-best | 1 msgs"}
+{"level":30,"time":"2026-09-27T20:50:18.404Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"Combo \"omni/free-best\" [priority] with 8 models"}
+{"level":30,"time":"2026-09-27T20:50:18.406Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"priority with nested resolution: 8 total targets"}
+{"level":40,"time":"2026-09-27T20:50:18.433Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:50:18.434Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:50:18.439Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:50:18.439Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:50:18.446Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:50:18.446Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:50:18.461Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"kiro | 1 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:50:18.461Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for kiro"}
+{"level":40,"time":"2026-09-27T20:50:18.469Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:50:18.469Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:50:18.475Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:50:18.475Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":30,"time":"2026-09-27T20:50:18.477Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 3/8: fastrouter/deepseek/deepseek-v3.2"}
+{"level":30,"time":"2026-09-27T20:50:18.485Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: fastrouter, Model: deepseek/deepseek-v3.2"}
+{"level":40,"time":"2026-09-27T20:50:18.488Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"[fastrouter] All 1 connection(s) authentication expired — please reconnect in the dashboard"}
+{"level":30,"time":"2026-09-27T20:50:18.489Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider fastrouter auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:50:18.489Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[fastrouter] All 1 connection(s) authentication expired — please reconnect in the dashboard","msg":"Model fastrouter/deepseek/deepseek-v3.2 failed, trying next"}
+{"level":40,"time":"2026-09-27T20:50:18.494Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:50:18.494Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":30,"time":"2026-09-27T20:50:18.494Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping fastrouter/google/gemini-2.5-flash — provider fastrouter marked exhausted this request (#1731)"}
+{"level":30,"time":"2026-09-27T20:50:18.496Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 6/8: agnes/agnes-2.0-flash"}
+{"level":30,"time":"2026-09-27T20:50:18.497Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: agnes, Model: agnes-2.0-flash"}
+{"level":40,"time":"2026-09-27T20:50:18.499Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"[agnes] All 1 connection(s) authentication expired — please reconnect in the dashboard"}
+{"level":30,"time":"2026-09-27T20:50:18.500Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider agnes auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:50:18.500Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[agnes] All 1 connection(s) authentication expired — please reconnect in the dashboard","msg":"Model agnes/agnes-2.0-flash failed, trying next"}
+{"level":30,"time":"2026-09-27T20:50:18.506Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 7/8: kilocode/mistralai/codestral-2508"}
+{"level":30,"time":"2026-09-27T20:50:18.509Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: kilocode, Model: mistralai/codestral-2508"}
+{"level":30,"time":"2026-09-27T20:50:18.510Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using kilocode account: ***..."}
+{"level":30,"time":"2026-09-27T20:50:18.518Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=omni/free-best"}
+{"level":30,"time":"2026-09-27T20:50:18.526Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 256000 (source=target)"}
+[31m[ERROR] [401]: You need to sign in to use this model.[0m
+[ProxyEgress] kilocode status=error
+{"level":50,"time":"2026-09-27T20:50:21.881Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"🔴 Circuit breaker tripped for kilocode: 5 consecutive failures. Blocked for 30min. Provider needs re-authentication."}
+{"level":50,"time":"2026-09-27T20:50:21.882Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for kilocode"}
+{"level":40,"time":"2026-09-27T20:50:21.882Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"KILOCODE | refresh failed"}
+{"level":40,"time":"2026-09-27T20:50:21.897Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account noauth... unavailable (401), trying fallback"}
+{"level":40,"time":"2026-09-27T20:50:21.898Z","service":"omniroute","module":"sse","tag":"CHAT","provider":"kilocode","model":"mistralai/codestral-2508","lastStatus":401,"msg":"Preserving last upstream error after credential exhaustion"}
+{"level":30,"time":"2026-09-27T20:50:21.899Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider kilocode connection noauth auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:50:21.899Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[401]: You need to sign in to use this model.","msg":"Model kilocode/mistralai/codestral-2508 failed, trying next"}
+{"level":40,"time":"2026-09-27T20:50:21.903Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"kiro | 1 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:50:21.904Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for kiro"}
+{"level":40,"time":"2026-09-27T20:50:21.904Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"All models failed | fastrouter/deepseek/deepseek-v3.2: auth — [fastrouter] All 1 connection(s) authentication expired — please reconnect in the dashboard (HTTP 401); agnes/agnes-2.0-flash: auth — [agnes] All 1 connection(s) authentication expired — please reconnect in the dashboard (HTTP 401); kilocode/mistralai/codestral-2508: auth — [401]: You need to sign in to use this model. (HTTP 401)"}
+{"level":30,"time":"2026-09-27T20:50:21.904Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"combo trace combo-5049c87d-a2f0-4d81-ad3f-078b450f7c92 terminal={\"status\":401,\"errorClass\":null} decisions=8"}
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":30,"time":"2026-09-27T20:50:31.073Z","service":"omniroute","module":"sse","tag":"HTTP","method":"POST","path":"/v1/chat/completions | auto/best-chat | 1 msgs","msg":"📥 POST /v1/chat/completions | auto/best-chat | 1 msgs"}
+{"level":40,"time":"2026-09-27T20:50:31.091Z","service":"omniroute","module":"sse","tag":"AUTO","msg":"Invalid auto prefix format: auto/best-chat"}
+{"level":30,"time":"2026-09-27T20:50:31.281Z","service":"omniroute","module":"sse","tag":"AUTO","msg":"Virtual auto-combo created: auto/best-chat (2 candidates)"}
+{"level":30,"time":"2026-09-27T20:50:31.282Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"Combo \"auto/best-chat\" [auto] with 13 models"}
+{"level":30,"time":"2026-09-27T20:50:31.284Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"auto with nested resolution: 13 total targets"}
+{"level":30,"time":"2026-09-27T20:50:31.364Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Auto selection: oc/big-pickle | intent=medium task=default | strategy=lkgp | RulesStrategy: score=0.497 (quota=1.00, health=1.00, cost=0.00, taskFit=0.50)"}
+{"level":30,"time":"2026-09-27T20:50:31.378Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 1/13: oc/big-pickle"}
+{"level":30,"time":"2026-09-27T20:50:31.381Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"oc/big-pickle → opencode/big-pickle"}
+{"level":30,"time":"2026-09-27T20:50:31.382Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using opencode account: ***..."}
+{"level":30,"time":"2026-09-27T20:50:31.394Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=auto/best-chat"}
+{"level":30,"time":"2026-09-27T20:50:31.395Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 200000 (source=target)"}
+[31m[ERROR] [403]: Error from provider (Console): OpenCode's free tier can only be used from within OpenCode[0m
+[ProxyEgress] opencode status=error
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":50,"time":"2026-09-27T20:50:34.679Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for opencode"}
+{"level":40,"time":"2026-09-27T20:50:34.680Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"OPENCODE | refresh failed"}
+{"level":30,"time":"2026-09-27T20:50:34.695Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Model-only lockout for opencode:big-pickle — 403 forbidden 3s (per-model quota provider, connection stays active)"}
+{"level":30,"time":"2026-09-27T20:50:34.697Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider opencode connection noauth auth failure (403) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:50:34.697Z","service":"omniroute","module":"sse","tag":"COMBO","status":403,"errorBody":"[403]: Error from provider (Console): OpenCode's free tier can only be used from within OpenCode","msg":"Model oc/big-pickle failed, trying next"}
+{"level":30,"time":"2026-09-27T20:50:34.698Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping oc/muse-spark-1.2 — connection noauth for provider opencode had connection error (#1731v2)"}
+{"level":30,"time":"2026-09-27T20:50:34.698Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping oc/muse-spark-1.2-contributor-free — connection noauth for provider opencode had connection error (#1731v2)"}
+{"level":30,"time":"2026-09-27T20:50:34.699Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping oc/deepseek-v4-flash-free — connection noauth for provider opencode had connection error (#1731v2)"}
+{"level":30,"time":"2026-09-27T20:50:34.699Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping oc/mimo-v2.5-free — connection noauth for provider opencode had connection error (#1731v2)"}
+{"level":30,"time":"2026-09-27T20:50:34.699Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping oc/hy3-free — connection noauth for provider opencode had connection error (#1731v2)"}
+{"level":30,"time":"2026-09-27T20:50:34.699Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping oc/nemotron-3-ultra-free — connection noauth for provider opencode had connection error (#1731v2)"}
+{"level":30,"time":"2026-09-27T20:50:34.700Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping oc/north-mini-code-free — connection noauth for provider opencode had connection error (#1731v2)"}
+{"level":30,"time":"2026-09-27T20:50:34.701Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 9/13: felo/felo-chat"}
+{"level":30,"time":"2026-09-27T20:50:34.702Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"felo/felo-chat → felo-web/felo-chat"}
+{"level":30,"time":"2026-09-27T20:50:34.703Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using felo-web account: ***..."}
+{"level":30,"time":"2026-09-27T20:50:34.710Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=auto/best-chat"}
+{"level":30,"time":"2026-09-27T20:50:34.710Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 128000 (source=fallback)"}
+[31m[ERROR] [400]: Felo thread creation failed with HTTP 400[0m
+[ProxyEgress] felo-web status=error
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":40,"time":"2026-09-27T20:50:35.261Z","service":"omniroute","module":"sse","tag":"COMBO","status":400,"errorBody":"[400]: Felo thread creation failed with HTTP 400","msg":"Model felo/felo-chat failed, trying next"}
+{"level":30,"time":"2026-09-27T20:50:35.262Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 10/13: felo/felo-search"}
+{"level":30,"time":"2026-09-27T20:50:35.266Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"felo/felo-search → felo-web/felo-search"}
+{"level":30,"time":"2026-09-27T20:50:35.267Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using felo-web account: ***..."}
+{"level":30,"time":"2026-09-27T20:50:35.273Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=auto/best-chat"}
+{"level":30,"time":"2026-09-27T20:50:35.273Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 128000 (source=fallback)"}
+[31m[ERROR] [400]: Felo thread creation failed with HTTP 400[0m
+[ProxyEgress] felo-web status=error
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":40,"time":"2026-09-27T20:50:36.048Z","service":"omniroute","module":"sse","tag":"COMBO","status":400,"errorBody":"[400]: Felo thread creation failed with HTTP 400","msg":"Model felo/felo-search failed, trying next"}
+{"level":30,"time":"2026-09-27T20:50:36.052Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 11/13: felo/felo-scholar"}
+{"level":30,"time":"2026-09-27T20:50:36.055Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"felo/felo-scholar → felo-web/felo-scholar"}
+{"level":30,"time":"2026-09-27T20:50:36.057Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using felo-web account: ***..."}
+{"level":30,"time":"2026-09-27T20:50:36.075Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=auto/best-chat"}
+{"level":30,"time":"2026-09-27T20:50:36.077Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 128000 (source=fallback)"}
+[31m[ERROR] [429]: Felo thread creation failed with HTTP 429[0m
+[ProxyEgress] felo-web status=error
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":30,"time":"2026-09-27T20:50:36.862Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping retry for felo/felo-scholar — model lockout active"}
+{"level":30,"time":"2026-09-27T20:50:36.865Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 12/13: felo/felo-social"}
+{"level":30,"time":"2026-09-27T20:50:36.867Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"felo/felo-social → felo-web/felo-social"}
+{"level":30,"time":"2026-09-27T20:50:36.867Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using felo-web account: ***..."}
+{"level":30,"time":"2026-09-27T20:50:36.873Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=auto/best-chat"}
+{"level":30,"time":"2026-09-27T20:50:36.874Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 128000 (source=fallback)"}
+[31m[ERROR] [429]: Felo thread creation failed with HTTP 429[0m
+[ProxyEgress] felo-web status=error
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":30,"time":"2026-09-27T20:50:37.220Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping retry for felo/felo-social — model lockout active"}
+{"level":30,"time":"2026-09-27T20:50:37.221Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 13/13: felo/felo-document"}
+{"level":30,"time":"2026-09-27T20:50:37.223Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"felo/felo-document → felo-web/felo-document"}
+{"level":30,"time":"2026-09-27T20:50:37.223Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using felo-web account: ***..."}
+{"level":30,"time":"2026-09-27T20:50:37.229Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=auto/best-chat"}
+{"level":30,"time":"2026-09-27T20:50:37.230Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 128000 (source=fallback)"}
+[31m[ERROR] [429]: Felo thread creation failed with HTTP 429[0m
+[ProxyEgress] felo-web status=error
+{"level":30,"time":"2026-09-27T20:50:37.690Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping retry for felo/felo-document — model lockout active"}
+{"level":40,"time":"2026-09-27T20:50:37.690Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"All models failed | oc/big-pickle: auth — [403]: Error from provider (Console): OpenCode's free tier can only be used from within OpenCode (HTTP 403); felo/felo-chat: model — [400]: Felo thread creation failed with HTTP 400 (HTTP 400); felo/felo-search: model — [400]: Felo thread creation failed with HTTP 400 (HTTP 400)"}
+{"level":30,"time":"2026-09-27T20:50:37.691Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"combo trace combo-28f20be0-729d-4371-bc7c-da5482e80f56 terminal={\"status\":502,\"errorClass\":null} decisions=13"}
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":30,"time":"2026-09-27T20:50:37.709Z","service":"omniroute","module":"sse","tag":"HTTP","method":"POST","path":"/v1/chat/completions | auto/cheap | 1 msgs","msg":"📥 POST /v1/chat/completions | auto/cheap | 1 msgs"}
+{"level":30,"time":"2026-09-27T20:50:37.718Z","service":"omniroute","module":"sse","tag":"AUTO","msg":"Zero-config routing variant: cheap (model=auto/cheap)"}
+{"level":30,"time":"2026-09-27T20:50:37.786Z","service":"omniroute","module":"sse","tag":"AUTO","msg":"Virtual auto-combo created: auto/cheap (2 candidates)"}
+{"level":30,"time":"2026-09-27T20:50:37.786Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"Combo \"auto/cheap\" [auto] with 10 models"}
+{"level":30,"time":"2026-09-27T20:50:37.788Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"auto with nested resolution: 10 total targets"}
+{"level":30,"time":"2026-09-27T20:50:37.814Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Auto selection: oc/big-pickle | intent=medium task=default | strategy=lkgp | RulesStrategy: score=0.497 (quota=1.00, health=1.00, cost=0.00, taskFit=0.50)"}
+{"level":30,"time":"2026-09-27T20:50:37.825Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 1/10: oc/big-pickle"}
+{"level":30,"time":"2026-09-27T20:50:37.828Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"oc/big-pickle → opencode/big-pickle"}
+{"level":30,"time":"2026-09-27T20:50:37.830Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using opencode account: ***..."}
+{"level":30,"time":"2026-09-27T20:50:37.851Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=auto/cheap"}
+{"level":30,"time":"2026-09-27T20:50:37.852Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 200000 (source=target)"}
+[31m[ERROR] [403]: Error from provider (Console): OpenCode's free tier can only be used from within OpenCode[0m
+[ProxyEgress] opencode status=error
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":50,"time":"2026-09-27T20:50:41.093Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for opencode"}
+{"level":40,"time":"2026-09-27T20:50:41.094Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"OPENCODE | refresh failed"}
+{"level":30,"time":"2026-09-27T20:50:41.105Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Model-only lockout for opencode:big-pickle — 403 forbidden 6s (per-model quota provider, connection stays active)"}
+{"level":30,"time":"2026-09-27T20:50:41.105Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider opencode connection noauth auth failure (403) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T20:50:41.106Z","service":"omniroute","module":"sse","tag":"COMBO","status":403,"errorBody":"[403]: Error from provider (Console): OpenCode's free tier can only be used from within OpenCode","msg":"Model oc/big-pickle failed, trying next"}
+{"level":30,"time":"2026-09-27T20:50:41.107Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping oc/muse-spark-1.2 — connection noauth for provider opencode had connection error (#1731v2)"}
+{"level":30,"time":"2026-09-27T20:50:41.107Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping oc/muse-spark-1.2-contributor-free — connection noauth for provider opencode had connection error (#1731v2)"}
+{"level":30,"time":"2026-09-27T20:50:41.107Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping oc/deepseek-v4-flash-free — connection noauth for provider opencode had connection error (#1731v2)"}
+{"level":30,"time":"2026-09-27T20:50:41.108Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping oc/mimo-v2.5-free — connection noauth for provider opencode had connection error (#1731v2)"}
+{"level":30,"time":"2026-09-27T20:50:41.108Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping oc/hy3-free — connection noauth for provider opencode had connection error (#1731v2)"}
+{"level":30,"time":"2026-09-27T20:50:41.108Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping oc/nemotron-3-ultra-free — connection noauth for provider opencode had connection error (#1731v2)"}
+{"level":30,"time":"2026-09-27T20:50:41.109Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping oc/north-mini-code-free — connection noauth for provider opencode had connection error (#1731v2)"}
+{"level":30,"time":"2026-09-27T20:50:41.110Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 9/10: felo/felo-chat"}
+{"level":30,"time":"2026-09-27T20:50:41.111Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"felo/felo-chat → felo-web/felo-chat"}
+{"level":30,"time":"2026-09-27T20:50:41.113Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using felo-web account: ***..."}
+{"level":30,"time":"2026-09-27T20:50:41.122Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=auto/cheap"}
+{"level":30,"time":"2026-09-27T20:50:41.123Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 128000 (source=fallback)"}
+[31m[ERROR] [429]: Felo thread creation failed with HTTP 429[0m
+[ProxyEgress] felo-web status=error
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":30,"time":"2026-09-27T20:50:41.648Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping retry for felo/felo-chat — model lockout active"}
+{"level":30,"time":"2026-09-27T20:50:41.650Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 10/10: felo/felo-search"}
+{"level":30,"time":"2026-09-27T20:50:41.652Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"felo/felo-search → felo-web/felo-search"}
+{"level":30,"time":"2026-09-27T20:50:41.652Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using felo-web account: ***..."}
+{"level":30,"time":"2026-09-27T20:50:41.658Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=auto/cheap"}
+{"level":30,"time":"2026-09-27T20:50:41.658Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 128000 (source=fallback)"}
+[31m[ERROR] [429]: Felo thread creation failed with HTTP 429[0m
+[ProxyEgress] felo-web status=error
+{"level":30,"time":"2026-09-27T20:50:41.977Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Skipping retry for felo/felo-search — model lockout active"}
+{"level":40,"time":"2026-09-27T20:50:41.977Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"All models failed | oc/big-pickle: auth — [403]: Error from provider (Console): OpenCode's free tier can only be used from within OpenCode (HTTP 403)"}
+{"level":30,"time":"2026-09-27T20:50:41.978Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"combo trace combo-be67c943-67f8-4c15-b735-bc109a40564d terminal={\"status\":403,\"errorClass\":null} decisions=10"}
+{"level":30,"time":"2026-09-27T20:50:42.008Z","service":"omniroute","module":"sse","tag":"HTTP","method":"POST","path":"/v1/chat/completions | fastrouter/deepseek/deepseek-v3.2 | 1 msgs","msg":"📥 POST /v1/chat/completions | fastrouter/deepseek/deepseek-v3.2 | 1 msgs"}
+{"level":30,"time":"2026-09-27T20:50:42.030Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: fastrouter, Model: deepseek/deepseek-v3.2"}
+{"level":40,"time":"2026-09-27T20:50:42.034Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"[fastrouter] All 1 connection(s) authentication expired — please reconnect in the dashboard"}
+{"level":30,"time":"2026-09-27T20:50:42.059Z","service":"omniroute","module":"sse","tag":"HTTP","method":"POST","path":"/v1/chat/completions | agy/gemini-3.7-flash-high | 1 msgs","msg":"📥 POST /v1/chat/completions | agy/gemini-3.7-flash-high | 1 msgs"}
+{"level":30,"time":"2026-09-27T20:50:42.075Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"agy/gemini-3.7-flash-high → antigravity/gemini-3.7-flash-high"}
+{"level":40,"time":"2026-09-27T20:50:42.085Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:50:42.085Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T20:50:42.085Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No active credentials for provider: antigravity"}
+{"level":30,"time":"2026-09-27T20:50:42.101Z","service":"omniroute","module":"sse","tag":"HTTP","method":"POST","path":"/v1/chat/completions | agnes/agnes-2.0-flash | 1 msgs","msg":"📥 POST /v1/chat/completions | agnes/agnes-2.0-flash | 1 msgs"}
+{"level":30,"time":"2026-09-27T20:50:42.108Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: agnes, Model: agnes-2.0-flash"}
+{"level":40,"time":"2026-09-27T20:50:42.111Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"[agnes] All 1 connection(s) authentication expired — please reconnect in the dashboard"}
+{"level":30,"time":"2026-09-27T20:50:42.139Z","service":"omniroute","module":"sse","tag":"HTTP","method":"POST","path":"/v1/chat/completions | kiro/auto | 1 msgs","msg":"📥 POST /v1/chat/completions | kiro/auto | 1 msgs"}
+{"level":30,"time":"2026-09-27T20:50:42.155Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: kiro, Model: auto"}
+{"level":40,"time":"2026-09-27T20:50:42.162Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"kiro | 1 accounts found but none active"}
+{"level":40,"time":"2026-09-27T20:50:42.162Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for kiro"}
+{"level":40,"time":"2026-09-27T20:50:42.162Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No active credentials for provider: kiro"}
+[CredentialHealth] Testing 32/32 connections...
+[CredentialHealth] ❌ agnes/01ff3c30-2b71-40a1-bc5d-d686511ff0a0 — Invalid API key [557ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ g4f-groq/94acb33a-375a-42fc-9e85-8fc4156c730e — Invalid API key [898ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ nara/02b9702a-3ba2-49ca-b116-364453e40aac — Invalid API key [1027ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ bluesminds/20f278c8-6dbe-4243-9816-4a9cfb3d54d5 — Invalid API key [1085ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ agentrouter/b9fd421a-e9e0-4c34-bdeb-a38c1b052ee5 — Invalid API key [1867ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ openrouter/cd3a73ee-ef74-43aa-bb60-746e178cf550 — Invalid API key [139ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ cheaperinference/46e49891-7c67-42b5-98a1-68a84fb16611 — Invalid API key [255ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ naga-ai/53acc754-440c-41f4-b4b3-27370ff3b357 — Invalid API key [266ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ jules/b00d2f73-0d33-4d27-ae42-6923b8be18ca — Invalid API key [328ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ openadapter/67141c8b-3c35-4c50-83c3-1348d77b15c2 — Invalid API key [789ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ gemini/e52be291-e1e6-458f-aa39-83af7ecce603 — Invalid API key [216ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ groq/5ab995be-74f6-444b-be0a-fac52f50fa03 — Invalid API key [280ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ huggingface/fd910c7b-9a67-4a38-bf7b-dcad72025c93 — Invalid API key [310ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ zai-web/3fe78042-dd01-47ad-b3c5-35299a10f0ae — Invalid or expired Z.ai web-session credential — copy a fresh "token" value from chat.z.ai Local Storage. [671ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ tokenrouter/5d7b0442-d8ba-4742-a9c4-3ec29e06bbd8 — Invalid API key [1483ms] (failure #2, next check in 1800s)
+[CredentialHealth] ❌ aion/704bdb75-62c7-42fa-9ea7-28b755d39cf4 — Invalid API key [233ms] (failure #2, next check in 1800s)
+[ConnectionRecovery] proactively restored 16 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-27T20:54:27.251Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.254Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.256Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.257Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.259Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.261Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.265Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.267Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.268Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.270Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.271Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.273Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.274Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.276Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.277Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-27T20:54:27.279Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+{"level":40,"time":"2026-09-27T20:58:17.491Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Combo loop safety timeout (600000ms) reached without a terminal response — force-terminating"}
+[RATE-LIMIT] Evicting idle limiter: free-ai:9b384b50-7575-410d-a588-4dee85121fcf (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: muse-spark-web:582236d4-fa78-4a2d-af4e-0b50cc9299fb (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: gemini-web:d6f41d35-f924-443a-b968-f1439922607e (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: opencode:f712f289-526c-42a4-88de-44a73aaa2850 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: perplexity-web:9d6e061e-73e0-4e51-9e90-4a3745e6c201 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: freemodel-dev:3df995eb-df7d-4d79-a50c-cc4efc09b4c1 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: dahl:a60c5fd0-ae4f-4891-be3b-2604d769f462 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: nous-research:11180195-fe75-4774-9c34-32afe89b92fd (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: routeway:7d43093e-a041-45a0-8e67-a1716e981915 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: lmarena:7102fbc7-dd6c-4eae-8b06-b849c75eb969 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: cloudflare-ai:da75b042-afe6-45af-bc20-78477a5a1285 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: nvidia:fb90fade-5e5f-4f95-af24-f6945e4d40ab (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: bluesminds:20f278c8-6dbe-4243-9816-4a9cfb3d54d5 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: nara:02b9702a-3ba2-49ca-b116-364453e40aac (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: agentrouter:b9fd421a-e9e0-4c34-bdeb-a38c1b052ee5 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: naga-ai:53acc754-440c-41f4-b4b3-27370ff3b357 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: cheaperinference:46e49891-7c67-42b5-98a1-68a84fb16611 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: openrouter:cd3a73ee-ef74-43aa-bb60-746e178cf550 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: openadapter:67141c8b-3c35-4c50-83c3-1348d77b15c2 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: jules:b00d2f73-0d33-4d27-ae42-6923b8be18ca (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: zai-web:3fe78042-dd01-47ad-b3c5-35299a10f0ae (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: gemini:e52be291-e1e6-458f-aa39-83af7ecce603 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: groq:5ab995be-74f6-444b-be0a-fac52f50fa03 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: tokenrouter:5d7b0442-d8ba-4742-a9c4-3ec29e06bbd8 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: huggingface:fd910c7b-9a67-4a38-bf7b-dcad72025c93 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: aion:704bdb75-62c7-42fa-9ea7-28b755d39cf4 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: exa-search:bf37a474-2841-4762-bd02-439c3140e4a9 (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: firecrawl:b0777432-e4b9-4b47-8560-20c9bce6bc8d (inactive for 601s)
+[RATE-LIMIT] Evicting idle limiter: dahl:e097e7ba-a4bd-4b83-a092-a0ccaac04d8b (inactive for 601s)
+[CredentialHealth] Testing 16/32 connections...
+[RATE-LIMIT] Evicting idle limiter: fastrouter:a80de610-b627-4394-a086-3fec7cd80277 (inactive for 622s)
+[RATE-LIMIT] Evicting idle limiter: agnes:01ff3c30-2b71-40a1-bc5d-d686511ff0a0 (inactive for 618s)
+{"level":40,"time":"2026-09-27T20:58:49.555Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Combo loop safety timeout (600000ms) reached without a terminal response — force-terminating"}
+{"level":40,"time":"2026-09-27T20:58:55.121Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Combo loop safety timeout (600000ms) reached without a terminal response — force-terminating"}
+{"level":40,"time":"2026-09-27T21:00:18.473Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Combo loop safety timeout (600000ms) reached without a terminal response — force-terminating"}
+{"level":40,"time":"2026-09-27T21:00:31.387Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Combo loop safety timeout (600000ms) reached without a terminal response — force-terminating"}
+{"level":40,"time":"2026-09-27T21:00:37.837Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Combo loop safety timeout (600000ms) reached without a terminal response — force-terminating"}
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 32/32 connections...
+[ConnectionRecovery] proactively restored 16 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-27T21:25:27.654Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.655Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.657Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.658Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.660Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.662Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.664Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.666Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.669Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.672Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.674Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.677Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.679Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.680Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.684Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+{"level":30,"time":"2026-09-27T21:25:27.686Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 144ms
+[CredentialHealth] Testing 16/32 connections...
+{"level":30,"time":"2026-09-27T21:55:24.990Z","service":"omniroute","module":"sse","tag":"HTTP","method":"POST","path":"/v1/chat/completions | kr/auto | 1 msgs","msg":"📥 POST /v1/chat/completions | kr/auto | 1 msgs"}
+{"level":30,"time":"2026-09-27T21:55:24.999Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"kr/auto → kiro/auto"}
+{"level":40,"time":"2026-09-27T21:55:25.006Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"kiro | 1 accounts found but none active"}
+{"level":40,"time":"2026-09-27T21:55:25.006Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for kiro"}
+{"level":40,"time":"2026-09-27T21:55:25.006Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No active credentials for provider: kiro"}
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":30,"time":"2026-09-27T22:05:45.450Z","service":"omniroute","module":"sse","tag":"HTTP","method":"POST","path":"/v1/chat/completions | omni/free-best | 1 msgs","msg":"📥 POST /v1/chat/completions | omni/free-best | 1 msgs"}
+{"level":30,"time":"2026-09-27T22:05:45.462Z","service":"omniroute","module":"sse","tag":"CHAT","msg":"Combo \"omni/free-best\" [priority] with 8 models"}
+{"level":30,"time":"2026-09-27T22:05:45.465Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"priority with nested resolution: 8 total targets"}
+{"level":30,"time":"2026-09-27T22:05:45.482Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:6943e... has no available affinity target"}
+{"level":40,"time":"2026-09-27T22:05:45.489Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T22:05:45.490Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":30,"time":"2026-09-27T22:05:45.490Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:6943e... has no available affinity target"}
+{"level":40,"time":"2026-09-27T22:05:45.496Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T22:05:45.497Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T22:05:45.505Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T22:05:45.506Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":30,"time":"2026-09-27T22:05:45.509Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:6943e... has no available affinity target"}
+{"level":30,"time":"2026-09-27T22:05:45.512Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:6943e... has no available affinity target"}
+{"level":40,"time":"2026-09-27T22:05:45.516Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"kiro | 1 accounts found but none active"}
+{"level":40,"time":"2026-09-27T22:05:45.517Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for kiro"}
+{"level":40,"time":"2026-09-27T22:05:45.522Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T22:05:45.522Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":40,"time":"2026-09-27T22:05:45.526Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T22:05:45.526Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":30,"time":"2026-09-27T22:05:45.529Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:6943e... has no available affinity target"}
+{"level":30,"time":"2026-09-27T22:05:45.530Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 3/8: fastrouter/deepseek/deepseek-v3.2"}
+{"level":30,"time":"2026-09-27T22:05:45.533Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: fastrouter, Model: deepseek/deepseek-v3.2"}
+{"level":30,"time":"2026-09-27T22:05:45.535Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using fastrouter account: ***..."}
+{"level":30,"time":"2026-09-27T22:05:45.546Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=omni/free-best"}
+{"level":30,"time":"2026-09-27T22:05:45.556Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 163840 (source=target)"}
+[MODEL] Treating "deepseek/deepseek-v3.2" as an exact model id
+[31m[ERROR] [401]: Missing API key. Include your key in the Authorization header as: Authorization: Bearer YOUR_API_KEY[0m
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":50,"time":"2026-09-27T22:05:48.734Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for fastrouter"}
+{"level":40,"time":"2026-09-27T22:05:48.735Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"FASTROUTER | refresh failed"}
+{"level":40,"time":"2026-09-27T22:05:48.757Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account a80de610... unavailable (401), trying fallback"}
+{"level":40,"time":"2026-09-27T22:05:48.758Z","service":"omniroute","module":"sse","tag":"CHAT","provider":"fastrouter","model":"deepseek/deepseek-v3.2","lastStatus":401,"msg":"Preserving last upstream error after credential exhaustion"}
+{"level":30,"time":"2026-09-27T22:05:48.759Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider fastrouter connection a80de610-b627-4394-a086-3fec7cd80277 auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T22:05:48.759Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[401]: Missing API key. Include your key in the Authorization header as: Authorization: [REDACTED] [REDACTED]","msg":"Model fastrouter/deepseek/deepseek-v3.2 failed, trying next"}
+{"level":40,"time":"2026-09-27T22:05:48.765Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"antigravity | 2 accounts found but none active"}
+{"level":40,"time":"2026-09-27T22:05:48.765Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for antigravity"}
+{"level":30,"time":"2026-09-27T22:05:48.768Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 5/8: fastrouter/google/gemini-2.5-flash"}
+{"level":30,"time":"2026-09-27T22:05:48.771Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: fastrouter, Model: google/gemini-2.5-flash"}
+{"level":30,"time":"2026-09-27T22:05:48.772Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using fastrouter account: ***..."}
+{"level":30,"time":"2026-09-27T22:05:48.778Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=omni/free-best"}
+{"level":30,"time":"2026-09-27T22:05:48.788Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 1048576 (source=target)"}
+[MODEL] Treating "google/gemini-2.5-flash" as an exact model id
+[31m[ERROR] [401]: Missing API key. Include your key in the Authorization header as: Authorization: Bearer YOUR_API_KEY[0m
+[ProxyEgress] fastrouter status=error
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":50,"time":"2026-09-27T22:05:51.949Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for fastrouter"}
+{"level":40,"time":"2026-09-27T22:05:51.949Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"FASTROUTER | refresh failed"}
+{"level":30,"time":"2026-09-27T22:05:51.963Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"a80de610 terminal status=expired, skipping cooldown overwrite"}
+{"level":40,"time":"2026-09-27T22:05:51.963Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account a80de610... unavailable (401), trying fallback"}
+{"level":40,"time":"2026-09-27T22:05:51.965Z","service":"omniroute","module":"sse","tag":"CHAT","provider":"fastrouter","model":"google/gemini-2.5-flash","lastStatus":401,"msg":"Preserving last upstream error after credential exhaustion"}
+{"level":30,"time":"2026-09-27T22:05:51.965Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider fastrouter connection a80de610-b627-4394-a086-3fec7cd80277 auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T22:05:51.965Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[401]: Missing API key. Include your key in the Authorization header as: Authorization: [REDACTED] [REDACTED]","msg":"Model fastrouter/google/gemini-2.5-flash failed, trying next"}
+{"level":30,"time":"2026-09-27T22:05:51.967Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:6943e... has no available affinity target"}
+{"level":30,"time":"2026-09-27T22:05:51.969Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 6/8: agnes/agnes-2.0-flash"}
+{"level":30,"time":"2026-09-27T22:05:51.970Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: agnes, Model: agnes-2.0-flash"}
+{"level":30,"time":"2026-09-27T22:05:51.971Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using agnes account: ***..."}
+{"level":30,"time":"2026-09-27T22:05:51.978Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=omni/free-best"}
+{"level":30,"time":"2026-09-27T22:05:51.986Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 262144 (source=target)"}
+[31m[ERROR] [401]: Token not provided (request id: 20260927220552294065252mgiKId8M)[0m
+[ProxyEgress] agnes status=error
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":50,"time":"2026-09-27T22:05:55.427Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for agnes"}
+{"level":40,"time":"2026-09-27T22:05:55.427Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"AGNES | refresh failed"}
+{"level":40,"time":"2026-09-27T22:05:55.442Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30... unavailable (401), trying fallback"}
+{"level":40,"time":"2026-09-27T22:05:55.444Z","service":"omniroute","module":"sse","tag":"CHAT","provider":"agnes","model":"agnes-2.0-flash","lastStatus":401,"msg":"Preserving last upstream error after credential exhaustion"}
+{"level":30,"time":"2026-09-27T22:05:55.444Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider agnes connection 01ff3c30-2b71-40a1-bc5d-d686511ff0a0 auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T22:05:55.444Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[401]: Token not provided (request id: 20260927220552294065252mgiKId8M)","msg":"Model agnes/agnes-2.0-flash failed, trying next"}
+{"level":30,"time":"2026-09-27T22:05:55.448Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:6943e... has no available affinity target"}
+{"level":30,"time":"2026-09-27T22:05:55.449Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Trying model 7/8: kilocode/mistralai/codestral-2508"}
+{"level":30,"time":"2026-09-27T22:05:55.452Z","service":"omniroute","module":"sse","tag":"ROUTING","msg":"Provider: kilocode, Model: mistralai/codestral-2508"}
+{"level":30,"time":"2026-09-27T22:05:55.454Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"session_key=input:sha256:6943e... has no available affinity target"}
+{"level":30,"time":"2026-09-27T22:05:55.456Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using kilocode account: ***..."}
+{"level":30,"time":"2026-09-27T22:05:55.465Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=omni/free-best"}
+{"level":30,"time":"2026-09-27T22:05:55.474Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 256000 (source=target)"}
+[31m[ERROR] [401]: You need to sign in to use this model.[0m
+[ProxyEgress] kilocode status=error
+[INFO] [SKILLS_INJECTION] skills.injection.skipped {"apiKeyId":"45c5b42d-1512-4cc2-a79e-97ae522da3bc","reason":"no_enabled_skills"}
+{"level":50,"time":"2026-09-27T22:05:58.836Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for kilocode"}
+{"level":40,"time":"2026-09-27T22:05:58.836Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"KILOCODE | refresh failed"}
+{"level":40,"time":"2026-09-27T22:05:58.952Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 0fb4fb3b... unavailable (401), trying fallback"}
+{"level":30,"time":"2026-09-27T22:05:58.987Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Using kilocode account: ***..."}
+{"level":30,"time":"2026-09-27T22:05:59.025Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Attempting to resolve combo limits for comboName=omni/free-best"}
+{"level":30,"time":"2026-09-27T22:05:59.037Z","service":"omniroute","module":"sse","tag":"CONTEXT","msg":"Combo context limit: 256000 (source=target)"}
+[31m[ERROR] [401]: You need to sign in to use this model.[0m
+[ProxyEgress] kilocode status=error
+{"level":50,"time":"2026-09-27T22:06:02.420Z","service":"omniroute","module":"sse","tag":"TOKEN_REFRESH","msg":"All 3 retry attempts failed for kilocode"}
+{"level":40,"time":"2026-09-27T22:06:02.420Z","service":"omniroute","module":"sse","tag":"TOKEN","msg":"KILOCODE | refresh failed"}
+{"level":40,"time":"2026-09-27T22:06:02.432Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account noauth... unavailable (401), trying fallback"}
+{"level":40,"time":"2026-09-27T22:06:02.433Z","service":"omniroute","module":"sse","tag":"CHAT","provider":"kilocode","model":"mistralai/codestral-2508","lastStatus":401,"msg":"Preserving last upstream error after credential exhaustion"}
+{"level":30,"time":"2026-09-27T22:06:02.433Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Provider kilocode connection noauth auth failure (401) — marking for skip on remaining targets (#8133)"}
+{"level":40,"time":"2026-09-27T22:06:02.433Z","service":"omniroute","module":"sse","tag":"COMBO","status":401,"errorBody":"[401]: You need to sign in to use this model.","msg":"Model kilocode/mistralai/codestral-2508 failed, trying next"}
+{"level":40,"time":"2026-09-27T22:06:02.437Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"kiro | 1 accounts found but none active"}
+{"level":40,"time":"2026-09-27T22:06:02.437Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for kiro"}
+{"level":40,"time":"2026-09-27T22:06:02.438Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"All models failed | fastrouter/deepseek/deepseek-v3.2: auth — [401]: Missing API key. Include your key in the Authorization header as: Authorization: [REDACTED] [REDACTED] (HTTP 401); fastrouter/google/gemini-2.5-flash: auth — [401]: Missing API key. Include your key in the Authorization header as: Authorization: [REDACTED] [REDACTED] (HTTP 401); agnes/agnes-2.0-flash: auth — [401]: Token not provided (request id: 20260927220552294065252mgiKId8M) (HTTP 401); kilocode/mistralai/codestral-2508: auth — [401]: You need to sign in to use this model. (HTTP 401)"}
+{"level":30,"time":"2026-09-27T22:06:02.438Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"combo trace combo-23e0e0b8-00ca-443a-9b97-6d74f102f7e3 terminal={\"status\":401,\"errorClass\":null} decisions=8"}
+{"level":40,"time":"2026-09-27T22:06:02.562Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"No credentials for openai"}
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+{"level":40,"time":"2026-09-27T22:15:45.561Z","service":"omniroute","module":"sse","tag":"COMBO","msg":"Combo loop safety timeout (600000ms) reached without a terminal response — force-terminating"}
+[RATE-LIMIT] Evicting idle limiter: fastrouter:a80de610-b627-4394-a086-3fec7cd80277 (inactive for 629s)
+[RATE-LIMIT] Evicting idle limiter: agnes:01ff3c30-2b71-40a1-bc5d-d686511ff0a0 (inactive for 626s)
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 130ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 32/32 connections...
+[ConnectionRecovery] proactively restored 16 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-27T23:28:28.775Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.777Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.779Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.781Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.782Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.783Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.785Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.786Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.787Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.789Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.791Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.793Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.794Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.796Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.797Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+{"level":30,"time":"2026-09-27T23:28:28.798Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 136ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 134ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 32/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[ConnectionRecovery] proactively restored 16 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T01:32:29.914Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.915Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.916Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.918Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.919Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.920Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.922Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.924Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.925Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.926Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.928Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.929Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.930Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.932Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.933Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+{"level":30,"time":"2026-09-28T01:32:29.936Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 134ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[DB] Periodic SQLite WAL checkpoint completed (TRUNCATE).
+[Cleanup] Starting auto-cleanup...
+[Cleanup] Deleted 0 quota_snapshots older than 90 days
+[Cleanup] Deleted 0 call_logs older than 90 days
+[Aggregation] usage_history rollup: 0 rows for dates before 2025-09-28
+[Cleanup] Deleted 0 usage_history older than 365 days
+[Cleanup] Deleted 0 compression_analytics older than 30 days
+[Cleanup] Deleted 0 mcp_tool_audit older than 30 days
+[Cleanup] Deleted 0 config_audit_log older than 30 days
+[Cleanup] Deleted 0 a2a_task_events older than 30 days
+[Cleanup] Deleted 0 memory_entries older than 180 days
+[Cleanup] Deleted 0 domain_cost_history older than 30 days
+[Cleanup] Deleted 0 compression_cache_stats older than 30 days
+[Cleanup] Deleted 0 xp_audit_log older than 30 days
+[Cleanup] Deleted 0 compression_run_telemetry older than 30 days
+[Cleanup] Deleted 0 proxy_logs older than 90 days
+[Cleanup] Deleted 0 expired ccr_blocks
+[Cleanup] Auto-cleanup complete: 0 deleted, 0 errors
+[Cleanup] Deleted 0 proxy_logs older than 90 days
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 32/32 connections...
+[ConnectionRecovery] proactively restored 16 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T03:35:30.924Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.926Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.928Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.929Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.931Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.933Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.936Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.938Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.939Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.941Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.942Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.944Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.945Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.947Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.950Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+{"level":30,"time":"2026-09-28T03:35:30.953Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 159ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 120ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 32/32 connections...
+[ConnectionRecovery] proactively restored 16 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T05:39:31.979Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-28T05:39:31.980Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-28T05:39:31.982Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-28T05:39:31.983Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-28T05:39:31.985Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-28T05:39:31.986Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-28T05:39:31.988Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-28T05:39:31.989Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-28T05:39:31.992Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+{"level":30,"time":"2026-09-28T05:39:31.994Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-28T05:39:31.996Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+{"level":30,"time":"2026-09-28T05:39:31.997Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-28T05:39:31.999Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-28T05:39:32.001Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+{"level":30,"time":"2026-09-28T05:39:32.002Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-28T05:39:32.004Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] ❌ gemini-web/d6f41d35-f924-443a-b968-f1439922607e — Request to https://gemini.google.com/app timed out after 8000ms [16204ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T05:44:32.021Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account d6f41d35 error cleared"}
+[CredentialHealth] Testing 15/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 1155ms
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] ❌ perplexity-web/9d6e061e-73e0-4e51-9e90-4a3745e6c201 — Retriable transport error while requesting www.perplexity.ai: failed to do request: Post "https://www.perplexity.ai/rest/sse/perplexity_ask": EOF [17149ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T06:05:32.233Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 9d6e061e error cleared"}
+[CredentialHealth] Testing 15/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 133ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 32/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[ConnectionRecovery] proactively restored 16 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T07:43:33.124Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.127Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.130Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.133Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.135Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.138Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.140Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.143Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.146Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.149Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.151Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.154Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.156Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.157Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.161Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-28T07:43:33.164Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] ❌ gemini-web/d6f41d35-f924-443a-b968-f1439922607e — Request to https://gemini.google.com/app timed out after 8000ms [16188ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T08:14:33.378Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account d6f41d35 error cleared"}
+[CredentialHealth] Testing 15/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 127ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[DB] Periodic SQLite WAL checkpoint completed (TRUNCATE).
+[Cleanup] Starting auto-cleanup...
+[Cleanup] Deleted 0 quota_snapshots older than 90 days
+[Cleanup] Deleted 0 call_logs older than 90 days
+[Aggregation] usage_history rollup: 0 rows for dates before 2025-09-28
+[Cleanup] Deleted 0 usage_history older than 365 days
+[Cleanup] Deleted 0 compression_analytics older than 30 days
+[Cleanup] Deleted 0 mcp_tool_audit older than 30 days
+[Cleanup] Deleted 0 config_audit_log older than 30 days
+[Cleanup] Deleted 0 a2a_task_events older than 30 days
+[Cleanup] Deleted 0 memory_entries older than 180 days
+[Cleanup] Deleted 0 domain_cost_history older than 30 days
+[Cleanup] Deleted 0 compression_cache_stats older than 30 days
+[Cleanup] Deleted 0 xp_audit_log older than 30 days
+[Cleanup] Deleted 0 compression_run_telemetry older than 30 days
+[Cleanup] Deleted 0 proxy_logs older than 90 days
+[Cleanup] Deleted 0 expired ccr_blocks
+[Cleanup] Auto-cleanup complete: 0 deleted, 0 errors
+[Cleanup] Deleted 0 proxy_logs older than 90 days
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 133ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 32/32 connections...
+[ConnectionRecovery] proactively restored 15 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T09:47:34.223Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-28T09:47:34.225Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-28T09:47:34.228Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-28T09:47:34.230Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-28T09:47:34.232Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-28T09:47:34.234Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-28T09:47:34.236Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-28T09:47:34.238Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-28T09:47:34.240Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-28T09:47:34.242Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+{"level":30,"time":"2026-09-28T09:47:34.243Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-28T09:47:34.246Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-28T09:47:34.247Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-28T09:47:34.250Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+{"level":30,"time":"2026-09-28T09:47:34.252Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 133ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ naga-ai/53acc754-440c-41f4-b4b3-27370ff3b357 — Invalid API key [239ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T11:04:34.869Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ naga-ai/53acc754-440c-41f4-b4b3-27370ff3b357 — Invalid API key [250ms] (failure #2, next check in 1800s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T11:14:34.951Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T11:45:35.210Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+[CredentialHealth] Testing 31/32 connections...
+[ConnectionRecovery] proactively restored 14 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T11:50:35.270Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-28T11:50:35.272Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-28T11:50:35.273Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-28T11:50:35.275Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-28T11:50:35.276Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-28T11:50:35.278Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-28T11:50:35.281Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-28T11:50:35.283Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-28T11:50:35.284Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-28T11:50:35.286Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+{"level":30,"time":"2026-09-28T11:50:35.289Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-28T11:50:35.290Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-28T11:50:35.335Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-28T11:50:35.338Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 120ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ agnes/01ff3c30-2b71-40a1-bc5d-d686511ff0a0 — Invalid API key [430ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T12:01:35.388Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ agnes/01ff3c30-2b71-40a1-bc5d-d686511ff0a0 — Invalid API key [420ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T12:16:35.521Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ muse-spark-web/582236d4-fa78-4a2d-af4e-0b50cc9299fb — Request to https://www.meta.ai/api/graphql timed out after 15000ms [15017ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T12:26:35.594Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 582236d4 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] ❌ agnes/01ff3c30-2b71-40a1-bc5d-d686511ff0a0 — Invalid API key [531ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T12:31:35.619Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ agnes/01ff3c30-2b71-40a1-bc5d-d686511ff0a0 — Invalid API key [375ms] (failure #2, next check in 1800s)
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T12:42:35.730Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 175ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T13:13:36.015Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T13:49:36.369Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 30/32 connections...
+[ConnectionRecovery] proactively restored 14 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T13:54:36.417Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-28T13:54:36.418Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-28T13:54:36.420Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-28T13:54:36.421Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-28T13:54:36.422Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-28T13:54:36.423Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-28T13:54:36.425Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-28T13:54:36.426Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-28T13:54:36.427Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-28T13:54:36.431Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-28T13:54:36.432Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-28T13:54:36.434Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+{"level":30,"time":"2026-09-28T13:54:36.435Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-28T13:54:36.436Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 135ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[DB] Periodic SQLite WAL checkpoint completed (TRUNCATE).
+[Cleanup] Starting auto-cleanup...
+[Cleanup] Deleted 0 quota_snapshots older than 90 days
+[Cleanup] Deleted 0 call_logs older than 90 days
+[Aggregation] usage_history rollup: 0 rows for dates before 2025-09-28
+[Cleanup] Deleted 0 usage_history older than 365 days
+[Cleanup] Deleted 0 compression_analytics older than 30 days
+[Cleanup] Deleted 0 mcp_tool_audit older than 30 days
+[Cleanup] Deleted 0 config_audit_log older than 30 days
+[Cleanup] Deleted 0 a2a_task_events older than 30 days
+[Cleanup] Deleted 0 memory_entries older than 180 days
+[Cleanup] Deleted 0 domain_cost_history older than 30 days
+[Cleanup] Deleted 0 compression_cache_stats older than 30 days
+[Cleanup] Deleted 0 xp_audit_log older than 30 days
+[Cleanup] Deleted 0 compression_run_telemetry older than 30 days
+[Cleanup] Deleted 0 proxy_logs older than 90 days
+[Cleanup] Deleted 0 expired ccr_blocks
+[Cleanup] Auto-cleanup complete: 0 deleted, 0 errors
+[Cleanup] Deleted 0 proxy_logs older than 90 days
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] ❌ nvidia/fb90fade-5e5f-4f95-af24-f6945e4d40ab — fetch failed [10695ms] (failure #1, next check in 600s)
+[CredentialHealth] ❌ lmarena/7102fbc7-dd6c-4eae-8b06-b849c75eb969 — Request to https://arena.ai/nextjs-api/stream/create-evaluation/models timed out after 8000ms [16191ms] (failure #1, next check in 600s)
+[CredentialHealth] ❌ perplexity-web/9d6e061e-73e0-4e51-9e90-4a3745e6c201 — Retriable transport error while requesting www.perplexity.ai: failed to do request: Post "https://www.perplexity.ai/rest/sse/perplexity_ask": unexpected EOF [19170ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 3 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T14:46:36.830Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 9d6e061e error cleared"}
+{"level":30,"time":"2026-09-28T14:46:36.832Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 7102fbc7 error cleared"}
+{"level":30,"time":"2026-09-28T14:46:36.833Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fb90fade error cleared"}
+[CredentialHealth] Testing 13/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 129ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ agnes/01ff3c30-2b71-40a1-bc5d-d686511ff0a0 — Invalid API key [420ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T15:27:37.201Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ agnes/01ff3c30-2b71-40a1-bc5d-d686511ff0a0 — Invalid API key [445ms] (failure #1, next check in 600s)
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T15:42:37.313Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 18/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T15:53:37.395Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+[CredentialHealth] Testing 31/32 connections...
+[CredentialHealth] ❌ agnes/01ff3c30-2b71-40a1-bc5d-d686511ff0a0 — Invalid API key [463ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 15 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T15:58:37.448Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-28T15:58:37.450Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-28T15:58:37.452Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-28T15:58:37.453Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-28T15:58:37.454Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-28T15:58:37.456Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-28T15:58:37.457Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-28T15:58:37.458Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-28T15:58:37.460Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-28T15:58:37.461Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-28T15:58:37.463Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-28T15:58:37.465Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-28T15:58:37.466Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+{"level":30,"time":"2026-09-28T15:58:37.467Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+{"level":30,"time":"2026-09-28T15:58:37.468Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ agnes/01ff3c30-2b71-40a1-bc5d-d686511ff0a0 — Invalid API key [408ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T16:14:37.562Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ agnes/01ff3c30-2b71-40a1-bc5d-d686511ff0a0 — Invalid API key [388ms] (failure #2, next check in 1800s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T16:24:37.642Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 123ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ agnes/01ff3c30-2b71-40a1-bc5d-d686511ff0a0 — Invalid API key [432ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T17:00:37.961Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ agnes/01ff3c30-2b71-40a1-bc5d-d686511ff0a0 — Invalid API key [381ms] (failure #2, next check in 1800s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T17:10:38.056Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T17:41:38.348Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 176ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 31/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[ConnectionRecovery] proactively restored 14 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T18:02:38.508Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-28T18:02:38.510Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-28T18:02:38.511Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-28T18:02:38.513Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-28T18:02:38.514Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-28T18:02:38.515Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-28T18:02:38.517Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-28T18:02:38.518Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-28T18:02:38.520Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-28T18:02:38.521Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-28T18:02:38.522Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-28T18:02:38.524Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-28T18:02:38.525Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+{"level":30,"time":"2026-09-28T18:02:38.527Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ gemini-web/d6f41d35-f924-443a-b968-f1439922607e — Request to https://gemini.google.com/app timed out after 8000ms [16209ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T18:49:38.926Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account d6f41d35 error cleared"}
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 124ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ naga-ai/53acc754-440c-41f4-b4b3-27370ff3b357 — Invalid API key [361ms] (failure #1, next check in 600s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T19:04:39.039Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] ❌ naga-ai/53acc754-440c-41f4-b4b3-27370ff3b357 — Invalid API key [277ms] (failure #2, next check in 1800s)
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T19:15:39.147Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 18/32 connections...
+[ConnectionRecovery] proactively restored 2 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T19:45:39.437Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+{"level":30,"time":"2026-09-28T19:45:39.438Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 53acc754 error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 163ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 30/32 connections...
+[ConnectionRecovery] proactively restored 14 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T20:06:39.644Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-28T20:06:39.645Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-28T20:06:39.646Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-28T20:06:39.648Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-28T20:06:39.649Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-28T20:06:39.650Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-28T20:06:39.652Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-28T20:06:39.653Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-28T20:06:39.655Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-28T20:06:39.657Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-28T20:06:39.658Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-28T20:06:39.660Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+{"level":30,"time":"2026-09-28T20:06:39.661Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-28T20:06:39.663Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[DB] Periodic SQLite WAL checkpoint completed (TRUNCATE).
+[ModelSync] Starting model sync cycle — 21 connection(s)
+[ModelSync] main (3fe78042): ✓ 0 models
+[ModelSync] main (9d6e061e): ✓ 11 models
+[ModelSync] main (7102fbc7): ✓ 48 models
+[ModelSync] main (a60c5fd0): ✓ 2 models
+[ModelSync] main (d6f41d35): ✓ 3 models
+[ModelSync] main (46e49891): ✓ 39 models
+[ModelSync] main (02b9702a): ✓ 3 models
+[ModelSync] main (fb90fade): ✓ 3 models
+[Cleanup] Starting auto-cleanup...
+[Cleanup] Deleted 0 quota_snapshots older than 90 days
+[Cleanup] Deleted 0 call_logs older than 90 days
+[Aggregation] usage_history rollup: 0 rows for dates before 2025-09-28
+[Cleanup] Deleted 0 usage_history older than 365 days
+[Cleanup] Deleted 0 compression_analytics older than 30 days
+[Cleanup] Deleted 0 mcp_tool_audit older than 30 days
+[Cleanup] Deleted 0 config_audit_log older than 30 days
+[Cleanup] Deleted 0 a2a_task_events older than 30 days
+[Cleanup] Deleted 0 memory_entries older than 180 days
+[Cleanup] Deleted 0 domain_cost_history older than 30 days
+[Cleanup] Deleted 0 compression_cache_stats older than 30 days
+[Cleanup] Deleted 0 xp_audit_log older than 30 days
+[Cleanup] Deleted 0 compression_run_telemetry older than 30 days
+[Cleanup] Deleted 0 proxy_logs older than 90 days
+[Cleanup] Deleted 0 expired ccr_blocks
+[Cleanup] Auto-cleanup complete: 0 deleted, 0 errors
+[Cleanup] Deleted 0 proxy_logs older than 90 days
+[ModelSync] main (01ff3c30): ✓ 3 models
+Error fetching models from provider {
+  provider: 'naga-ai',
+  errorText: '{"error":{"type":"invalid_api_key","message":"The provided API key is invalid. Please ensure your API key is correct and active. You can find more information about obtaining a key on our website: https://naga.ac If you just created this key, wait a few minutes and try again."}}'
+}
+Error fetching models from provider {
+  provider: 'bluesminds',
+  errorText: '{"error":{"code":"","message":"Invalid token (request id: 202609282040249022534688268d9d6PZjNByyh)","type":"new_api_error"}}'
+}
+[ModelSync] frankielee1971@gmail.com (0fb4fb3b): ✓ 395 models
+[ModelSync] main (fd910c7b): ✓ 134 models
+[ModelSync] Codex profile auto-sync skipped for kilocode: catalog_http_401
+[ModelSync] Codex profile auto-sync skipped for huggingface: catalog_http_401
+[ModelSync] Claude profile auto-sync skipped for huggingface: catalog_http_401
+[ModelSync] main (7d43093e): ✓ 9 models
+Error fetching models from provider {
+  provider: 'groq',
+  errorText: '{"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}\n'
+}
+[ModelSync] Claude profile auto-sync failed for kilocode: The operation was aborted due to timeout
+[ModelSync] main (11180195): ✓ 8 models
+[ModelSync] Codex profile auto-sync skipped for nous-research: catalog_http_401
+[ModelSync] Claude profile auto-sync skipped for nous-research: catalog_http_401
+[ModelSync] main (cd3a73ee): ✓ 20 models
+[ModelSync] Codex profile auto-sync skipped for openrouter: catalog_http_401
+[ModelSync] Dahl Account 1 (e097e7ba): ✓ 2 models
+Error fetching models from provider {
+  provider: 'agentrouter',
+  errorText: '{"error":{"message":"无效的令牌 (request id: 202609290440394049632068v6bboRlvh15k)","type":"new_api_error"}}'
+}
+[ModelSync] Claude profile auto-sync skipped for openrouter: catalog_http_401
+[ModelSync] Cycle complete: 15/21 synced in 17893ms
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 141ms
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 16/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 16/32 connections...
+[CredentialHealth] Testing 18/32 connections...
+[ConnectionRecovery] proactively restored 1 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T21:49:40.589Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 01ff3c30 error cleared"}
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProxyHealth] egress: 1 rotation group(s) share an egress IP (max 2 accounts)
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 31/32 connections...
+[ConnectionRecovery] proactively restored 14 connection(s) with elapsed cooldown
+{"level":30,"time":"2026-09-28T22:10:40.932Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b9fd421a error cleared"}
+{"level":30,"time":"2026-09-28T22:10:40.934Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5d7b0442 error cleared"}
+{"level":30,"time":"2026-09-28T22:10:40.936Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 67141c8b error cleared"}
+{"level":30,"time":"2026-09-28T22:10:40.937Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 3fe78042 error cleared"}
+{"level":30,"time":"2026-09-28T22:10:40.938Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 5ab995be error cleared"}
+{"level":30,"time":"2026-09-28T22:10:40.940Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 94acb33a error cleared"}
+{"level":30,"time":"2026-09-28T22:10:40.941Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account b00d2f73 error cleared"}
+{"level":30,"time":"2026-09-28T22:10:40.942Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 704bdb75 error cleared"}
+{"level":30,"time":"2026-09-28T22:10:40.945Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account e52be291 error cleared"}
+{"level":30,"time":"2026-09-28T22:10:40.946Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account fd910c7b error cleared"}
+{"level":30,"time":"2026-09-28T22:10:40.947Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 20f278c8 error cleared"}
+{"level":30,"time":"2026-09-28T22:10:40.949Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 02b9702a error cleared"}
+{"level":30,"time":"2026-09-28T22:10:40.950Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account 46e49891 error cleared"}
+{"level":30,"time":"2026-09-28T22:10:40.951Z","service":"omniroute","module":"sse","tag":"AUTH","msg":"Account cd3a73ee error cleared"}
+[CredentialHealth] Testing 17/32 connections...
+[CredentialHealth] Testing 17/32 connections...
+[ProviderLimitsSync] Cycle complete: 2/2 synced in 129ms

@@ -1,0 +1,11 @@
+node_modules/
+.env
+.env.local
+.vercel/
+*.log
+.env.bak*
+kilo.json
+
+# Supabase CLI local state — never commit (points at the linked project ref).
+# This repo holds the canonical edge-function tree under supabase/.
+supabase/.temp/

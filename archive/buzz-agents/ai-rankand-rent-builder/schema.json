@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "description": "Input/output schema for AI RankandRent Builder Agent",
+  "input": {
+    "type": "object",
+    "properties": {
+      "niche": { "type": "string" },
+      "keywords": { "type": "array", "items": { "type": "string" } },
+      "competitionLevel": { "type": "string", "enum": ["low", "medium", "high"] }
+    },
+    "required": ["niche", "keywords", "competitionLevel"]
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "keywordClusters": { "type": "array", "items": { "type": "object" } },
+      "contentPlan": { "type": "object" },
+      "monetizationStrategy": { "type": "object" }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+# DigitallyDefined OS — Cloudflare Workers configuration
+# AI-powered Notion workspace automation platform.
+
+name = "digitallydefined-os-workers"
+main = "src/index.ts"
+compatibility_date = "2026-10-16"
+compatibility_flags = ["nodejs_compat"]
+
+# Upload source maps for better error observability
+upload_source_maps = true
+
+# ─── AI Binding ──────────────────────────────────────────────────────────
+# Cloudflare Workers AI — LLM inference, embeddings, classification
+[ai]
+binding = "AI"
+
+# ─── Vectorize ───────────────────────────────────────────────────────────
+# Semantic search index for template knowledge, SOPs, prompt libraries
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "dd-template-knowledge"
+
+# ─── Durable Objects ─────────────────────────────────────────────────────
+# Stateful agents & sessions — multi-step reasoning, long-running orchestration
+[[durable_objects.bindings]]
+name = "AGENT_SESSION"
+class_name = "AgentSession"
+
+# ─── Observability ───────────────────────────────────────────────────────
+[observability]
+enabled = true
+
+# ─── Vars ────────────────────────────────────────────────────────────────
+[vars]
+ENVIRONMENT = "development"
+NOTION_API_VERSION = "2022-06-28"
+NOTION_API_BASE = "https://api.notion.com"
+
+# ─── Logs ────────────────────────────────────────────────────────────────
+[observability.logs]
+enabled = true

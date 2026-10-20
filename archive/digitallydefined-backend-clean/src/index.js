@@ -1,0 +1,283 @@
+// src/index.js - Main Entry Point
+import 'dotenv/config';
+import express from 'express';
+import { env, getIntegrationReport, validateEnv, logEnvValidation, REQUIRED_VARS, OPTIONAL_VARS } from './config/index.js';
+import { errorHandler } from './utils/errorHandler.js';
+import { setCORSHeaders, handleOPTIONS } from './middleware/cors.js';
+import logger from './utils/logger.js';
+import { logRouting } from './services/aiRouter.js';
+
+// Import route handlers
+import { nicheRoute, roadmapRoute, scorecardRoute, productRoute, socialRoute, trendsRoute, chatRoute, dashboardRoute } from './routes/index.js';
+import { handleSetModel, handleGetModels, handleGetActiveModel } from './routes/setModel.js';
+import { handleDispatch } from './routes/dispatch.js';
+import { handleOnboarding } from './routes/onboardingDispatch.js';
+import { checkDashboardApiKey } from './middleware/auth.js';
+import * as websiteEditor from './services/websiteEditor.js';
+import * as githubEditor from './services/githubEditor.js';
+import { planWebsiteEdit, applyWebsitePlan, looksLikeWebsiteEdit } from './services/websitePlanner.js';
+
+const app = express();
+const PORT = env.port;
+
+// Validate environment before anything else - logs any missing keys.
+const envValidation = logEnvValidation();
+
+// Log which AI provider/model every agent will use.
+logRouting();
+
+// Middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// CORS middleware
+app.use((req, res, next) => {
+  setCORSHeaders(res, req.headers.origin);
+  if (handleOPTIONS(req, res)) return;
+  next();
+});
+
+// Health check
+app.get('/api/health', (req, res) => {
+  const report = getIntegrationReport();
+  res.setHeader('Content-Type', 'application/json');
+  return res.status(200).json({
+    status: 'ok',
+    service: 'DigitallyDefined Clean Backend',
+    version: '1.0.0',
+    timestamp: Date.now(),
+    env: env.nodeEnv,
+    aiProvider: report.ai.primary || 'none',
+    aiFallbacks: (getIntegrationReport().ai.fallbacks || []).join(', ') || 'none',
+    configured: report,
+    missingRequired: envValidation.missingRequired,
+  });
+});
+
+// API routes
+app.post('/api/niche', nicheRoute.handleNiche);
+app.post('/api/roadmap', roadmapRoute.handleRoadmap);
+app.post('/api/scorecard', scorecardRoute.handleScorecard);
+app.post('/api/product', productRoute.handleProduct);
+app.post('/api/social', socialRoute.handleSocial);
+app.post('/api/trends', trendsRoute.handleTrends);
+app.post('/api/chat', chatRoute.handleChat);
+app.post('/api/website/scan', (req, res) => {
+  if (!checkDashboardApiKey(req)) return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    const files = websiteEditor.scanWebsite();
+    res.status(200).json({ ok: true, files });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Hermes / Mentor availability (polled by the public site's Mentor widget).
+//
+// Returns 200 with an `available` boolean on every path, including failures,
+// so a degraded gateway shows the widget as "offline" instead of throwing.
+// ---------------------------------------------------------------------------
+app.get('/api/hermes/status', async (req, res) => {
+  if (!checkDashboardApiKey(req)) return res.status(401).json({ error: 'Unauthorized' });
+  res.setHeader('Content-Type', 'application/json');
+
+  const out = {
+    success: true,
+    available: false,
+    configured: false,
+    degraded: false,
+    provider: null,
+    model: null,
+    reason: null,
+    gateway: null,
+  };
+
+  try {
+    const aiRouter = await import('./services/aiRouter.js');
+    out.configured = aiRouter.isOmniRouteConfigured();
+    if (out.configured) {
+      out.provider = 'omniroute';
+      try { out.routing = aiRouter.describeRouting(); } catch { /* diagnostics best effort */ }
+    } else {
+      out.reason = 'AI gateway not configured';
+    }
+
+    // Probe the gateway so the widget reflects real availability rather than
+    // configuration alone. A dead gateway must read as unavailable, otherwise
+    // the mentor shows a green light it cannot honour.
+    if (out.configured) {
+      const probe = await aiRouter.callOmniRoute(
+        aiRouter.resolveJobModel('fast'),
+        'ping',
+        { job: 'fast', timeout: 8000 }
+      );
+      if (probe.error) {
+        out.available = false;
+        out.degraded = true;
+        out.reason = probe.error;
+        out.gateway = 'unreachable';
+      } else {
+        out.available = true;
+        out.model = probe.model || null;
+        out.reason = 'gateway responding';
+        out.gateway = 'ok';
+      }
+    }
+  } catch (err) {
+    out.reason = err.message || 'status check failed';
+    out.gateway = 'error';
+  }
+
+  return res.status(200).json(out);
+});
+
+// ---------------------------------------------------------------------------
+// Natural-language website editing (works on Vercel — uses the GitHub API).
+//
+//   POST /api/website/plan   { message }            -> read-only plan + diffs
+//   POST /api/website/apply  { plan, confirm }      -> commits the plan
+//
+// Planning never writes. Applying requires the caller to send back the plan
+// (and optionally echo planId) so a preview always precedes a real commit.
+// ---------------------------------------------------------------------------
+app.post('/api/website/plan', async (req, res) => {
+  if (!checkDashboardApiKey(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const message = String((req.body || {}).message || '').trim();
+  if (!message) return res.status(400).json({ ok: false, error: 'message is required' });
+  if (!githubEditor.isGithubEditorConfigured()) {
+    return res.status(503).json({
+      ok: false,
+      error: 'Website editing is not configured on this deployment.',
+      hint: 'Set WEBSITE_GITHUB_TOKEN in the backend environment.',
+    });
+  }
+  try {
+    const plan = await planWebsiteEdit(message);
+    res.status(200).json({ ok: true, ...plan });
+  } catch (err) {
+    logger.error('Website plan failed', err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.post('/api/website/apply', async (req, res) => {
+  if (!checkDashboardApiKey(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const { plan, confirm } = req.body || {};
+  if (!plan || !Array.isArray(plan.edits)) {
+    return res.status(400).json({ ok: false, error: 'plan is required' });
+  }
+  try {
+    const result = await applyWebsitePlan(plan, { confirm });
+    res.status(200).json({ ok: true, ...result });
+  } catch (err) {
+    logger.error('Website apply failed', err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.post('/api/website/edit', (req, res) => {
+  if (!checkDashboardApiKey(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const { file, content } = req.body || {};
+  if (!file || content === undefined) return res.status(400).json({ ok: false, error: 'file and content required' });
+  try {
+    const result = websiteEditor.writeFile(file, content);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+app.post('/api/website/read', (req, res) => {
+  if (!checkDashboardApiKey(req)) return res.status(401).json({ error: 'Unauthorized' });
+  const { file } = req.body || {};
+  if (!file) return res.status(400).json({ ok: false, error: 'file required' });
+  try {
+    const content = websiteEditor.readFile(file);
+    res.status(200).json({ ok: true, file, content });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+app.post('/api/dashboard', dashboardRoute.handleDashboard);
+
+// ---- Model switching (must be registered BEFORE the /api/* catch-all) ----
+app.post('/api/set-model', handleSetModel);
+app.get('/api/models', handleGetModels);
+app.get('/api/active-model', handleGetActiveModel);
+
+app.post('/api/onboarding', handleOnboarding);
+
+// FastAPI microservice reachability. Always answers 200 with an `reachable`
+// boolean so the website can hide unavailable tools instead of failing.
+app.get('/api/fastapi/status', async (req, res) => {
+  try {
+    const { getFastapiStatus } = await import('./services/fastapi.js');
+    const status = await getFastapiStatus();
+    return res.status(200).json({ success: true, ...status });
+  } catch (err) {
+    return res.status(200).json({ success: true, reachable: false, reason: err.message });
+  }
+});
+
+app.post('/api/dispatch', handleDispatch);
+// Bare "/api" must route to the dispatcher as well. The "/api/*" pattern only
+// matches paths that have something after the slash, so a POST to "/api"
+// (which is what getSupabaseEdgeUrl() returns for action-based calls) fell
+// through to the 404 handler and broke every dashboard sync (Notion,
+// analytics, integrations). Express treats "/api" and "/api/" as distinct
+// routes, so both are registered explicitly.
+app.post('/api', handleDispatch);
+app.post('/api/', handleDispatch);
+app.post('/api/*', handleDispatch);
+
+// Test endpoint (no auth required)
+app.get('/api/test-env', (req, res) => {
+  const validation = validateEnv();
+  res.setHeader('Content-Type', 'application/json');
+  return res.status(200).json({
+    status: 'ok',
+    ok: validation.ok,
+    missingRequired: validation.missingRequired,
+    missingOptional: validation.missingOptional,
+    checks: validation.configured,
+    counts: {
+      requiredConfigured: REQUIRED_VARS.length - validation.missingRequired.length,
+      requiredTotal: REQUIRED_VARS.length,
+      optionalConfigured: OPTIONAL_VARS.length - validation.missingOptional.length,
+      optionalTotal: OPTIONAL_VARS.length,
+    },
+    notes: {
+      antigravity: 'MCP Notion Architect - requires ANTIGRAVITY_API_KEY',
+      supabase: 'Database - requires SUPABASE_URL and SUPABASE_ANON_KEY',
+      vertex: 'Vertex AI Gemini fallback - requires VERTEX_PROJECT_ID (optional)',
+      omniroute: 'PRIMARY AI provider - OmniRoute running locally in Docker at http://localhost:20128/v1 (' + env.omniroute.model + ')',
+    },
+  });
+});
+
+// Error handling
+app.use((req, res, next) => {
+  // Global catch-all: ensure every response (including 404s) carries CORS headers
+  // so the browser never sees a cross-origin rejection on error pages.
+  setCORSHeaders(res, req.headers && req.headers.origin);
+  next();
+});
+app.use(errorHandler);
+
+// Start server (skipped on Vercel - serverless handles it)
+const isNodeEnvironment = typeof process !== 'undefined' && process.env && !process.env.VERCEL;
+
+if (isNodeEnvironment) {
+  app.listen(PORT, () => {
+    logger.info('DigitallyDefined Clean Backend started', {
+      port: PORT,
+      env: env.nodeEnv,
+      integrations: getIntegrationReport(),
+    });
+    console.log('Server running on http://localhost:' + PORT);
+    console.log('Supabase connected: ' + (env.supabase.url ? 'yes' : 'no'));
+    console.log('Dashboard API ready: ' + (env.dashboardApiKey ? 'yes' : 'no'));
+  });
+}
+
+export default app;

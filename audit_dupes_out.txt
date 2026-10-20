@@ -1,0 +1,127 @@
+=== DUPLICATED FUNCTION NAMES ACROSS PROJECTS ===
+
+  verifyLicense (2 definitions):
+     dashboard:src/lib/premium.js
+     os-backend:src/services/premium.js
+
+  sendEmail (2 definitions):
+     os-backend:src/services/brevo.js
+     os-backend:supabase/functions/_shared/email-publish.ts
+
+  fetchNotionSnapshot (2 definitions):
+     os-backend:api/index.js
+     os-backend:src/routes/_original-index-backup.js
+
+  normalizeProperties (2 definitions):
+     dashboard:src/utils/notionMapper.js
+     os-backend:src/services/antigravity.js
+
+  fetchBrevoStats (5 definitions):
+     os-backend:api/index.js
+     os-backend:lib/sync-aggregator.js
+     os-backend:src/routes/_original-index-backup.js
+     os-backend:src/services/integrations.js
+     os-backend:supabase/functions/_shared/sync-aggregator.ts
+
+  fetchSocialStats (2 definitions):
+     dashboard:src/lib/integrations/integrations.js
+     dashboard:src/lib/integrations/social.js
+
+  fetchGoogleAnalytics (3 definitions):
+     dashboard:src/lib/integrations/google-analytics.js
+     dashboard:src/lib/integrations/integrations.js
+     os-backend:src/routes/integrationsDispatch.js
+
+  getAgent (3 definitions):
+     os-backend:agents/buzz-registry.js
+     os-backend:agents/index.js
+     os-backend:src/agents/index.js
+
+  safeNumber (5 definitions):
+     os-backend:api/index.js
+     os-backend:lib/sync-aggregator.js
+     os-backend:src/routes/_original-index-backup.js
+     os-backend:src/utils/formatters.js
+     os-backend:supabase/functions/_shared/sync-aggregator.ts
+
+
+=== SAME BASENAME IN MULTIPLE PROJECTS ===
+  auth.js: ['dashboard:src/lib/auth.js', 'os-backend:src/middleware/auth.js']
+  client.ts: ['os-backend:ai/gateway/client.ts', 'os-workers:src/notion/client.ts']
+  env.ts: ['os-backend:lib/env.ts', 'os-workers:src/config/env.ts']
+  index.js: ['dashboard:src/lib/integrations/index.js', 'os-backend:agents/index.js', 'os-backend:api/index.js', 'os-backend:api/active-model/index.js', 'os-backend:api/business-partner/index.js', 'os-backend:api/fastapi/[[...path]]/index.js', 'os-backend:api/intelligence/index.js', 'os-backend:api/models/index.js', 'os-backend:api/quiz/index.js', 'os-backend:api/set-model/index.js', 'os-backend:roadmaps/index.js', 'os-backend:src/index.js', 'os-backend:src/agents/index.js', 'os-backend:src/config/index.js', 'os-backend:src/routes/index.js', 'os-backend:src/schemas/index.js', 'os-backend:src/services/index.js', 'os-backend:src/utils/index.js', 'os-backend:src/workflows/index.js']
+  index.ts: ['os-backend:supabase/functions/analytics/index.ts', 'os-backend:supabase/functions/content/index.ts', 'os-backend:supabase/functions/followup/index.ts', 'os-backend:supabase/functions/hermes/index.ts', 'os-backend:supabase/functions/notion-sync/index.ts', 'os-backend:supabase/functions/optimization-loop/index.ts', 'os-backend:supabase/functions/optimization-loop-weekly/index.ts', 'os-backend:supabase/functions/post-publisher/index.ts', 'os-backend:supabase/functions/quiz-roadmap/index.ts', 'os-backend:supabase/functions/quiz-submit/index.ts', 'os-backend:supabase/functions/reputation/index.ts', 'os-backend:supabase/functions/sellable/index.ts', 'os-backend:supabase/functions/sync/index.ts', 'os-workers:src/index.ts', 'os-workers:src/agents/index.ts', 'os-workers:src/templates/index.ts', 'os-workers:src/vectorize/index.ts', 'os-workers:src/workflows/index.ts']
+  integrations.js: ['dashboard:src/lib/integrations/integrations.js', 'os-backend:src/routes/integrations.js', 'os-backend:src/services/integrations.js']
+  notion.js: ['dashboard:src/lib/notion.js', 'os-backend:src/routes/notion.js', 'os-backend:src/services/notion.js']
+  premium.js: ['dashboard:src/lib/premium.js', 'os-backend:src/services/premium.js']
+  social.js: ['dashboard:src/lib/integrations/social.js', 'os-backend:src/agents/social.js', 'os-backend:src/routes/social.js', 'os-backend:src/schemas/social.js']
+  types.ts: ['os-backend:ai/types.ts', 'os-backend:lib/types.ts', 'os-workers:src/types.ts', 'os-workers:src/workflows/types.ts']
+
+
+=== HARDCODED PRICE POINTS ===
+
+  ## dashboard
+    $675: 1 files -> ['public/10x-roi-calculator.html']
+    $65: 1 files -> ['public/10x-roi-calculator.html']
+    $27: 1 files -> ['public/10x-roi-calculator.html']
+    $48: 1 files -> ['src/config.js']
+
+  ## os-backend
+    $97: 3 files -> ['fastapi/app/data/products.py', 'fastapi/app/services/asset_plan_service.py', 'src/agents/product.js']
+    $27: 2 files -> ['fastapi/app/data/products.py', 'src/agents/product.js']
+    $48: 2 files -> ['lib/sync-aggregator.js', 'supabase/functions/_shared/sync-aggregator.ts']
+    $19: 1 files -> ['fastapi/app/data/products.py']
+    $29: 1 files -> ['fastapi/app/data/products.py']
+    $297: 1 files -> ['fastapi/app/data/products.py']
+    $49: 1 files -> ['fastapi/app/data/products.py']
+    $497: 1 files -> ['src/agents/opportunities.js']
+    $47: 1 files -> ['src/agents/opportunities.js']
+    $50: 1 files -> ['src/agents/opportunities.js']
+    $12: 1 files -> ['supabase/functions/hermes/index.ts']
+
+  ## digital-products
+    $19: 1 files -> ['src/lib/products.js']
+    $29: 1 files -> ['src/lib/products.js']
+    $39: 1 files -> ['src/lib/products.js']
+    $67: 1 files -> ['src/lib/products.js']
+    $97: 1 files -> ['src/lib/products.js']
+    $27: 1 files -> ['src/lib/products.js']
+    $49: 1 files -> ['src/lib/products.js']
+
+
+=== LOCALSTORAGE / STORAGE KEYS ===
+
+  ## dashboard
+    dd-assistant-model: 3 -> ['src/pages/DashboardPage.jsx', 'src/pages/DashboardPage.jsx', 'src/pages/DashboardPage.jsx']
+    dd-quiz-results: 2 -> ['src/pages/IntelligencePage.jsx', 'src/pages/IntelligencePage.jsx']
+    dd-user-id: 1 -> ['src/lib/modelSelector.js']
+    lastSync: 2 -> ['src/pages/DashboardPage.jsx', 'src/pages/DashboardPage.jsx']
+    openRouterKey: 2 -> ['src/pages/DashboardPage.jsx', 'src/pages/DashboardPage.jsx']
+    sb-user-id: 1 -> ['src/lib/modelSelector.js']
+
+
+=== DASHBOARD RENDER / PERF SIGNALS ===
+  DashboardPage.jsx: 1526 LOC
+  inline style={} objects: 0
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\DigitallyDefinedClean\audit_dupes.py", line 98, in <module>
+    print(f"  useState: {len(re.findall(r'useState\\(', c))}")
+                             ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\frank\AppData\Local\hermes\tools\python-3.14.7+20260901-win32-x64\Lib\re\__init__.py", line 278, in findall
+    return _compile(pattern, flags).findall(string)
+           ~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\frank\AppData\Local\hermes\tools\python-3.14.7+20260901-win32-x64\Lib\re\__init__.py", line 350, in _compile
+    p = _compiler.compile(pattern, flags)
+  File "C:\Users\frank\AppData\Local\hermes\tools\python-3.14.7+20260901-win32-x64\Lib\re\_compiler.py", line 762, in compile
+    p = _parser.parse(p, flags)
+  File "C:\Users\frank\AppData\Local\hermes\tools\python-3.14.7+20260901-win32-x64\Lib\re\_parser.py", line 973, in parse
+    p = _parse_sub(source, state, flags & SRE_FLAG_VERBOSE, 0)
+  File "C:\Users\frank\AppData\Local\hermes\tools\python-3.14.7+20260901-win32-x64\Lib\re\_parser.py", line 460, in _parse_sub
+    itemsappend(_parse(source, state, verbose, nested + 1,
+                ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                       not nested and not items))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\frank\AppData\Local\hermes\tools\python-3.14.7+20260901-win32-x64\Lib\re\_parser.py", line 858, in _parse
+    raise source.error("missing ), unterminated subpattern",
+                       source.tell() - start)
+re.PatternError: missing ), unterminated subpattern at position 10

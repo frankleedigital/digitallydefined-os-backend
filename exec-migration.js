@@ -1,0 +1,38 @@
+// Service-role key read from the environment — NEVER hardcode it.
+// Run: $env:SUPABASE_SERVICE_ROLE_KEY="<key from .env>"
+const SFR = process.env.SUPABASE_SERVICE_ROLE_KEY;
+if (!SFR) { console.error('Set SUPABASE_SERVICE_ROLE_KEY before running.'); process.exit(1); }
+const P = 'https://dijjlppdljpcgyoakdnq.supabase.co';
+
+// Approach 1: raw SQL string as body (no JSON wrapping)
+async function runRaw(q) {
+  const res = await fetch(P + '/rest/v1/sql', {
+    method: 'POST',
+    headers: { 'apikey': SFR, 'Content-Type': 'text/plain' },
+    body: q,
+  });
+  const text = await res.text();
+  console.log('RAW status:', res.status, '|', text.slice(0, 400));
+  return { status: res.status, text };
+}
+
+// Approach 2: JSON-wrapped { query: "..." }
+async function runJson(q) {
+  const res = await fetch(P + '/rest/v1/sql', {
+    method: 'POST',
+    headers: { 'apikey': SFR, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: q }),
+  });
+  const body = await res.json();
+  console.log('JSON status:', res.status, '|', JSON.stringify(body).slice(0, 400));
+  return { status: res.status, body };
+}
+
+const Q1 = `CREATE TABLE IF NOT EXISTS public.user_model_preferences (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), user_id TEXT NOT NULL, model_id TEXT NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());`;
+
+(async () => {
+  console.log('--- Trying raw body ---');
+  await runRaw(Q1);
+  console.log('--- Trying JSON body ---');
+  await runJson(Q1);
+})().catch((e) => { console.error('FATAL', e.message); process.exit(1); });

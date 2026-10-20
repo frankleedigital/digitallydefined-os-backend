@@ -1,0 +1,3819 @@
+{
+ "dashboard": {
+  "duplicates": {},
+  "named": {
+   "sync-aggregator": [],
+   "notion-architect": [],
+   "omniroute": [],
+   "hermes": [
+    "src/lib/hermes.js"
+   ],
+   "brevo-email": [],
+   "notion-client": [],
+   "notion-schema": [],
+   "notion-write": [],
+   "aiRouter": [],
+   "notionArchitect": [
+    "src/lib/notionArchitect.js"
+   ],
+   "dashboard": [
+    ".env.dashboard",
+    "public/GUMROAD-DASHBOARD-DESCRIPTION.md",
+    "public/WHITE-LABEL-DASHBOARD-SUMMARY.md",
+    "src/components/intelligence/IntelligenceDashboard.jsx",
+    "src/pages/DashboardPage.jsx"
+   ]
+  },
+  "hardcoded": {
+   "http-url": [
+    {
+     "file": "index.html",
+     "count": 8,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "https://fonts.gstatic.com",
+      "https://digitallydefined.store"
+     ]
+    },
+    {
+     "file": "public/10x-roi-calculator.html",
+     "count": 8,
+     "samples": [
+      "https://francescaonline.gumroad.com",
+      "https://fonts.gstatic.com",
+      "https://fonts.googleapis.com"
+     ]
+    },
+    {
+     "file": "public/affiliate-flip-calculator.html",
+     "count": 6,
+     "samples": [
+      "https://francescaonline.gumroad.com",
+      "https://fonts.gstatic.com",
+      "https://fonts.googleapis.com"
+     ]
+    },
+    {
+     "file": "public/customer-config.js",
+     "count": 8,
+     "samples": [
+      "https://script.google.com",
+      "https://linkedin.com",
+      "https://openrouter.ai"
+     ]
+    },
+    {
+     "file": "public/thank-you.html",
+     "count": 3,
+     "samples": [
+      "https://fonts.gstatic.com",
+      "https://fonts.googleapis.com"
+     ]
+    },
+    {
+     "file": "src/App.jsx",
+     "count": 3,
+     "samples": [
+      "https://digitallydefined.store"
+     ]
+    },
+    {
+     "file": "src/config.js",
+     "count": 6,
+     "samples": [
+      "https://francescaonline.gumroad.com",
+      "https://hooks.slack.com",
+      "https://digitallydefined.store"
+     ]
+    },
+    {
+     "file": "src/components/ChatWidget.jsx",
+     "count": 1,
+     "samples": [
+      "https://dijjlppdljpcgyoakdnq.supabase.co"
+     ]
+    },
+    {
+     "file": "src/lib/hermes.js",
+     "count": 1,
+     "samples": [
+      "https://dijjlppdljpcgyoakdnq.supabase.co"
+     ]
+    },
+    {
+     "file": "src/lib/modelSelector.js",
+     "count": 1,
+     "samples": [
+      "https://digitallydefined-os-backend.vercel.app"
+     ]
+    },
+    {
+     "file": "src/lib/supabase-edge.js",
+     "count": 1,
+     "samples": [
+      "https://digitallydefined-os-backend.vercel.app"
+     ]
+    },
+    {
+     "file": "src/lib/integrations/integrations.js",
+     "count": 1,
+     "samples": [
+      "https://digitallydefined-os-backend.vercel.app"
+     ]
+    },
+    {
+     "file": "src/pages/IntegrationsTab.jsx",
+     "count": 4,
+     "samples": [
+      "https://app.brevo.com",
+      "https://www.facebook.com",
+      "https://business.facebook.com"
+     ]
+    },
+    {
+     "file": "src/pages/NotionTab.jsx",
+     "count": 1,
+     "samples": [
+      "https://notion.so"
+     ]
+    }
+   ],
+   "supabase-url": [
+    {
+     "file": "src/components/ChatWidget.jsx",
+     "count": 1,
+     "samples": [
+      "https://dijjlppdljpcgyoakdnq.supabase.co"
+     ]
+    },
+    {
+     "file": "src/lib/hermes.js",
+     "count": 1,
+     "samples": [
+      "https://dijjlppdljpcgyoakdnq.supabase.co"
+     ]
+    }
+   ]
+  },
+  "endpoints": {
+   "http-route": [
+    {
+     "file": "public/10x-roi-calculator.html",
+     "method": "GET",
+     "path": "access"
+    },
+    {
+     "file": "public/10x-roi-calculator.html",
+     "method": "GET",
+     "path": "token"
+    },
+    {
+     "file": "src/pages/auth/SignUp.jsx",
+     "method": "GET",
+     "path": "next"
+    }
+   ],
+   "fetch-call": [
+    {
+     "file": "src/lib/hermes.js",
+     "url": "/api/hermes/status"
+    },
+    {
+     "file": "src/lib/modelSelector.js",
+     "url": "${BACKEND_URL}/api/models"
+    },
+    {
+     "file": "src/lib/modelSelector.js",
+     "url": "${BACKEND_URL}/api/active-model?user_id=${encodeURIComponent(userId)}"
+    },
+    {
+     "file": "src/lib/modelSelector.js",
+     "url": "${BACKEND_URL}/api/set-model"
+    },
+    {
+     "file": "src/pages/DashboardPage.jsx",
+     "url": "${API_URL}/business-partner"
+    }
+   ]
+  }
+ },
+ "os-backend": {
+  "duplicates": {},
+  "named": {
+   "sync-aggregator": [
+    "lib/sync-aggregator.js",
+    "supabase/functions/_shared/sync-aggregator.ts"
+   ],
+   "notion-architect": [
+    "lib/notion-architect.js",
+    "supabase/functions/_shared/notion-architect.ts"
+   ],
+   "omniroute": [
+    ".env.omniroute.example",
+    "supabase/functions/_shared/omniroute.ts"
+   ],
+   "hermes": [
+    "agents/hermesBrandBuilder.js",
+    "agents/hermesQualityAssurance.js",
+    "api/hermes-mcp.js",
+    "lib/hermesMcp.js",
+    "lib/hermesOptimizationLoop.js",
+    "prompts/hermesSystemPrompt.js",
+    "prompts/hermesSystemPrompt.ts",
+    "supabase/functions/_shared/hermesSystemPrompt.ts"
+   ],
+   "brevo-email": [
+    "supabase/functions/_shared/brevo-email.ts"
+   ],
+   "notion-client": [
+    "lib/notion-client.js",
+    "lib/notion-client.mjs",
+    "supabase/functions/_shared/notion-client.ts"
+   ],
+   "notion-schema": [
+    "lib/notion-schema.js",
+    "supabase/functions/_shared/notion-schema.ts"
+   ],
+   "notion-write": [
+    "lib/notion-write.js",
+    "lib/notion-write.mjs",
+    "supabase/functions/_shared/notion-write.ts"
+   ],
+   "aiRouter": [
+    "src/services/aiRouter.js",
+    "supabase/functions/_shared/aiRouter.ts"
+   ],
+   "notionArchitect": [
+    "fastapi/app/notion_architect.py",
+    "lib/notion-architect.js",
+    "supabase/functions/_shared/notion-architect.ts"
+   ],
+   "dashboard": [
+    "digitallydefined-reputation-dashboard.code-workspace",
+    "src/routes/dashboard.js",
+    "src/schemas/dashboard.js"
+   ]
+  },
+  "hardcoded": {
+   "localhost": [
+    {
+     "file": "server.ts",
+     "count": 4,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "api/health.js",
+     "count": 3,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "api/hermes-mcp.js",
+     "count": 3,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "api/index.js",
+     "count": 8,
+     "samples": [
+      "localhost:3000",
+      "localhost:8000",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "api/active-model/index.js",
+     "count": 3,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "api/business-partner/index.js",
+     "count": 3,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "api/fastapi/[[...path]]/index.js",
+     "count": 5,
+     "samples": [
+      "localhost:8000",
+      "localhost:3000",
+      "localhost:5173"
+     ]
+    },
+    {
+     "file": "api/intelligence/index.js",
+     "count": 3,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "api/models/index.js",
+     "count": 3,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "api/quiz/index.js",
+     "count": 2,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173"
+     ]
+    },
+    {
+     "file": "api/set-model/index.js",
+     "count": 3,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "fastapi/app/config.py",
+     "count": 5,
+     "samples": [
+      "localhost:3000",
+      "localhost:8000",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "fastapi/app/llm.py",
+     "count": 1,
+     "samples": [
+      "localhost:20128"
+     ]
+    },
+    {
+     "file": "lib/http.ts",
+     "count": 3,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "lib/llmClient.js",
+     "count": 1,
+     "samples": [
+      "localhost:20128"
+     ]
+    },
+    {
+     "file": "lib/sellable-auth.js",
+     "count": 2,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173"
+     ]
+    },
+    {
+     "file": "roadmaps/index.js",
+     "count": 3,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "src/index.js",
+     "count": 3,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "src/config/constants.js",
+     "count": 3,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "src/config/env.js",
+     "count": 3,
+     "samples": [
+      "localhost:20128",
+      "localhost:8000"
+     ]
+    },
+    {
+     "file": "src/middleware/cors.js",
+     "count": 3,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "count": 4,
+     "samples": [
+      "localhost:8000",
+      "localhost:3000",
+      "localhost:5173"
+     ]
+    },
+    {
+     "file": "src/services/fastapi.js",
+     "count": 1,
+     "samples": [
+      "localhost:8000"
+     ]
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "count": 3,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    },
+    {
+     "file": "supabase/functions/_shared/cors-utils.ts",
+     "count": 3,
+     "samples": [
+      "localhost:3000",
+      "localhost:5173",
+      "localhost:3001"
+     ]
+    }
+   ],
+   "http-url": [
+    {
+     "file": "server.ts",
+     "count": 8,
+     "samples": [
+      "http://localhost",
+      "https://dashboard.digitallydefined.agency",
+      "http://127.0.0.1"
+     ]
+    },
+    {
+     "file": "ai/gateway/client.ts",
+     "count": 2,
+     "samples": [
+      "https://api.omniroute.ai",
+      "https://generativelanguage.googleapis.com"
+     ]
+    },
+    {
+     "file": "api/health.js",
+     "count": 5,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "api/hermes-mcp.js",
+     "count": 4,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "api/index.js",
+     "count": 23,
+     "samples": [
+      "https://api.notion.com",
+      "http://localhost",
+      "https://api.brevo.com"
+     ]
+    },
+    {
+     "file": "api/active-model/index.js",
+     "count": 5,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "api/business-partner/index.js",
+     "count": 5,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "api/fastapi/[[...path]]/index.js",
+     "count": 10,
+     "samples": [
+      "https://www.digitallydefined.store",
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "api/intelligence/index.js",
+     "count": 5,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "api/models/index.js",
+     "count": 5,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "api/quiz/index.js",
+     "count": 3,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "api/set-model/index.js",
+     "count": 5,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "fastapi/app/config.py",
+     "count": 7,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost",
+      "https://dijjlppdljpcgyoakdnq.supabase.co"
+     ]
+    },
+    {
+     "file": "fastapi/app/llm.py",
+     "count": 1,
+     "samples": [
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "count": 2,
+     "samples": [
+      "https://api.notion.com"
+     ]
+    },
+    {
+     "file": "fastapi/app/config/cloudflare.py",
+     "count": 1,
+     "samples": [
+      "https://assets.digitallydefined.agency"
+     ]
+    },
+    {
+     "file": "fastapi/app/config/supabase.py",
+     "count": 1,
+     "samples": [
+      "https://dijjlppdljpcgyoakdnq.supabase.co"
+     ]
+    },
+    {
+     "file": "fastapi/app/data/products.py",
+     "count": 14,
+     "samples": [
+      "https://francescaonline.gumroad.com"
+     ]
+    },
+    {
+     "file": "fastapi/app/services/content_schema_generator.py",
+     "count": 2,
+     "samples": [
+      "http://json-schema.org",
+      "https://digitallydefined.store"
+     ]
+    },
+    {
+     "file": "lib/antigravity.js",
+     "count": 2,
+     "samples": [
+      "https://api.notion.com",
+      "https://mcp.notion.com"
+     ]
+    },
+    {
+     "file": "lib/facebook-publisher.mjs",
+     "count": 1,
+     "samples": [
+      "https://graph.facebook.com"
+     ]
+    },
+    {
+     "file": "lib/followup-messages.js",
+     "count": 4,
+     "samples": [
+      "https://digitallydefined.store"
+     ]
+    },
+    {
+     "file": "lib/hermesMcp.js",
+     "count": 2,
+     "samples": [
+      "https://api.omniroute.ai"
+     ]
+    },
+    {
+     "file": "lib/http.ts",
+     "count": 5,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "lib/instagram-publisher.mjs",
+     "count": 1,
+     "samples": [
+      "https://graph.facebook.com"
+     ]
+    },
+    {
+     "file": "lib/linkedin-publisher.mjs",
+     "count": 1,
+     "samples": [
+      "https://api.linkedin.com"
+     ]
+    },
+    {
+     "file": "lib/llmClient.js",
+     "count": 2,
+     "samples": [
+      "http://localhost",
+      "https://generativelanguage.googleapis.com"
+     ]
+    },
+    {
+     "file": "lib/notion-client.js",
+     "count": 1,
+     "samples": [
+      "https://api.notion.com"
+     ]
+    },
+    {
+     "file": "lib/notion-client.mjs",
+     "count": 1,
+     "samples": [
+      "https://api.notion.com"
+     ]
+    },
+    {
+     "file": "lib/sellable-auth.js",
+     "count": 4,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "lib/supabaseClient.js",
+     "count": 1,
+     "samples": [
+      "https://dijjlppdljpcgyoakdnq.supabase.co"
+     ]
+    },
+    {
+     "file": "lib/sync-aggregator.js",
+     "count": 10,
+     "samples": [
+      "https://api.notion.com",
+      "https://graph.facebook.com",
+      "https://api.brevo.com"
+     ]
+    },
+    {
+     "file": "lib/threads-publisher.mjs",
+     "count": 1,
+     "samples": [
+      "https://graph.facebook.com"
+     ]
+    },
+    {
+     "file": "roadmaps/index.js",
+     "count": 5,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "src/index.js",
+     "count": 6,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "src/config/constants.js",
+     "count": 6,
+     "samples": [
+      "https://api.notion.com",
+      "https://graph.facebook.com",
+      "https://dashboard.digitallydefined.agency"
+     ]
+    },
+    {
+     "file": "src/config/env.js",
+     "count": 7,
+     "samples": [
+      "https://api.notion.com",
+      "https://mcp.notion.com",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "src/middleware/cors.js",
+     "count": 4,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "src/routes/integrationsDispatch.js",
+     "count": 4,
+     "samples": [
+      "https://graph.facebook.com",
+      "https://analyticsdata.googleapis.com",
+      "https://oauth2.googleapis.com"
+     ]
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "count": 15,
+     "samples": [
+      "https://api.notion.com",
+      "http://localhost",
+      "https://api.brevo.com"
+     ]
+    },
+    {
+     "file": "src/services/aiRouter.js",
+     "count": 2,
+     "samples": [
+      "https://aiplatform.googleapis.com",
+      "https://openrouter.ai"
+     ]
+    },
+    {
+     "file": "src/services/antigravity.js",
+     "count": 2,
+     "samples": [
+      "https://mcp.notion.com"
+     ]
+    },
+    {
+     "file": "src/services/brevo.js",
+     "count": 3,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "https://api.brevo.com"
+     ]
+    },
+    {
+     "file": "src/services/fastapi.js",
+     "count": 2,
+     "samples": [
+      "http://localhost",
+      "https://api-fast.example.com"
+     ]
+    },
+    {
+     "file": "src/services/githubEditor.js",
+     "count": 1,
+     "samples": [
+      "https://api.github.com"
+     ]
+    },
+    {
+     "file": "src/services/integrations.js",
+     "count": 1,
+     "samples": [
+      "https://api.brevo.com"
+     ]
+    },
+    {
+     "file": "src/services/premium.js",
+     "count": 2,
+     "samples": [
+      "https://api.gumroad.com"
+     ]
+    },
+    {
+     "file": "supabase/functions/analytics/index.ts",
+     "count": 1,
+     "samples": [
+      "https://api.omniroute.ai"
+     ]
+    },
+    {
+     "file": "supabase/functions/followup/index.ts",
+     "count": 2,
+     "samples": [
+      "https://digitallydefined.store",
+      "https://deno.land"
+     ]
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "count": 17,
+     "samples": [
+      "https://api.notion.com",
+      "http://localhost",
+      "https://api.omniroute.ai"
+     ]
+    },
+    {
+     "file": "supabase/functions/hermes/puter-workspace.js",
+     "count": 1,
+     "samples": [
+      "https://js.puter.com"
+     ]
+    },
+    {
+     "file": "supabase/functions/notion-sync/index.ts",
+     "count": 4,
+     "samples": [
+      "https://api.notion.com",
+      "https://dashboard.digitallydefined.agency",
+      "https://deno.land"
+     ]
+    },
+    {
+     "file": "supabase/functions/optimization-loop/index.ts",
+     "count": 1,
+     "samples": [
+      "https://deno.land"
+     ]
+    },
+    {
+     "file": "supabase/functions/optimization-loop-weekly/index.ts",
+     "count": 1,
+     "samples": [
+      "https://deno.land"
+     ]
+    },
+    {
+     "file": "supabase/functions/post-publisher/index.ts",
+     "count": 2,
+     "samples": [
+      "https://digitallydefined.store",
+      "https://deno.land"
+     ]
+    },
+    {
+     "file": "supabase/functions/sellable/index.ts",
+     "count": 2,
+     "samples": [
+      "https://digitallydefined.store",
+      "https://deno.land"
+     ]
+    },
+    {
+     "file": "supabase/functions/sync/index.ts",
+     "count": 2,
+     "samples": [
+      "https://digitallydefined.store",
+      "https://deno.land"
+     ]
+    },
+    {
+     "file": "supabase/functions/_shared/ai-client.ts",
+     "count": 1,
+     "samples": [
+      "https://generativelanguage.googleapis.com"
+     ]
+    },
+    {
+     "file": "supabase/functions/_shared/aiRouter.ts",
+     "count": 2,
+     "samples": [
+      "https://api.omniroute.ai"
+     ]
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "count": 7,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "https://digitallydefined.store",
+      "https://api.brevo.com"
+     ]
+    },
+    {
+     "file": "supabase/functions/_shared/cors-utils.ts",
+     "count": 5,
+     "samples": [
+      "https://dashboard.digitallydefined.agency",
+      "http://localhost"
+     ]
+    },
+    {
+     "file": "supabase/functions/_shared/email-publish.ts",
+     "count": 1,
+     "samples": [
+      "https://api.sendgrid.com"
+     ]
+    },
+    {
+     "file": "supabase/functions/_shared/facebook-publisher.ts",
+     "count": 1,
+     "samples": [
+      "https://graph.facebook.com"
+     ]
+    },
+    {
+     "file": "supabase/functions/_shared/instagram-publisher.ts",
+     "count": 1,
+     "samples": [
+      "https://graph.facebook.com"
+     ]
+    },
+    {
+     "file": "supabase/functions/_shared/linkedin-publisher.ts",
+     "count": 1,
+     "samples": [
+      "https://api.linkedin.com"
+     ]
+    },
+    {
+     "file": "supabase/functions/_shared/notion-client.ts",
+     "count": 1,
+     "samples": [
+      "https://api.notion.com"
+     ]
+    },
+    {
+     "file": "supabase/functions/_shared/notion-write.ts",
+     "count": 2,
+     "samples": [
+      "https://api.notion.com"
+     ]
+    },
+    {
+     "file": "supabase/functions/_shared/omniroute.ts",
+     "count": 2,
+     "samples": [
+      "https://api.omniroute.ai",
+      "https://generativelanguage.googleapis.com"
+     ]
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "count": 10,
+     "samples": [
+      "https://api.notion.com",
+      "https://graph.facebook.com",
+      "https://api.brevo.com"
+     ]
+    },
+    {
+     "file": "supabase/functions/_shared/threads-publisher.ts",
+     "count": 1,
+     "samples": [
+      "https://graph.facebook.com"
+     ]
+    }
+   ],
+   "supabase-url": [
+    {
+     "file": "fastapi/app/config.py",
+     "count": 1,
+     "samples": [
+      "https://dijjlppdljpcgyoakdnq.supabase.co"
+     ]
+    },
+    {
+     "file": "fastapi/app/config/supabase.py",
+     "count": 1,
+     "samples": [
+      "https://dijjlppdljpcgyoakdnq.supabase.co"
+     ]
+    },
+    {
+     "file": "lib/supabaseClient.js",
+     "count": 1,
+     "samples": [
+      "https://dijjlppdljpcgyoakdnq.supabase.co"
+     ]
+    },
+    {
+     "file": "src/config/env.js",
+     "count": 1,
+     "samples": [
+      "https://dijjlppdljpcgyoakdnq.supabase.co"
+     ]
+    },
+    {
+     "file": "supabase/functions/notion-sync/index.ts",
+     "count": 1,
+     "samples": [
+      "https://dijjlppdljpcgyoakdnq.supabase.co"
+     ]
+    }
+   ]
+  },
+  "endpoints": {
+   "http-route": [
+    {
+     "file": "server.ts",
+     "method": "GET",
+     "path": "HERMES_ENDPOINT"
+    },
+    {
+     "file": "server.ts",
+     "method": "GET",
+     "path": "SUPABASE_FUNCTIONS_URL"
+    },
+    {
+     "file": "server.ts",
+     "method": "GET",
+     "path": "origin"
+    },
+    {
+     "file": "server.ts",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "ai/gateway/client.ts",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "api/index.js",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "api/index.js",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "api/fastapi/[[...path]]/index.js",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "fastapi/app/llm.py",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "fastapi/app/llm.py",
+     "method": "GET",
+     "path": "choices"
+    },
+    {
+     "file": "fastapi/app/llm.py",
+     "method": "GET",
+     "path": "message"
+    },
+    {
+     "file": "fastapi/app/llm.py",
+     "method": "GET",
+     "path": "content"
+    },
+    {
+     "file": "fastapi/app/llm.py",
+     "method": "GET",
+     "path": "choices"
+    },
+    {
+     "file": "fastapi/app/llm.py",
+     "method": "GET",
+     "path": "delta"
+    },
+    {
+     "file": "fastapi/app/llm.py",
+     "method": "GET",
+     "path": "content"
+    },
+    {
+     "file": "fastapi/app/llm.py",
+     "method": "GET",
+     "path": "message"
+    },
+    {
+     "file": "fastapi/app/llm.py",
+     "method": "GET",
+     "path": "content"
+    },
+    {
+     "file": "fastapi/app/main.py",
+     "method": "GET",
+     "path": "x-api-key"
+    },
+    {
+     "file": "fastapi/app/main.py",
+     "method": "GET",
+     "path": "/health"
+    },
+    {
+     "file": "fastapi/app/main.py",
+     "method": "GET",
+     "path": "/"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "envVarAliases"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "legacyNames"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "legacy_names"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "readOnly"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "readOnly"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "readOnly"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "readOnly"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "synonyms"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "email"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "url"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "source"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "id"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "readOnly"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "readOnly"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "GET",
+     "path": "results"
+    },
+    {
+     "file": "fastapi/app/notion_architect.py",
+     "method": "POST",
+     "path": "https://api.notion.com/v1/pages"
+    },
+    {
+     "file": "fastapi/app/routers/affiliate.py",
+     "method": "POST",
+     "path": "/flip"
+    },
+    {
+     "file": "fastapi/app/routers/assetplan.py",
+     "method": "POST",
+     "path": "/calculate"
+    },
+    {
+     "file": "fastapi/app/routers/blueprint.py",
+     "method": "POST",
+     "path": "/generate"
+    },
+    {
+     "file": "fastapi/app/routers/blueprint.py",
+     "method": "POST",
+     "path": "/validate"
+    },
+    {
+     "file": "fastapi/app/routers/domain.py",
+     "method": "POST",
+     "path": "/analyze"
+    },
+    {
+     "file": "fastapi/app/routers/knowledge.py",
+     "method": "GET",
+     "path": "/collections"
+    },
+    {
+     "file": "fastapi/app/routers/knowledge.py",
+     "method": "GET",
+     "path": "/{collection}"
+    },
+    {
+     "file": "fastapi/app/routers/knowledge.py",
+     "method": "GET",
+     "path": "/{collection}/{doc_id}"
+    },
+    {
+     "file": "fastapi/app/routers/knowledge.py",
+     "method": "POST",
+     "path": "/{collection}/{doc_id}"
+    },
+    {
+     "file": "fastapi/app/routers/knowledge.py",
+     "method": "PATCH",
+     "path": "/{collection}/{doc_id}"
+    },
+    {
+     "file": "fastapi/app/routers/knowledge.py",
+     "method": "DELETE",
+     "path": "/{collection}/{doc_id}"
+    },
+    {
+     "file": "fastapi/app/routers/knowledge.py",
+     "method": "GET",
+     "path": "/{collection}/query"
+    },
+    {
+     "file": "fastapi/app/routers/niche.py",
+     "method": "POST",
+     "path": "/score"
+    },
+    {
+     "file": "fastapi/app/routers/niche.py",
+     "method": "GET",
+     "path": "niche"
+    },
+    {
+     "file": "fastapi/app/routers/niche.py",
+     "method": "GET",
+     "path": "keywords"
+    },
+    {
+     "file": "fastapi/app/routers/niche.py",
+     "method": "GET",
+     "path": "demand"
+    },
+    {
+     "file": "fastapi/app/routers/niche.py",
+     "method": "GET",
+     "path": "competition"
+    },
+    {
+     "file": "fastapi/app/routers/niche.py",
+     "method": "GET",
+     "path": "recommendation"
+    },
+    {
+     "file": "fastapi/app/routers/offerarchitect.py",
+     "method": "POST",
+     "path": "/generate"
+    },
+    {
+     "file": "fastapi/app/routers/product.py",
+     "method": "POST",
+     "path": "/generate"
+    },
+    {
+     "file": "fastapi/app/routers/products_api.py",
+     "method": "GET",
+     "path": "tier"
+    },
+    {
+     "file": "fastapi/app/routers/products_api.py",
+     "method": "GET",
+     "path": "status"
+    },
+    {
+     "file": "fastapi/app/routers/products_api.py",
+     "method": "GET",
+     "path": "/{product_id}"
+    },
+    {
+     "file": "fastapi/app/routers/products_api.py",
+     "method": "GET",
+     "path": "/tiers"
+    },
+    {
+     "file": "fastapi/app/routers/products_api.py",
+     "method": "GET",
+     "path": "/tier/{tier}"
+    },
+    {
+     "file": "fastapi/app/routers/rankrent.py",
+     "method": "POST",
+     "path": "/analyze"
+    },
+    {
+     "file": "fastapi/app/routers/roadmap.py",
+     "method": "POST",
+     "path": "/generate"
+    },
+    {
+     "file": "fastapi/app/routers/roadmap.py",
+     "method": "GET",
+     "path": "steps"
+    },
+    {
+     "file": "fastapi/app/routers/roadmap.py",
+     "method": "GET",
+     "path": "estimatedTime"
+    },
+    {
+     "file": "fastapi/app/routers/roadmap.py",
+     "method": "GET",
+     "path": "tools"
+    },
+    {
+     "file": "fastapi/app/routers/roadmap.py",
+     "method": "GET",
+     "path": "nextAction"
+    },
+    {
+     "file": "fastapi/app/routers/wealth.py",
+     "method": "POST",
+     "path": "/calculate"
+    },
+    {
+     "file": "fastapi/app/services/affiliate_service.py",
+     "method": "GET",
+     "path": "product"
+    },
+    {
+     "file": "fastapi/app/services/affiliate_service.py",
+     "method": "GET",
+     "path": "epc"
+    },
+    {
+     "file": "fastapi/app/services/affiliate_service.py",
+     "method": "GET",
+     "path": "commission_rate"
+    },
+    {
+     "file": "fastapi/app/services/affiliate_service.py",
+     "method": "GET",
+     "path": "price"
+    },
+    {
+     "file": "fastapi/app/services/affiliate_service.py",
+     "method": "GET",
+     "path": "recurring"
+    },
+    {
+     "file": "fastapi/app/services/affiliate_service.py",
+     "method": "GET",
+     "path": "network"
+    },
+    {
+     "file": "fastapi/app/services/affiliate_service.py",
+     "method": "GET",
+     "path": "difficulty"
+    },
+    {
+     "file": "fastapi/app/services/affiliate_service.py",
+     "method": "GET",
+     "path": "category"
+    },
+    {
+     "file": "fastapi/app/services/asset_plan_service.py",
+     "method": "GET",
+     "path": "portfolioSummary"
+    },
+    {
+     "file": "fastapi/app/services/asset_plan_service.py",
+     "method": "GET",
+     "path": "assumptions"
+    },
+    {
+     "file": "fastapi/app/services/asset_plan_service.py",
+     "method": "GET",
+     "path": "concentrationRisks"
+    },
+    {
+     "file": "fastapi/app/services/asset_plan_service.py",
+     "method": "GET",
+     "path": "buildOrder"
+    },
+    {
+     "file": "fastapi/app/services/asset_plan_service.py",
+     "method": "GET",
+     "path": "nextAction"
+    },
+    {
+     "file": "fastapi/app/services/authority_blueprint.py",
+     "method": "GET",
+     "path": "dryRun"
+    },
+    {
+     "file": "fastapi/app/services/offer_architect_service.py",
+     "method": "GET",
+     "path": "properties"
+    },
+    {
+     "file": "fastapi/app/services/offer_architect_service.py",
+     "method": "GET",
+     "path": "type"
+    },
+    {
+     "file": "fastapi/app/services/offer_architect_service.py",
+     "method": "GET",
+     "path": "type"
+    },
+    {
+     "file": "fastapi/app/services/offer_architect_service.py",
+     "method": "GET",
+     "path": "validationChecklist"
+    },
+    {
+     "file": "fastapi/app/services/offer_architect_service.py",
+     "method": "GET",
+     "path": "nextAction"
+    },
+    {
+     "file": "fastapi/app/services/product_generator.py",
+     "method": "GET",
+     "path": "product_type"
+    },
+    {
+     "file": "fastapi/app/services/product_generator.py",
+     "method": "GET",
+     "path": "features"
+    },
+    {
+     "file": "fastapi/app/services/product_generator.py",
+     "method": "GET",
+     "path": "trend_narrative"
+    },
+    {
+     "file": "fastapi/app/services/product_packager.py",
+     "method": "GET",
+     "path": "title"
+    },
+    {
+     "file": "fastapi/app/services/rankrent_service.py",
+     "method": "GET",
+     "path": "keywordClusters"
+    },
+    {
+     "file": "fastapi/app/services/rankrent_service.py",
+     "method": "GET",
+     "path": "contentPlan"
+    },
+    {
+     "file": "fastapi/app/services/rankrent_service.py",
+     "method": "GET",
+     "path": "monetizationStrategy"
+    },
+    {
+     "file": "fastapi/app/services/rankrent_service.py",
+     "method": "GET",
+     "path": "recommendation"
+    },
+    {
+     "file": "fastapi/app/services/schema_validator.py",
+     "method": "GET",
+     "path": "properties"
+    },
+    {
+     "file": "fastapi/app/services/schema_validator.py",
+     "method": "GET",
+     "path": "required"
+    },
+    {
+     "file": "fastapi/app/services/trend_service.py",
+     "method": "GET",
+     "path": "top"
+    },
+    {
+     "file": "fastapi/app/services/wealth_service.py",
+     "method": "GET",
+     "path": "growthModel"
+    },
+    {
+     "file": "fastapi/app/services/wealth_service.py",
+     "method": "GET",
+     "path": "recommendedPricing"
+    },
+    {
+     "file": "lib/hermesMcp.js",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "lib/http.ts",
+     "method": "GET",
+     "path": "origin"
+    },
+    {
+     "file": "lib/llmClient.js",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "lib/notion-client.mjs",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "lib/sellable-auth.js",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "lib/sync-aggregator.js",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "src/index.js",
+     "method": "GET",
+     "path": "/api/health"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "supabase/functions/analytics/index.ts",
+     "method": "GET",
+     "path": "DASHBOARD_API_KEY"
+    },
+    {
+     "file": "supabase/functions/analytics/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_URL"
+    },
+    {
+     "file": "supabase/functions/analytics/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_SERVICE_ROLE_KEY"
+    },
+    {
+     "file": "supabase/functions/analytics/index.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_API_KEY"
+    },
+    {
+     "file": "supabase/functions/analytics/index.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_BASE_URL"
+    },
+    {
+     "file": "supabase/functions/analytics/index.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_MODEL"
+    },
+    {
+     "file": "supabase/functions/analytics/index.ts",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "supabase/functions/analytics/index.ts",
+     "method": "GET",
+     "path": "origin"
+    },
+    {
+     "file": "supabase/functions/analytics/index.ts",
+     "method": "GET",
+     "path": "x-api-key"
+    },
+    {
+     "file": "supabase/functions/content/index.ts",
+     "method": "GET",
+     "path": "action"
+    },
+    {
+     "file": "supabase/functions/followup/index.ts",
+     "method": "GET",
+     "path": "SENDGRID_API_KEY"
+    },
+    {
+     "file": "supabase/functions/followup/index.ts",
+     "method": "GET",
+     "path": "SENDGRID_LIST_ID"
+    },
+    {
+     "file": "supabase/functions/followup/index.ts",
+     "method": "GET",
+     "path": "SENDGRID_TEMPLATE_ID"
+    },
+    {
+     "file": "supabase/functions/followup/index.ts",
+     "method": "GET",
+     "path": "origin"
+    },
+    {
+     "file": "supabase/functions/followup/index.ts",
+     "method": "GET",
+     "path": "origin"
+    },
+    {
+     "file": "supabase/functions/followup/index.ts",
+     "method": "GET",
+     "path": "x-supabase-intention"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_URL"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_SERVICE_ROLE_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_DISABLED"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_MODEL"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_DIRECT_MODEL"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_BASE_URL"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_API_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "GEMINI_API_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "GOOGLE_API_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_API_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "GEMINI_BASE_URL"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "GEMINI_MODEL"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "NOTION_LIVE_MODE"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "NOTION_API_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "NOTION_API_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_URL"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_SERVICE_ROLE_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_URL"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_SERVICE_ROLE_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "origin"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "DASHBOARD_API_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "x-api-key"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "apikey"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "authorization"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "NOTION_API_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "NOTION_TARGET_DB_ID"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "NOTION_API_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "NOTION_IDEAS_DB_ID"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "NOTION_API_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "NOTION_AUTOMATIONS_DB_ID"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "NOTION_API_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "NOTION_AUTOMATIONS_DB_ID"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "GUMROAD_API_KEY"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "GUMROAD_PRODUCT_PERMALINK"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_URL"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_SERVICE_ROLE_KEY"
+    },
+    {
+     "file": "supabase/functions/notion-sync/index.ts",
+     "method": "GET",
+     "path": "x-supabase-intention"
+    },
+    {
+     "file": "supabase/functions/notion-sync/index.ts",
+     "method": "GET",
+     "path": "x-api-key"
+    },
+    {
+     "file": "supabase/functions/notion-sync/index.ts",
+     "method": "GET",
+     "path": "apikey"
+    },
+    {
+     "file": "supabase/functions/optimization-loop/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_URL"
+    },
+    {
+     "file": "supabase/functions/optimization-loop/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_SERVICE_ROLE_KEY"
+    },
+    {
+     "file": "supabase/functions/optimization-loop/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_URL"
+    },
+    {
+     "file": "supabase/functions/optimization-loop/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_SERVICE_ROLE_KEY"
+    },
+    {
+     "file": "supabase/functions/optimization-loop/index.ts",
+     "method": "GET",
+     "path": "origin"
+    },
+    {
+     "file": "supabase/functions/optimization-loop-weekly/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_URL"
+    },
+    {
+     "file": "supabase/functions/optimization-loop-weekly/index.ts",
+     "method": "GET",
+     "path": "SUPABASE_SERVICE_ROLE_KEY"
+    },
+    {
+     "file": "supabase/functions/post-publisher/index.ts",
+     "method": "GET",
+     "path": "DASHBOARD_API_KEY"
+    },
+    {
+     "file": "supabase/functions/post-publisher/index.ts",
+     "method": "GET",
+     "path": "VITE_DASHBOARD_API_KEY"
+    },
+    {
+     "file": "supabase/functions/post-publisher/index.ts",
+     "method": "GET",
+     "path": "x-supabase-intention"
+    },
+    {
+     "file": "supabase/functions/post-publisher/index.ts",
+     "method": "GET",
+     "path": "origin"
+    },
+    {
+     "file": "supabase/functions/post-publisher/index.ts",
+     "method": "GET",
+     "path": "origin"
+    },
+    {
+     "file": "supabase/functions/post-publisher/index.ts",
+     "method": "GET",
+     "path": "x-api-key"
+    },
+    {
+     "file": "supabase/functions/post-publisher/index.ts",
+     "method": "GET",
+     "path": "authorization"
+    },
+    {
+     "file": "supabase/functions/quiz-roadmap/index.ts",
+     "method": "GET",
+     "path": "email"
+    },
+    {
+     "file": "supabase/functions/sellable/index.ts",
+     "method": "GET",
+     "path": "origin"
+    },
+    {
+     "file": "supabase/functions/sellable/index.ts",
+     "method": "GET",
+     "path": "origin"
+    },
+    {
+     "file": "supabase/functions/sellable/index.ts",
+     "method": "GET",
+     "path": "x-supabase-intention"
+    },
+    {
+     "file": "supabase/functions/sellable/index.ts",
+     "method": "GET",
+     "path": "DASHBOARD_API_KEY"
+    },
+    {
+     "file": "supabase/functions/sellable/index.ts",
+     "method": "GET",
+     "path": "x-api-key"
+    },
+    {
+     "file": "supabase/functions/sellable/index.ts",
+     "method": "GET",
+     "path": "authorization"
+    },
+    {
+     "file": "supabase/functions/sync/index.ts",
+     "method": "GET",
+     "path": "DASHBOARD_API_KEY"
+    },
+    {
+     "file": "supabase/functions/sync/index.ts",
+     "method": "GET",
+     "path": "VITE_DASHBOARD_API_KEY"
+    },
+    {
+     "file": "supabase/functions/sync/index.ts",
+     "method": "GET",
+     "path": "origin"
+    },
+    {
+     "file": "supabase/functions/sync/index.ts",
+     "method": "GET",
+     "path": "origin"
+    },
+    {
+     "file": "supabase/functions/sync/index.ts",
+     "method": "GET",
+     "path": "x-api-key"
+    },
+    {
+     "file": "supabase/functions/sync/index.ts",
+     "method": "GET",
+     "path": "authorization"
+    },
+    {
+     "file": "supabase/functions/_shared/ai-client.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/ai-client.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_URL"
+    },
+    {
+     "file": "supabase/functions/_shared/ai-client.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_BASE_URL"
+    },
+    {
+     "file": "supabase/functions/_shared/ai-client.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_MODEL"
+    },
+    {
+     "file": "supabase/functions/_shared/ai-client.ts",
+     "method": "GET",
+     "path": "GEMINI_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/ai-client.ts",
+     "method": "GET",
+     "path": "GOOGLE_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/ai-client.ts",
+     "method": "GET",
+     "path": "GEMINI_MODEL"
+    },
+    {
+     "file": "supabase/functions/_shared/aiRouter.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_MODEL"
+    },
+    {
+     "file": "supabase/functions/_shared/aiRouter.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/aiRouter.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_BASE_URL"
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "method": "GET",
+     "path": "BREVO_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "method": "GET",
+     "path": "BREVO_LIST_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "method": "GET",
+     "path": "BREVO_FROM_EMAIL"
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "method": "GET",
+     "path": "SELLABLE_FROM_EMAIL"
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "method": "GET",
+     "path": "BREVO_FROM_NAME"
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "method": "GET",
+     "path": "SELLABLE_FROM_NAME"
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "method": "GET",
+     "path": "BREVO_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "method": "GET",
+     "path": "BREVO_SENDER_EMAIL"
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "method": "GET",
+     "path": "BREVO_SENDER_NAME"
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "method": "GET",
+     "path": "APP_URL"
+    },
+    {
+     "file": "supabase/functions/_shared/community-helpers.ts",
+     "method": "GET",
+     "path": "SLACK_BOT_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/community-helpers.ts",
+     "method": "GET",
+     "path": "SLACK_CHANNEL_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/community-helpers.ts",
+     "method": "GET",
+     "path": "TELEGRAM_BOT_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/community-helpers.ts",
+     "method": "GET",
+     "path": "TELEGRAM_CHAT_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/community-helpers.ts",
+     "method": "GET",
+     "path": "SUPABASE_URL"
+    },
+    {
+     "file": "supabase/functions/_shared/community-helpers.ts",
+     "method": "GET",
+     "path": "SUPABASE_ANON_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "method": "GET",
+     "path": "BREVO_LIST_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "method": "GET",
+     "path": "SELLABLE_BREVO_LIST_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "method": "GET",
+     "path": "SELLABLE_FROM_EMAIL"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "method": "GET",
+     "path": "NOTION_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "method": "GET",
+     "path": "SUPABASE_URL"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "method": "GET",
+     "path": "SUPABASE_ANON_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "method": "GET",
+     "path": "TELEGRAM_BOT_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "method": "GET",
+     "path": "SLACK_BOT_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "method": "GET",
+     "path": "FACEBOOK_PAGE_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "method": "GET",
+     "path": "INSTAGRAM_BUSINESS_ACCOUNT_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "method": "GET",
+     "path": "THREADS_USER_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/cors-utils.ts",
+     "method": "GET",
+     "path": "origin"
+    },
+    {
+     "file": "supabase/functions/_shared/cron-dedup-logger.ts",
+     "method": "GET",
+     "path": "CRON_LOG_PATH"
+    },
+    {
+     "file": "supabase/functions/_shared/cron-dedup-logger.ts",
+     "method": "GET",
+     "path": "CRON_LOG_PATH"
+    },
+    {
+     "file": "supabase/functions/_shared/cron-dedup-logger.ts",
+     "method": "GET",
+     "path": "CRON_DEDUP_STORE_PATH"
+    },
+    {
+     "file": "supabase/functions/_shared/cron-dedup-logger.ts",
+     "method": "GET",
+     "path": "CRON_DEDUP_STORE_PATH"
+    },
+    {
+     "file": "supabase/functions/_shared/facebook-publisher.ts",
+     "method": "GET",
+     "path": "LIVE_CRON_POSTS"
+    },
+    {
+     "file": "supabase/functions/_shared/facebook-publisher.ts",
+     "method": "GET",
+     "path": "CRON_LIVE_POSTS"
+    },
+    {
+     "file": "supabase/functions/_shared/facebook-publisher.ts",
+     "method": "GET",
+     "path": "FACEBOOK_ACCESS_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/facebook-publisher.ts",
+     "method": "GET",
+     "path": "FACEBOOK_GROUP_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/facebook-publisher.ts",
+     "method": "GET",
+     "path": "FACEBOOK_PAGE_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/instagram-publisher.ts",
+     "method": "GET",
+     "path": "INSTAGRAM_ACCOUNT_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/instagram-publisher.ts",
+     "method": "GET",
+     "path": "INSTAGRAM_BUSINESS_ACCOUNT_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/instagram-publisher.ts",
+     "method": "GET",
+     "path": "FACEBOOK_ACCESS_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/linkedin-publisher.ts",
+     "method": "GET",
+     "path": "LINKEDIN_ACCESS_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/linkedin-publisher.ts",
+     "method": "GET",
+     "path": "LINKEDIN_AUTHOR_URN"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "META_APP_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "META_APP_SECRET"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "FACEBOOK_ACCESS_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "FACEBOOK_PAGE_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "FACEBOOK_GROUP_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "INSTAGRAM_BUSINESS_ACCOUNT_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "INSTAGRAM_USERNAME"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "THREADS_APP_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "THREADS_APP_SECRET"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "THREADS_USER_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "SELLABLE_DRY_RUN"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "SELLABLE_LIVE_APPROVAL"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "META_APP_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "META_APP_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "META_APP_SECRET"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "META_APP_SECRET"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "FACEBOOK_ACCESS_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "FACEBOOK_ACCESS_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "FACEBOOK_PAGE_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "FACEBOOK_PAGE_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "INSTAGRAM_BUSINESS_ACCOUNT_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "INSTAGRAM_BUSINESS_ACCOUNT_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "THREADS_APP_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "THREADS_APP_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "THREADS_APP_SECRET"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "THREADS_APP_SECRET"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "THREADS_USER_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/meta-auth.ts",
+     "method": "GET",
+     "path": "THREADS_USER_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/notion-schema.ts",
+     "method": "GET",
+     "path": "NOTION_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/notion-schema.ts",
+     "method": "GET",
+     "path": "NOTION_VERSION"
+    },
+    {
+     "file": "supabase/functions/_shared/notion-write.ts",
+     "method": "GET",
+     "path": "NOTION_LIVE_MODE"
+    },
+    {
+     "file": "supabase/functions/_shared/notion-write.ts",
+     "method": "GET",
+     "path": "NOTION_SECRET"
+    },
+    {
+     "file": "supabase/functions/_shared/notion-write.ts",
+     "method": "GET",
+     "path": "NOTION_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/omniroute.ts",
+     "method": "GET",
+     "path": "AGENTOPS_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/omniroute.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_BASE_URL"
+    },
+    {
+     "file": "supabase/functions/_shared/omniroute.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/omniroute.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_MODEL"
+    },
+    {
+     "file": "supabase/functions/_shared/omniroute.ts",
+     "method": "GET",
+     "path": "GEMINI_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/omniroute.ts",
+     "method": "GET",
+     "path": "GOOGLE_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/omniroute.ts",
+     "method": "GET",
+     "path": "GEMINI_BASE_URL"
+    },
+    {
+     "file": "supabase/functions/_shared/omniroute.ts",
+     "method": "GET",
+     "path": "GEMINI_MODEL"
+    },
+    {
+     "file": "supabase/functions/_shared/omniroute.ts",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "supabase/functions/_shared/omniroute.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_DISABLED"
+    },
+    {
+     "file": "supabase/functions/_shared/omniroute.ts",
+     "method": "GET",
+     "path": "OMNIROUTE_DISABLED"
+    },
+    {
+     "file": "supabase/functions/_shared/sellable-auth.ts",
+     "method": "GET",
+     "path": "SELLABLE_DRY_RUN"
+    },
+    {
+     "file": "supabase/functions/_shared/sellable-auth.ts",
+     "method": "GET",
+     "path": "SELLABLE_LIVE_APPROVAL"
+    },
+    {
+     "file": "supabase/functions/_shared/sellable-auth.ts",
+     "method": "GET",
+     "path": "NODE_ENV"
+    },
+    {
+     "file": "supabase/functions/_shared/sheets-sellable.ts",
+     "method": "GET",
+     "path": "SHEETS_WEBHOOK_URL"
+    },
+    {
+     "file": "supabase/functions/_shared/sheets-sellable.ts",
+     "method": "GET",
+     "path": "GOOGLE_CLIENT_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/sheets-sellable.ts",
+     "method": "GET",
+     "path": "GOOGLE_CLIENT_SECRET"
+    },
+    {
+     "file": "supabase/functions/_shared/sheets-sellable.ts",
+     "method": "GET",
+     "path": "GOOGLE_REFRESH_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "method": "GET",
+     "path": "FACEBOOK_PAGE_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "method": "GET",
+     "path": "FACEBOOK_PAGE_ACCESS_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "method": "GET",
+     "path": "INSTAGRAM_BUSINESS_ACCOUNT_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "method": "GET",
+     "path": "INSTAGRAM_ACCESS_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "method": "GET",
+     "path": "THREADS_USER_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "method": "GET",
+     "path": "THREADS_ACCESS_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "method": "GET",
+     "path": "LINKEDIN_ACCESS_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "method": "GET",
+     "path": "LINKEDIN_ORGANIZATION_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "method": "GET",
+     "path": "TIKTOK_ACCESS_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "method": "GET",
+     "path": "YOUTUBE_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "method": "GET",
+     "path": "YOUTUBE_CHANNEL_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "method": "GET",
+     "path": "PINTEREST_ACCESS_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "method": "GET",
+     "path": "GOOGLE_SHEETS_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "method": "GET",
+     "path": "GOOGLE_SHEETS_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/supabase-store.ts",
+     "method": "GET",
+     "path": "SUPABASE_URL"
+    },
+    {
+     "file": "supabase/functions/_shared/supabase-store.ts",
+     "method": "GET",
+     "path": "SUPABASE_SERVICE_ROLE_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/supabase-store.ts",
+     "method": "GET",
+     "path": "SUPABASE_SECRET_KEYS"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "content-type"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "FACEBOOK_GROUP_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "FACEBOOK_ACCESS_TOKEN"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NODE_ENV"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "BREVO_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "BREVO_LIST_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NODE_ENV"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "SHEETS_WEBHOOK_URL"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NODE_ENV"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NOTION_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NOTION_IDEAS_DB_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NOTION_CONTENT_DB_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NOTION_AUTOMATIONS_DB_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NODE_ENV"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NOTION_IDEAS_DB_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NOTION_COMMAND_CENTER_DB_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NOTION_API_KEY"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NOTION_PUBLISHING_QUEUE_DB_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NOTION_CONTENT_APPROVALS_DB_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NOTION_BUYER_SIGNALS_DB_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NOTION_AI_CONTENT_DRAFTS_DB_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NODE_ENV"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "method": "GET",
+     "path": "NODE_ENV"
+    },
+    {
+     "file": "supabase/functions/_shared/threads-publisher.ts",
+     "method": "GET",
+     "path": "INSTAGRAM_ACCOUNT_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/threads-publisher.ts",
+     "method": "GET",
+     "path": "INSTAGRAM_BUSINESS_ACCOUNT_ID"
+    },
+    {
+     "file": "supabase/functions/_shared/threads-publisher.ts",
+     "method": "GET",
+     "path": "FACEBOOK_ACCESS_TOKEN"
+    }
+   ],
+   "edge-action": [
+    {
+     "file": "api/index.js",
+     "value": "status"
+    },
+    {
+     "file": "api/index.js",
+     "value": "string"
+    },
+    {
+     "file": "api/index.js",
+     "value": "string"
+    },
+    {
+     "file": "api/index.js",
+     "value": "status"
+    },
+    {
+     "file": "api/index.js",
+     "value": "test-env"
+    },
+    {
+     "file": "api/index.js",
+     "value": "auth.verify"
+    },
+    {
+     "file": "api/index.js",
+     "value": "ai.recommendations"
+    },
+    {
+     "file": "api/index.js",
+     "value": "chat"
+    },
+    {
+     "file": "api/index.js",
+     "value": "public.chat"
+    },
+    {
+     "file": "api/index.js",
+     "value": "hermes.agent"
+    },
+    {
+     "file": "api/index.js",
+     "value": "intelligence"
+    },
+    {
+     "file": "api/index.js",
+     "value": "brain.brief"
+    },
+    {
+     "file": "api/index.js",
+     "value": "automation.sync"
+    },
+    {
+     "file": "api/index.js",
+     "value": "automation.list"
+    },
+    {
+     "file": "api/index.js",
+     "value": "automation.logs"
+    },
+    {
+     "file": "api/index.js",
+     "value": "automation.run"
+    },
+    {
+     "file": "api/index.js",
+     "value": "automation.events"
+    },
+    {
+     "file": "api/index.js",
+     "value": "dashboard"
+    },
+    {
+     "file": "api/index.js",
+     "value": "integration.google.start"
+    },
+    {
+     "file": "api/index.js",
+     "value": "integration.social.start"
+    },
+    {
+     "file": "api/index.js",
+     "value": "integration.email.start"
+    },
+    {
+     "file": "api/index.js",
+     "value": "integration.community.start"
+    },
+    {
+     "file": "api/index.js",
+     "value": "integration.googleAnalytics"
+    },
+    {
+     "file": "api/index.js",
+     "value": "integration.social"
+    },
+    {
+     "file": "api/index.js",
+     "value": "integration.email"
+    },
+    {
+     "file": "api/index.js",
+     "value": "integration.community"
+    },
+    {
+     "file": "api/index.js",
+     "value": "antigravity"
+    },
+    {
+     "file": "lib/community-helpers.js",
+     "value": "dry_run"
+    },
+    {
+     "file": "lib/community-helpers.js",
+     "value": "community-helper.readiness"
+    },
+    {
+     "file": "lib/community-helpers.js",
+     "value": "community-helpers.list"
+    },
+    {
+     "file": "lib/community-helpers.js",
+     "value": "community-helper.send_message"
+    },
+    {
+     "file": "lib/community-helpers.js",
+     "value": "community-helper.read_state"
+    },
+    {
+     "file": "lib/community-triggers.js",
+     "value": "dry_run"
+    },
+    {
+     "file": "lib/community-triggers.js",
+     "value": "community-triggers.readiness"
+    },
+    {
+     "file": "lib/community-triggers.js",
+     "value": "community-triggers.list"
+    },
+    {
+     "file": "lib/community-triggers.js",
+     "value": "community.trigger.evaluate"
+    },
+    {
+     "file": "lib/community-triggers.js",
+     "value": "community.event.create"
+    },
+    {
+     "file": "lib/community-triggers.js",
+     "value": "dry_run"
+    },
+    {
+     "file": "lib/email-publish.js",
+     "value": "dry_run"
+    },
+    {
+     "file": "lib/sheets-sellable.js",
+     "value": "sheets.readiness"
+    },
+    {
+     "file": "lib/sheets-sellable.js",
+     "value": "sheets.append"
+    },
+    {
+     "file": "lib/sheets-sellable.js",
+     "value": "sheets.update"
+    },
+    {
+     "file": "lib/social-publishers.js",
+     "value": "dry_run"
+    },
+    {
+     "file": "lib/social-publishers.js",
+     "value": "publisher.readiness"
+    },
+    {
+     "file": "lib/social-publishers.js",
+     "value": "publishers.list"
+    },
+    {
+     "file": "lib/social-publishers.js",
+     "value": "publisher.publish"
+    },
+    {
+     "file": "lib/social-publishers.js",
+     "value": "publisher.read"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "dashboard"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "agent.dashboard"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "chat"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "agent.chat"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "hermes.status"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "mentor.status"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "agent.hermes-status"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "mentor"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "mentor.dev"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "agent.mentor"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "quiz"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "quiz.complete"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "quiz.submit"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "agent.quiz"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "quiz.roadmap"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "quiz.roadmap.get"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "intelligence"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "personalize"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "agent.intelligence"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "website.content"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "subscribe"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "license.verify"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "business.partner"
+    },
+    {
+     "file": "src/routes/dispatch.js",
+     "value": "agent.business-partner"
+    },
+    {
+     "file": "src/routes/integrations.js",
+     "value": "integration.googleAnalytics"
+    },
+    {
+     "file": "src/routes/integrations.js",
+     "value": "integration.social"
+    },
+    {
+     "file": "src/routes/integrations.js",
+     "value": "integration.email"
+    },
+    {
+     "file": "src/routes/integrations.js",
+     "value": "integration.community"
+    },
+    {
+     "file": "src/routes/onboardingDispatch.js",
+     "value": "start"
+    },
+    {
+     "file": "src/routes/onboardingDispatch.js",
+     "value": "reset"
+    },
+    {
+     "file": "src/routes/onboardingDispatch.js",
+     "value": "advance"
+    },
+    {
+     "file": "src/routes/onboardingDispatch.js",
+     "value": "complete"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "status"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "string"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "string"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "status"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "test-env"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "auth.verify"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "ai.recommendations"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "chat"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "public.chat"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "hermes.agent"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "intelligence"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "brain.brief"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "automation.sync"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "automation.list"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "automation.logs"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "automation.run"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "automation.events"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "dashboard"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "integration.google.start"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "integration.social.start"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "integration.email.start"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "integration.community.start"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "integration.googleAnalytics"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "integration.social"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "integration.email"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "integration.community"
+    },
+    {
+     "file": "src/routes/_original-index-backup.js",
+     "value": "antigravity"
+    },
+    {
+     "file": "src/services/antigravity.js",
+     "value": "missing"
+    },
+    {
+     "file": "src/services/antigravity.js",
+     "value": "migrate"
+    },
+    {
+     "file": "src/services/antigravity.js",
+     "value": "add_options"
+    },
+    {
+     "file": "src/services/antigravity.js",
+     "value": "created"
+    },
+    {
+     "file": "src/services/antigravity.js",
+     "value": "updated"
+    },
+    {
+     "file": "src/services/onboarding.js",
+     "value": "start"
+    },
+    {
+     "file": "src/services/onboarding.js",
+     "value": "reset"
+    },
+    {
+     "file": "src/services/onboarding.js",
+     "value": "complete"
+    },
+    {
+     "file": "supabase/functions/content/index.ts",
+     "value": "website.content"
+    },
+    {
+     "file": "supabase/functions/content/index.ts",
+     "value": "website.edit"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "website.content"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "website.edit"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "subscribe"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "contact"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "quiz.complete"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "public.chat"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "chat"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "mentor.dev"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "intelligence"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "integration.google.start"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "integration.social.start"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "integration.email.start"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "integration.community.start"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "integration.googleAnalytics"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "integration.social"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "integration.email"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "integration.community"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "notion.page.create"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "notion.intake.report"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "automation.log"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "automation.list"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "license.verify"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "hermes.setActiveModel"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "hermes.getActiveModel"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "dashboard"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "automation.list"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "status"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "value": "routes"
+    },
+    {
+     "file": "supabase/functions/sellable/index.ts",
+     "value": "dry-run"
+    },
+    {
+     "file": "supabase/functions/sellable/index.ts",
+     "value": "dry-run"
+    },
+    {
+     "file": "supabase/functions/_shared/community-helpers.ts",
+     "value": "dry_run"
+    },
+    {
+     "file": "supabase/functions/_shared/community-helpers.ts",
+     "value": "community-helper.readiness"
+    },
+    {
+     "file": "supabase/functions/_shared/community-helpers.ts",
+     "value": "community-helpers.list"
+    },
+    {
+     "file": "supabase/functions/_shared/community-helpers.ts",
+     "value": "community-helper.send_message"
+    },
+    {
+     "file": "supabase/functions/_shared/community-helpers.ts",
+     "value": "community-helper.read_state"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "value": "dry_run"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "value": "community-triggers.readiness"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "value": "community-triggers.list"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "value": "community.trigger.evaluate"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "value": "community.event.create"
+    },
+    {
+     "file": "supabase/functions/_shared/community-triggers.ts",
+     "value": "dry_run"
+    },
+    {
+     "file": "supabase/functions/_shared/sheets-sellable.ts",
+     "value": "sheets.readiness"
+    },
+    {
+     "file": "supabase/functions/_shared/sheets-sellable.ts",
+     "value": "sheets.append"
+    },
+    {
+     "file": "supabase/functions/_shared/sheets-sellable.ts",
+     "value": "sheets.update"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "value": "dry_run"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "value": "publisher.readiness"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "value": "publishers.list"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "value": "publisher.publish"
+    },
+    {
+     "file": "supabase/functions/_shared/social-publishers.ts",
+     "value": "publisher.read"
+    }
+   ],
+   "fetch-call": [
+    {
+     "file": "api/fastapi/[[...path]]/index.js",
+     "url": "${base}${route.path}"
+    },
+    {
+     "file": "lib/antigravity.js",
+     "url": "${ANTIGRAVITY_BASE}${path}"
+    },
+    {
+     "file": "lib/antigravity.js",
+     "url": "${NOTION_API_BASE}${path}"
+    },
+    {
+     "file": "lib/hermesMcp.js",
+     "url": "${OMNIROUTE_BASE_URL}/models"
+    },
+    {
+     "file": "lib/hermesMcp.js",
+     "url": "${OMNIROUTE_BASE_URL}/chat/completions"
+    },
+    {
+     "file": "lib/instagram-publisher.mjs",
+     "url": "${INSTAGRAM_API}/${accountId}/media"
+    },
+    {
+     "file": "lib/instagram-publisher.mjs",
+     "url": "${INSTAGRAM_API}/${accountId}/media_publish"
+    },
+    {
+     "file": "lib/linkedin-publisher.mjs",
+     "url": "${LINKEDIN_API}/ugcPosts"
+    },
+    {
+     "file": "lib/llmClient.js",
+     "url": "${OMNIROUTE_BASE_URL}/chat/completions"
+    },
+    {
+     "file": "lib/llmClient.js",
+     "url": "${GEMINI_BASE_URL}/chat/completions"
+    },
+    {
+     "file": "lib/notion-client.js",
+     "url": "${NOTION_API_BASE}/databases"
+    },
+    {
+     "file": "lib/notion-client.js",
+     "url": "${NOTION_API_BASE}/databases/${databaseId}"
+    },
+    {
+     "file": "lib/sync-aggregator.js",
+     "url": "https://api.brevo.com/v3/account"
+    },
+    {
+     "file": "lib/sync-aggregator.js",
+     "url": "https://api.brevo.com/v3/contacts/lists/${listId}"
+    },
+    {
+     "file": "lib/sync-aggregator.js",
+     "url": "https://api.brevo.com/v3/emailCampaigns?limit=5&offset=0"
+    },
+    {
+     "file": "lib/threads-publisher.mjs",
+     "url": "${INSTAGRAM_API}/${accountId}/threads_media"
+    },
+    {
+     "file": "lib/threads-publisher.mjs",
+     "url": "${INSTAGRAM_API}/${accountId}/threads_publish"
+    },
+    {
+     "file": "src/routes/integrationsDispatch.js",
+     "url": "https://oauth2.googleapis.com/token"
+    },
+    {
+     "file": "src/routes/integrationsDispatch.js",
+     "url": "https://analyticsdata.googleapis.com/v1beta/"
+    },
+    {
+     "file": "src/services/aiRouter.js",
+     "url": "https://openrouter.ai/api/v1/chat/completions"
+    },
+    {
+     "file": "src/services/fastapi.js",
+     "url": "${baseUrl}${route}"
+    },
+    {
+     "file": "src/services/fastapi.js",
+     "url": "${baseUrl}/health"
+    },
+    {
+     "file": "src/services/integrations.js",
+     "url": "https://api.brevo.com/v3/partners/statistics"
+    },
+    {
+     "file": "supabase/functions/analytics/index.ts",
+     "url": "${url}/rest/v1/${path}"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "url": "${supabaseUrl}/rest/v1/${table}${upsert ? "
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "url": "${omniRouteBase()}/models"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "url": "https://api.notion.com/v1/pages"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "url": "https://api.notion.com/v1/databases/${id}/query"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "url": "${supabaseUrl}/rest/v1/site_content?on_conflict=content_key"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "url": "${supabaseUrl}/rest/v1/site_content?select=content_key,value"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "url": "https://api.notion.com/v1/pages"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "url": "https://api.notion.com/v1/pages"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "url": "https://api.notion.com/v1/pages"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "url": "https://api.notion.com/v1/databases/${logDbId}/query"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "url": "https://api.gumroad.com/v2/licenses/verify"
+    },
+    {
+     "file": "supabase/functions/hermes/index.ts",
+     "url": "${supabaseUrl}/rest/v1/user_model_preferences?user_id=eq.${encodeURIComponent(userId)}&select=model_id,updated_at&limit=1"
+    },
+    {
+     "file": "supabase/functions/notion-sync/index.ts",
+     "url": "${NOTION_API}/databases/${dbId}/query"
+    },
+    {
+     "file": "supabase/functions/notion-sync/index.ts",
+     "url": "${NOTION_API}/pages"
+    },
+    {
+     "file": "supabase/functions/notion-sync/index.ts",
+     "url": "${NOTION_API}/databases/${dbId}/query"
+    },
+    {
+     "file": "supabase/functions/optimization-loop/index.ts",
+     "url": "${url}/rest/v1/optimization_signals?select=*&limit=2000"
+    },
+    {
+     "file": "supabase/functions/optimization-loop/index.ts",
+     "url": "${url}/rest/v1/${table}"
+    },
+    {
+     "file": "supabase/functions/optimization-loop-weekly/index.ts",
+     "url": "${url}/rest/v1/optimization_signals?select=*&limit=5000"
+    },
+    {
+     "file": "supabase/functions/optimization-loop-weekly/index.ts",
+     "url": "${url}/rest/v1/weekly_reports"
+    },
+    {
+     "file": "supabase/functions/_shared/ai-client.ts",
+     "url": "${baseUrl.replace(/\\/+$/, "
+    },
+    {
+     "file": "supabase/functions/_shared/aiRouter.ts",
+     "url": "${baseUrl}/chat/completions"
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "url": "https://api.brevo.com/v3/smtp/email"
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "url": "https://api.brevo.com/v3/smtp/email"
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "url": "https://api.brevo.com/v3/smtp/email"
+    },
+    {
+     "file": "supabase/functions/_shared/brevo-email.ts",
+     "url": "https://api.brevo.com/v3/contacts"
+    },
+    {
+     "file": "supabase/functions/_shared/email-publish.ts",
+     "url": "https://api.sendgrid.com/v3/mail/send"
+    },
+    {
+     "file": "supabase/functions/_shared/instagram-publisher.ts",
+     "url": "${INSTAGRAM_API}/${accountId}/media"
+    },
+    {
+     "file": "supabase/functions/_shared/instagram-publisher.ts",
+     "url": "${INSTAGRAM_API}/${accountId}/media_publish"
+    },
+    {
+     "file": "supabase/functions/_shared/linkedin-publisher.ts",
+     "url": "${LINKEDIN_API}/ugcPosts"
+    },
+    {
+     "file": "supabase/functions/_shared/notion-client.ts",
+     "url": "${NOTION_API_BASE}/databases"
+    },
+    {
+     "file": "supabase/functions/_shared/notion-client.ts",
+     "url": "${NOTION_API_BASE}/databases/${databaseId}"
+    },
+    {
+     "file": "supabase/functions/_shared/notion-write.ts",
+     "url": "https://api.notion.com/v1/databases/${dbId}/query"
+    },
+    {
+     "file": "supabase/functions/_shared/notion-write.ts",
+     "url": "https://api.notion.com/v1/pages"
+    },
+    {
+     "file": "supabase/functions/_shared/omniroute.ts",
+     "url": "${GEMINI_BASE_URL}/chat/completions"
+    },
+    {
+     "file": "supabase/functions/_shared/supabase-store.ts",
+     "url": "${SUPABASE_URL}/rest/v1/${table}${conflict}"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "url": "https://api.brevo.com/v3/account"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "url": "https://api.brevo.com/v3/contacts/lists/${listId}"
+    },
+    {
+     "file": "supabase/functions/_shared/sync-aggregator.ts",
+     "url": "https://api.brevo.com/v3/emailCampaigns?limit=5&offset=0"
+    },
+    {
+     "file": "supabase/functions/_shared/threads-publisher.ts",
+     "url": "${INSTAGRAM_API}/${accountId}/threads_media"
+    },
+    {
+     "file": "supabase/functions/_shared/threads-publisher.ts",
+     "url": "${INSTAGRAM_API}/${accountId}/threads_publish"
+    }
+   ]
+  }
+ },
+ "digital-products": {
+  "duplicates": {},
+  "named": {
+   "sync-aggregator": [],
+   "notion-architect": [],
+   "omniroute": [],
+   "hermes": [],
+   "brevo-email": [],
+   "notion-client": [],
+   "notion-schema": [],
+   "notion-write": [],
+   "aiRouter": [],
+   "notionArchitect": [],
+   "dashboard": []
+  },
+  "hardcoded": {
+   "http-url": [
+    {
+     "file": "index.html",
+     "count": 3,
+     "samples": [
+      "https://fonts.gstatic.com",
+      "https://fonts.googleapis.com"
+     ]
+    }
+   ]
+  },
+  "endpoints": {}
+ },
+ "os-workers": {
+  "duplicates": {},
+  "named": {
+   "sync-aggregator": [],
+   "notion-architect": [],
+   "omniroute": [],
+   "hermes": [],
+   "brevo-email": [],
+   "notion-client": [],
+   "notion-schema": [],
+   "notion-write": [],
+   "aiRouter": [],
+   "notionArchitect": [
+    "src/agents/notionArchitect.ts"
+   ],
+   "dashboard": []
+  },
+  "hardcoded": {
+   "http-url": [
+    {
+     "file": "src/agents/notionArchitect.ts",
+     "count": 1,
+     "samples": [
+      "https://api.notion.com"
+     ]
+    },
+    {
+     "file": "src/api/routes.ts",
+     "count": 1,
+     "samples": [
+      "https://api.notion.com"
+     ]
+    },
+    {
+     "file": "src/config/env.ts",
+     "count": 1,
+     "samples": [
+      "https://api.notion.com"
+     ]
+    },
+    {
+     "file": "src/notion/client.ts",
+     "count": 1,
+     "samples": [
+      "https://api.notion.com"
+     ]
+    }
+   ]
+  },
+  "endpoints": {
+   "http-route": [
+    {
+     "file": "src/index.ts",
+     "method": "PUT",
+     "path": "session"
+    },
+    {
+     "file": "src/index.ts",
+     "method": "GET",
+     "path": "session"
+    },
+    {
+     "file": "src/api/routes.ts",
+     "method": "GET",
+     "path": "x-api-key"
+    },
+    {
+     "file": "src/api/routes.ts",
+     "method": "GET",
+     "path": "apikey"
+    },
+    {
+     "file": "src/api/routes.ts",
+     "method": "GET",
+     "path": "x-user-id"
+    },
+    {
+     "file": "src/api/routes.ts",
+     "method": "GET",
+     "path": "q"
+    },
+    {
+     "file": "src/api/routes.ts",
+     "method": "GET",
+     "path": "content-type"
+    }
+   ],
+   "fetch-call": [
+    {
+     "file": "src/api/routes.ts",
+     "url": "https://api.notion.com${target}"
+    },
+    {
+     "file": "src/notion/client.ts",
+     "url": "${this.base}${path}"
+    }
+   ]
+  }
+ },
+ "backend-clean": {
+  "duplicates": {},
+  "named": {
+   "sync-aggregator": [],
+   "notion-architect": [],
+   "omniroute": [],
+   "hermes": [],
+   "brevo-email": [],
+   "notion-client": [],
+   "notion-schema": [],
+   "notion-write": [],
+   "aiRouter": [],
+   "notionArchitect": [],
+   "dashboard": []
+  },
+  "hardcoded": {},
+  "endpoints": {}
+ }
+}

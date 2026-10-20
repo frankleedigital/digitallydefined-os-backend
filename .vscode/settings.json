@@ -1,3 +1,4 @@
 {
-    "claudeCode.preferredLocation": "sidebar"
+    "claudeCode.preferredLocation": "sidebar",
+    "livePreview.defaultPreviewPath": "/digital-products/index.html"
 }

@@ -1,0 +1,772 @@
+{
+ "dashboard": {
+  "file_count": 103,
+  "total_loc": 17736,
+  "top_files": [
+   {
+    "path": "package-lock.json",
+    "loc": 4991,
+    "bytes": 179162
+   },
+   {
+    "path": "src/pages/DashboardPage.jsx",
+    "loc": 1526,
+    "bytes": 51891
+   },
+   {
+    "path": "dev/null",
+    "loc": 823,
+    "bytes": 38168
+   },
+   {
+    "path": "src/index.css",
+    "loc": 705,
+    "bytes": 14187
+   },
+   {
+    "path": "public/thank-you.html",
+    "loc": 448,
+    "bytes": 11272
+   },
+   {
+    "path": "src/config.js",
+    "loc": 446,
+    "bytes": 14392
+   },
+   {
+    "path": "public/affiliate-flip-calculator.html",
+    "loc": 426,
+    "bytes": 22994
+   },
+   {
+    "path": "public/10x-roi-calculator.html",
+    "loc": 422,
+    "bytes": 22784
+   },
+   {
+    "path": "public/SETUP-INSTRUCTIONS.md",
+    "loc": 407,
+    "bytes": 12167
+   },
+   {
+    "path": "src/components/RoiCalculator.jsx",
+    "loc": 368,
+    "bytes": 11530
+   },
+   {
+    "path": "src/pages/AntigravityPage.jsx",
+    "loc": 351,
+    "bytes": 13888
+   },
+   {
+    "path": "src/pages/AssistantPage.jsx",
+    "loc": 323,
+    "bytes": 13970
+   },
+   {
+    "path": "src/pages/NotionTab.jsx",
+    "loc": 303,
+    "bytes": 11315
+   },
+   {
+    "path": "public/GUMROAD-DASHBOARD-DESCRIPTION.md",
+    "loc": 290,
+    "bytes": 8002
+   },
+   {
+    "path": "public/WHITE-LABEL-DASHBOARD-SUMMARY.md",
+    "loc": 268,
+    "bytes": 7218
+   },
+   {
+    "path": "src/lib/notionArchitect.js",
+    "loc": 265,
+    "bytes": 11390
+   },
+   {
+    "path": "src/pages/GrowthTab.jsx",
+    "loc": 222,
+    "bytes": 8916
+   },
+   {
+    "path": "src/pages/AnalyticsPage.jsx",
+    "loc": 221,
+    "bytes": 10017
+   },
+   {
+    "path": "src/pages/ThankYouCalculatorPage.jsx",
+    "loc": 219,
+    "bytes": 6538
+   },
+   {
+    "path": "src/pages/IntegrationsTab.jsx",
+    "loc": 195,
+    "bytes": 7166
+   },
+   {
+    "path": "public/customer-config.js",
+    "loc": 191,
+    "bytes": 5761
+   },
+   {
+    "path": "src/pages/auth/SignUp.jsx",
+    "loc": 188,
+    "bytes": 7301
+   },
+   {
+    "path": "src/supabase.js",
+    "loc": 169,
+    "bytes": 5990
+   },
+   {
+    "path": "src/lib/notion.js",
+    "loc": 167,
+    "bytes": 5984
+   },
+   {
+    "path": "src/lib/businessPartnerReply.js",
+    "loc": 161,
+    "bytes": 6252
+   },
+   {
+    "path": "src/theme.js",
+    "loc": 154,
+    "bytes": 4346
+   },
+   {
+    "path": "src/lib/affiliateExport.js",
+    "loc": 144,
+    "bytes": 6517
+   },
+   {
+    "path": "src/lib/modelSelector.js",
+    "loc": 135,
+    "bytes": 4816
+   },
+   {
+    "path": "src/configMerge.js",
+    "loc": 134,
+    "bytes": 5622
+   },
+   {
+    "path": "src/components/ChatWidget.jsx",
+    "loc": 123,
+    "bytes": 4128
+   },
+   {
+    "path": "src/lib/supabase-edge.js",
+    "loc": 112,
+    "bytes": 4295
+   },
+   {
+    "path": "src/lib/integrations/integrations.js",
+    "loc": 111,
+    "bytes": 3316
+   },
+   {
+    "path": "src/components/PremiumGate.jsx",
+    "loc": 104,
+    "bytes": 3594
+   },
+   {
+    "path": "index.html",
+    "loc": 102,
+    "bytes": 6760
+   },
+   {
+    "path": "src/App.jsx",
+    "loc": 99,
+    "bytes": 3805
+   },
+   {
+    "path": "src/brand/dd-brand-tokens.js",
+    "loc": 95,
+    "bytes": 2432
+   },
+   {
+    "path": "src/context/AuthContext.jsx",
+    "loc": 93,
+    "bytes": 3811
+   },
+   {
+    "path": "src/pages/IntelligencePage.jsx",
+    "loc": 90,
+    "bytes": 2972
+   },
+   {
+    "path": "src/lib/hermes.js",
+    "loc": 88,
+    "bytes": 2591
+   },
+   {
+    "path": "src/lib/integrations/google-analytics.js",
+    "loc": 84,
+    "bytes": 2528
+   }
+  ]
+ },
+ "os-backend": {
+  "file_count": 331,
+  "total_loc": 45224,
+  "top_files": [
+   {
+    "path": "package-lock.json",
+    "loc": 2103,
+    "bytes": 76491
+   },
+   {
+    "path": "supabase/functions/hermes/index.ts",
+    "loc": 1709,
+    "bytes": 76018
+   },
+   {
+    "path": "api/index.js",
+    "loc": 1628,
+    "bytes": 59477
+   },
+   {
+    "path": "src/routes/_original-index-backup.js",
+    "loc": 1458,
+    "bytes": 49882
+   },
+   {
+    "path": "scripts/phase-21-plan.js",
+    "loc": 807,
+    "bytes": 27175
+   },
+   {
+    "path": "lib/sync-aggregator.js",
+    "loc": 788,
+    "bytes": 26652
+   },
+   {
+    "path": "supabase/functions/_shared/sync-aggregator.ts",
+    "loc": 788,
+    "bytes": 26836
+   },
+   {
+    "path": "scripts/notion-architect-dryrun.mjs",
+    "loc": 743,
+    "bytes": 28600
+   },
+   {
+    "path": "supabase/functions/_shared/notion-architect.ts",
+    "loc": 638,
+    "bytes": 25248
+   },
+   {
+    "path": "supabase/functions/_shared/brevo-email.ts",
+    "loc": 619,
+    "bytes": 22016
+   },
+   {
+    "path": "scripts/bootstrap.cjs",
+    "loc": 617,
+    "bytes": 23791
+   },
+   {
+    "path": "fastapi/output/seed/products.json",
+    "loc": 610,
+    "bytes": 20836
+   },
+   {
+    "path": ".hermes/desktop-attachments/keyword_quest_digital_real_estate_edition.html",
+    "loc": 591,
+    "bytes": 30108
+   },
+   {
+    "path": "src/config/env.js",
+    "loc": 565,
+    "bytes": 25869
+   },
+   {
+    "path": "lib/notion-architect.js",
+    "loc": 563,
+    "bytes": 22391
+   },
+   {
+    "path": "supabase/functions/analytics/index.ts",
+    "loc": 550,
+    "bytes": 20886
+   },
+   {
+    "path": ".hermes/desktop-attachments/freedom_number_calculator.html",
+    "loc": 528,
+    "bytes": 32484
+   },
+   {
+    "path": "src/services/antigravity.js",
+    "loc": 511,
+    "bytes": 28449
+   },
+   {
+    "path": "fastapi/app/notion_architect.py",
+    "loc": 446,
+    "bytes": 19558
+   },
+   {
+    "path": "supabase/functions/_shared/omniroute.ts",
+    "loc": 424,
+    "bytes": 13548
+   },
+   {
+    "path": "docs/INTEGRATION_INVENTORY.md",
+    "loc": 409,
+    "bytes": 21053
+   },
+   {
+    "path": "lib/hermesOptimizationLoop.js",
+    "loc": 404,
+    "bytes": 12777
+   },
+   {
+    "path": "scripts/notion-architect-live.mjs",
+    "loc": 400,
+    "bytes": 13980
+   },
+   {
+    "path": "fastapi/app/data/products.py",
+    "loc": 394,
+    "bytes": 20963
+   },
+   {
+    "path": "src/services/aiRouter.js",
+    "loc": 373,
+    "bytes": 15510
+   },
+   {
+    "path": "lib/social-publishers.js",
+    "loc": 368,
+    "bytes": 14599
+   },
+   {
+    "path": "supabase/functions/notion-sync/index.ts",
+    "loc": 368,
+    "bytes": 13634
+   },
+   {
+    "path": "supabase/functions/_shared/social-publishers.ts",
+    "loc": 368,
+    "bytes": 14652
+   },
+   {
+    "path": "lib/notion-write.mjs",
+    "loc": 351,
+    "bytes": 12765
+   },
+   {
+    "path": "lib/hermesMcp.js",
+    "loc": 330,
+    "bytes": 11739
+   },
+   {
+    "path": "lib/antigravity.js",
+    "loc": 315,
+    "bytes": 12851
+   },
+   {
+    "path": "lib/community-helpers.js",
+    "loc": 314,
+    "bytes": 11864
+   },
+   {
+    "path": "supabase/functions/_shared/community-helpers.ts",
+    "loc": 314,
+    "bytes": 11885
+   },
+   {
+    "path": "src/routes/dispatch.js",
+    "loc": 307,
+    "bytes": 14203
+   },
+   {
+    "path": "fastapi/app/llm.py",
+    "loc": 305,
+    "bytes": 11628
+   },
+   {
+    "path": "lib/community-triggers.js",
+    "loc": 304,
+    "bytes": 13192
+   },
+   {
+    "path": "supabase/functions/_shared/community-triggers.ts",
+    "loc": 304,
+    "bytes": 13233
+   },
+   {
+    "path": "lib/llmClient.js",
+    "loc": 292,
+    "bytes": 10529
+   },
+   {
+    "path": "lib/email-publish.js",
+    "loc": 288,
+    "bytes": 11142
+   },
+   {
+    "path": ".hermes/desktop-attachments/digital-wealth-toolkit.html",
+    "loc": 284,
+    "bytes": 31936
+   }
+  ]
+ },
+ "digital-products": {
+  "file_count": 26,
+  "total_loc": 6408,
+  "top_files": [
+   {
+    "path": "package-lock.json",
+    "loc": 2061,
+    "bytes": 68832
+   },
+   {
+    "path": "PRODUCT_FRAMEWORKS.md",
+    "loc": 946,
+    "bytes": 26547
+   },
+   {
+    "path": "src/lib/products.js",
+    "loc": 369,
+    "bytes": 16558
+   },
+   {
+    "path": "FREE_LEAD_MAGNET_STRATEGY.md",
+    "loc": 342,
+    "bytes": 14968
+   },
+   {
+    "path": "DIGITAL_PRODUCT_AUDIT.md",
+    "loc": 280,
+    "bytes": 15889
+   },
+   {
+    "path": "STORE_PRODUCT_ROADMAP.md",
+    "loc": 274,
+    "bytes": 13495
+   },
+   {
+    "path": "src/components/ProductShell.jsx",
+    "loc": 225,
+    "bytes": 6979
+   },
+   {
+    "path": "src/lib/puter-cloud.js",
+    "loc": 211,
+    "bytes": 6666
+   },
+   {
+    "path": "EMAIL_NURTURE_SYSTEM.md",
+    "loc": 198,
+    "bytes": 10535
+   },
+   {
+    "path": "FAST_CASH_PRODUCTS.md",
+    "loc": 196,
+    "bytes": 9699
+   },
+   {
+    "path": "FUNNEL_ARCHITECTURE.md",
+    "loc": 192,
+    "bytes": 7112
+   },
+   {
+    "path": "src/components/CloudGate.jsx",
+    "loc": 174,
+    "bytes": 4772
+   },
+   {
+    "path": "src/components/LauncherHome.jsx",
+    "loc": 156,
+    "bytes": 4192
+   },
+   {
+    "path": "src/lib/usePuterCloud.js",
+    "loc": 153,
+    "bytes": 4079
+   },
+   {
+    "path": "SUPERPOWER_QUIZ_MASTER_FUNNEL.md",
+    "loc": 142,
+    "bytes": 7738
+   },
+   {
+    "path": "IMPLEMENTATION_PRIORITIES.md",
+    "loc": 99,
+    "bytes": 4901
+   },
+   {
+    "path": "README.md",
+    "loc": 91,
+    "bytes": 5530
+   },
+   {
+    "path": "src/components/SaveStatus.jsx",
+    "loc": 78,
+    "bytes": 1982
+   },
+   {
+    "path": "src/lib/saveState.js",
+    "loc": 67,
+    "bytes": 2192
+   },
+   {
+    "path": "index.html",
+    "loc": 39,
+    "bytes": 1469
+   },
+   {
+    "path": "STORE_LEAD_MAGNET_ASSETS.md",
+    "loc": 27,
+    "bytes": 4481
+   },
+   {
+    "path": "package.json",
+    "loc": 23,
+    "bytes": 599
+   },
+   {
+    "path": "src/App.jsx",
+    "loc": 23,
+    "bytes": 867
+   },
+   {
+    "path": "vite.config.js",
+    "loc": 16,
+    "bytes": 295
+   },
+   {
+    "path": "src/lib/productCatalog.js",
+    "loc": 14,
+    "bytes": 618
+   },
+   {
+    "path": "src/main.jsx",
+    "loc": 12,
+    "bytes": 311
+   }
+  ]
+ },
+ "os-workers": {
+  "file_count": 47,
+  "total_loc": 4837,
+  "top_files": [
+   {
+    "path": "package-lock.json",
+    "loc": 1664,
+    "bytes": 54215
+   },
+   {
+    "path": "src/agents/notionArchitect.ts",
+    "loc": 328,
+    "bytes": 13893
+   },
+   {
+    "path": "src/notion/schema.ts",
+    "loc": 286,
+    "bytes": 9113
+   },
+   {
+    "path": "src/notion/client.ts",
+    "loc": 282,
+    "bytes": 9554
+   },
+   {
+    "path": "src/api/routes.ts",
+    "loc": 233,
+    "bytes": 9523
+   },
+   {
+    "path": "src/types.ts",
+    "loc": 226,
+    "bytes": 5519
+   },
+   {
+    "path": "src/workflows/auditor.ts",
+    "loc": 137,
+    "bytes": 4936
+   },
+   {
+    "path": "src/agents/templateBuilder.ts",
+    "loc": 130,
+    "bytes": 5292
+   },
+   {
+    "path": "src/notion/mapper.ts",
+    "loc": 121,
+    "bytes": 4261
+   },
+   {
+    "path": "src/vectorize/index.ts",
+    "loc": 103,
+    "bytes": 3061
+   },
+   {
+    "path": "scripts/smoke-test.mjs",
+    "loc": 102,
+    "bytes": 4687
+   },
+   {
+    "path": "src/index.ts",
+    "loc": 101,
+    "bytes": 3210
+   },
+   {
+    "path": "src/agents/productPublisher.ts",
+    "loc": 99,
+    "bytes": 4074
+   },
+   {
+    "path": "src/agents/plannerAgent.ts",
+    "loc": 91,
+    "bytes": 3242
+   },
+   {
+    "path": "src/agents/researcher.ts",
+    "loc": 89,
+    "bytes": 3473
+   },
+   {
+    "path": "src/agents/index.ts",
+    "loc": 88,
+    "bytes": 2834
+   },
+   {
+    "path": "src/templates/index.ts",
+    "loc": 88,
+    "bytes": 3046
+   },
+   {
+    "path": "src/workflows/productFactory.ts",
+    "loc": 87,
+    "bytes": 3024
+   },
+   {
+    "path": "src/agents/contentAgent.ts",
+    "loc": 80,
+    "bytes": 2966
+   },
+   {
+    "path": "src/agents/baseAgent.ts",
+    "loc": 75,
+    "bytes": 2328
+   },
+   {
+    "path": "src/config/env.ts",
+    "loc": 73,
+    "bytes": 2389
+   },
+   {
+    "path": "src/workflows/notionBuilder.ts",
+    "loc": 65,
+    "bytes": 2384
+   },
+   {
+    "path": "src/workflows/types.ts",
+    "loc": 55,
+    "bytes": 1308
+   },
+   {
+    "path": "wrangler.toml",
+    "loc": 41,
+    "bytes": 2143
+   },
+   {
+    "path": "src/vectorize/embeddings.ts",
+    "loc": 29,
+    "bytes": 846
+   },
+   {
+    "path": "tsconfig.json",
+    "loc": 25,
+    "bytes": 728
+   },
+   {
+    "path": "package.json",
+    "loc": 24,
+    "bytes": 657
+   },
+   {
+    "path": ".env.example",
+    "loc": 23,
+    "bytes": 725
+   },
+   {
+    "path": "src/workflows/index.ts",
+    "loc": 20,
+    "bytes": 650
+   },
+   {
+    "path": ".wrangler/state/v3/observability/miniflare-wobs-trace-store/metadata.sqlite-wal",
+    "loc": 12,
+    "bytes": 8272
+   },
+   {
+    "path": ".wrangler/state/v3/cache/miniflare-CacheObject/metadata.sqlite-wal",
+    "loc": 8,
+    "bytes": 8272
+   },
+   {
+    "path": ".wrangler/state/v3/d1/miniflare-D1DatabaseObject/metadata.sqlite-wal",
+    "loc": 7,
+    "bytes": 8272
+   },
+   {
+    "path": ".wrangler/state/v3/do/digitallydefined-os-workers-AgentSession/metadata.sqlite-wal",
+    "loc": 7,
+    "bytes": 8272
+   },
+   {
+    "path": ".wrangler/state/v3/kv/miniflare-KVNamespaceObject/metadata.sqlite-wal",
+    "loc": 7,
+    "bytes": 8272
+   },
+   {
+    "path": ".wrangler/state/v3/r2/miniflare-R2BucketObject/metadata.sqlite-wal",
+    "loc": 7,
+    "bytes": 8272
+   },
+   {
+    "path": ".wrangler/state/v3/observability/miniflare-wobs-trace-store/metadata.sqlite-shm",
+    "loc": 5,
+    "bytes": 32768
+   },
+   {
+    "path": ".wrangler/state/v3/cache/miniflare-CacheObject/metadata.sqlite-shm",
+    "loc": 3,
+    "bytes": 32768
+   },
+   {
+    "path": ".wrangler/state/v3/cache/miniflare-CacheObject/metadata.sqlite",
+    "loc": 2,
+    "bytes": 4096
+   },
+   {
+    "path": ".wrangler/state/v3/d1/miniflare-D1DatabaseObject/metadata.sqlite",
+    "loc": 2,
+    "bytes": 4096
+   },
+   {
+    "path": ".wrangler/state/v3/do/digitallydefined-os-workers-AgentSession/metadata.sqlite",
+    "loc": 2,
+    "bytes": 4096
+   }
+  ]
+ },
+ "backend-clean": {
+  "file_count": 2,
+  "total_loc": 698,
+  "top_files": [
+   {
+    "path": "LEGACY_INVENTORY.md",
+    "loc": 450,
+    "bytes": 22865
+   },
+   {
+    "path": ".env",
+    "loc": 248,
+    "bytes": 11478
+   }
+  ]
+ }
+}

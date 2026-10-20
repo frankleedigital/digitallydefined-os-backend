@@ -1,77 +1,64 @@
-# Hermes MCP server config — OmniRoute as DigitallyDefined's AI gateway.
+# ============================================================================
+# OmniRoute -> Hermes wiring (DigitallyDefined AI gateway running locally in Docker)
+# ============================================================================
 #
-# Adds an omniroute entry to Hermes's existing mcp_servers block so Hermes
-# can call OmniRoute's /v1/chat/completions with the JWT Bearer token.
+# Canonical endpoint (OmniRoute served locally under /v1/):
+#   Base URL : http://localhost:20128/v1
+#   Chat     : http://localhost:20128/v1/chat/completions
+#   API Key  : sk-fcfcf4cfe8fd70e5-91efab-2cbad170
+#   Model    : auto
 #
-# This is a PATCH for:
-#   C:/Users/frank/AppData/Local/hermes/config.yaml
+# ---------------------------------------------------------------------------
+# STEP 1 — put these in ~/.hermes/.env   (C:\Users\frank\.hermes\.env)
+# ---------------------------------------------------------------------------
+#   OMNIROUTE_API_KEY=sk-fcfcf4cfe8fd70e5-91efab-2cbad170
+#   OMNIROUTE_BASE_URL=http://localhost:20128/v1
+#   OMNIROUTE_MODEL=auto
 #
-# Apply with:
-#   patch "C:/Users/frank/AppData/Local/hermes/config.yaml" \
-#     old_string_below new_string_below
+# ---------------------------------------------------------------------------
+# STEP 2 — confirm which config.yaml Hermes actually reads:
+#   C:\Users\frank\.hermes\config.yaml          (Buzz docs use ~/.hermes/)
+#   C:\Users\frank\AppData\Local\hermes\config.yaml
 #
-# OR paste the mcp_servers.omniroute block into config.yaml manually under
-# the existing mcp_servers: section (at the same indent level as linear, tavily, etc.).
-#
-# Auth: JWT Bearer token (OMNIROUTE_API_KEY env var or inline api_key).
-# Base URL: https://ai.digitallydefined.online/v1  (Cloudflare tunnel).
-#
-# NOTE: Hermes's MCP loader may expect a different shape depending on version.
-#       The universal contract is: base URL + Bearer key + /v1/chat/completions.
-#       If Hermes expects "type: openai-compat" or "endpoint" instead of "url",
-#       adjust the keys below to match what the loader accepts — the values stay.
-
-# ----- OLD STRING (start of mcp_servers block, for patch anchor) -----
-# mcp_servers:
-#   linear:
-#     url: https://mcp.linear.app/mcp
-# ----- NEW STRING (replace the above with this + the existing block) -----
-# mcp_servers:
-#   linear:
-#     url: https://mcp.linear.app/mcp
-#     auth: oauth
-#     enabled: true
-#     default_context: DigitallyDefined
-#     default_team_id: 5697a418-ee30-4440-b08e-71bb0ecee0f0
-#     context_file: C:/Users/frank/AppData/Local/hermes/scripts/dd-linear-context.json
-#   ...
+# ---------------------------------------------------------------------------
+# STEP 3 — RECOMMENDED: OpenAI-compatible provider (makes Hermes call models
+# directly). Add under the top-level `models:` (or `providers:`) section:
+# ---------------------------------------------------------------------------
+# models:
 #   omniroute:
-#     url: https://ai.digitallydefined.online/v1
-#     auth: bearer
-#     api_key_env: OMNIROUTE_API_KEY
-#     default_model: auto
-#     transport: httpx
-#     default_context: DigitallyDefined
-#     allowed_tools:
-#       - chat.completions.create
-#       - models.list
-#     timeout_ms: 60000
+#     type: openai-compatible
+#     base_url: http://localhost:20128/v1
+#     api_key: ${OMNIROUTE_API_KEY}
+#     models:
+#       - auto
+#     default: true
+#
+# # then set the active model (top-level or under your agent section):
+# model: omniroute/auto
+#
+# ---------------------------------------------------------------------------
+# STEP 4 (alternative) — register as an MCP server. Paste this block under the
+# EXISTING `mcp_servers:` section, at the same indent level as linear/tavily.
+# (NOTE the key is `mcp_servers`, correctly spelled — a previous version of
+#  this file had `mmcpServers:` which silently fails to load.)
+# ---------------------------------------------------------------------------
 
 mcp_servers:
   omniroute:
-    # Base URL — Cloudflare tunnel to your OmniRoute instance.
-    url: https://ai.digitallydefined.online/v1
-    # Auth mode — JWT Bearer token, same shape the backend uses.
+    type: sse
+    url: http://localhost:20128/v1/mcp/sse
     auth: bearer
-    # The API key is read from the env var OMNIROUTE_API_KEY (set in Hermes .env).
-    # OMNIROUTE_API_KEY must be the JWT Bearer token from your OmniRoute instance.
-    # Get it once: open your OmniRoute dashboard → Network tab →
-    # trigger a chat → copy Authorization: Bearer <JWT> from /v1/chat/completions.
-    # Paste the JWT into Hermes .env as OMNIROUTE_API_KEY=sk-<JWT> (keep sk- prefix
-    # per the backend's convention — the backend stores keys as sk-<jwt>).
     api_key_env: OMNIROUTE_API_KEY
-    # Default model — "auto" so OmniRoute's own routing picks the provider.
-    # OmniRoute will resolve the actual model based on your account/credentials.
     default_model: auto
-    # Transport — HTTP+JSON, same as the backend's aiRouter.js.
-    transport: httpx
-    # DigitallyDefined context for any tool that uses it.
-    default_context: DigitallyDefined
-    # Tools Hermes may call through OmniRoute.
     allowed_tools:
-      - chat.completions.create
       - models.list
-    # Timeout — matches backend default (60s).
+      - chat.completions.create
     timeout_ms: 60000
-    # Do NOT add providers, models, or routing here — OmniRoute owns that.
-    # No new providers, no new models, no new routing rules.
+
+# ---------------------------------------------------------------------------
+# TEST OmniRoute locally before debugging Hermes:
+#   curl -X POST http://localhost:20128/v1/chat/completions \
+#     -H "Authorization: Bearer sk-fcfcf4cfe8fd70e5-91efab-2cbad170" \
+#     -H "Content-Type: application/json" \
+#     -d '{"model":"auto","messages":[{"role":"user","content":"ping"}]}'
+# ---------------------------------------------------------------------------

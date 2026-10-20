@@ -1,6 +1,6 @@
 # DigitallyDefined — Unified Deployment Checklist
 
-**OmniRoute endpoint (canonical):** `OMNIROUTE_BASE_URL=http://45.79.180.236:20128`
+**OmniRoute endpoint (canonical):** `OMNIROUTE_BASE_URL=http://localhost:20128/v1`
 All clients accept the base URL with or without a trailing `/v1` and normalize it internally.
 Model config: `OMNIROUTE_MODEL=auto`, `OMNIROUTE_FALLBACK_MODEL_1=auto/best-free`.
 
@@ -25,7 +25,7 @@ No repo except os-backend contains edge functions or calls OmniRoute directly.
 
 ## Full setup (session 2)
 - [x] All edge functions deployed from os-backend: hermes, analytics, followup, sync, sellable
-- [x] Hermes MCP: provider base_url fixed (was localhost → Linode), model `auto`, key verified matching backend
+- [x] Hermes MCP: provider base_url fixed (OmniRoute running locally in Docker at http://localhost:20128/v1), model `auto`, key verified matching backend
 - [x] Premium gating: `license.verify` edge action (Gumroad License API, refund-aware) + `PremiumGate`
 - [x] Dashboard routes `/intelligence` and `/assistant` gated by auth + verified license (24h cache)
 - [x] Gumroad secrets set in Supabase: GUMROAD_API_KEY, GUMROAD_PRODUCT_PERMALINK=digital-business-os
