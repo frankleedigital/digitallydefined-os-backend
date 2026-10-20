@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://digitallydefined.online/schemas/authority_bundle.json",
+  "$id": "https://digitallydefined.store/schemas/authority_bundle.json",
   "title": "Authority Bundle Content Schema",
   "description": "JSON Schema for Premium content package",
   "type": "object",

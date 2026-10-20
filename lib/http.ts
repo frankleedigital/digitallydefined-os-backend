@@ -13,9 +13,6 @@ import { ApiResponse, JsonValue } from "./types.ts";
 /** Origin allowlist — keep in sync with cors-utils.ts / hermes/index.ts. */
 export const DEFAULT_ALLOWED_ORIGINS = [
   "https://dashboard.digitallydefined.agency",
-  "https://dashboard.digitallydefined.online",
-  "https://digitallydefined.online",
-  "https://www.digitallydefined.online",
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:5173",

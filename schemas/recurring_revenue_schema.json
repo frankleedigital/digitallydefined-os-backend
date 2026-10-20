@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://digitallydefined.online/schemas/recurring_revenue.json",
+  "$id": "https://digitallydefined.store/schemas/recurring_revenue.json",
   "title": "Recurring Revenue Content Schema",
   "description": "JSON Schema for Subscription-based product",
   "type": "object",

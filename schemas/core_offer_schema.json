@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://digitallydefined.online/schemas/core_offer.json",
+  "$id": "https://digitallydefined.store/schemas/core_offer.json",
   "title": "Core Offer Content Schema",
   "description": "JSON Schema for Primary paid product",
   "type": "object",

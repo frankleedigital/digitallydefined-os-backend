@@ -13,7 +13,7 @@ Add these env vars to the Vercel project for digitallydefined-backend-clean:
 
 | Variable | Value |
 |----------|-------|
-| `OMNIROUTE_BASE_URL` | `https://ai.digitallydefined.online/v1` |
+| `OMNIROUTE_BASE_URL` | `https://ai.digitallydefined.agency/v1` |
 | `OMNIROUTE_API_KEY` | Your OmniRoute JWT key |
 | `OMNIROUTE_MODEL` | `auto` |
 | `VERTEX_PROJECT_ID` | Your GCP Vertex AI project ID |

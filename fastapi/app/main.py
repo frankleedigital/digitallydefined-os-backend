@@ -21,9 +21,11 @@ from .routers import (
     asset_plan_router,
     blueprint_router,
     domain_router,
+    knowledge_router,
     niche_router,
     offer_architect_router,
     product_router,
+    products_api_router,
     rankrent_router,
     roadmap_router,
     trends_router,
@@ -99,6 +101,13 @@ async def health() -> HealthResponse:
     }
     if issues:
         checks["checks"]["issues"] = "; ".join(issues)
+    # GCP intelligence layer status
+    try:
+        from .config import check_google_cloud
+        gcp = check_google_cloud()
+        checks["checks"]["google_cloud"] = gcp
+    except Exception:
+        checks["checks"]["google_cloud"] = {"adc_configured": False}
     return HealthResponse(**checks)
 
 
@@ -119,3 +128,5 @@ app.include_router(roadmap_router)
 app.include_router(asset_plan_router)
 app.include_router(offer_architect_router)
 app.include_router(wealth_router)
+app.include_router(knowledge_router)
+app.include_router(products_api_router)

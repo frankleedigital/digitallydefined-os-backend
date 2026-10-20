@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     dashboard_api_key: str = "DigitallyDefined-OS-2026"
 
     # --- OmniRoute AI gateway (live backend single provider) ---
-    omniroute_base_url: str = "https://ai.digitallydefined.online/v1"
+    omniroute_base_url: str = "http://localhost:20128/v1"
     omniroute_api_key: str = ""
     # NOT "auto": the gateway rejects that id with 401 ("No active credentials"),
     # so every request paid a wasted round-trip before falling through to a
@@ -53,9 +53,7 @@ class Settings(BaseSettings):
 
     # --- Security rim ---
     cors_origins: list[str] = [
-        "https://digitallydefined.online",
-        "https://www.digitallydefined.online",
-        "https://dashboard.digitallydefined.online",
+        "https://dashboard.digitallydefined.agency",
         "http://localhost:3000",
         "http://localhost:3001",
         "http://localhost:5173",

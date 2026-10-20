@@ -178,7 +178,16 @@ export async function handleBusinessPartner(req, res) {
     // work, not casual chat.
     const job = JOB_TYPES.includes(body.job) ? body.job : 'reasoning';
 
-    const result = await aiRouter.generate(null, userMessage, {
+    // An explicit model override from the client wins over the job class.
+    // This is what makes the dashboard model selector actually take effect:
+    // the dropdown persists a model id (Supabase `user_model_preferences` +
+    // localStorage), and the dashboard sends it back on every chat request.
+    // Without this, `aiRouter.generate(null, ...)` always resolved the model
+    // from the job class and the user's choice was silently ignored.
+    const requestedModel = String(body.model || '').trim();
+    const effectiveModel = requestedModel || null;
+
+    const result = await aiRouter.generate(effectiveModel, userMessage, {
       mode: 'ultraMode',
       job,
       systemPrompt,

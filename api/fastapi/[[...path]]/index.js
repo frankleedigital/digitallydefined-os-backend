@@ -23,9 +23,9 @@ export default async function handler(req, res) {
   const origin = (req.headers && req.headers.origin) || '';
   const allowed = [
     'https://dashboard.digitallydefined.agency',
-    'https://dashboard.digitallydefined.online',
-    'https://digitallydefined.online',
-    'https://www.digitallydefined.online',
+    'https://dashboard.digitallydefined.agency',
+    'https://digitallydefined.store',
+    'https://www.digitallydefined.store',
     'http://localhost:3000',
     'http://localhost:3001',
     'http://localhost:5173',

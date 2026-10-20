@@ -5,9 +5,7 @@
 import { antigravityHandle } from '../lib/antigravity.js';
 
 const ALLOWED_ORIGINS = [
-  'https://dashboard.digitallydefined.online',
-  'https://digitallydefined.online',
-  'https://www.digitallydefined.online',
+  'https://dashboard.digitallydefined.agency',
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:5173',
@@ -235,7 +233,7 @@ function applyCors(req, res) {
   if (origin && ALLOWED_ORIGINS.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   } else {
-    res.setHeader('Access-Control-Allow-Origin', 'https://dashboard.digitallydefined.online');
+    res.setHeader('Access-Control-Allow-Origin', 'https://dashboard.digitallydefined.agency');
   }
 
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');

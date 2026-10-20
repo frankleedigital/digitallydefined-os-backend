@@ -46,7 +46,7 @@ def generate_schema(stage: str, description: str = "") -> dict[str, Any]:
     name = stage or "Lead Magnet"
     schema: dict[str, Any] = {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "$id": f"https://digitallydefined.online/schemas/{name.lower().replace(' ', '_')}.json",
+        "$id": f"https://digitallydefined.store/schemas/{name.lower().replace(' ', '_')}.json",
         "title": f"{name} Content Schema",
         "description": description,
         "type": "object",

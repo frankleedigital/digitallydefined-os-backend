@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://digitallydefined.online/schemas/lead_magnet.json",
+  "$id": "https://digitallydefined.store/schemas/lead_magnet.json",
   "title": "Lead Magnet Content Schema",
   "description": "JSON Schema for Free content to capture leads",
   "type": "object",

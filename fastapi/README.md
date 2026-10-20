@@ -35,7 +35,7 @@ Docs at `http://localhost:8000/docs` (OpenAPI).
 - `app/llm.py` is a hardened OmniRoute client: retries with backoff on
   429/5xx/network, SSE decoding, connection pooling, an ordered model
   **failover chain**, and fence-tolerant JSON parsing. It connects to the
-  OmniRoute gateway via Cloudflare tunnel (`https://ai.digitallydefined.online/api/v1`).
+  OmniRoute gateway running locally in Docker at http://localhost:20128/v1.
 - `app/storage.py` prefers Supabase REST and falls back to local JSONL when
   `SUPABASE_SERVICE_KEY` is unset.
 - All services degrade to deterministic output when `OMNIROUTE_API_KEY` is unset.

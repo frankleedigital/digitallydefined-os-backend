@@ -13,9 +13,7 @@ type Candidate = { provider: string; model: string; key: string; url: string };
 
 const ALLOWED_ORIGINS = new Set([
   "https://dashboard.digitallydefined.agency",
-  "https://dashboard.digitallydefined.online",
-  "https://digitallydefined.online",
-  "https://www.digitallydefined.online",
+  "https://dashboard.digitallydefined.agency",
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:5173",
@@ -112,6 +110,9 @@ const parseJsonReply = (reply: string) => {
 //   OMNIROUTE_API_KEY  (required unless disabled)
 //   OMNIROUTE_BASE_URL (optional, default https://api.omniroute.ai/v1)
 //   OMNIROUTE_MODEL    (optional, default "auto")
+//   OMNIROUTE_DIRECT_MODEL (optional, explicit provider/model id that bypasses
+//     the gateway's `auto` combo router + session-affinity gate; e.g.
+//     "mistral/codestral-2508". Leave empty to use OMNIROUTE_MODEL/ACTIVE_MODEL.)
 //   OMNIROUTE_DISABLED (optional, "true" while the gateway is down)
 //   GEMINI_API_KEY     (fallback)
 //   GEMINI_MODEL       (optional, default "gemini-3.6-flash")
@@ -128,6 +129,8 @@ const OMNIROUTE_DISABLED = Deno.env.get("OMNIROUTE_DISABLED") === "true";
 // ---------------------------------------------------------------------------
 let ACTIVE_MODEL = (Deno.env.get("OMNIROUTE_MODEL") || "auto").trim();
 let ACTIVE_MODEL_UPDATED_AT = Date.now();
+/** Optional explicit chat model that bypasses the gateway's `auto` router (avoids its session-affinity gate). */
+const OMNIROUTE_DIRECT_MODEL = (Deno.env.get("OMNIROUTE_DIRECT_MODEL") || "").trim();
 
 /** Resolve the OmniRoute base URL (accepts with/without a trailing "/v1"). */
 function omniRouteBase(): string {
@@ -157,20 +160,27 @@ const getCandidates = (): Candidate[] => {
   const candidates: Candidate[] = [];
 
   const geminiKey = Deno.env.get("GEMINI_API_KEY") || Deno.env.get("GOOGLE_API_KEY") || "";
-  const omnirouteKey = Deno.env.get("OMNIROUTE_API_KEY") || "";
+  const omnirouteKey = (Deno.env.get("OMNIROUTE_API_KEY") || "").trim();
 
   if (OMNIROUTE_DISABLED) {
     console.warn("[hermes] OMNIROUTE_DISABLED=true — routing AI straight to the Gemini fallback.");
   } else if (omnirouteKey) {
-    // Base URL normalized via omniRouteBase(); model comes from the mutable
-    // ACTIVE_MODEL so hermes.setActiveModel switches it without a redeploy.
+    // Base URL normalized via omniRouteBase(). Model preference order:
+    // 1. OMNIROUTE_DIRECT_MODEL (explicit provider/model id — bypasses the
+    //    gateway's `auto` combo router and its session-affinity gate).
+    // 2. ACTIVE_MODEL (mutable via hermes.setActiveModel, seeded from
+    //    OMNIROUTE_MODEL) — allows model switching without a redeploy.
     const baseUrl = omniRouteBase();
+    const chatModel = OMNIROUTE_DIRECT_MODEL || ACTIVE_MODEL;
     candidates.push({
       provider: "omniroute",
-      model: ACTIVE_MODEL,
+      model: chatModel,
       key: omnirouteKey,
       url: `${baseUrl}/chat/completions`,
     });
+    if (OMNIROUTE_DIRECT_MODEL) {
+      console.log(`[hermes] OMNIROUTE_DIRECT_MODEL=${OMNIROUTE_DIRECT_MODEL} — bypassing the auto router.`);
+    }
   } else {
     console.error("[hermes] OMNIROUTE_API_KEY is not set. OmniRoute will be skipped.");
   }
@@ -250,6 +260,16 @@ async function runAI(systemPrompt: string, userPrompt: string, jsonMode = false)
     } catch (error) {
       lastError = error instanceof Error ? error.message : String(error);
       console.error(`[hermes] ${candidate.provider} failed:`, lastError);
+      // The gateway sometimes accepts the request then hangs its combo loop
+      // (logs: "has no available affinity target" -> "Client disconnected").
+      // Abort the whole candidate immediately so the Gemini fallback (or the
+      // next candidate) runs instead of waiting out the 90s timeout.
+      if (
+        candidate.provider === "omniroute" &&
+        /affinity|empty response|aborted|aborting|timeout/i.test(lastError)
+      ) {
+        break;
+      }
     }
   }
 

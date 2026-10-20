@@ -33,7 +33,6 @@ function resolveOrigin(req) {
   if (!origin) return "*";
   if (
     ALLOWED_ORIGINS.includes(origin) ||
-    origin.endsWith(".digitallydefined.online") ||
     origin.endsWith(".digitallydefined.agency") ||
     origin.includes("localhost")
   ) {

@@ -36,8 +36,8 @@ _MAX_BACKOFF_MS = 3000
 # --------------------------------------------------------------------------- #
 # Response cache
 # --------------------------------------------------------------------------- #
-# Measured gateway latency on ai.digitallydefined.online:
-#     auto/best-fast 22.2s | auto/best-chat 19.7s | auto/chat 10.8s | auto/cheap 8.7s
+# OmniRoute gateway endpoint: http://localhost:20128/v1
+# Local Docker deployment — no Cloudflare tunnel.
 #
 # These tools are deterministic for a given (system, user) pair — a niche score
 # or wealth projection does not change minute to minute — so re-asking the

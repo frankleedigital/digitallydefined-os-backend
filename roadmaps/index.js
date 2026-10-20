@@ -2,9 +2,6 @@ import { storeRoadmap, listRoadmaps, getRoadmapById } from './store.js';
 
 const ALLOWED_ORIGINS = [
   'https://dashboard.digitallydefined.agency',
-  'https://dashboard.digitallydefined.online',
-  'https://digitallydefined.online',
-  'https://www.digitallydefined.online',
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:5173',

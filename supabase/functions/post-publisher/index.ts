@@ -52,7 +52,7 @@ serve(async (req: Request) => {
   const origin = req.headers.get("origin");
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": origin || "https://digitallydefined.online",
+    "Access-Control-Allow-Origin": origin || "https://digitallydefined.store",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key",
     "Vary": "Origin",

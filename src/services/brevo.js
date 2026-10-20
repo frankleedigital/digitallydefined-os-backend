@@ -82,12 +82,12 @@ export async function sendQuizRoadmapEmail({ email, superpower, superpowerName, 
       <p style="font-size:16px;line-height:1.6;">${superpowerDescription || ''}</p>
       <h2 style="color:#47B7D4;">Your Roadmap (${estimatedTime || '30-60 days'})</h2>
       <ol style="line-height:1.8;">${stepsHtml}</ol>
-      <p style="margin-top:24px;font-size:14px;color:#5F5F5F;">Access your full dashboard at <a href="https://digitallydefined.online/dashboard">digitallydefined.online/dashboard</a></p>
+      <p style="margin-top:24px;font-size:14px;color:#5F5F5F;">Access your full dashboard at <a href="https://dashboard.digitallydefined.agency">dashboard.digitallydefined.agency</a></p>
     </div>
   `;
   const text = `Your Digital Superpower: ${superpowerName || superpower}\n\n${superpowerDescription || ''}\n\nRoadmap (${estimatedTime || '30-60 days'}):\n` +
     steps.map((step, i) => `${i + 1}. ${step}`).join('\n') +
-    `\n\nAccess your dashboard: https://digitallydefined.online/dashboard`;
+    `\n\nAccess your dashboard: https://dashboard.digitallydefined.agency`;
   return sendEmail({
     to: email,
     subject: `Your ${superpowerName || superpower} Roadmap | DigitallyDefined`,

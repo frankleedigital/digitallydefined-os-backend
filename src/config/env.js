@@ -85,7 +85,7 @@ const env = {
   // AI Providers
   omniroute: {
     apiKey: (process.env.OMNIROUTE_API_KEY || '').trim(),
-    baseUrl: (process.env.OMNIROUTE_BASE_URL || 'https://ai.digitallydefined.online/v1').trim(),
+    baseUrl: (process.env.OMNIROUTE_BASE_URL || 'http://localhost:20128/v1').trim(),
     model: (process.env.OMNIROUTE_MODEL || 'auto').trim(),
     fallbackModels: parseJsonArray(process.env.OMNIROUTE_FALLBACK_MODELS || '[]'),
   },

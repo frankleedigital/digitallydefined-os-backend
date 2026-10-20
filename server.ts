@@ -21,9 +21,6 @@ const UPSTREAM =
 // Echo an allowed origin back; fall back to the dashboard origin (no wildcard).
 const ALLOWED_ORIGINS = new Set([
   "https://dashboard.digitallydefined.agency",
-  "https://dashboard.digitallydefined.online",
-  "https://digitallydefined.online",
-  "https://www.digitallydefined.online",
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:5173",

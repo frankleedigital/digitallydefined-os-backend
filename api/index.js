@@ -44,6 +44,9 @@ const ALLOWED_ACTIONS = new Set([
   'public.chat',
   'mentor.dev',
   'hermes.agent',
+  // AI Business Partner — canonical handler lives in src/routes/businessPartner.js
+  // and is also exposed as the dedicated /api/business-partner function.
+  'business.partner',
   'intelligence',
   'automation.sync',
   'automation.list',
@@ -76,9 +79,14 @@ const ALLOWED_ACTIONS = new Set([
   // mirrored here for the legacy Vercel dispatcher).
   'website.content',
   'website.edit',
-  // Model switching (dashboard selector -> backend-clean -> Hermes runtime)
-  'hermes.setActiveModel',
-  'hermes.getActiveModel',
+  // NOTE: 'hermes.setActiveModel' / 'hermes.getActiveModel' are intentionally NOT
+  // listed here. They were never implemented in this dispatcher and always fell
+  // through to the 404 "Unknown action" tail, which made the dashboard's
+  // model-selector fallback silently fail.
+  // The working model endpoints are separate Vercel functions:
+  //   POST /api/set-model      -> src/routes/setModel.js  (handleSetModel)
+  //   GET  /api/active-model   -> src/routes/setModel.js  (handleGetActiveModel)
+  //   GET  /api/models         -> src/routes/setModel.js  (handleGetModels)
 ]);
 
 const GET_ONLY_ACTIONS = new Set([
@@ -1182,6 +1190,28 @@ export default async function handler(req, res) {
           fallback: 'I am here but I did not get a response. Try again.',
         });
       }
+    }
+
+    // AI Business Partner — delegate to the canonical handler in
+    // src/routes/businessPartner.js (same handler the dedicated
+    // /api/business-partner function uses). This is the path the dashboard
+    // assistant uses, and it honors an explicit `model` override so the
+    // dashboard model selector actually takes effect.
+    if (action === 'business.partner') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      // Vercel usually parses application/json into req.body, but when it
+      // arrives as a raw string the handler would crash reading body.message.
+      if (typeof req.body === 'string') {
+        try {
+          req.body = req.body.trim() ? JSON.parse(req.body) : {};
+        } catch {
+          return res.status(400).json({ error: 'Invalid JSON body' });
+        }
+      }
+      const { handleBusinessPartner } = await import('../src/routes/businessPartner.js');
+      return handleBusinessPartner(req, res);
     }
 
     if (action === 'intelligence') {

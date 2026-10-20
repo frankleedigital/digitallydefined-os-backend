@@ -30,38 +30,38 @@ export const OMNIROUTE_MODELS = [
   { value: 'auto/gemini', tier: 'free', label: 'Best Gemini', desc: 'Auto-routed Gemini', verified: 'live' },
   { value: 'auto/cheap', tier: 'free', label: 'Cheapest', desc: 'Cost-optimised auto route', verified: 'live' },
   { value: 'auto/best-reasoning', tier: 'free', label: 'Best Reasoning', desc: 'Deep-analysis auto route', verified: 'live' },
-  { value: 'auto/best-coding', tier: 'free', label: 'Best Coding', desc: 'Code-focused auto route', verified: 'unverified' },
-  { value: 'auto/best-vision', tier: 'free', label: 'Best Vision', desc: 'Image-analysis auto route', verified: 'unverified' },
+  { value: 'auto/best-coding', tier: 'free', label: 'Best Coding', desc: 'Code-focused auto route', verified: 'live' },
+  { value: 'auto/best-vision', tier: 'free', label: 'Best Vision', desc: 'Image-analysis auto route', verified: 'live' },
   { value: 'auto/claude-sonnet', tier: 'free', label: 'Claude (auto)', desc: 'Auto-routed Claude Sonnet', verified: 'live' },
   { value: 'auto/minimax', tier: 'free', label: 'MiniMax (auto)', desc: 'Auto-routed MiniMax', verified: 'live' },
-  { value: 'auto/glm', tier: 'free', label: 'GLM (auto)', desc: 'Auto-routed GLM', verified: 'degraded', issue: 'Gateway returned a non-standard body.' },
+  { value: 'auto/glm', tier: 'free', label: 'GLM (auto)', desc: 'Auto-routed GLM', verified: 'live' },
 
   // ── Free — requested combos (need an alias defined in OmniRoute) ──
-  { value: 'static-best-free', tier: 'free', label: 'static-best-free', desc: 'Your free combo', verified: 'degraded', issue: 'OmniRoute: no provider prefix. Define this as a combo alias in OmniRoute.' },
-  { value: 'free-stack', tier: 'free', label: 'free-stack', desc: 'Your free stack combo', verified: 'degraded', issue: 'OmniRoute: no provider prefix. Define this as a combo alias in OmniRoute.' },
-  { value: 'gemini-3.5-flash-lite', tier: 'free', label: 'Gemini 3.5 Flash Lite', desc: 'Gemini free tier', verified: 'degraded', issue: 'OmniRoute: OpenCode free tier is disabled (403).' },
+  { value: 'static-best-free', tier: 'free', label: 'static-best-free', desc: 'Your free combo', verified: 'live' },
+  { value: 'agy/gemini-3.5-flash-lite', tier: 'free', label: 'Gemini 3.5 Flash Lite', desc: 'Gemini free tier (Antigravity)', verified: 'live' },
+  { value: 'agy/gemini-3.8-flash-tiered', tier: 'free', label: 'Gemini 3.8 Flash (tiered)', desc: 'Gemini free tier (Antigravity)', verified: 'live' },
 
   // ── Gemini / Vertex paid credits ──
-  { value: 'vertex/gemini-2.5-pro', tier: 'gemini', label: 'Gemini 2.5 Pro', desc: 'Vertex paid credits', verified: 'degraded', issue: 'Vertex quota exhausted — resets automatically.' },
-  { value: 'vertex/gemini-3.8-flash', tier: 'gemini', label: 'Gemini 2.5 Flash', desc: 'Vertex paid credits', verified: 'degraded', issue: 'Vertex quota exhausted — resets automatically.' },
-  { value: 'vertex/gemini-2.0-flash', tier: 'gemini', label: 'Gemini 2.0 Flash', desc: 'Vertex paid credits', verified: 'unverified' },
-  { value: 'vertex/claude-sonnet-4-5', tier: 'gemini', label: 'Claude Sonnet 4.5 (Vertex)', desc: 'Vertex paid credits', verified: 'degraded', issue: 'Vertex quota exhausted — resets automatically.' },
-  { value: 'gemini-2.5-pro', tier: 'gemini', label: 'gemini-2.5-pro', desc: 'Bare id (your request)', verified: 'degraded', issue: 'OmniRoute routed this to t3.chat, whose credentials are invalid.' },
-  { value: 'gemini/gemini-3.7-flash', tier: 'gemini', label: 'Gemini 3.7 Flash', desc: 'Direct Gemini provider', verified: 'degraded', issue: 'OmniRoute: gemini provider has no active live catalog.' },
+  // NOTE: Vertex CLAUDE models are listed in the OmniRoute catalog but fail at
+  // call time: "Vertex partner models require project-scoped credentials;
+  // Express API keys support Gemini models only". Keep only Gemini here.
+  { value: 'vertex/gemini-3.7-flash', tier: 'gemini', label: 'Gemini 3.7 Flash', desc: 'Vertex paid credits', verified: 'live' },
+  { value: 'vertex/gemini-3.6-flash', tier: 'gemini', label: 'Gemini 3.6 Flash', desc: 'Vertex paid credits', verified: 'live' },
+  { value: 'vertex/gemini-3.5-flash', tier: 'gemini', label: 'Gemini 3.5 Flash', desc: 'Vertex paid credits', verified: 'live' },
+  { value: 'vertex/gemini-2.5-flash-lite', tier: 'gemini', label: 'Gemini 2.5 Flash Lite', desc: 'Vertex paid credits', verified: 'live' },
+  { value: 'vertex/deepseek-ai/deepseek-v3.2-maas', tier: 'gemini', label: 'DeepSeek V3.2 (Vertex)', desc: 'Vertex paid credits', verified: 'degraded', issue: 'Vertex partner models need project-scoped credentials.' },
+  { value: 'vertex/qwen/qwen3-next-80b-a3b-instruct-maas', tier: 'gemini', label: 'Qwen3 Next 80B (Vertex)', desc: 'Vertex paid credits', verified: 'degraded', issue: 'Vertex partner models need project-scoped credentials.' },
+  { value: 'vertex/zai-org/glm-5-maas', tier: 'gemini', label: 'GLM 5 (Vertex)', desc: 'Vertex paid credits', verified: 'degraded', issue: 'Vertex partner models need project-scoped credentials.' },
 
   // ── Bluesminds (bm/*) paid provider ──
-  { value: 'bm/gpt-4o-mini', tier: 'bluesminds', label: 'GPT-4o Mini', desc: 'Bluesminds', verified: 'degraded', issue: 'OmniRoute: bluesminds live catalog is empty.' },
-  { value: 'bm/gpt-4o', tier: 'bluesminds', label: 'GPT-4o', desc: 'Bluesminds', verified: 'degraded', issue: 'OmniRoute: bluesminds live catalog is empty.' },
-  { value: 'bm/gpt-4.1', tier: 'bluesminds', label: 'GPT-4.1', desc: 'Bluesminds', verified: 'degraded', issue: 'OmniRoute: bluesminds live catalog is empty.' },
-  { value: 'bm/claude-sonnet-4.5', tier: 'bluesminds', label: 'Claude Sonnet 4.5', desc: 'Bluesminds (your requested id)', verified: 'degraded', issue: 'OmniRoute: bluesminds live catalog is empty.' },
-  { value: 'bm/claude-sonnet-4-5', tier: 'bluesminds', label: 'Claude Sonnet 4-5', desc: 'Bluesminds catalog id', verified: 'degraded', issue: 'OmniRoute: bluesminds live catalog is empty.' },
-  { value: 'bm/claude-haiku-4-5', tier: 'bluesminds', label: 'Claude Haiku 4.5', desc: 'Bluesminds', verified: 'degraded', issue: 'OmniRoute: bluesminds live catalog is empty.' },
-  { value: 'bm/deepseek-chat', tier: 'bluesminds', label: 'DeepSeek Chat', desc: 'Bluesminds', verified: 'degraded', issue: 'OmniRoute: bluesminds live catalog is empty.' },
-  { value: 'bm/gemini-2.5-pro', tier: 'bluesminds', label: 'Gemini 2.5 Pro (VIP)', desc: 'Bluesminds', verified: 'degraded', issue: 'OmniRoute: bluesminds live catalog is empty.' },
-  { value: 'bm/gemini-2.0-flash', tier: 'bluesminds', label: 'Gemini 2.0 Flash', desc: 'Bluesminds', verified: 'degraded', issue: 'OmniRoute: bluesminds live catalog is empty.' },
-  { value: 'bm/qwen-turbo', tier: 'bluesminds', label: 'Qwen Turbo', desc: 'Bluesminds', verified: 'degraded', issue: 'OmniRoute: bluesminds live catalog is empty.' },
-  { value: 'bm/kimi-k2', tier: 'bluesminds', label: 'Kimi K2', desc: 'Bluesminds', verified: 'degraded', issue: 'OmniRoute: bluesminds live catalog is empty.' },
-  { value: 'bm/glm-4.7', tier: 'bluesminds', label: 'GLM 4.7', desc: 'Bluesminds', verified: 'degraded', issue: 'OmniRoute: bluesminds live catalog is empty.' },
+  // NOTE: the Bluesminds upstream circuit breaker is currently open (503), so
+  // these ids resolve in the catalog but do not return a completion.
+  { value: 'bm/gpt-5.5', tier: 'bluesminds', label: 'GPT-5.5', desc: 'Bluesminds', verified: 'degraded', issue: 'Bluesminds upstream circuit breaker is open.' },
+  { value: 'bm/gpt-oss-20b', tier: 'bluesminds', label: 'GPT-OSS 20B', desc: 'Bluesminds open weights', verified: 'degraded', issue: 'Bluesminds upstream circuit breaker is open.' },
+  { value: 'bm/kimi-k2.5', tier: 'bluesminds', label: 'Kimi K2.5', desc: 'Bluesminds', verified: 'degraded', issue: 'Bluesminds upstream circuit breaker is open.' },
+  { value: 'bm/gemma-4-26b', tier: 'bluesminds', label: 'Gemma 4 26B', desc: 'Bluesminds open weights', verified: 'degraded', issue: 'Bluesminds upstream circuit breaker is open.' },
+  { value: 'bm/meta/llama-3.3-70b-instruct', tier: 'bluesminds', label: 'Llama 3.3 70B', desc: 'Bluesminds open weights', verified: 'degraded', issue: 'Bluesminds upstream circuit breaker is open.' },
+  { value: 'bm/meta/llama-3.1-8b-instruct', tier: 'bluesminds', label: 'Llama 3.1 8B', desc: 'Bluesminds open weights', verified: 'degraded', issue: 'Bluesminds upstream circuit breaker is open.' },
 ];
 
 /** Default model when nothing is stored for a user. */
