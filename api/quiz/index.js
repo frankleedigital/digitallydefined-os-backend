@@ -15,6 +15,8 @@ import { digitalSuperpowerAgent } from '../../agents/digitalSuperpowerAgent.js';
 
 const ALLOWED_ORIGINS = new Set([
   'https://dashboard.digitallydefined.agency',
+  'https://digitallydefined.online',
+  'https://www.digitallydefined.online',
   'http://localhost:3000',
   'http://localhost:5173',
 ]);
@@ -22,7 +24,7 @@ const ALLOWED_ORIGINS = new Set([
 export default async function handler(req, res) {
   // -- CORS --
   const origin = req.headers && req.headers.origin;
-  const corsOrigin = origin && ALLOWED_ORIGINS.has(origin) ? origin : '*';
+  const corsOrigin = origin && ALLOWED_ORIGINS.has(origin) ? origin : 'https://dashboard.digitallydefined.agency';
   res.setHeader('Access-Control-Allow-Origin', corsOrigin);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-key, Authorization');

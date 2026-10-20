@@ -6,6 +6,8 @@ import { antigravityHandle } from '../lib/antigravity.js';
 
 const ALLOWED_ORIGINS = [
   'https://dashboard.digitallydefined.agency',
+  'https://digitallydefined.online',
+  'https://www.digitallydefined.online',
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:5173',

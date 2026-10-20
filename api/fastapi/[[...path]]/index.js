@@ -23,7 +23,8 @@ export default async function handler(req, res) {
   const origin = (req.headers && req.headers.origin) || '';
   const allowed = [
     'https://dashboard.digitallydefined.agency',
-    'https://dashboard.digitallydefined.agency',
+    'https://digitallydefined.online',
+    'https://www.digitallydefined.online',
     'https://digitallydefined.store',
     'https://www.digitallydefined.store',
     'http://localhost:3000',
@@ -32,7 +33,7 @@ export default async function handler(req, res) {
   ];
   const corsOrigin = allowed.includes(origin) ? origin : 'https://dashboard.digitallydefined.agency';
   res.setHeader('Access-Control-Allow-Origin', corsOrigin);
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-api-key, apikey');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Vary', 'Origin');

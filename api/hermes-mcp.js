@@ -19,6 +19,9 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { buildHermesMcpServer } from "../lib/hermesMcp.js";
 
 const ALLOWED_ORIGINS = [
+  "https://dashboard.digitallydefined.agency",
+  "https://digitallydefined.online",
+  "https://www.digitallydefined.online",
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:5173",
@@ -59,7 +62,7 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Expose-Headers", "Mcp-Session-Id");
 
   if (method === "OPTIONS") {
-    res.statusCode = 204;
+    res.statusCode = 200;
     res.end();
     return;
   }
