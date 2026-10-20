@@ -92,19 +92,27 @@ const env = {
   gemini: {
     apiKey: (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '').trim(),
     baseUrl: (process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta/openai').trim(),
-    model: (process.env.GEMINI_MODEL || 'gemini-3.8-flash').trim(),
+    model: (process.env.GEMINI_MODEL || 'gemini-3.5-flash').trim(),
   },
   cheaperInference: {
     apiKey: (process.env.CHEAPER_INFERENCE_API_KEY || '').trim(),
     baseUrl: (process.env.CHEAPER_INFERENCE_BASE_URL || '').trim(),
-    model: (process.env.CHEAPER_INFERENCE_MODEL || '').trim(),
+    model: (process.env.CHEAPER_INFERENCE_MODEL || 'auto').trim(),
+  },
+
+  // AgentRouter (tertiary fallback — OpenAI-compatible gateway).
+  // User holds ~$400 in AgentRouter credits.
+  agentrouter: {
+    apiKey: (process.env.AGENTROUTER_API_KEY || process.env.AGENT_ROUTER_API_KEY || '').trim(),
+    baseUrl: (process.env.AGENTROUTER_BASE_URL || 'https://agentrouter.org/v1').trim(),
+    model: (process.env.AGENTROUTER_MODEL || 'auto').trim(),
   },
 
   // Vertex AI Gemini (PRIMARY AI provider)
   vertex: {
     projectId: (process.env.VERTEX_PROJECT_ID || '').trim(),
     location: (process.env.VERTEX_LOCATION || 'us-central1').trim(),
-    model: (process.env.VERTEX_MODEL || 'gemini-1.5-flash').trim(),
+    model: (process.env.VERTEX_MODEL || 'gemini-3.5-flash').trim(),
   },
 
   // OpenRouter (optional fallback)
@@ -329,6 +337,14 @@ export function isAgnesConfigured() {
   return !!(env.agnes.apiKey && env.agnes.baseUrl);
 }
 
+export function isAgentRouterConfigured() {
+  return !!(env.agentrouter.apiKey && env.agentrouter.apiKey.length > 0);
+}
+
+export function isCheapInferenceConfigured() {
+  return !!(env.cheaperInference.apiKey && env.cheaperInference.baseUrl);
+}
+
 // OmniRoute is the PRIMARY AI provider (enabled when keys are present).
 export function isOmniRouteEnabled() {
   return !!(env.omniroute.apiKey && env.omniroute.baseUrl && env.omniroute.baseUrl.length > 0);
@@ -417,6 +433,14 @@ export const REQUIRED_VARS = [
 export const OPTIONAL_VARS = [
   { key: 'OPENROUTER_API_KEY', value: () => env.openrouter.apiKey, purpose: 'OpenRouter fallback provider' },
   { key: 'OPENROUTER_MODEL', value: () => env.openrouter.model, purpose: 'OpenRouter model id' },
+  { key: 'AGENTROUTER_API_KEY', value: () => env.agentrouter.apiKey, purpose: 'AgentRouter tertiary fallback (~$400 credits)' },
+  { key: 'AGENTROUTER_BASE_URL', value: () => env.agentrouter.baseUrl, purpose: 'AgentRouter gateway base URL' },
+  { key: 'AGENTROUTER_MODEL', value: () => env.agentrouter.model, purpose: 'AgentRouter model id' },
+  { key: 'CHEAPER_INFERENCE_API_KEY', value: () => env.cheaperInference.apiKey, purpose: 'Cheap Inference emergency fallback' },
+  { key: 'CHEAPER_INFERENCE_BASE_URL', value: () => env.cheaperInference.baseUrl, purpose: 'Cheap Inference gateway base URL' },
+  { key: 'CHEAPER_INFERENCE_MODEL', value: () => env.cheaperInference.model, purpose: 'Cheap Inference model id' },
+  { key: 'GEMINI_API_KEY', value: () => env.gemini.apiKey, purpose: 'Direct Gemini fallback (secondary provider)' },
+  { key: 'GEMINI_MODEL', value: () => env.gemini.model, purpose: 'Direct Gemini model (gemini-3.5-flash verified)' },
   { key: 'AGNES_API_KEY', value: () => env.agnes.apiKey, purpose: 'Agnes fallback provider' },
   { key: 'AGNES_BASE_URL', value: () => env.agnes.baseUrl, purpose: 'Agnes gateway base URL' },
   { key: 'AGNES_MODEL', value: () => env.agnes.model, purpose: 'Agnes model id' },
@@ -521,6 +545,10 @@ export function getIntegrationReport() {
       vertexModel: env.vertex.model,
       vertexProjectId: env.vertex.projectId || null,
       vertexLocation: env.vertex.location,
+      agentrouter: isAgentRouterConfigured(),
+      agentrouterModel: env.agentrouter.model,
+      cheapInference: isCheapInferenceConfigured(),
+      cheapInferenceModel: env.cheaperInference.model,
       fallbacks: [
         ...(isVertexConfigured() && isOmniRouteEnabled() ? ['vertex-gemini'] : []),
         ...(isOpenRouterConfigured() ? ['openrouter'] : []),

@@ -174,18 +174,29 @@ export async function handleIntegrationData(req, res, action) {
   logger.info('Integration request', { action: subAction });
   try {
     let result;
+    let configured = false;
     switch (subAction) {
-      case 'googleAnalytics': result = await fetchGoogleAnalytics(); break;
+      case 'googleAnalytics': {
+        result = await fetchGoogleAnalytics();
+        configured = !!(env.ga4.measurementId || env.sheets.webhookUrl);
+        break;
+      }
       case 'social': {
         const fb = await fetchFacebookStats();
         const ig = await fetchInstagramStats();
         result = { platforms: { facebook: fb.error ? null : { followers: fb.followers || 0, members: fb.member_count || 0 }, instagram: ig.error ? null : { followers: ig.followers || 0 } }, followers: (fb.followers || 0) + (ig.followers || 0), engagementRate: null, impressions30d: null, topPosts: [], error: fb.error || ig.error || null };
+        configured = !!(env.facebook.accessToken || env.instagram.accessToken);
         break;
       }
-      case 'email': result = await fetchBrevoStatsReal(); break;
+      case 'email': {
+        result = await fetchBrevoStatsReal();
+        configured = !!env.brevo.apiKey;
+        break;
+      }
       case 'community': {
         const fb = await fetchFacebookStats();
         result = { platform: 'facebook', members: fb.member_count || 0, activeToday: null, growth30d: null, error: fb.error || null };
+        configured = !!(env.facebook.accessToken);
         break;
       }
       case 'all': {
@@ -196,12 +207,13 @@ export async function handleIntegrationData(req, res, action) {
           fetchFacebookStats().then(fb => ({ platform: 'facebook', members: fb.member_count || 0, activeToday: null, growth30d: null, error: fb.error || null })),
         ]);
         result = { googleAnalytics: ga.status === 'fulfilled' ? ga.value : { error: ga.reason?.message }, social: social.status === 'fulfilled' ? social.value : { error: social.reason?.message }, email: email.status === 'fulfilled' ? email.value : { error: email.reason?.message }, community: community.status === 'fulfilled' ? community.value : { error: community.reason?.message } };
+        configured = !!(env.facebook.accessToken || env.brevo.apiKey || env.ga4.measurementId || env.sheets.webhookUrl);
         break;
       }
       default: return res.status(400).json({ error: 'Unknown integration action: ' + subAction });
     }
     const hasError = result && typeof result === 'object' && result.error;
-    res.status(200).json({ success: true, data: result, connected: !hasError && (result.subscribers || result.followers || result.member_count || result.users30d || Object.keys(result.platforms || {}).length > 0) });
+    res.status(200).json({ success: true, data: result, connected: !hasError && (result.subscribers || result.followers || result.member_count || result.users30d || Object.keys(result.platforms || {}).length > 0), configured });
   } catch (err) {
     logger.error('Integration handler failed', { action: subAction, error: err.message });
     res.status(500).json({ success: false, error: err.message });

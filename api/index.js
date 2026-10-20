@@ -46,6 +46,7 @@ const ALLOWED_ACTIONS = new Set([
   'public.chat',
   'mentor.dev',
   'hermes.agent',
+  'hermes.status',
   // AI Business Partner — canonical handler lives in src/routes/businessPartner.js
   // and is also exposed as the dedicated /api/business-partner function.
   'business.partner',
@@ -1217,6 +1218,22 @@ export default async function handler(req, res) {
       }
       const { handleBusinessPartner } = await import('../src/routes/businessPartner.js');
       return handleBusinessPartner(req, res);
+    }
+
+    // Hermes provider health — live status for the AI Infrastructure panel.
+    // Returns { activeProvider, providerHealth, fallbackOrder, currentModel,
+    // providerLatencies }. Never 500s: failures report as unhealthy entries.
+    if (action === 'hermes.status') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { checkAllProviders } = await import('../src/services/providerHealth.js');
+        const health = await checkAllProviders();
+        return res.status(200).json({ success: true, ...health });
+      } catch (err) {
+        return res.status(200).json({ success: true, activeProvider: null, providerHealth: {}, fallbackOrder: ['omniroute', 'vertex-gemini', 'agentrouter', 'cheap-inference'], providerLatencies: {}, currentModel: null, error: err.message || 'health check failed', checkedAt: Date.now() });
+      }
     }
 
     if (action === 'intelligence') {

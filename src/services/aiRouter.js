@@ -1,9 +1,15 @@
 // src/services/aiRouter.js - AI provider routing
 // ============================================================================
 // PRIMARY:   OmniRoute                 (API gateway - uses your tunnel)
-// FALLBACK1: Vertex AI Gemini          (optional - only if GEMINI_API_KEY)
-// FALLBACK2: OpenRouter                (optional - only if OPENROUTER_API_KEY)
-// FALLBACK3: Agnes                     (optional - only if AGNES_API_KEY)
+// FALLBACK1: Vertex AI Gemini          (direct Gemini API - GEMINI_API_KEY)
+// FALLBACK2: AgentRouter               (OpenAI-compatible - AGENTROUTER_API_KEY)
+// FALLBACK3: Cheap Inference           (OpenAI-compatible - CHEAPER_INFERENCE_*)
+// FALLBACK4: OpenRouter                (optional - only if OPENROUTER_API_KEY)
+// FALLBACK5: Agnes                     (optional - only if AGNES_API_KEY)
+// ============================================================================
+// Chain: Hermes -> OmniRoute -> Vertex -> AgentRouter -> CheapInference
+//        -> OpenRouter -> Agnes -> degraded response.
+// A single provider failure NEVER takes Hermes offline.
 // ============================================================================
 import env from '../config/env.js';
 import constants from '../config/constants.js';
@@ -18,7 +24,30 @@ const DEFAULT_TIMEOUT = constants.AI_TIMEOUT_MS;
 // per-mode. Older code assumed mode freeMode/proMode/ultraMode chose the model;
 // it never did, so every call silently used env.omniroute.model.
 export function resolvePrimaryModel() {
-  return env.vertex.model || 'gemini-1.5-flash';
+  // Direct Gemini API model — NEVER an OmniRoute omni/* or vertex/* id.
+  // gemini-2.5-flash and gemini-2.0-flash are retired by Google (404);
+  // gemini-3.5-flash verified live 2026-10-20.
+  return env.vertex.model || env.gemini.model || 'gemini-3.5-flash';
+}
+
+/** True when `id` is an OmniRoute-routed id that Vertex/Direct APIs cannot use. */
+export function isOmniRouteModelId(id) {
+  const v = String(id || '').trim();
+  // OmniRoute-prefixed ids: omni/*, auto/*, vertex/*, agy/*, bm/*, agentrouter/*,
+  // cheaperinference/*, static-best/*, free-stack/*
+  if (/^(omni|auto|vertex|agy|bm|agentrouter|cheaperinference|static-best|free-stack)\//i.test(v)) return true;
+  // Bare omni/auto keywords (no slash) are also OmniRoute-routed.
+  if (/^(omni|auto)\b/i.test(v)) return true;
+  // Composite OmniRoute combo ids (no slash): free-stack, free-best, etc.
+  if (/^(free-stack|free-best|free-fast|auto-best|auto-cheap|auto-free|static-best)\b/i.test(v)) return true;
+  return false;
+}
+
+/** Resolve a safe model id for the direct-Gemini fallback path. */
+export function resolveVertexModel(requested) {
+  const v = String(requested || '').trim();
+  if (v && !isOmniRouteModelId(v) && !v.includes('/')) return v;
+  return resolvePrimaryModel();
 }
 export function openrouterModel() {
   return env.openrouter.model || 'openai/gpt-4o-mini';
@@ -66,6 +95,18 @@ export function isVertexConfigured() {
 export function isOpenRouterConfigured() {
   return !!(env.openrouter.apiKey && env.openrouter.apiKey.length > 0);
 }
+export function isAgentRouterConfigured() {
+  return !!(env.agentrouter.apiKey && env.agentrouter.apiKey.length > 0);
+}
+export function isCheapInferenceConfigured() {
+  return !!(env.cheaperInference.apiKey && env.cheaperInference.baseUrl);
+}
+export function agentRouterModel() {
+  return env.agentrouter.model || 'auto';
+}
+export function cheapInferenceModel() {
+  return env.cheaperInference.model || 'auto';
+}
 export function isAgnesConfigured() {
   return !!(env.agnes.apiKey && env.agnes.baseUrl);
 }
@@ -89,19 +130,16 @@ function failed(provider, error) {
   return { reply: '', provider, model: null, error };
 }
 
-// PRIMARY: Vertex AI Gemini (generateContent shape, x-goog-api-key header)
+// FALLBACK1: Vertex AI Gemini — direct Google Generative Language API.
+// NEVER receives OmniRoute ids (omni/*, auto/*, vertex/*); they are
+// sanitized via resolveVertexModel(). Independent of OmniRoute.
 export async function callVertexGemini(model, prompt, options = {}) {
   const { systemPrompt, jsonMode, timeout = DEFAULT_TIMEOUT } = options;
-  const apiKey = process.env.GEMINI_API_KEY || '';
+  const apiKey = env.gemini.apiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '';
   if (!apiKey) return failed('vertex-gemini', 'GEMINI_API_KEY not configured');
 
-  const modelId = model || resolvePrimaryModel(options.mode);
-  // Full Vertex endpoint when a project id is present; Vertex express mode
-  // (API-key only) otherwise. Same request/response shape for both.
-  const endpoint = env.vertex.projectId
-    ? 'https://' + env.vertex.location + '-aiplatform.googleapis.com/v1/projects/' + env.vertex.projectId +
-      '/locations/' + env.vertex.location + '/publishers/google/models/' + modelId + ':generateContent'
-    : 'https://aiplatform.googleapis.com/v1/publishers/google/models/' + modelId + ':generateContent';
+  const modelId = resolveVertexModel(model);
+  const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(modelId) + ':generateContent';
 
   const body = {
     contents: [{ role: 'user', parts: [{ text: String(prompt).trim() }] }],
@@ -134,7 +172,85 @@ export async function callVertexGemini(model, prompt, options = {}) {
   }
 }
 
-// FALLBACK 1: OpenRouter (OpenAI-compatible chat/completions)
+// FALLBACK2: AgentRouter (OpenAI-compatible chat/completions).
+// Credentials: AGENTROUTER_API_KEY (+ optional AGENTROUTER_BASE_URL,
+// AGENTROUTER_MODEL). Independent of OmniRoute.
+export async function callAgentRouter(model, prompt, options = {}) {
+  const { systemPrompt, jsonMode, timeout = DEFAULT_TIMEOUT } = options;
+  if (!isAgentRouterConfigured()) return failed('agentrouter', 'AGENTROUTER_API_KEY not configured');
+
+  const modelId = model && !isOmniRouteModelId(model) ? model : agentRouterModel();
+  const baseUrl = String(env.agentrouter.baseUrl || 'https://agentrouter.org/v1').replace(/\/+$/, '');
+  const messages = [];
+  if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+  messages.push({ role: 'user', content: String(prompt).trim() });
+  const body = { model: modelId, messages, stream: false };
+  if (jsonMode) body.response_format = { type: 'json_object' };
+
+  try {
+    const response = await withTimeout(timeout, (signal) => fetch(baseUrl + '/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + env.agentrouter.apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+      signal,
+    }));
+    if (!response.ok) {
+      const errText = await response.text().catch(() => '');
+      return failed('agentrouter', 'AgentRouter error: ' + response.status + ' ' + errText.slice(0, 200));
+    }
+    const data = await response.json();
+    const reply = data && data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
+    if (!reply) return failed('agentrouter', 'AgentRouter returned an empty response');
+    return { reply, provider: 'agentrouter', model: data.model || modelId, error: null };
+  } catch (error) {
+    if (error.name === 'AbortError') return failed('agentrouter', 'AgentRouter request timed out');
+    return failed('agentrouter', 'AgentRouter request failed: ' + (error.message || String(error)));
+  }
+}
+
+// FALLBACK3: Cheap Inference (OpenAI-compatible chat/completions).
+// Credentials: CHEAPER_INFERENCE_API_KEY + CHEAPER_INFERENCE_BASE_URL
+// (+ optional CHEAPER_INFERENCE_MODEL). Independent of OmniRoute.
+export async function callCheapInference(model, prompt, options = {}) {
+  const { systemPrompt, jsonMode, timeout = DEFAULT_TIMEOUT } = options;
+  if (!isCheapInferenceConfigured()) return failed('cheap-inference', 'CHEAPER_INFERENCE_API_KEY or CHEAPER_INFERENCE_BASE_URL not configured');
+
+  const modelId = model && !isOmniRouteModelId(model) ? model : cheapInferenceModel();
+  const baseUrl = String(env.cheaperInference.baseUrl).replace(/\/+$/, '');
+  const messages = [];
+  if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+  messages.push({ role: 'user', content: String(prompt).trim() });
+  const body = { model: modelId, messages, stream: false };
+  if (jsonMode) body.response_format = { type: 'json_object' };
+
+  try {
+    const response = await withTimeout(timeout, (signal) => fetch(baseUrl + '/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + env.cheaperInference.apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+      signal,
+    }));
+    if (!response.ok) {
+      const errText = await response.text().catch(() => '');
+      return failed('cheap-inference', 'Cheap Inference error: ' + response.status + ' ' + errText.slice(0, 200));
+    }
+    const data = await response.json();
+    const reply = data && data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
+    if (!reply) return failed('cheap-inference', 'Cheap Inference returned an empty response');
+    return { reply, provider: 'cheap-inference', model: data.model || modelId, error: null };
+  } catch (error) {
+    if (error.name === 'AbortError') return failed('cheap-inference', 'Cheap Inference request timed out');
+    return failed('cheap-inference', 'Cheap Inference request failed: ' + (error.message || String(error)));
+  }
+}
+
+// FALLBACK 4: OpenRouter (OpenAI-compatible chat/completions)
 export async function callOpenRouter(model, prompt, options = {}) {
   const { systemPrompt, jsonMode, timeout = DEFAULT_TIMEOUT } = options;
   if (!isOpenRouterConfigured()) return failed('openrouter', 'OPENROUTER_API_KEY not configured');
@@ -255,54 +371,97 @@ function buildMessages(prompt, systemPrompt) {
   ];
 }
 
-// Unified routing: OmniRoute (primary) -> Vertex Gemini -> OpenRouter -> Agnes -> error
+// Unified routing: OmniRoute (primary) -> Vertex Gemini -> AgentRouter
+// -> Cheap Inference -> OpenRouter -> Agnes -> error
 //
 // `options.job` selects the OmniRoute model (see JOB_MODELS). An explicit
-// `model` argument still wins, for callers that need a one-off override.
+// `model` argument still wins for OmniRoute, but is NEVER leaked into
+// providers that cannot resolve OmniRoute ids (Vertex sanitizes via
+// resolveVertexModel(); AgentRouter/CheapInference fall back to their own
+// configured models when given an OmniRoute id).
+//
+// Every attempt is logged with [HERMES]/[OMNIROUTE]/[VERTEX]/[AGENTROUTER]/
+// [CHEAP-INFERENCE] tags including provider, model, latency, status, error
+// and fallback reason. Nothing is hidden.
 export async function generate(model, prompt, options = {}) {
   const job = options.job || 'chat';
   const omnirouteModel = model || resolveJobModel(job);
+  const t0 = Date.now();
+  const tag = (p) => '[' + String(p).toUpperCase().replace(/[^A-Z]+/g, '-') + ']';
+  console.log('[HERMES] generate start', JSON.stringify({ job, requestedModel: model || null, omnirouteModel, ts: new Date().toISOString() }));
   const attempts = [];
 
   // PRIMARY: OmniRoute (when configured)
   if (isOmniRouteConfigured()) {
-    attempts.push({ name: 'omniroute', fn: () => callOmniRoute(omnirouteModel, prompt, options) });
+    attempts.push({ name: 'omniroute', model: omnirouteModel, fn: () => callOmniRoute(omnirouteModel, prompt, options) });
+  } else {
+    console.log('[HERMES] skip omniroute (not configured)');
   }
 
-  // FALLBACK: Vertex Gemini (when configured)
+  // FALLBACK1: Vertex Gemini (when configured) — sanitized model, independent.
   if (isVertexConfigured()) {
-    attempts.push({ name: 'vertex-gemini', fn: () => callVertexGemini(omnirouteModel, prompt, options) });
+    attempts.push({ name: 'vertex-gemini', model: resolveVertexModel(omnirouteModel), fn: () => callVertexGemini(omnirouteModel, prompt, options) });
+  } else {
+    console.log('[HERMES] skip vertex-gemini (GEMINI_API_KEY not configured)');
   }
 
-  // FALLBACK: OpenRouter (when configured)
+  // FALLBACK2: AgentRouter (when configured)
+  if (isAgentRouterConfigured()) {
+    attempts.push({ name: 'agentrouter', model: agentRouterModel(), fn: () => callAgentRouter(null, prompt, options) });
+  } else {
+    console.log('[HERMES] skip agentrouter (AGENTROUTER_API_KEY not configured)');
+  }
+
+  // FALLBACK3: Cheap Inference (when configured)
+  if (isCheapInferenceConfigured()) {
+    attempts.push({ name: 'cheap-inference', model: cheapInferenceModel(), fn: () => callCheapInference(null, prompt, options) });
+  } else {
+    console.log('[HERMES] skip cheap-inference (CHEAPER_INFERENCE_* not configured)');
+  }
+
+  // FALLBACK4: OpenRouter (when configured)
   if (isOpenRouterConfigured()) {
     attempts.push({ name: 'openrouter', fn: () => callOpenRouter(openrouterModel(), prompt, options) });
   }
 
-  // FALLBACK: Agnes (when configured)
+  // FALLBACK5: Agnes (when configured)
   if (isAgnesConfigured()) {
     attempts.push({ name: 'agnes', fn: () => callAgnes(agnesModel(), prompt, options) });
   }
 
+  const attemptErrors = [];
   let lastError = null;
   for (const attempt of attempts) {
+    const start = Date.now();
     try {
       const result = await attempt.fn();
+      const latencyMs = Date.now() - start;
       if (!result.error) {
-        console.log('[aiRouter] ' + attempt.name + ' succeeded (' + result.model + ')');
+        console.log(tag(attempt.name) + ' OK', JSON.stringify({ provider: attempt.name, model: result.model, latencyMs, status: 'ok' }));
+        logger.info('AI provider succeeded', { provider: attempt.name, model: result.model, latencyMs });
+        result.latencyMs = latencyMs;
+        result.attempts = attempts.map((a) => a.name);
+        result.attemptErrors = attemptErrors;
+        result.totalLatencyMs = Date.now() - t0;
         return result;
       }
       lastError = result.error;
-      logger.warn('AI provider failed, trying next', { provider: attempt.name, error: result.error });
+      attemptErrors.push(attempt.name + ': ' + result.error);
+      console.log(tag(attempt.name) + ' FAIL', JSON.stringify({ provider: attempt.name, model: result.model || attempt.model || null, latencyMs, status: 'failed', error: result.error, fallbackReason: 'trying next provider' }));
+      logger.warn('AI provider failed, trying next', { provider: attempt.name, error: result.error, latencyMs });
     } catch (error) {
+      const latencyMs = Date.now() - start;
       lastError = error.message || String(error);
-      logger.warn('AI provider threw, trying next', { provider: attempt.name, error: lastError });
+      attemptErrors.push(attempt.name + ' threw: ' + lastError);
+      console.log(tag(attempt.name) + ' THREW', JSON.stringify({ provider: attempt.name, latencyMs, status: 'threw', error: lastError, fallbackReason: 'trying next provider' }));
+      logger.warn('AI provider threw, trying next', { provider: attempt.name, error: lastError, latencyMs });
     }
   }
 
   const error = 'All AI providers failed. Last error: ' + (lastError || 'no provider available');
-  logger.error('AI routing exhausted', { error, job });
-  return { reply: '', provider: null, model: null, error };
+  console.log('[HERMES] EXHAUSTED', JSON.stringify({ job, attempts: attempts.map((a) => a.name), attemptErrors, totalLatencyMs: Date.now() - t0 }));
+  logger.error('AI routing exhausted', { error, job, attemptErrors });
+  return { reply: '', provider: null, model: null, error, attemptErrors, attempts: attempts.map((a) => a.name) };
 }
 
 // Diagnostics
@@ -310,18 +469,22 @@ export function providerOrder() {
   const order = [];
   if (isOmniRouteConfigured()) order.push('omniroute');
   if (isVertexConfigured()) order.push('vertex-gemini');
+  if (isAgentRouterConfigured()) order.push('agentrouter');
+  if (isCheapInferenceConfigured()) order.push('cheap-inference');
   if (isOpenRouterConfigured()) order.push('openrouter');
   if (isAgnesConfigured()) order.push('agnes');
   return order;
 }
 
 export function fallbackChain(mode) {
-  return providerOrder().slice(1).map((p) => ({ provider: p, model: p === 'openrouter' ? openrouterModel() : agnesModel() }));
+  return providerOrder().slice(1).map((p) => ({ provider: p, model: resolveModel(p, mode) }));
 }
 
 export function resolveModel(provider, mode) {
   if (provider === 'omniroute') return env.omniroute.model || 'auto';
   if (provider === 'vertex-gemini' || !provider) return resolvePrimaryModel(mode);
+  if (provider === 'agentrouter') return agentRouterModel();
+  if (provider === 'cheap-inference') return cheapInferenceModel();
   if (provider === 'openrouter') return openrouterModel();
   if (provider === 'agnes') return agnesModel();
   return resolvePrimaryModel(mode);
@@ -330,6 +493,7 @@ export function resolveModel(provider, mode) {
 export function describeRouting() {
   return {
     primary: isOmniRouteConfigured() ? 'omniroute' : (isVertexConfigured() ? 'vertex-gemini' : null),
+    fallbackOrder: providerOrder().slice(1),
     omniroute: isOmniRouteConfigured(),
     omnirouteUrl: env.omniroute.baseUrl || null,
     omnirouteModel: env.omniroute.model || 'auto',
@@ -337,6 +501,10 @@ export function describeRouting() {
     vertexModel: resolvePrimaryModel(),
     vertexProjectId: env.vertex.projectId || null,
     vertexLocation: env.vertex.location,
+    agentrouter: isAgentRouterConfigured(),
+    agentrouterModel: agentRouterModel(),
+    cheapInference: isCheapInferenceConfigured(),
+    cheapInferenceModel: cheapInferenceModel(),
     fallbacks: providerOrder().slice(1),
   };
 }
@@ -356,13 +524,20 @@ export function logRouting() {
 export const aiRouter = {
   generate,
   callVertexGemini,
+  callAgentRouter,
+  callCheapInference,
   callOpenRouter,
   callAgnes,
   callOmniRoute,
   isVertexConfigured,
+  isAgentRouterConfigured,
+  isCheapInferenceConfigured,
   isOpenRouterConfigured,
   isAgnesConfigured,
   isOmniRouteConfigured,
+  isOmniRouteModelId,
+  resolveVertexModel,
+  resolvePrimaryModel,
   providerOrder,
   resolveModel,
   fallbackChain,

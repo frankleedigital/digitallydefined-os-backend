@@ -198,13 +198,17 @@ export async function handleBusinessPartner(req, res) {
       // The model chain failing is a degraded state, not a client error. The
       // dashboard renders a message either way, so return 200 with a flag
       // rather than 500 (which previously blanked the chat panel).
-      logger.error('Business partner AI failed', { error: result.error });
+      // attemptErrors names EVERY failed provider — never hidden.
+      logger.error('Business partner AI failed', { error: result.error, attemptErrors: result.attemptErrors || null });
+      console.log('[HERMES] business-partner degraded', JSON.stringify({ error: result.error, attemptErrors: result.attemptErrors || [], attempts: result.attempts || [] }));
       return res.status(200).json({
         success: false,
         available: false,
         degraded: true,
         error: 'AI failed',
         details: result.error,
+        attemptErrors: result.attemptErrors || [],
+        attempts: result.attempts || [],
         reply:
           'Hermes is not answering right now. Your dashboard data is safe - try again in a moment.',
         businessInsights: null,
@@ -254,6 +258,10 @@ export async function handleBusinessPartner(req, res) {
       businessInsights,
       provider: result.provider || 'unknown',
       model: result.model || 'unknown',
+      latencyMs: result.latencyMs ?? null,
+      totalLatencyMs: result.totalLatencyMs ?? null,
+      attempts: result.attempts || [],
+      attemptErrors: result.attemptErrors || [],
       timestamp: Date.now()
     });
   } catch (error) {
