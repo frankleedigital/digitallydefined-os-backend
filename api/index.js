@@ -79,14 +79,17 @@ const ALLOWED_ACTIONS = new Set([
   // mirrored here for the legacy Vercel dispatcher).
   'website.content',
   'website.edit',
-  // NOTE: 'hermes.setActiveModel' / 'hermes.getActiveModel' are intentionally NOT
-  // listed here. They were never implemented in this dispatcher and always fell
-  // through to the 404 "Unknown action" tail, which made the dashboard's
-  // model-selector fallback silently fail.
-  // The working model endpoints are separate Vercel functions:
-  //   POST /api/set-model      -> src/routes/setModel.js  (handleSetModel)
-  //   GET  /api/active-model   -> src/routes/setModel.js  (handleGetActiveModel)
-  //   GET  /api/models         -> src/routes/setModel.js  (handleGetModels)
+  // Antigravity tool aliases used by AntigravityPage (dotted action names).
+  'antigravity.status',
+  'antigravity.createNotionPage',
+  'antigravity.reconcileDatabase',
+  'antigravity.queryDatabase',
+  'antigravity.getPage',
+  'antigravity.updateDatabase',
+  'antigravity.patch',
+  'antigravity.buildTemplate',
+  'antigravity.runAutomation',
+  'antigravity.phase21.rollout',
 ]);
 
 const GET_ONLY_ACTIONS = new Set([

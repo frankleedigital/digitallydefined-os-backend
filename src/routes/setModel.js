@@ -44,22 +44,31 @@ async function persistModel(userId, modelId) {
     logger.warn('Model not persisted: Supabase REST is not configured');
     return null;
   }
-  return upsert(
-    TABLE,
-    { user_id: userId, model_id: modelId, updated_at: new Date().toISOString() },
-    'user_id'
-  );
+  // Production table uses column `model`; older migrations used `model_id`.
+  // Try `model` first, fall back to `model_id` so both schemas work.
+  try {
+    return await upsert(TABLE, { user_id: userId, model: modelId, updated_at: new Date().toISOString() }, 'user_id');
+  } catch (err) {
+    if (!/model_id|PGRST204|column/i.test(err.message || '')) throw err;
+    logger.warn('persistModel: `model` column missing, retrying with `model_id`');
+    return upsert(TABLE, { user_id: userId, model_id: modelId, updated_at: new Date().toISOString() }, 'user_id');
+  }
 }
 
 /** Read the stored model for a user. Returns null when unset/unavailable. */
 async function readStoredModel(userId) {
   if (!isSupabaseRestConfigured()) return null;
-  const rows = await select(
-    TABLE,
-    `user_id=eq.${encodeURIComponent(userId)}&select=model_id,updated_at&limit=1`
-  );
-  const row = rows[0];
-  return row ? { modelId: row.model_id, updatedAt: row.updated_at } : null;
+  // Try `model` column (production schema), fall back to `model_id`.
+  try {
+    const rows = await select(TABLE, `user_id=eq.${encodeURIComponent(userId)}&select=model,updated_at&limit=1`);
+    const row = rows[0];
+    return row ? { modelId: row.model, updatedAt: row.updated_at } : null;
+  } catch (err) {
+    if (!/model_id|PGRST|column|42703/i.test(err.message || '')) throw err;
+    const rows = await select(TABLE, `user_id=eq.${encodeURIComponent(userId)}&select=model_id,updated_at&limit=1`);
+    const row = rows[0];
+    return row ? { modelId: row.model_id, updatedAt: row.updated_at } : null;
+  }
 }
 
 // ---------------------------------------------------------------------------
