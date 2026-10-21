@@ -1663,6 +1663,26 @@ export default async function handler(req, res) {
       }
     }
 
+    // ---- Delegated actions ----
+    // `license.verify` and `subscribe` are implemented in the shared
+    // dispatcher (src/routes/dispatch.js) but were never routed from here,
+    // so the dashboard received 404 "Unknown action" for both. Delegate to the
+    // existing handlers instead of duplicating their business logic.
+    if (action === 'license.verify' || action === 'subscribe') {
+      try {
+        // The dispatcher reads the action from the body; make sure it is set
+        // even when the caller used ?action= in the query string.
+        req.body = { ...(req.body || {}), action };
+        const { handleDispatch } = await import('../src/routes/dispatch.js');
+        return await handleDispatch(req, res);
+      } catch (error) {
+        console.error('Delegated dispatch failed:', action, error);
+        return res.status(500).json({
+          error: error instanceof Error ? error.message : 'Request failed',
+        });
+      }
+    }
+
     return res.status(404).json({ error: `Unknown action: ${action}` });
   } catch (err) {
     console.error('Dashboard error:', err);
