@@ -22,7 +22,7 @@ import type { JsonValue } from "../../lib/types.ts";
 
 /** Canonical resolved OmniRoute chat-completions endpoint. */
 export function omnirouteEndpoint(raw?: string | null): string {
-  const base = (raw ?? getEnv("OMNIROUTE_BASE_URL", "https://api.omniroute.ai/v1"))
+  const base = (raw ?? getEnv("OMNIROUTE_BASE_URL", "http://localhost:20128/v1"))
     .trim()
     .replace(/\/+$/, "")
     .replace(/\/v1$/, "");
@@ -54,7 +54,12 @@ function geminiKey(): string {
 }
 
 export function omnirouteConfigured(): boolean {
-  return omnirouteKey() !== "" || getEnvBool("OMNIROUTE_DISABLED", false);
+  // OmniRoute is a LOCAL-ONLY gateway. It is usable only when a key is present
+  // AND the caller has not explicitly disabled it. OMNIROUTE_DISABLED=true is
+  // how serverless/production deployments skip OmniRoute entirely and go
+  // straight to the direct Gemini provider (localhost:20128 is not reachable
+  // from Vercel).
+  return omnirouteKey() !== "" && !getEnvBool("OMNIROUTE_DISABLED", false);
 }
 export function geminiConfigured(): boolean {
   return geminiKey() !== "";

@@ -195,10 +195,70 @@ export async function handleBusinessPartner(req, res) {
     });
 
     if (result.error) {
-      // The model chain failing is a degraded state, not a client error. The
-      // dashboard renders a message either way, so return 200 with a flag
-      // rather than 500 (which previously blanked the chat panel).
-      // attemptErrors names EVERY failed provider — never hidden.
+      // Fall back to Hermes BusinessAgent via the agent registry.
+      // This ensures the full failover chain (OmniRoute → Vertex → AgentRouter → Cheap Inference)
+      // is available even when the direct aiRouter call fails or returns an error.
+      try {
+        const agentResult = await executeAgent('businessAgent', {
+          message: userMessage,
+          context: { job, systemPrompt },
+        });
+        if (!agentResult.error) {
+          // Attach execution metadata
+          const parsed = {};
+          if (agentResult.reply) {
+            try {
+              parsed = JSON.parse(agentResult.reply);
+            } catch {
+              parsed = { reply: agentResult.reply };
+            }
+          }
+          const summary =
+            parsed?.summary ||
+            (agentResult.reply && agentResult.reply.substring(0, 200));
+          const growthOpportunities =
+            parsed?.growth_opportunities ||
+            (agentResult.reply && []);
+          const riskFlags =
+            parsed?.risk_flags ||
+            (agentResult.reply && []);
+          const recommendedNextAction =
+            parsed?.recommended_next_action ||
+            'Consult with your business partner to determine the next step.';
+          const confidence =
+            parsed?.confidence ||
+            'medium';
+
+          let businessInsights = null;
+          if (parsed?.summary || parsed?.revenue_signals) {
+            businessInsights = parsed;
+          }
+
+          const reply =
+            agentResult.reply ||
+            'Hermes is not answering right now. Your dashboard data is safe - try again in a moment.';
+
+          return res.status(200).json({
+            success: true,
+            available: true,
+            degraded: false,
+            reply,
+            businessInsights,
+            provider: agentResult.provider || 'unknown',
+            model: agentResult.model || 'unknown',
+            latencyMs: agentResult.latencyMs ?? null,
+            totalLatencyMs: agentResult.totalLatencyMs ?? null,
+            attempts: agentResult.attempts || [],
+            attemptErrors: agentResult.attemptErrors || [],
+            timestamp: Date.now(),
+          });
+        }
+        // Fall through to degraded response if agent also failed
+      } catch (agentErr) {
+        logger.error('BusinessAgent fallback failed', { error: agentErr.message });
+      }
+
+      // Degraded response — no agent succeeded
       logger.error('Business partner AI failed', { error: result.error, attemptErrors: result.attemptErrors || null });
       console.log('[HERMES] business-partner degraded', JSON.stringify({ error: result.error, attemptErrors: result.attemptErrors || [], attempts: result.attempts || [] }));
       return res.status(200).json({

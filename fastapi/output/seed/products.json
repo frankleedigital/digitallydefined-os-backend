@@ -1,0 +1,610 @@
+[
+  {
+    "id": "digital-superpower-quiz",
+    "name": "Digital Superpower Quiz \u2192 Personalized Roadmap",
+    "tagline": "Seven questions, one build sequence, no AI guessing.",
+    "description": "Scores your profile locally and deterministically, then saves the result and your personalized build sequence to your cloud.",
+    "tier": "core",
+    "status": "live",
+    "price": 97,
+    "audience": "Gen X women, career-changers, self-directed learners",
+    "monetization": "Free quiz (lead magnet) \u2192 paid personalized roadmap report",
+    "route": "/quiz",
+    "implementation": "digitallydefined-os-backend/src/agents/quiz.js",
+    "gumroad_url": "https://francescaonline.gumroad.com/l/dd-superpower-report",
+    "features": [
+      "7-question assessment",
+      "Deterministic scoring",
+      "Personalized build sequence",
+      "Cloud save",
+      "Nurture sequence"
+    ],
+    "tags": [
+      "quiz",
+      "assessment",
+      "roadmap",
+      "lead-magnet"
+    ]
+  },
+  {
+    "id": "niche-profitability-scorecard",
+    "name": "Niche Profitability Scorecard",
+    "tagline": "Validate a niche across six criteria in 60 seconds.",
+    "description": "Score any niche idea before you build. Six-criteria scoring with AI interpretation and Notion sync.",
+    "tier": "entry",
+    "status": "live",
+    "price": 17,
+    "audience": "Faceless founders, affiliate marketers, niche researchers",
+    "monetization": "Free \u2192 Pro $9\u201319/mo",
+    "route": "/tools/niche",
+    "implementation": "digitallydefined-os-backend/src/agents/scorecard.js",
+    "gumroad_url": "https://francescaonline.gumroad.com/l/dd-niche-scorecard-pro",
+    "features": [
+      "Six-criteria scoring",
+      "AI interpretation",
+      "Notion sync",
+      "Embed widget",
+      "PDF report"
+    ],
+    "tags": [
+      "scorecard",
+      "assessment",
+      "niche",
+      "validation"
+    ]
+  },
+  {
+    "id": "hermes-ai-mentor",
+    "name": "Hermes AI Mentor",
+    "tagline": "A proactive coach that probes status before it asks.",
+    "description": "Live-analytics-grounded mentoring agent with a persistent state probe. License-gated today, subscription-ready.",
+    "tier": "backend",
+    "status": "backend",
+    "price": 29,
+    "audience": "Coaches, service businesses, creators",
+    "monetization": "$29\u201399/mo subscription (license-gated today)",
+    "route": "/hermes",
+    "implementation": "Hermes/skills/digital-wealth-tools + digitallydefined-os-backend/src/services/antigravity.js",
+    "gumroad_url": "",
+    "features": [
+      "Live analytics grounding",
+      "Persistent state probe",
+      "Proactive coaching",
+      "License-gated"
+    ],
+    "tags": [
+      "ai",
+      "mentor",
+      "coaching",
+      "saas"
+    ]
+  },
+  {
+    "id": "tenx-roi-calculator",
+    "name": "10x ROI Calculator",
+    "tagline": "Know the number before you commit.",
+    "description": "Free-tier ROI projection that doubles as the dashboard lead-capture engine. Free snapshot, paid full report.",
+    "tier": "entry",
+    "status": "live",
+    "price": 27,
+    "audience": "Small-business owners, local service providers",
+    "monetization": "Free tier \u2192 paid full tier $27\u201347 (Gumroad)",
+    "route": "/calculators/roi",
+    "implementation": "digitallydefined-dashboard/src/pages/ThankYouCalculatorPage.jsx + digitallydefined-online-local",
+    "gumroad_url": "https://francescaonline.gumroad.com/l/dd-10x-roi-pro",
+    "features": [
+      "Unlimited scenarios",
+      "12-month projection",
+      "Churn-adjusted valuation",
+      "Industry benchmarks",
+      "CSV export"
+    ],
+    "tags": [
+      "calculator",
+      "roi",
+      "financial",
+      "lead-magnet"
+    ]
+  },
+  {
+    "id": "digital-business-os",
+    "name": "Digital Business OS (Notion system)",
+    "tagline": "Eight databases + workspace architect, packaged for Gumroad.",
+    "description": "The master Notion workspace: 8 databases, setup checklist, 90-day content plan, and a walkthrough video.",
+    "tier": "core",
+    "status": "live",
+    "price": 97,
+    "audience": "Faceless creators, freelancers, coaches (women 40+)",
+    "monetization": "One-time $97\u2013197 + $19\u201339/mo subscription box",
+    "route": "/business-os",
+    "implementation": "digitallydefined-dashboard (NotionTab) + digitallydefined-os-backend (notion.js)",
+    "gumroad_url": "https://francescaonline.gumroad.com/l/digital-business-os",
+    "features": [
+      "8-database workspace",
+      "Setup checklist",
+      "90-day content plan",
+      "Walkthrough video",
+      "Bundle upgrades available"
+    ],
+    "tags": [
+      "notion",
+      "template",
+      "os",
+      "workspace"
+    ]
+  },
+  {
+    "id": "intelligence-package",
+    "name": "Intelligence Package",
+    "tagline": "Ten views into trends, competition, opportunities, audience, roadmap.",
+    "description": "A differentiated 10-view intelligence report delivered behind the quiz funnel. License-gated report.",
+    "tier": "core",
+    "status": "live",
+    "price": 97,
+    "audience": "Digital sellers, product creators, coaches",
+    "monetization": "Free quiz \u2192 paid 10-view report $49\u201399 (license-gated)",
+    "route": "/intelligence",
+    "implementation": "digitallydefined-os-backend/src/workflows/intelligencePipeline.js + dashboard IntelligencePage",
+    "gumroad_url": "https://francescaonline.gumroad.com/l/dd-intelligence",
+    "features": [
+      "10-view report",
+      "Trend analysis",
+      "Competition mapping",
+      "Opportunity scoring",
+      "License-gated delivery"
+    ],
+    "tags": [
+      "intelligence",
+      "report",
+      "analysis",
+      "market"
+    ]
+  },
+  {
+    "id": "ai-business-partner",
+    "name": "AI Business Partner",
+    "tagline": "Live-analytics-grounded assistant, premium-gated.",
+    "description": "Premium AI assistant that grounds answers in live data. Subscription-guarded today; will become a dedicated license checkout.",
+    "tier": "backend",
+    "status": "backend",
+    "price": 29,
+    "audience": "Coaches, service businesses, creators",
+    "monetization": "$29\u201399/mo subscription (license-gated today)",
+    "route": "/ai-partner",
+    "implementation": "Hermes/skills/digital-wealth-tools + digitallydefined-os-backend/src/services/antigravity.js",
+    "gumroad_url": "",
+    "features": [
+      "Live analytics grounding",
+      "AI chat interface",
+      "Subscription guard",
+      "License-ready"
+    ],
+    "tags": [
+      "ai",
+      "assistant",
+      "business",
+      "saas"
+    ]
+  },
+  {
+    "id": "analytics-dashboard",
+    "name": "Analytics Dashboard + AI recommendations",
+    "tagline": "Live telemetry, automated recommendations, white-labellable.",
+    "description": "Paid SaaS app surface: live analytics, growth tabs, automation monitor, and AI recommendations.",
+    "tier": "backend",
+    "status": "backend",
+    "price": 19,
+    "audience": "Small businesses, local service providers",
+    "monetization": "$19\u201349/mo subscription + bundle offers",
+    "route": "/analytics",
+    "implementation": "digitallydefined-dashboard (DashboardPage, AnalyticsPage, GrowthTab, AutomationsPage)",
+    "gumroad_url": "",
+    "features": [
+      "Live telemetry",
+      "Growth tabs",
+      "Automation monitor",
+      "AI recommendations",
+      "White-label"
+    ],
+    "tags": [
+      "analytics",
+      "dashboard",
+      "saas",
+      "monitoring"
+    ]
+  },
+  {
+    "id": "reputation-command-center",
+    "name": "Reputation Command Center + Automation Monitor",
+    "tagline": "Local-reputation suite, white-label ready.",
+    "description": "Reputation command center, automation monitor, and white-label config system in one package.",
+    "tier": "backend",
+    "status": "backend",
+    "price": 29,
+    "audience": "Local businesses, agencies (white-label)",
+    "monetization": "$29\u201399/mo + B2B contracts",
+    "route": "/reputation",
+    "implementation": "digitallydefined-dashboard (AutomationsPage, Reputation) + workspace/buzz-agents/reputation-intelligence",
+    "gumroad_url": "",
+    "features": [
+      "Reputation monitoring",
+      "Automation monitor",
+      "White-label config",
+      "B2B ready"
+    ],
+    "tags": [
+      "reputation",
+      "monitoring",
+      "automation",
+      "white-label"
+    ]
+  },
+  {
+    "id": "wealth-calculator",
+    "name": "Wealth Calculator",
+    "tagline": "Retirement gap and wealth accumulation, in one place.",
+    "description": "Deterministic calculator for wealth accumulation and the retirement gap.",
+    "tier": "backend",
+    "status": "backend",
+    "price": 29,
+    "audience": "Digital sellers, pre-retirees (Gen X women 45\u201359)",
+    "monetization": "Bundle with Asset Plan / 10x ROI",
+    "route": "/calculators/wealth",
+    "implementation": "workspace/buzz-agents/digital-wealth-calculator",
+    "gumroad_url": "",
+    "features": [
+      "Retirement gap analysis",
+      "Wealth accumulation model",
+      "PDF report",
+      "Email sequence",
+      "Coaching upsell"
+    ],
+    "tags": [
+      "calculator",
+      "wealth",
+      "retirement",
+      "financial"
+    ]
+  },
+  {
+    "id": "trends-api",
+    "name": "Trends API",
+    "tagline": "Up-and-coming topics, surfaced before you commit.",
+    "description": "Trend analysis engine for a niche, snapshotted and timestamped. API already built; front-end subscription dashboard needed.",
+    "tier": "backend",
+    "status": "backend",
+    "price": 19,
+    "audience": "Niche researchers, product creators, agencies",
+    "monetization": "Subscription $19\u201339/mo + lifetime",
+    "route": "/api/trends",
+    "implementation": "digitallydefined-os-backend/src/agents/trends.js + workspace/buzz-agents",
+    "gumroad_url": "",
+    "features": [
+      "Trend analysis",
+      "Niche tracking",
+      "API access",
+      "Subscription billing"
+    ],
+    "tags": [
+      "trends",
+      "api",
+      "research",
+      "saas"
+    ]
+  },
+  {
+    "id": "rank-and-rent-analyzer",
+    "name": "Rank-and-Rent Analyzer",
+    "tagline": "Local SEO opportunity scoring, ready for white-label.",
+    "description": "Scores local rank-and-rent opportunities and produces a plan. Built; needs clearer positioning before direct sales.",
+    "tier": "entry",
+    "status": "live",
+    "price": 47,
+    "audience": "Local SEO practitioners, rank-and-rent builders",
+    "monetization": "One-time $49\u201399 or white-label API",
+    "route": "/analyzers/rankandrent",
+    "implementation": "workspace/buzz-agents/ai-rankand-rent-builder + digitallydefined-os-backend",
+    "gumroad_url": "https://francescaonline.gumroad.com/l/dd-rankandrent",
+    "features": [
+      "Opportunity scoring",
+      "Local SEO analysis",
+      "PDF plan report",
+      "White-label API",
+      "Ready-to-execute plan"
+    ],
+    "tags": [
+      "seo",
+      "local",
+      "rank-and-rent",
+      "analyzer"
+    ]
+  },
+  {
+    "id": "product-generator",
+    "name": "Product Generator",
+    "tagline": "Validate a product around a validated niche.",
+    "description": "Product ideas, format guidance, price ranges, and launch steps \u2014 saved per run in the customer cloud.",
+    "tier": "backend",
+    "status": "backend",
+    "price": 0,
+    "audience": "New digital sellers",
+    "monetization": "Free (lead magnet) + paid batch reports",
+    "route": "/tools/product",
+    "implementation": "digitallydefined-os-backend/src/agents/product.js",
+    "gumroad_url": "",
+    "features": [
+      "Product ideas",
+      "Format guidance",
+      "Price ranges",
+      "Launch steps"
+    ],
+    "tags": [
+      "product",
+      "generator",
+      "idea",
+      "tool"
+    ]
+  },
+  {
+    "id": "offer-architect",
+    "name": "Offer Architect",
+    "tagline": "Shape a high-converting offer around any niche.",
+    "description": "Generates offers, pricing, and launch steps for course creators, coaches, and service businesses.",
+    "tier": "premium",
+    "status": "placeholder",
+    "price": 297,
+    "audience": "Course creators, coaches, service businesses",
+    "monetization": "One-time $297 premium bundle",
+    "route": "/tools/offer",
+    "implementation": "digitallydefined-os-backend/src/agents/product.js (offer schemas)",
+    "gumroad_url": "https://francescaonline.gumroad.com/l/dd-offer-architect",
+    "features": [
+      "Offer template pack",
+      "Pricing guide",
+      "Launch checklist",
+      "Email script library",
+      "Coaching access"
+    ],
+    "tags": [
+      "offer",
+      "pricing",
+      "launch",
+      "premium"
+    ]
+  },
+  {
+    "id": "domain-analyzer",
+    "name": "Domain (WHOIS) Analyzer",
+    "tagline": "Due-diligence tool for domain buyers and flippers.",
+    "description": "Analyzes domain history, valuation signals, and ownership for quick, copyable due-diligence reports.",
+    "tier": "entry",
+    "status": "live",
+    "price": 19,
+    "audience": "Domain buyers, site flippers",
+    "monetization": "One-time $19\u201339 (Gumroad)",
+    "route": "/tools/domain",
+    "implementation": "digitallydefined-os-backend/fastapi/app/services/domain_whois.py",
+    "gumroad_url": "https://francescaonline.gumroad.com/l/dd-domain-analyzer",
+    "features": [
+      "WHOIS analysis",
+      "Valuation signals",
+      "Ownership history",
+      "Copy-paste report"
+    ],
+    "tags": [
+      "domain",
+      "whois",
+      "analyzer",
+      "due-diligence"
+    ]
+  },
+  {
+    "id": "authority-blueprint-generator",
+    "name": "Authority Blueprint Generator",
+    "tagline": "Authority content blueprint for service businesses.",
+    "description": "Generates authority blueprints and content plans for service businesses looking to own a niche.",
+    "tier": "premium",
+    "status": "placeholder",
+    "price": 297,
+    "audience": "Service businesses, coaches",
+    "monetization": "One-time $297 premium bundle",
+    "route": "/tools/blueprint",
+    "implementation": "digitallydefined-os-backend/fastapi/app/services/authority_blueprint.py",
+    "gumroad_url": "https://francescaonline.gumroad.com/l/dd-authority-blueprint",
+    "features": [
+      "Blueprint template pack",
+      "Authority content engine",
+      "Contract templates",
+      "Email scripts"
+    ],
+    "tags": [
+      "blueprint",
+      "authority",
+      "content",
+      "premium"
+    ]
+  },
+  {
+    "id": "asset-plan",
+    "name": "Asset Plan (Freedom Number + 10x ROI)",
+    "tagline": "Retirement gap report + freedom number, bundled.",
+    "description": "Extends the calculator into a paid report: retirement gap, freedom number, and a 10x ROI view.",
+    "tier": "core",
+    "status": "live",
+    "price": 97,
+    "audience": "Gen X women 45\u201359, self-directed retirement planners",
+    "monetization": "Free lead magnet \u2192 paid report $97 + coaching upsell",
+    "route": "/calculators/asset-plan",
+    "implementation": "digitallydefined-online-local/src/pages/RetirementGapPage.jsx + digitallydefined-os-backend",
+    "gumroad_url": "https://francescaonline.gumroad.com/l/dd-asset-plan",
+    "features": [
+      "Retirement gap report",
+      "Freedom number",
+      "10x ROI view",
+      "Guided workbook",
+      "Coaching upsell"
+    ],
+    "tags": [
+      "asset",
+      "plan",
+      "retirement",
+      "financial"
+    ]
+  },
+  {
+    "id": "affiliate-flipper",
+    "name": "Affiliate Flipper",
+    "tagline": "Affiliate content flipper for faceless income.",
+    "description": "Turns affiliate products into a content pipeline: comms, posts, and orchestration for the faceless model.",
+    "tier": "entry",
+    "status": "live",
+    "price": 29,
+    "audience": "Affiliate marketers, content creators",
+    "monetization": "One-time $29 + Pro tier",
+    "route": "/tools/affiliate",
+    "implementation": "digitallydefined-os-backend/fastapi/app/services/affiliate_service.py",
+    "gumroad_url": "https://francescaonline.gumroad.com/l/dd-affiliate-flipper",
+    "features": [
+      "Content generation engine",
+      "Posting schedule",
+      "Automation prompts",
+      "Multi-platform output"
+    ],
+    "tags": [
+      "affiliate",
+      "content",
+      "flipper",
+      "marketing"
+    ]
+  },
+  {
+    "id": "social-content-pack",
+    "name": "Social Content Pack",
+    "tagline": "Turn a niche into a week of platform-specific posts.",
+    "description": "Turns affiliate products into a content pipeline: comms, posts, and orchestration for the faceless model.",
+    "tier": "entry",
+    "status": "live",
+    "price": 19,
+    "audience": "Faceless creators, community owners",
+    "monetization": "One-time $19 + Empire tier",
+    "route": "/tools/social",
+    "implementation": "workspace/buzz-agents/content-repurposer + facebook-community-agent",
+    "gumroad_url": "https://francescaonline.gumroad.com/l/dd-social-pack",
+    "features": [
+      "Platform-specific posts",
+      "Content generator",
+      "Posting schedule",
+      "Empire tier upgrade"
+    ],
+    "tags": [
+      "social",
+      "content",
+      "marketing",
+      "faceless"
+    ]
+  },
+  {
+    "id": "product-designer",
+    "name": "Product Designer",
+    "tagline": "White-label design QA + brand builder.",
+    "description": "White-label design QA and brand builder. Combines Brand Guard + white-label design QA.",
+    "tier": "entry",
+    "status": "placeholder",
+    "price": 29,
+    "audience": "Agencies, devs, faceless creators",
+    "monetization": "Empire tier / $29 one-time",
+    "route": "/tools/designer",
+    "implementation": "(needs build \u2014 design QA micro-service)",
+    "gumroad_url": "https://francescaonline.gumroad.com/l/dd-product-designer",
+    "features": [
+      "Design system",
+      "Brand kit",
+      "White-label ready",
+      "Mockup specs",
+      "QA checklist"
+    ],
+    "tags": [
+      "design",
+      "brand",
+      "white-label",
+      "template"
+    ]
+  },
+  {
+    "id": "schema-validator",
+    "name": "Schema Validator",
+    "tagline": "Validates agent and MCP schemas before deploy.",
+    "description": "JSON-schema validation tool for agents and MCP servers so every payload matches the contract before it ships.",
+    "tier": "backend",
+    "status": "backend",
+    "price": 0,
+    "audience": "Developers, agents, MCP consumers",
+    "monetization": "Bundle with other tools",
+    "route": "/tools/schema",
+    "implementation": "workspace/buzz-agents/json-schema-generator + digitallydefined-os-backend",
+    "gumroad_url": "",
+    "features": [
+      "JSON Schema validation",
+      "Agent payload check",
+      "MCP contract checking"
+    ],
+    "tags": [
+      "schema",
+      "validator",
+      "tool",
+      "developer"
+    ]
+  },
+  {
+    "id": "roadmap-builder",
+    "name": "Roadmap Builder",
+    "tagline": "Turn a superpower into a phased, actionable roadmap.",
+    "description": "Phased strategy roadmaps from quiz results. Backend agent exists; front-end coming soon.",
+    "tier": "premium",
+    "status": "placeholder",
+    "price": 297,
+    "audience": "New digital-business owners, creators",
+    "monetization": "Bundle with OS / subscription",
+    "route": "/tools/roadmap",
+    "implementation": "digitallydefined-os-backend/src/agents/roadmap.js + workspace/buzz-agents/roadmap-generator",
+    "gumroad_url": "https://francescaonline.gumroad.com/l/dd-roadmap-builder",
+    "features": [
+      "Roadmap template pack",
+      "Walkthrough video",
+      "Execution checklist",
+      "Coaching access"
+    ],
+    "tags": [
+      "roadmap",
+      "strategy",
+      "planning",
+      "premium"
+    ]
+  },
+  {
+    "id": "trend-analyzer",
+    "name": "Trends Explorer",
+    "tagline": "See what is rising before you commit.",
+    "description": "Front-end coming soon card for the Trends-as-a-Service product. API already built.",
+    "tier": "backend",
+    "status": "placeholder",
+    "price": 19,
+    "audience": "Niche researchers, product creators, agencies",
+    "monetization": "Subscription $19\u201339/mo + lifetime",
+    "route": "/tools/trends",
+    "implementation": "digitallydefined-os-backend/src/agents/trends.js + workspace/buzz-agents",
+    "gumroad_url": "",
+    "features": [
+      "Trend exploration",
+      "Rising topics",
+      "Niche tracking",
+      "Subscription"
+    ],
+    "tags": [
+      "trends",
+      "explorer",
+      "research",
+      "saas"
+    ]
+  }
+]

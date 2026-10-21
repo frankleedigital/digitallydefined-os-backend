@@ -65,9 +65,10 @@ const WANTED = [
   "SUPABASE_URL",
   "SUPABASE_ANON_KEY",
   "SUPABASE_SERVICE_ROLE_KEY",
-  "OMNIROUTE_BASE_URL",
-  "OMNIROUTE_API_KEY",
-  "OMNIROUTE_MODEL",
+  // OmniRoute is LOCAL ONLY (Docker, localhost:20128). Vercel cannot reach it,
+  // so OMNIROUTE_BASE_URL / OMNIROUTE_API_KEY / OMNIROUTE_MODEL are deliberately
+  // NOT pushed. Production uses the direct Gemini provider.
+  "OMNIROUTE_DISABLED",
   "GEMINI_API_KEY",
   "GEMINI_MODEL",
   "GEMINI_BASE_URL",
@@ -106,6 +107,10 @@ const local = parseEnvFile(envPath);
 // The local .env has DASHBOARD_API_KEY masked ("Digita...2026"); the real value
 // the dashboard frontend sends (VITE_DASHBOARD_API_KEY) is the canonical one.
 local.DASHBOARD_API_KEY = "DigitallyDefined-OS-2026";
+
+// OmniRoute is local-only. Force the serverless runtime to skip it and use the
+// direct Gemini provider instead of attempting an unreachable localhost call.
+local.OMNIROUTE_DISABLED = "true";
 
 // NOTE: No other secrets are hardcoded here. OmniRoute/Gemini credentials must
 // exist in the local .env (git-ignored) — this script only uploads what .env

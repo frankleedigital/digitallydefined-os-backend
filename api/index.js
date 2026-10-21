@@ -147,7 +147,7 @@ const FETCH_TIMEOUT_MS = 5000;
 
 // Accept base URL with or without a trailing "/v1"; always resolve to "<origin>/v1/chat/completions".
 function omnirouteEndpoint(raw) {
-  const base = String(raw || process.env.OMNIROUTE_BASE_URL || 'http://127.0.0.1:20128/v1')
+  const base = String(raw || process.env.OMNIROUTE_BASE_URL || 'http://localhost:20128/v1')
     .trim()
     .replace(/\/+$/, '')
     .replace(/\/v1$/, '');
@@ -159,7 +159,7 @@ function omnirouteEndpoint(raw) {
 // Required env: OMNIROUTE_API_KEY. Optional: OMNIROUTE_BASE_URL, OMNIROUTE_MODEL.
 const AI_PROVIDERS = {
   omniroute: {
-    baseUrl: process.env.OMNIROUTE_BASE_URL || 'http://127.0.0.1:20128/v1',
+    baseUrl: process.env.OMNIROUTE_BASE_URL || 'http://localhost:20128/v1',
     keyEnv: 'OMNIROUTE_API_KEY',
     models: ['auto'], // OmniRoute auto-selects best available model
     defaultModel: 'auto',
@@ -681,8 +681,13 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
   const callerModel = String((options && options.model) || process.env.OMNIROUTE_MODEL || 'auto').trim();
   const omnirouteKey = (process.env.OMNIROUTE_API_KEY || '').trim();
   const geminiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '').trim();
+  // OmniRoute runs locally only (Docker, 127.0.0.1:20128). Serverless/production
+  // cannot reach it, so OMNIROUTE_DISABLED=true sends those deployments straight
+  // to the direct Gemini provider instead of attempting a doomed localhost call.
+  const omnirouteDisabled = String(process.env.OMNIROUTE_DISABLED || '').toLowerCase() === 'true';
+  const omnirouteUsable = !!omnirouteKey && !omnirouteDisabled;
 
-  if (!omnirouteKey && !geminiKey) {
+  if (!omnirouteUsable && !geminiKey) {
     throw new Error('No AI API key configured for Gemini agent responses.');
   }
 
@@ -698,10 +703,10 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
   // Gemini gets a small model fallback chain because flash models periodically
   // return 503 "high demand"; a sibling model usually answers immediately.
   const providers = [];
-  if (omnirouteKey) {
+  if (omnirouteUsable) {
     providers.push({
       name: 'omniroute',
-      url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL || 'http://127.0.0.1:20128/v1'),
+      url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL || 'http://localhost:20128/v1'),
       key: omnirouteKey,
       model: callerModel,
     });
@@ -802,11 +807,13 @@ async function fetchAIBrief(context) {
     return { ...aiBriefCache.data, fromCache: true };
   }
 
-  // AI providers in priority order. OmniRoute is the canonical gateway; the
-  // direct-Gemini path is a fallback for when the OmniRoute tunnel is
-  // unreachable (e.g. its Cloudflare WAF rejecting serverless egress IPs).
+  // AI providers in priority order. OmniRoute is the canonical gateway for
+  // LOCAL deployments; the direct-Gemini path is the canonical path for
+  // production/serverless, where OmniRoute is not reachable (localhost only).
+  // OMNIROUTE_DISABLED=true selects the Gemini-only path explicitly.
   const candidates = [];
-  if (process.env.OMNIROUTE_API_KEY) {
+  const omnirouteDisabled = String(process.env.OMNIROUTE_DISABLED || '').toLowerCase() === 'true';
+  if (process.env.OMNIROUTE_API_KEY && !omnirouteDisabled) {
     candidates.push({
       name: 'omniroute',
       url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL),
