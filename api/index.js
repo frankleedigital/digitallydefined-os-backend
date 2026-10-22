@@ -1711,6 +1711,8 @@ export default async function handler(req, res) {
       'quiz.submit',
       'quiz.complete',
       'agent.quiz',
+      'leads',
+      'leads.list',
     ];
     if (delegatedActions.includes(action)) {
       try {
