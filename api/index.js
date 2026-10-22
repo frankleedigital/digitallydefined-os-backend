@@ -47,6 +47,7 @@ const ALLOWED_ACTIONS = new Set([
   'mentor.dev',
   'hermes.agent',
   'hermes.status',
+  'feedback.submit',
   // AI Business Partner — canonical handler lives in src/routes/businessPartner.js
   // and is also exposed as the dedicated /api/business-partner function.
   'business.partner',
@@ -1258,7 +1259,16 @@ export default async function handler(req, res) {
 
     // Hermes provider health — live status for the AI Infrastructure panel.
     // Returns { activeProvider, providerHealth, fallbackOrder, currentModel,
-    // providerLatencies }. Never 500s: failures report as unhealthy entries.
+    if (action === 'feedback.submit') {
+      try {
+        const { recordFeedback, computeDemand, createOpportunity } = await import('../lib/hermesIntelligence.js');
+        const payload = req.body?.payload || req.body || {};
+        const rec = await recordFeedback(payload);
+        return res.status(200).json({ success: true, id: rec.id });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
     if (action === 'hermes.status') {
       if (!checkDashboardApiKey(req)) {
         return res.status(401).json({ error: 'Unauthorized' });

@@ -1,22 +1,19 @@
 # app/services/product_packager.py
-"""Product Packager — port of the archived
-`docs/hermes-mcp-archive/hermes/modules/product_packager.py`.
-
-Packages a schema/response into a distributable package + optional `.zip`
-for Gumroad-style delivery.
-"""
 import json
 import logging
+import shutil
 import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from ..config import settings
+from .r2_storage import upload_file
 
 logger = logging.getLogger("digitallydefined.fastapi.product_packager")
 
 OUT_DIR = settings.output_dir / "packages"
+R2_PREFIX = "generated/packages/"
 
 
 class ProductPackager:
@@ -32,17 +29,25 @@ class ProductPackager:
             "schema": schema,
             "files": [],
             "gumroad_ready": True,
-            "metadata": {
-                "title": schema.get("title", "Untitled"),
-                "version": "1.0.0",
-            },
+            "metadata": {"title": schema.get("title", "Untitled"), "version": "1.0.0"},
         }
         files, archive = self._write_files(package)
         package["files"] = files
-        package["archive_path"] = str(archive)
+        r2_key = f"{R2_PREFIX}{pid}.zip"
+        try:
+            upload_file(str(archive), r2_key, "application/zip")
+            package["archive_r2_key"] = r2_key
+            shutil.rmtree(OUT_DIR / pid, ignore_errors=True)
+            try:
+                archive.unlink(missing_ok=True)
+            except Exception:
+                pass
+        except Exception as e:
+            logger.warning("R2 upload failed, keeping local: %s", e)
+            package["archive_path"] = str(archive)
         return package
 
-    def _write_files(self, package: dict[str, Any]) -> tuple[list[dict[str, Any]], Path]:
+    def _write_files(self, package):
         package_dir = OUT_DIR / package["package_id"]
         package_dir.mkdir(parents=True, exist_ok=True)
         schema_path = package_dir / "schema.json"
@@ -54,3 +59,4 @@ class ProductPackager:
 
 
 packager = ProductPackager()
+EOF

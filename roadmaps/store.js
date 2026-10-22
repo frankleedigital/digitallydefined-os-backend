@@ -1,47 +1,32 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import { uploadBuffer, downloadBuffer, deleteObject, listObjects } from '../lib/r2Storage.js';
 
-const DATA_DIR = path.join(process.cwd(), 'data', 'roadmaps');
-
-async function ensureDataDir() {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-}
+const PREFIX = 'roadmaps/';
 
 export async function storeRoadmap(entry) {
-  await ensureDataDir();
   const id = entry.id || `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-  const payload = {
-    ...entry,
-    id,
-    storedAt: new Date().toISOString(),
-  };
-
-  const filePath = path.join(DATA_DIR, `${id}.json`);
-  await fs.writeFile(filePath, JSON.stringify(payload, null, 2), 'utf8');
+  const payload = { ...entry, id, storedAt: new Date().toISOString() };
+  await uploadBuffer(PREFIX + id + '.json', Buffer.from(JSON.stringify(payload, null, 2)), 'application/json');
   return payload;
 }
 
 export async function listRoadmaps() {
-  await ensureDataDir();
-  const files = await fs.readdir(DATA_DIR);
+  const keys = await listObjects(PREFIX);
   const items = [];
-
-  for (const file of files) {
-    if (!file.endsWith('.json')) continue;
-    const filePath = path.join(DATA_DIR, file);
-    const raw = await fs.readFile(filePath, 'utf8');
+  for (const key of keys) {
+    if (!key.endsWith('.json')) continue;
     try {
-      items.push(JSON.parse(raw));
-    } catch {
-      // skip corrupt file
-    }
+      const buf = await downloadBuffer(key);
+      items.push(JSON.parse(buf.toString('utf8')));
+    } catch { /* skip corrupt */ }
   }
-
   return items.sort((a, b) => new Date(b.storedAt) - new Date(a.storedAt));
 }
 
 export async function getRoadmapById(id) {
-  const filePath = path.join(DATA_DIR, `${id}.json`);
-  const raw = await fs.readFile(filePath, 'utf8');
-  return JSON.parse(raw);
+  const buf = await downloadBuffer(PREFIX + id + '.json');
+  return JSON.parse(buf.toString('utf8'));
+}
+
+export async function deleteRoadmap(id) {
+  await deleteObject(PREFIX + id + '.json');
 }
