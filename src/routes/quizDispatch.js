@@ -17,13 +17,19 @@ import { checkDashboardApiKey } from '../middleware/auth.js';
 import { respond, respondError } from '../utils/respond.js';
 import { isSupabaseRestConfigured, upsert, select } from '../services/supabaseRest.js';
 import { processQuiz } from '../agents/quiz.js';
-import { sendQuizRoadmapEmail } from '../services/brevo.js';
+import { sendQuizRoadmapEmail, upsertContact } from '../services/brevo.js';
 import logger from '../utils/logger.js';
 
 const QUIZ_TABLE = 'quiz_roadmaps';
 
 /**
  * Persist a quiz result to Supabase (best-effort, never throws).
+ *
+ * The `quiz_roadmaps` table columns are: id, email, name, superpower,
+ * answers, roadmap, source, created_at. Each submission is a new row
+ * (a customer may re-take the quiz), so the row id is generated rather than
+ * upserted on a shared key.
+ *
  * @param {object} quizResult
  * @param {object} opts
  */
@@ -31,14 +37,16 @@ async function persistQuizResult(quizResult, { userId = 'anonymous' } = {}) {
   if (!isSupabaseRestConfigured()) return { persisted: false, reason: 'Supabase REST not configured' };
   try {
     const row = {
-      user_id: userId,
-      email: quizResult.email || quizResult.userId || '',
+      id: crypto.randomUUID(),
+      email: quizResult.email || '',
+      name: quizResult.name || '',
+      superpower: quizResult.superpower || quizResult.personaKey || '',
       answers: quizResult.answers || {},
-      persona_key: quizResult.superpower || quizResult.persona || '',
-      result: quizResult,
+      roadmap: quizResult.roadmap || null,
+      source: quizResult.source || 'digital-superpower-quiz',
       created_at: new Date().toISOString(),
     };
-    await upsert(QUIZ_TABLE, row, 'user_id');
+    await upsert(QUIZ_TABLE, row, 'id');
     return { persisted: true };
   } catch (err) {
     logger.warn('Quiz persistence failed', { error: err.message });
@@ -60,7 +68,13 @@ export async function handleQuiz(req, res) {
 
     let personaResult = null;
     try {
-      personaResult = await processQuiz({ answers, mode: body.mode || 'freeMode' });
+      personaResult = await processQuiz({
+        answers,
+        mode: body.mode || 'freeMode',
+        // The browser scored the persona — prefer it over the server heuristic
+        // so the email matches the result page the customer just saw.
+        persona: body.persona || body.superpower || '',
+      });
     } catch (err) {
       logger.warn('Quiz agent failed; using answers only', { error: err.message });
     }
@@ -68,12 +82,53 @@ export async function handleQuiz(req, res) {
     const payload = {
       ...(personaResult || {}),
       answers,
-      superpower: personaResult?.persona?.toLowerCase() || body.superpower || '',
+      superpower: personaResult?.superpower || body.persona || body.superpower || '',
       userId,
       email,
+      name: body.name || '',
+      source: body.source || 'digital-superpower-quiz',
     };
 
+    // Roadmap in the shape the `quiz_roadmaps.roadmap` column stores, with
+    // CTAs that point at live destinations (digitallydefined.store is down).
+    const steps = Array.isArray(personaResult?.roadmapSteps) ? personaResult.roadmapSteps : [];
+    const roadmap = {
+      title: `${personaResult?.superpowerName || 'Your'} Roadmap`,
+      overview: personaResult?.superpowerDescription || '',
+      steps,
+      estimatedTime: personaResult?.estimatedTime || '30-60 days',
+      nextAction: personaResult?.nextAction || '',
+      cta: {
+        startHere: 'https://dashboard.digitallydefined.agency/dashboard',
+        scorecard: 'https://dashboard.digitallydefined.agency/dashboard',
+        community: 'https://www.facebook.com/groups/digitallydefind',
+        calculator: 'https://dashboard.digitallydefined.agency/thank-you-calculator',
+      },
+    };
+    payload.roadmap = roadmap;
+
     const persistence = await persistQuizResult(payload, { userId });
+
+    // List capture. Without this the quiz taker receives one email and
+    // vanishes — there is no list to nurture and no way to sell to them again.
+    // The persona becomes a Brevo attribute so the nurture sequence can fork
+    // per pathway (see SUPERPOWER_QUIZ_MASTER_FUNNEL.md).
+    let listResult = null;
+    if (email) {
+      listResult = await upsertContact({
+        email,
+        name: body.name || '',
+        attributes: {
+          PERSONA: payload.superpower || '',
+          PERSONA_NAME: payload.superpowerName || '',
+          SOURCE: body.source || 'superpower-quiz',
+          QUIZ_CONFIDENCE: payload.confidenceScore ?? '',
+          QUIZ_NICHE: payload.niche || '',
+          HAS_ROADMAP: payload.roadmapSteps?.length ? 'yes' : 'no',
+        },
+      });
+      logger.info('Quiz contact captured', { email, ok: listResult?.ok, persona: payload.superpower });
+    }
 
     let emailResult = null;
     if (email && payload.roadmap) {
@@ -96,6 +151,7 @@ export async function handleQuiz(req, res) {
       persona: payload.persona || '',
       roadmap: payload.roadmap,
       persisted: persistence.persisted,
+      listCaptured: listResult?.ok || false,
       emailSent: emailResult?.ok || false,
     }, { provider: personaResult?.provider || null, model: personaResult?.model || null });
   } catch (err) {

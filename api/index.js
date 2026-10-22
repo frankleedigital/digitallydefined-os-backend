@@ -58,7 +58,14 @@ const ALLOWED_ACTIONS = new Set([
   'automation.run',
   'subscribe',
   'contact',
+  // Public funnel: the Digital Superpower Quiz. Handled by
+  // src/routes/quizDispatch.js via the dispatcher.
+  'quiz',
+  'quiz.submit',
   'quiz.complete',
+  'agent.quiz',
+  'quiz.roadmap',
+  'quiz.roadmap.get',
   'public.chat',
   'integration.googleAnalytics',
   'integration.social',
@@ -1664,11 +1671,20 @@ export default async function handler(req, res) {
     }
 
     // ---- Delegated actions ----
-    // `license.verify` and `subscribe` are implemented in the shared
-    // dispatcher (src/routes/dispatch.js) but were never routed from here,
-    // so the dashboard received 404 "Unknown action" for both. Delegate to the
-    // existing handlers instead of duplicating their business logic.
-    if (action === 'license.verify' || action === 'subscribe') {
+    // `license.verify`, `subscribe` and the quiz actions are implemented in
+    // the shared dispatcher (src/routes/dispatch.js -> quizDispatch.js) but
+    // were never routed from here, so the dashboard and the public quiz
+    // received 404 "Unknown action" for all of them. Delegate to the existing
+    // handlers instead of duplicating their business logic.
+    const delegatedActions = [
+      'license.verify',
+      'subscribe',
+      'quiz',
+      'quiz.submit',
+      'quiz.complete',
+      'agent.quiz',
+    ];
+    if (delegatedActions.includes(action)) {
       try {
         // The dispatcher reads the action from the body; make sure it is set
         // even when the caller used ?action= in the query string.

@@ -8,30 +8,48 @@ import { aiRouter } from '../services/aiRouter.js';
 import { quizRequestSchema } from '../schemas/quiz.js';
 import logger from '../utils/logger.js';
 
+// The five canonical personas. These match the public quiz's question bank
+// and the copy in the persona library, and they are the five pathways the
+// nurture sequence forks on (see SUPERPOWER_QUIZ_MASTER_FUNNEL.md).
+// The quiz page scores deterministically in the browser and posts the result,
+// so this is a fallback + enrichment map, not the source of truth.
 const SUPERPOWER_PROFILES = {
+  creator: {
+    name: 'The Creator',
+    description: 'You think in content, story, and audience experience. Your superpower is turning insight into assets that keep working after you publish them.',
+    businessModel: 'Content-driven products with automated delivery pipelines',
+    pathways: ['Private content libraries with automated email delivery', 'AI-assisted content repurpose pipelines', 'Quiet hobby communities with faceless product sales'],
+  },
+  builder: {
+    name: 'The Builder',
+    description: 'You care about infrastructure, templates, and repeatable systems. Your superpower is making complex income paths simple enough to run without constant oversight.',
+    businessModel: 'Owner of faceless digital real estate (rank-and-rent, templates, micro-SaaS)',
+    pathways: ['Rank-and-rent landing pages in local home services', 'Template and checklist products for organized professionals', 'Micro-SaaS wrappers for repetitive tasks'],
+  },
+  educator: {
+    name: 'The Educator',
+    description: 'You learn deeply and want to translate that into trust. Your superpower is organizing what others find confusing into simple, proven paths.',
+    businessModel: 'Guides, templates, courses, and teaching systems on autopilot',
+    pathways: ['Workbook and checklist products for niche professionals', 'Email course sequences built on proven frameworks', 'Notion template bundles for common workflows'],
+  },
+  connector: {
+    name: 'The Connector',
+    description: 'You see relationships, partnerships, and group dynamics. Your superpower is matching people, offers, and opportunities in ways that create shared wins.',
+    businessModel: 'Community, referrals, and partner-offer ecosystems',
+    pathways: ['Referral and partner-introduction systems', 'Micro-community platforms around shared values', 'Affiliate and joint-venture ecosystems'],
+  },
+  strategist: {
+    name: 'The Strategist',
+    description: 'You prioritize outcomes over activity. Your superpower is choosing the right model and cutting the rest, which prevents wasted effort.',
+    businessModel: 'High-leverage planning tools and portfolio-style digital assets',
+    pathways: ['Portfolio of small rank-and-rent assets', 'Decision-framework products for busy professionals', 'Automated lead-generation funnels with clear ROI tracking'],
+  },
+  // Legacy aliases kept so older payloads still resolve to a profile.
   architect: {
     name: 'The Architect',
     description: 'You see systems where others see chaos. Your superpower is building scalable frameworks.',
     businessModel: 'Templates, Playbooks, Frameworks',
     pathways: ['Notion template marketplace', 'Systems consulting', 'Course on organization'],
-  },
-  creator: {
-    name: 'The Creator',
-    description: 'You turn ideas into assets effortlessly. Your superpower is prolific content production.',
-    businessModel: 'Digital Products, Courses, Memberships',
-    pathways: ['Content template packs', 'Faceless content agency', 'Creator education'],
-  },
-  strategist: {
-    name: 'The Strategist',
-    description: 'You spot patterns before they\'re trends. Your superpower is market positioning.',
-    businessModel: 'Strategy Guides, Audits, Advisory',
-    pathways: ['Niche research reports', 'Positioning workshops', 'Strategic advisory'],
-  },
-  connector: {
-    name: 'The Connector',
-    description: 'You build communities that compound. Your superpower is relationship ecosystems.',
-    businessModel: 'Community, Masterminds, Network Effects',
-    pathways: ['Paid community', 'Mastermind programs', 'Affiliate networks'],
   },
   automator: {
     name: 'The Automator',
@@ -47,19 +65,27 @@ const SUPERPOWER_PROFILES = {
   },
 };
 
-function inferSuperpower(answers) {
-  // Simple heuristic based on answer patterns
+const CANONICAL_PERSONAS = ['creator', 'builder', 'educator', 'connector', 'strategist'];
+
+function inferSuperpower(answers, explicit) {
+  // The quiz page scores deterministically in the browser and posts the
+  // persona it derived. That value wins — otherwise the email and the page
+  // the customer just saw would disagree about who they are.
+  const given = String(explicit || '').trim().toLowerCase();
+  if (given && SUPERPOWER_PROFILES[given]) return given;
+
+  // Fallback heuristic based on answer patterns.
   const answerValues = Object.values(answers || {}).join(' ').toLowerCase();
-  
+
   if (answerValues.includes('system') || answerValues.includes('organize') || answerValues.includes('framework')) return 'architect';
   if (answerValues.includes('create') || answerValues.includes('content') || answerValues.includes('write')) return 'creator';
   if (answerValues.includes('strateg') || answerValues.includes('plan') || answerValues.includes('position')) return 'strategist';
   if (answerValues.includes('communit') || answerValues.includes('connect') || answerValues.includes('network')) return 'connector';
   if (answerValues.includes('automat') || answerValues.includes('workflow') || answerValues.includes('tool')) return 'automator';
   if (answerValues.includes('research') || answerValues.includes('analyz') || answerValues.includes('data')) return 'researcher';
-  
-  // Default to architect
-  return 'architect';
+
+  // Default to builder
+  return 'builder';
 }
 
 /**
@@ -72,9 +98,10 @@ function inferSuperpower(answers) {
 export async function processQuiz(params) {
   const validated = quizRequestSchema.parse(params);
   const { answers, mode } = validated;
+  const explicitPersona = validated.persona || validated.superpower || '';
 
-  // Determine superpower from answers
-  const superpowerKey = inferSuperpower(answers);
+  // Determine superpower: the browser-scored persona wins, heuristic is fallback.
+  const superpowerKey = inferSuperpower(answers, explicitPersona);
   const profile = SUPERPOWER_PROFILES[superpowerKey];
 
   // Build niche from superpower
@@ -101,9 +128,11 @@ export async function processQuiz(params) {
   }
 
   return {
+    superpower: superpowerKey,
     superpowerName: profile.name,
     superpowerDescription: profile.description,
     persona: profile.name,
+    personaKey: superpowerKey,
     personaDescription: 'You are a ' + profile.name.toLowerCase() + '. ' + profile.description,
     strengths: aiEnhanced?.strengths || ['Systems thinking', 'Pattern recognition', 'Scalable execution'],
     blindspots: aiEnhanced?.blindspots || ['Perfectionism', 'Over-engineering', 'Analysis paralysis'],
