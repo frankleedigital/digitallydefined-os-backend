@@ -66,6 +66,10 @@ const ALLOWED_ACTIONS = new Set([
   'agent.quiz',
   'quiz.roadmap',
   'quiz.roadmap.get',
+  // Leads — everyone who raised their hand (quiz completions), segmented by
+  // persona. Supabase is the source of truth; Brevo is only delivery.
+  'leads',
+  'leads.list',
   'public.chat',
   'integration.googleAnalytics',
   'integration.social',

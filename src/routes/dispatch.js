@@ -180,6 +180,18 @@ export async function handleDispatch(req, res) {
     }
   }
 
+  // Leads — everyone who raised their hand, segmented by persona.
+  if (action === 'leads' || action === 'leads.list') {
+    try {
+      const quizMod = await import('./quizDispatch.js');
+      const handler = quizMod.handleLeads || quizMod.default?.handleLeads;
+      return await handler(req, res);
+    } catch (err) {
+      logger.error('Leads dispatch failed', { error: err.message });
+      return res.status(500).json({ success: false, error: err.message || 'Leads lookup failed', timestamp: Date.now() });
+    }
+  }
+
   // Intelligence & personalize — real composed pipeline.
   if (action === 'intelligence' || action === 'personalize' || action === 'agent.intelligence') {
     try {

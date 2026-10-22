@@ -193,4 +193,51 @@ export async function handleQuizRoadmap(req, res) {
   }
 }
 
-export default { handleQuiz, handleQuizRoadmap };
+/**
+ * GET /api/leads — everyone who raised their hand.
+ *
+ * This is the source of truth for the segmented audience. Brevo is only the
+ * delivery channel; its attribute and tag endpoints are not available on this
+ * account, so the persona each lead belongs to is stored here (quiz_roadmaps)
+ * where it can be queried, filtered and counted.
+ */
+export async function handleLeads(req, res) {
+  if (!checkDashboardApiKey(req)) return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    if (!isSupabaseRestConfigured()) {
+      return respond(res, { found: false, reason: 'Supabase REST not configured', leads: [], byPersona: {} });
+    }
+
+    const rows = await select(QUIZ_TABLE, 'select=id,email,name,superpower,created_at&order=created_at.desc&limit=500');
+
+    const leads = (rows || []).map((r) => ({
+      id: r.id,
+      email: r.email || '',
+      name: r.name || '',
+      persona: r.superpower || '',
+      createdAt: r.created_at || null,
+    })).filter((l) => l.email);
+
+    const byPersona = {};
+    for (const l of leads) {
+      const key = l.persona || 'unknown';
+      byPersona[key] = (byPersona[key] || 0) + 1;
+    }
+
+    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const newThisWeek = leads.filter((l) => l.createdAt && new Date(l.createdAt).getTime() >= sevenDaysAgo).length;
+
+    return respond(res, {
+      found: true,
+      total: leads.length,
+      newThisWeek,
+      byPersona,
+      leads,
+    });
+  } catch (err) {
+    logger.error('Leads lookup failed', { error: err.message });
+    return respondError(res, err);
+  }
+}
+
+export default { handleQuiz, handleQuizRoadmap, handleLeads };
