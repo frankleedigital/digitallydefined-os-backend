@@ -115,19 +115,27 @@ export async function handleQuiz(req, res) {
     // per pathway (see SUPERPOWER_QUIZ_MASTER_FUNNEL.md).
     let listResult = null;
     if (email) {
+      const personaKey = payload.superpower || '';
       listResult = await upsertContact({
         email,
         name: body.name || '',
+        // Tags are the reliable segmentation channel on this Brevo account
+        // (contact attributes cannot be created through the API here), and
+        // Brevo automations can filter on them.
+        tags: [
+          personaKey ? `persona:${personaKey}` : null,
+          `source:${body.source || 'digital-superpower-quiz'}`,
+        ].filter(Boolean),
         attributes: {
-          PERSONA: payload.superpower || '',
+          PERSONA: personaKey,
           PERSONA_NAME: payload.superpowerName || '',
-          SOURCE: body.source || 'superpower-quiz',
+          SOURCE: body.source || 'digital-superpower-quiz',
           QUIZ_CONFIDENCE: payload.confidenceScore ?? '',
           QUIZ_NICHE: payload.niche || '',
           HAS_ROADMAP: payload.roadmapSteps?.length ? 'yes' : 'no',
         },
       });
-      logger.info('Quiz contact captured', { email, ok: listResult?.ok, persona: payload.superpower });
+      logger.info('Quiz contact captured', { email, ok: listResult?.ok, persona: personaKey });
     }
 
     let emailResult = null;

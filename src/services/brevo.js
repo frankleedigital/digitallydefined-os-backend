@@ -70,14 +70,20 @@ export async function sendEmail({ to, subject, htmlContent, textContent, senderE
  * segmented audience to sell to. `updateEnabled: true` makes this an upsert,
  * so re-taking the quiz never errors and never duplicates the contact.
  *
+ * Segmentation is written as TAGS (`persona:creator`, `source:quiz`) as well
+ * as attributes. Tags are the reliable channel on accounts where the
+ * attribute definitions cannot be created through the API, and Brevo
+ * automations can filter on either.
+ *
  * @param {object} params
  * @param {string} params.email
  * @param {string} [params.name]
  * @param {Record<string,string|number>} [params.attributes] - segmentation (PERSONA, SOURCE, ...)
+ * @param {string[]} [params.tags]
  * @param {number[]} [params.listIds]
  * @returns {Promise<{ok: boolean, error?: string, data?: object}>}
  */
-export async function upsertContact({ email, name = '', attributes = {}, listIds } = {}) {
+export async function upsertContact({ email, name = '', attributes = {}, tags = [], listIds } = {}) {
   if (!env.brevo.apiKey) {
     return { ok: false, error: 'BREVO_API_KEY not configured' };
   }
@@ -95,12 +101,18 @@ export async function upsertContact({ email, name = '', attributes = {}, listIds
     cleanAttributes[key] = String(value).slice(0, 190);
   }
 
+  const cleanTags = (Array.isArray(tags) ? tags : [])
+    .map((t) => String(t).trim())
+    .filter(Boolean)
+    .slice(0, 10);
+
   const payload = {
     email: to,
     updateEnabled: true,
     ...(name ? { name: String(name).slice(0, 120) } : {}),
     ...(lists.length ? { listIds: lists } : {}),
     ...(Object.keys(cleanAttributes).length ? { attributes: cleanAttributes } : {}),
+    ...(cleanTags.length ? { tags: cleanTags } : {}),
   };
 
   try {

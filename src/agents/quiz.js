@@ -67,6 +67,37 @@ const SUPERPOWER_PROFILES = {
 
 const CANONICAL_PERSONAS = ['creator', 'builder', 'educator', 'connector', 'strategist'];
 
+// The concrete first three steps for each persona. These are the same steps
+// the public quiz shows on screen, so the emailed roadmap and the result page
+// the customer just read never disagree.
+const ROADMAP_STEPS = {
+  creator: [
+    'Pick one niche and one offer. One. Not three.',
+    'Write three posts this week in that niche — one problem, one method, one story.',
+    'Turn your best post into a free checklist and hand it out in the group.',
+  ],
+  builder: [
+    'Choose the one asset model you will run: rank-and-rent, template product, or micro-tool.',
+    'Map the workflow end to end on paper before you build anything.',
+    'Ship version one in a weekend. Ugly is fine — live is what matters.',
+  ],
+  educator: [
+    'Document one micro-system you already use — the checklist you actually follow.',
+    'Turn it into a one-page guide and give it away in the group.',
+    'Sell the next level: a template pack or short course from the same system.',
+  ],
+  connector: [
+    'Map one community or partner path inside your niche.',
+    'Make one introduction that costs you nothing and helps someone.',
+    'Build the referral loop: every happy customer points at the next one.',
+  ],
+  strategist: [
+    'Score one idea against the niche scorecard and kill it if the numbers are wrong.',
+    'Write the offer: one sentence, one price, one promise.',
+    'Choose the single metric that proves it worked. Ignore the rest for 30 days.',
+  ],
+};
+
 function inferSuperpower(answers, explicit) {
   // The quiz page scores deterministically in the browser and posts the
   // persona it derived. That value wins — otherwise the email and the page
@@ -154,7 +185,7 @@ export async function processQuiz(params) {
     niche,
     superpowerNiche: niche,
     personaNiche: niche,
-    roadmapSteps: aiEnhanced?.roadmapSteps || [
+    roadmapSteps: aiEnhanced?.roadmapSteps || ROADMAP_STEPS[superpowerKey] || [
       'Define your signature framework',
       'Build your first digital asset',
       'Create a lead magnet',
