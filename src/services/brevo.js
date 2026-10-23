@@ -43,7 +43,7 @@ export async function sendEmail({ to, subject, htmlContent, textContent, senderE
   const payload = {
     to: [{ email: to }],
     sender: {
-      email: senderEmail || env.brevo.fromEmail || 'francesca@digitallydefined.online',
+      email: senderEmail || env.brevo.fromEmail || 'francesca@digitallydefined.agency',
       name: senderName || env.brevo.fromName || 'DigitallyDefined',
     },
     subject,

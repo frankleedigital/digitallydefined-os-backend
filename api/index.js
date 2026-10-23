@@ -48,6 +48,10 @@ const ALLOWED_ACTIONS = new Set([
   'hermes.agent',
   'hermes.status',
   'feedback.submit',
+  'intake.exists',
+  'assets.exists',
+  'moneySnapshot.exists',
+  'onboarding.progress',
   // AI Business Partner — canonical handler lives in src/routes/businessPartner.js
   // and is also exposed as the dedicated /api/business-partner function.
   'business.partner',
@@ -1269,7 +1273,41 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: err.message });
       }
     }
-    if (action === 'hermes.status') {
+    if (action === 'intake.exists' || action === 'assets.exists' || action === 'moneySnapshot.exists') {
+      try {
+        const envKey = action === 'intake.exists' ? 'NOTION_IDEAS_DB_ID' : action === 'assets.exists' ? (process.env.NOTION_ASSETS_DB_ID ? 'NOTION_ASSETS_DB_ID' : 'NOTION_DIGITAL_ASSETS_DB_ID') : 'NOTION_MONEY_DB_ID';
+        const id = process.env[envKey];
+        if (!id) return res.status(200).json({ exists: false, count: 0 });
+        const r = await fetch(`https://api.notion.com/v1/databases/${id}/query`, { method: "POST", headers: { Authorization: `Bearer ${process.env.NOTION_API_KEY}`, "Notion-Version": "2022-06-28", "Content-Type": "application/json" }, body: JSON.stringify({ page_size: 1 }) });
+        const data = await r.json();
+        const count = (data.results || []).length;
+        return res.status(200).json({ exists: count > 0, count });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
+    if (action === 'onboarding.progress') {
+      try {
+        async function countDb(envKey) {
+          const id = process.env[envKey];
+          if (!id) return 0;
+          const r = await fetch(`https://api.notion.com/v1/databases/${id}/query`, { method: "POST", headers: { Authorization: `Bearer ${process.env.NOTION_API_KEY}`, "Notion-Version": "2022-06-28", "Content-Type": "application/json" }, body: JSON.stringify({ page_size: 1 }) });
+          const data = await r.json();
+          return (data.results || []).length;
+        }
+        const intakeCount = await countDb("NOTION_IDEAS_DB_ID");
+        const assetsKey = process.env.NOTION_ASSETS_DB_ID ? "NOTION_ASSETS_DB_ID" : "NOTION_DIGITAL_ASSETS_DB_ID";
+        const assetsCount = await countDb(assetsKey);
+        const moneyCount = await countDb("NOTION_MONEY_DB_ID");
+        const intakeComplete = intakeCount > 0;
+        const assetsComplete = assetsCount > 0;
+        const moneyComplete = moneyCount > 0;
+        const done = [intakeComplete, assetsComplete, moneyComplete].filter(Boolean).length;
+        return res.status(200).json({ intakeComplete, assetsComplete, moneySnapshotComplete: moneyComplete, completionPercent: Math.round((done / 3) * 100) });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
       if (!checkDashboardApiKey(req)) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
