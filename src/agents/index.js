@@ -8,14 +8,16 @@ import { generateProduct } from './product.js';
 import { generateSocialContent } from './social.js';
 import { identifyTrends } from './trends.js';
 import { analyzeCompetition } from './competition.js';
-import { identifyOpportunities } from './opportunities.js';
 import { analyzeAudience } from './audience.js';
 import { processQuiz } from './quiz.js';
-import logger from '../utils/logger.js';
 
-/**
- * Agent registry for clean access to all agents.
- */
+// Hermes specialist agents (Phase 2)
+import { businessAgentHandler } from '../agents/hermes/businessAgent.js';
+import { contentAgentHandler } from '../agents/hermes/contentAgent.js';
+import { growthAgentHandler } from '../agents/hermes/growthAgent.js';
+import { productAgentHandler } from '../agents/hermes/productAgent.js';
+
+/** Agent registry for clean access to all agents. */
 export const agentRegistry = {
   niche: {
     name: 'Niche Agent',
@@ -59,12 +61,6 @@ export const agentRegistry = {
     handler: analyzeCompetition,
     inputSchema: 'competitionRequestSchema',
   },
-  opportunities: {
-    name: 'Opportunities Agent',
-    description: 'Identify market gaps and product opportunities',
-    handler: identifyOpportunities,
-    inputSchema: 'opportunitiesRequestSchema',
-  },
   audience: {
     name: 'Audience Agent',
     description: 'Generate audience insights and personas for a niche',
@@ -77,21 +73,44 @@ export const agentRegistry = {
     handler: processQuiz,
     inputSchema: 'quizRequestSchema',
   },
+
+  // Phase 2: Hermes specialist agents
+  businessAgent: {
+    name: 'BusinessAgent',
+    description:
+      'Agency strategy, SEO recommendations, lead generation, service offers, client acquisition, reputation management, business growth',
+    handler: businessAgentHandler,
+    // No inputSchema — uses free-form message + context
+  },
+  contentAgent: {
+    name: 'ContentAgent',
+    description:
+      'Blog posts, email content, lead magnets, social posts, sales copy, landing pages, content planning',
+    handler: contentAgentHandler,
+    // No inputSchema — uses free-form message + context
+  },
+  growthAgent: {
+    name: 'GrowthAgent',
+    description:
+      'Keyword clustering, topical authority, SEO strategy, content maps, content opportunities, revenue opportunities, traffic growth',
+    handler: growthAgentHandler,
+    // No inputSchema — uses free-form message + context
+  },
+  productAgent: {
+    name: 'ProductAgent',
+    description:
+      'Product creation, product validation, Gumroad strategy, store strategy, pricing, bundles, product launches, affiliate opportunities',
+    handler: productAgentHandler,
+    // No inputSchema — uses free-form message + context
+  },
 };
 
-/**
- * Get agent by name.
- * @param {string} name - Agent name (niche, roadmap, scorecard, product, social, trends)
- * @returns {object|null} Agent config or null if not found
- */
+/** Get agent by name. */
 export function getAgent(name) {
   return agentRegistry[name] || null;
 }
 
-/**
- * List all available agents.
- * @returns {object[]} Array of agent configs
- */
+/** List all available agents. */
 export function listAgents() {
   return Object.entries(agentRegistry).map(([name, config]) => ({
     name,
@@ -99,12 +118,7 @@ export function listAgents() {
   }));
 }
 
-/**
- * Execute an agent by name with params.
- * @param {string} name - Agent name
- * @param {object} params - Agent parameters
- * @returns {Promise<object>} Agent result
- */
+/** Execute an agent by name with params. */
 export async function executeAgent(name, params) {
   const agent = getAgent(name);
   if (!agent) {
@@ -122,10 +136,3 @@ export async function executeAgent(name, params) {
     throw error;
   }
 }
-
-export default {
-  agentRegistry,
-  getAgent,
-  listAgents,
-  executeAgent,
-};

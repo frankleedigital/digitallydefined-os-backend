@@ -108,7 +108,7 @@ const parseJsonReply = (reply: string) => {
 //
 // Required Supabase secrets:
 //   OMNIROUTE_API_KEY  (required unless disabled)
-//   OMNIROUTE_BASE_URL (optional, default https://api.omniroute.ai/v1)
+//   OMNIROUTE_BASE_URL (optional, default http://localhost:20128/v1)
 //   OMNIROUTE_MODEL    (optional, default "auto")
 //   OMNIROUTE_DIRECT_MODEL (optional, explicit provider/model id that bypasses
 //     the gateway's `auto` combo router + session-affinity gate; e.g.
@@ -134,7 +134,7 @@ const OMNIROUTE_DIRECT_MODEL = (Deno.env.get("OMNIROUTE_DIRECT_MODEL") || "").tr
 
 /** Resolve the OmniRoute base URL (accepts with/without a trailing "/v1"). */
 function omniRouteBase(): string {
-  const rawBase = (Deno.env.get("OMNIROUTE_BASE_URL") || "https://api.omniroute.ai/v1").trim();
+  const rawBase = (Deno.env.get("OMNIROUTE_BASE_URL") || "http://localhost:20128/v1").trim();
   return rawBase.replace(/\/+$/, "").replace(/\/v1$/, "") + "/v1";
 }
 

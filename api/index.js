@@ -47,6 +47,7 @@ const ALLOWED_ACTIONS = new Set([
   'mentor.dev',
   'hermes.agent',
   'hermes.status',
+  'feedback.submit',
   // AI Business Partner — canonical handler lives in src/routes/businessPartner.js
   // and is also exposed as the dedicated /api/business-partner function.
   'business.partner',
@@ -58,7 +59,18 @@ const ALLOWED_ACTIONS = new Set([
   'automation.run',
   'subscribe',
   'contact',
+  // Public funnel: the Digital Superpower Quiz. Handled by
+  // src/routes/quizDispatch.js via the dispatcher.
+  'quiz',
+  'quiz.submit',
   'quiz.complete',
+  'agent.quiz',
+  'quiz.roadmap',
+  'quiz.roadmap.get',
+  // Leads — everyone who raised their hand (quiz completions), segmented by
+  // persona. Supabase is the source of truth; Brevo is only delivery.
+  'leads',
+  'leads.list',
   'public.chat',
   'integration.googleAnalytics',
   'integration.social',
@@ -147,7 +159,7 @@ const FETCH_TIMEOUT_MS = 5000;
 
 // Accept base URL with or without a trailing "/v1"; always resolve to "<origin>/v1/chat/completions".
 function omnirouteEndpoint(raw) {
-  const base = String(raw || process.env.OMNIROUTE_BASE_URL || 'http://127.0.0.1:20128/v1')
+  const base = String(raw || process.env.OMNIROUTE_BASE_URL || 'http://localhost:20128/v1')
     .trim()
     .replace(/\/+$/, '')
     .replace(/\/v1$/, '');
@@ -159,7 +171,7 @@ function omnirouteEndpoint(raw) {
 // Required env: OMNIROUTE_API_KEY. Optional: OMNIROUTE_BASE_URL, OMNIROUTE_MODEL.
 const AI_PROVIDERS = {
   omniroute: {
-    baseUrl: process.env.OMNIROUTE_BASE_URL || 'http://127.0.0.1:20128/v1',
+    baseUrl: process.env.OMNIROUTE_BASE_URL || 'http://localhost:20128/v1',
     keyEnv: 'OMNIROUTE_API_KEY',
     models: ['auto'], // OmniRoute auto-selects best available model
     defaultModel: 'auto',
@@ -190,6 +202,24 @@ function safeNumber(value, fallback = 0) {
     return Number.isNaN(parsed) ? fallback : parsed;
   }
   return fallback;
+}
+
+/**
+ * Convert a rate to a 0-1 fraction. Brevo returns either a number (0.282)
+ * or a formatted string ('28.2%'). Returns null when there is no real value,
+ * so the UI can show "not connected" instead of a fabricated 0.
+ */
+function parseRate(value) {
+  if (value === null || value === undefined || value === '') return null;
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? (value > 1 ? value / 100 : value) : null;
+  }
+  const raw = String(value).trim();
+  if (!raw || raw === 'N/A' || raw === '—') return null;
+  const isPercent = raw.includes('%');
+  const num = Number(raw.replace(/[$,%\s,]/g, ''));
+  if (Number.isNaN(num)) return null;
+  return isPercent || num > 1 ? num / 100 : num;
 }
 
 function safeString(value, fallback = '') {
@@ -536,7 +566,7 @@ async function fetchFacebookGroup() {
 }
 
 // Brevo (formerly Sendinblue) email marketing integration - replaces SendPulse
-async function fetchBrevoStats() {
+  async function fetchBrevoStats() {
   const apiKey = process.env.BREVO_API_KEY;
   
   // Return cached data if still valid (15 min TTL)
@@ -681,8 +711,13 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
   const callerModel = String((options && options.model) || process.env.OMNIROUTE_MODEL || 'auto').trim();
   const omnirouteKey = (process.env.OMNIROUTE_API_KEY || '').trim();
   const geminiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '').trim();
+  // OmniRoute runs locally only (Docker, 127.0.0.1:20128). Serverless/production
+  // cannot reach it, so OMNIROUTE_DISABLED=true sends those deployments straight
+  // to the direct Gemini provider instead of attempting a doomed localhost call.
+  const omnirouteDisabled = String(process.env.OMNIROUTE_DISABLED || '').toLowerCase() === 'true';
+  const omnirouteUsable = !!omnirouteKey && !omnirouteDisabled;
 
-  if (!omnirouteKey && !geminiKey) {
+  if (!omnirouteUsable && !geminiKey) {
     throw new Error('No AI API key configured for Gemini agent responses.');
   }
 
@@ -698,10 +733,10 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
   // Gemini gets a small model fallback chain because flash models periodically
   // return 503 "high demand"; a sibling model usually answers immediately.
   const providers = [];
-  if (omnirouteKey) {
+  if (omnirouteUsable) {
     providers.push({
       name: 'omniroute',
-      url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL || 'http://127.0.0.1:20128/v1'),
+      url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL || 'http://localhost:20128/v1'),
       key: omnirouteKey,
       model: callerModel,
     });
@@ -802,11 +837,13 @@ async function fetchAIBrief(context) {
     return { ...aiBriefCache.data, fromCache: true };
   }
 
-  // AI providers in priority order. OmniRoute is the canonical gateway; the
-  // direct-Gemini path is a fallback for when the OmniRoute tunnel is
-  // unreachable (e.g. its Cloudflare WAF rejecting serverless egress IPs).
+  // AI providers in priority order. OmniRoute is the canonical gateway for
+  // LOCAL deployments; the direct-Gemini path is the canonical path for
+  // production/serverless, where OmniRoute is not reachable (localhost only).
+  // OMNIROUTE_DISABLED=true selects the Gemini-only path explicitly.
   const candidates = [];
-  if (process.env.OMNIROUTE_API_KEY) {
+  const omnirouteDisabled = String(process.env.OMNIROUTE_DISABLED || '').toLowerCase() === 'true';
+  if (process.env.OMNIROUTE_API_KEY && !omnirouteDisabled) {
     candidates.push({
       name: 'omniroute',
       url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL),
@@ -1222,7 +1259,16 @@ export default async function handler(req, res) {
 
     // Hermes provider health — live status for the AI Infrastructure panel.
     // Returns { activeProvider, providerHealth, fallbackOrder, currentModel,
-    // providerLatencies }. Never 500s: failures report as unhealthy entries.
+    if (action === 'feedback.submit') {
+      try {
+        const { recordFeedback, computeDemand, createOpportunity } = await import('../lib/hermesIntelligence.js');
+        const payload = req.body?.payload || req.body || {};
+        const rec = await recordFeedback(payload);
+        return res.status(200).json({ success: true, id: rec.id });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
     if (action === 'hermes.status') {
       if (!checkDashboardApiKey(req)) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -1530,37 +1576,33 @@ export default async function handler(req, res) {
       const b = req.body || {};
       const measurementId = b.measurementId || process.env.VITE_GA_MEASUREMENT_ID || process.env.GA_MEASUREMENT_ID || process.env.GA_PROPERTY_ID;
       const propertyId = b.propertyId || process.env.VITE_GA_PROPERTY_ID || process.env.GA_PROPERTY_ID || process.env.GA_MEASUREMENT_ID;
+      // No sample metrics. Until a GA4 service account is wired up we cannot
+      // read real analytics, and inventing numbers is worse than showing none:
+      // it made the dashboard contradict itself ($0 on one screen, $4,200 on
+      // the next) and put fake revenue in a demo.
       if (!measurementId || !propertyId) {
-        // Return placeholder analytics so the integrations tab shows data
-        // instead of "not configured" when GA IDs haven't been added yet.
-        // The frontend marks connected=true when the payload has metrics.
         return res.status(200).json({
-          connected: true,
+          connected: false,
           propertyId: null,
-          users30d: 1240,
-          sessions30d: 1860,
-          bounceRate: 0.42,
-          topPages: [
-            { path: '/', views: 640 },
-            { path: '/digital-business-os', views: 310 },
-            { path: '/blog/gen-x-women-reinvention', views: 210 },
-          ],
-          goalConversions: 88,
-          revenue30d: 4200,
-          notice: 'Google Analytics IDs are not configured — showing sample metrics. Add VITE_GA_MEASUREMENT_ID / VITE_GA_PROPERTY_ID to enable live data.',
+          users30d: null,
+          sessions30d: null,
+          bounceRate: null,
+          topPages: [],
+          goalConversions: null,
+          revenue30d: null,
+          notice: 'Add your Google Analytics measurement ID and property ID to see live traffic.',
         });
       }
       return res.status(200).json({
-        users30d: 1240,
-        sessions30d: 1860,
-        bounceRate: 0.42,
-        topPages: [
-          { path: '/', views: 640 },
-          { path: '/digital-business-os', views: 310 },
-          { path: '/blog/gen-x-women-reinvention', views: 210 },
-        ],
-        goalConversions: 88,
-        revenue30d: 4200,
+        connected: false,
+        propertyId: measurementId,
+        users30d: null,
+        sessions30d: null,
+        bounceRate: null,
+        topPages: [],
+        goalConversions: null,
+        revenue30d: null,
+        notice: 'Your GA4 property is set, but reading analytics needs a service account with Viewer access. Connect it in Settings to see live traffic.',
       });
     }
 
@@ -1583,17 +1625,16 @@ export default async function handler(req, res) {
           topPosts: [],
         });
       }
+      // No follower counts are invented here. Platform API access is not
+      // implemented, so we report the connection without fabricated numbers.
       return res.status(200).json({
         connected: true,
         platforms: Object.fromEntries(entries.map(([name]) => [name, { connected: true }])),
-        followers: 4820,
-        engagementRate: 0.038,
-        impressions30d: 28400,
-        topPosts: [
-          { platform: 'facebook', title: 'Reinventing Your Digital Career', impressions: 4200 },
-          { platform: 'instagram', title: 'Morning Brand Check-In', impressions: 3100 },
-          { platform: 'youtube', title: 'How I Built an Automated Funnel', impressions: 2600 },
-        ],
+        followers: null,
+        engagementRate: null,
+        impressions30d: null,
+        topPosts: [],
+        notice: 'Your social accounts are connected. Follower and impression data is not read yet.',
       });
     }
 
@@ -1605,16 +1646,20 @@ export default async function handler(req, res) {
       if (!provider || (!hasBrevo && !hasMailchimp)) {
         return res.status(400).json({ error: 'No email provider available' });
       }
+      // Real numbers from Brevo. The previous hardcoded "3,120 subscribers"
+      // was the single most damaging piece of mock data in the product.
+      const stats = await fetchBrevoStats();
+      const subscribers = Number(stats?.totalSubscribers ?? 0);
+      const openRate = parseRate(stats?.emailOpenRate);
+      const clickRate = parseRate(stats?.emailClickRate);
       return res.status(200).json({
-        subscribers: 3120,
-        openRate: 0.282,
-        clickRate: 0.114,
-        campaigns: [
-          { name: 'Authority Launch Sequence', openRate: 0.312, clickRate: 0.128 },
-          { name: 'Evergreen Reputation Funnel', openRate: 0.264, clickRate: 0.104 },
-          { name: 'Reinvention Reactivation', openRate: 0.298, clickRate: 0.118 },
-        ],
-        revenuePerCampaign: 1280,
+        connected: !stats?.error,
+        subscribers,
+        openRate,
+        clickRate,
+        campaigns: Array.isArray(stats?.topCampaigns) ? stats.topCampaigns : [],
+        revenuePerCampaign: stats?.emailRevenuePerCampaign || '$0',
+        ...(stats?.error ? { error: stats.error } : {}),
       });
     }
 
@@ -1627,16 +1672,23 @@ export default async function handler(req, res) {
       if (!platform || (!hasFacebook && !hasDiscord && !hasMightyNetworks)) {
         return res.status(400).json({ error: 'No community platform available' });
       }
+      // Real numbers only. The previous payload invented a member count and
+      // four named "members", which put fake people in front of customers.
+      let members = null;
+      let topMembers = [];
+      let communityError = null;
+      if (platform === 'facebook' && (process.env.FACEBOOK_GROUP_ID || process.env.FACEBOOK_ACCESS_TOKEN)) {
+        const group = await fetchFacebookGroup();
+        members = group?.member_count ?? null;
+        communityError = group?.error || null;
+      }
       return res.status(200).json({
-        members: 1284,
-        activeToday: 96,
-        growth30d: 0.082,
-        topMembers: [
-          { name: 'Rena Walker', joinedAt: '2026-03-28', status: 'Active' },
-          { name: 'Angela Brooks', joinedAt: '2026-03-31', status: 'Onboarding' },
-          { name: 'Tasha Monroe', joinedAt: '2026-04-02', status: 'Subscribed' },
-          { name: 'Nicole James', joinedAt: '2026-04-04', status: 'Engaged' },
-        ],
+        connected: members !== null,
+        members,
+        activeToday: null,
+        growth30d: null,
+        topMembers,
+        ...(communityError ? { error: communityError } : {}),
       });
     }
 
@@ -1652,6 +1704,39 @@ export default async function handler(req, res) {
       } catch (error) {
         return res.status(502).json({
           error: error instanceof Error ? error.message : 'Antigravity MCP request failed',
+        });
+      }
+    }
+
+    // ---- Delegated actions ----
+    // `license.verify`, `subscribe` and the quiz actions are implemented in
+    // the shared dispatcher (src/routes/dispatch.js -> quizDispatch.js) but
+    // were never routed from here, so the dashboard and the public quiz
+    // received 404 "Unknown action" for all of them. Delegate to the existing
+    // handlers instead of duplicating their business logic.
+    const delegatedActions = [
+      'license.verify',
+      'subscribe',
+      'quiz',
+      'quiz.submit',
+      'quiz.complete',
+      'agent.quiz',
+      'quiz.roadmap',
+      'quiz.roadmap.get',
+      'leads',
+      'leads.list',
+    ];
+    if (delegatedActions.includes(action)) {
+      try {
+        // The dispatcher reads the action from the body; make sure it is set
+        // even when the caller used ?action= in the query string.
+        req.body = { ...(req.body || {}), action };
+        const { handleDispatch } = await import('../src/routes/dispatch.js');
+        return await handleDispatch(req, res);
+      } catch (error) {
+        console.error('Delegated dispatch failed:', action, error);
+        return res.status(500).json({
+          error: error instanceof Error ? error.message : 'Request failed',
         });
       }
     }

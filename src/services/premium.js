@@ -15,6 +15,10 @@ const GUMROAD_LICENSE_API = 'https://api.gumroad.com/v2/licenses/verify';
 const GUMROAD_PRODUCT_API = 'https://api.gumroad.com/v2/products';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24h server-side soft cache
 
+// The Gumroad listing the dashboard actually sells. The dashboard client does
+// not send a product permalink, so the license has to be scoped to this one.
+const DEFAULT_PRODUCT_PERMALINK = 'digital-business-os';
+
 // In-memory entitlement cache: email -> { entitlement, expiresAt }
 const entitlementCache = new Map();
 
@@ -29,7 +33,13 @@ const PREMIUM_PRODUCTS = new Set([
 
 function productToPlan(productName) {
   if (!productName) return 'free';
-  return PREMIUM_PRODUCTS.has(String(productName).toLowerCase()) ? 'premium' : 'free';
+  const name = String(productName).toLowerCase();
+  if (PREMIUM_PRODUCTS.has(name)) return 'premium';
+  // Also match the branded product names, e.g. "Digital Business OS – The
+  // All-In-One Dashboard for Gen X Women" and the "Free Starter" variant.
+  if (name.startsWith('digital business os')) return 'premium';
+  if (name.startsWith('annual financial dashboard os')) return 'premium';
+  return 'free';
 }
 
 function readCached(email) {
@@ -69,10 +79,11 @@ export async function verifyLicense({ licenseKey, email = '', productId = '' } =
   const cached = readCached(cacheKey);
   if (cached) return cached;
 
-  const body = new URLSearchParams({ product_permalink: productId, license_key: licenseKey });
-  if (email) body.set('email', email);
+  const scope = String(productId || DEFAULT_PRODUCT_PERMALINK).trim();
 
-  try {
+  const callGumroad = async (permalink) => {
+    const body = new URLSearchParams({ product_permalink: permalink, license_key: licenseKey });
+    if (email) body.set('email', email);
     const response = await fetch(GUMROAD_LICENSE_API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -80,9 +91,27 @@ export async function verifyLicense({ licenseKey, email = '', productId = '' } =
       signal: AbortSignal.timeout(15000),
     });
     const data = await response.json().catch(() => ({}));
+    return { response, data };
+  };
+
+  try {
+    // 1) Verify scoped to the product that is actually sold.
+    let { response, data } = await callGumroad(scope);
+
+    // 2) If the scoped check fails, retry unscoped. A valid key is still
+    //    honoured when it was issued against a different listing of the same
+    //    product (e.g. a "Free Starter" vs "All-In-One" variant), so a paying
+    //    customer is never locked out by a permalink mismatch.
+    if (!(response.ok && data.success) && scope) {
+      const retry = await callGumroad('');
+      if (retry.response.ok && retry.data.success) {
+        response = retry.response;
+        data = retry.data;
+      }
+    }
 
     if (response.ok && data.success) {
-      const product = (data.purchase && data.purchase.product_name) || productId || '';
+      const product = (data.purchase && data.purchase.product_name) || scope || '';
       const plan = productToPlan(product);
       const entitlement = {
         licensed: true,
@@ -97,11 +126,11 @@ export async function verifyLicense({ licenseKey, email = '', productId = '' } =
     }
 
     const reason = data.message || `Gumroad rejected license (${response.status})`;
-    logger.warn('Gumroad license verify failed', { reason, status: response.status });
-    return { licensed: false, reason, email: email || '', product: productId || null, plan: 'free', cachedAt: Date.now() };
+    logger.warn('Gumroad license verify failed', { reason, status: response.status, scope });
+    return { licensed: false, reason, email: email || '', product: scope || null, plan: 'free', cachedAt: Date.now() };
   } catch (err) {
     logger.error('Gumroad verify error', { error: err.message });
-    return { licensed: false, reason: 'Gumroad verify request failed: ' + err.message, email: email || '', product: productId || null, plan: 'free', cachedAt: Date.now() };
+    return { licensed: false, reason: 'Gumroad verify request failed: ' + err.message, email: email || '', product: scope || null, plan: 'free', cachedAt: Date.now() };
   }
 }
 

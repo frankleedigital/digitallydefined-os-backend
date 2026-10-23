@@ -5,6 +5,13 @@ import { AI_MODE_SCHEMA } from './niche.js';
 export const quizRequestSchema = z.object({
   answers: z.record(z.string()).optional(),
   mode: AI_MODE_SCHEMA,
+  // The quiz page scores the persona deterministically in the browser and
+  // posts the result. It is the source of truth for who the customer is.
+  persona: z.string().optional(),
+  superpower: z.string().optional(),
+  name: z.string().optional(),
+  email: z.string().optional(),
+  source: z.string().optional(),
 });
 
 export const quizResponseSchema = z.object({
