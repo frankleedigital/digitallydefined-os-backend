@@ -48,6 +48,7 @@ const ALLOWED_ACTIONS = new Set([
   'hermes.agent',
   'hermes.status',
   'feedback.submit',
+  'intake.submit',
   'intake.exists',
   'assets.exists',
   'moneySnapshot.exists',
@@ -1263,7 +1264,22 @@ export default async function handler(req, res) {
 
     // Hermes provider health — live status for the AI Infrastructure panel.
     // Returns { activeProvider, providerHealth, fallbackOrder, currentModel,
-    if (action === 'feedback.submit') {
+    if (action === 'intake.submit') {
+      try {
+        const payload = req.body?.payload || req.body || {};
+        const dbId = process.env.NOTION_IDEAS_DB_ID;
+        if (!dbId) return res.status(500).json({ error: "NOTION_IDEAS_DB_ID not set" });
+        const properties = {
+          Name: { title: [{ text: { content: String(payload.name || "Untitled") } }] },
+        };
+        if (payload.audience) properties.Source = { rich_text: [{ text: { content: String(payload.audience) } }] };
+        const r = await fetch("https://api.notion.com/v1/pages", { method: "POST", headers: { Authorization: `Bearer ${process.env.NOTION_API_KEY}`, "Notion-Version": "2022-06-28", "Content-Type": "application/json" }, body: JSON.stringify({ parent: { database_id: dbId }, properties }) });
+        const data = await r.json();
+        return res.status(200).json({ success: true, id: data.id, analysis: null });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
       try {
         const { recordFeedback, computeDemand, createOpportunity } = await import('../lib/hermesIntelligence.js');
         const payload = req.body?.payload || req.body || {};
