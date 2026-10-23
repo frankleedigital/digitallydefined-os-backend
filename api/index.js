@@ -50,6 +50,7 @@ const ALLOWED_ACTIONS = new Set([
   'feedback.submit',
   'intake.submit',
   'asset.activate',
+  'asset.marketing',
   'intake.exists',
   'assets.exists',
   'moneySnapshot.exists',
@@ -1265,7 +1266,22 @@ export default async function handler(req, res) {
 
     // Hermes provider health — live status for the AI Infrastructure panel.
     // Returns { activeProvider, providerHealth, fallbackOrder, currentModel,
-    if (action === 'asset.activate') {
+    if (action === 'asset.marketing') {
+      try {
+        const payload = req.body?.payload || req.body || {};
+        const dbId = process.env.NOTION_TEMPLATES_DB_ID || process.env.NOTION_CONTENT_DB_ID;
+        if (!dbId) return res.status(500).json({ error: "No templates/content DB configured" });
+        const name = payload.name || "Untitled Asset";
+        const pkg = `Elevator Pitch: ${name} helps ${payload.audience || "your audience"} achieve ${payload.transformation || "results"}.\n\nProduct Description: ${name} is designed to ${payload.problem || "solve a key problem"}.\n\nShort Description: ${name} — ${payload.transformation || "transform your results"}.\n\nKey Benefits: Save time, reduce overwhelm, get results.\n\nMain Transformation: ${payload.transformation || "Improved outcomes"}.\n\nFAQ: Q: Who is this for? A: ${payload.audience || "Gen X women"}.\n\nOffer Positioning: Premium, results-driven.\n\nCTA: Get started today.`;
+        const properties = { Name: { title: [{ text: { content: `${name} — Marketing Package` } }] } };
+        if (process.env.NOTION_CONTENT_DB_ID) properties.Status = { select: { name: "Draft" } };
+        const r = await fetch("https://api.notion.com/v1/pages", { method: "POST", headers: { Authorization: `Bearer ${process.env.NOTION_API_KEY}`, "Notion-Version": "2022-06-28", "Content-Type": "application/json" }, body: JSON.stringify({ parent: { database_id: dbId }, properties, children: [{ object: "block", type: "paragraph", paragraph: { rich_text: [{ type: "text", text: { content: pkg.slice(0, 2000) } }] } }] }) });
+        const data = await r.json();
+        return res.status(200).json({ success: true, id: data.id, package: pkg });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
       try {
         const payload = req.body?.payload || req.body || {};
         const dbId = process.env.NOTION_IDEAS_DB_ID;
