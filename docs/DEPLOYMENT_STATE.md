@@ -48,8 +48,9 @@ Mistral, Novita) have been removed from every AI call site:
 
 Required secrets (Supabase Edge Functions + Vercel as applicable):
 - `OMNIROUTE_API_KEY`  (REQUIRED — set via `supabase secrets set OMNIROUTE_API_KEY=...`)
-- `OMNIROUTE_BASE_URL` (optional; default https://api.omniroute.ai/v1)
+- `OMNIROUTE_BASE_URL` (optional; default http://localhost:20128/v1 — local only, no public endpoint)
 - `OMNIROUTE_MODEL`    (optional; default "auto" = gateway picks)
+- `OMNIROUTE_DISABLED` (optional; "true" for serverless/production → direct Gemini only)
 
 Provider keys for Agnes/Groq/OpenRouter/etc. are no longer read by any function;
 they can be removed from secrets after OmniRoute is confirmed working.

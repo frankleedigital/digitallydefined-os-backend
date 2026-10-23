@@ -19,10 +19,10 @@
 | 3 | `VITE_SUPABASE_ANON_KEY` | Dashboard | Same as above, Vite-bundled for client calls | `dashboard/.env.local` | None | Same as #2; then `npm run build` |
 | 4 | `SUPABASE_URL` | All apps | Project URL, not a secret | `os-backend/.env` | None | Project ref: `dijjlppdljpcgyoakdnq` |
 | 5 | `VITE_DASHBOARD_API_KEY` | All apps | Bearer auth for all `/api/*` routes in the os-backend | **`dashboard/.env.local` ⚠️ COMMITTED** | `online-local/.env.local`, `online-local/.env` | Generate new 32+ char random string → update all three files |
-| 6 | `OMNIROUTE_API_KEY` | os-backend + Hermes | JWT for OmniRoute gateway at `45.79.180.236:20128` | `os-backend/.env` | `~/.hermes/.env` | OmniRoute admin panel on Linode; update both files after |
+| 6 | `OMNIROUTE_API_KEY` | os-backend + Hermes | JWT for the local OmniRoute gateway at `http://localhost:20128/v1` | `os-backend/.env` | `C:\Users\frank\AppData\Local\hermes\.env` | OmniRoute local dashboard (http://localhost:20128/dashboard); update both files after |
 | 7 | `OMNIROUTE_WS_BRIDGE_SECRET` | os-backend | WebSocket session/bridge secret; most sensitive in the set | `os-backend/.env` | None | OmniRoute gateway `server.env`; no overlap window — cut over clean |
-| 8 | `OMNIROUTE_BASE_URL` | os-backend + Hermes | Gateway base | `os-backend/.env` | `~/.hermes/.env` | `http://45.79.180.236:20128` (self-hosted, Linode) |
-| 9 | `OMNIROUTE_MODEL` | os-backend + Hermes | Default model | `os-backend/.env` | `~/.hermes/.env` | Set in OmniRoute admin |
+| 8 | `OMNIROUTE_BASE_URL` | os-backend + Hermes | Gateway base — **local only** | `os-backend/.env` | `C:\Users\frank\AppData\Local\hermes\.env` | `http://localhost:20128/v1` (local Docker; no public endpoint) |
+| 9 | `OMNIROUTE_MODEL` | os-backend + Hermes | Default model | `os-backend/.env` | `C:\Users\frank\AppData\Local\hermes\.env` | Set in OmniRoute admin |
 | 10 | `VERTEX_API_KEY` | os-backend | Gemini express-mode auth for `gen-lang-client-0756039230` | `os-backend/.env` | **archive/backend-clean/.env** (same value ✓) | GCP Console → APIs & Services → Credentials → API key → Rotate |
 | 11 | `GEMINI_API_KEY` | os-backend | Direct Gemini public API fallback | `os-backend/.env` | None | GCP Console → APIs & Services → Credentials → API key → Rotate |
 | 12 | `OPENROUTER_API_KEY` | online-local only | OpenRouter premium fallback — dead in os-backend | `online-local/.env.local` | None | openrouter.ai → Settings → API Keys → Rotate |

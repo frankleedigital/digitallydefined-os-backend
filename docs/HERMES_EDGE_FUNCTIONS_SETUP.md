@@ -66,7 +66,9 @@ dispatcher that mirrors the action registry (kept in sync manually).
 ### AI layer — OmniRoute ONLY
 - No direct provider calls, no fallbacks. One candidate:
   - Secrets: `OMNIROUTE_API_KEY` (required), `OMNIROUTE_BASE_URL`
-    (default `https://api.omniroute.ai/v1`), `OMNIROUTE_MODEL` (default `auto`).
+    (default `http://localhost:20128/v1` — local only; no public endpoint),
+    `OMNIROUTE_MODEL` (default `auto`), `OMNIROUTE_DISABLED` (set `true` for
+    serverless/production so the direct Gemini provider is used instead).
   - `runAI(system, user, jsonMode)` POSTs to `{base}/v1/chat/completions` with
     90s timeout; jsonMode forces `response_format: json_object`, temp 0.35, 4k tokens.
   - Parses both JSON and SSE reply shapes.

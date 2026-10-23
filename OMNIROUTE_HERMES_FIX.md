@@ -44,7 +44,10 @@ posted those actions, got 404, and silently degraded to localStorage.
   (see `.env`, never committed).
 
 ### 6. Production env pointed at a dead host
-Vercel has `OMNIROUTE_BASE_URL=https://ai.digitallydefined.online/v1`.
+Previously Vercel had `OMNIROUTE_BASE_URL=https://ai.digitallydefined.online/v1`
+(now a parked domain). Production now runs **direct Gemini** and sets
+`OMNIROUTE_DISABLED=true`; OmniRoute is local-only at
+`http://localhost:20128/v1` and is never contacted from Vercel.
 
 ## Changes Applied
 
@@ -74,15 +77,19 @@ RESULT req=auto/best-reasoning         => provider=omniroute model=deepseek-v3.1
 
 ## Remaining Production Steps (NOT done — requires your action)
 
-1. **Make the gateway reachable from Vercel.** Options:
-   - Start the Cloudflare tunnel (`cloudflared tunnel run`) — `~/.cloudflared/config.yml` maps `ai.digitallydefined.agency` → `http://localhost:20128` — **and** fix the `ai.digitallydefined.agency` DNS record (currently does not resolve).
-   - Or set Vercel `OMNIROUTE_BASE_URL` to a working public endpoint for the gateway.
-   - Note: `http://localhost:20128` will **never** work from Vercel — it is the Docker container's loopback bind on your machine.
+1. **Do NOT make the gateway reachable from Vercel.** OmniRoute is local-only by
+   design. Production (Vercel) uses the **direct Gemini** provider, and
+   `OMNIROUTE_DISABLED=true` makes the backend skip OmniRoute entirely.
+   - Set Vercel `OMNIROUTE_DISABLED=true` (Production + Preview).
+   - Remove the Vercel `OMNIROUTE_BASE_URL` / `OMNIROUTE_API_KEY` / `OMNIROUTE_MODEL`
+     variables — they are local-only settings and are no longer pushed by
+     `scripts/push-vercel-env.mjs`.
+   - `http://localhost:20128` will **never** work from Vercel — it is the Docker
+     container's loopback bind on your machine. This is expected, not a fault.
 
-2. **Update the Vercel secret** `OMNIROUTE_API_KEY` to the valid key from the
-   backend `.env` (the one currently on Vercel is the old/revoked key).
-   Use: `npx vercel env rm OMNIROUTE_API_KEY production` then
-   `npx vercel env add OMNIROUTE_API_KEY production` (secret).
+2. **Do NOT rotate `OMNIROUTE_API_KEY`.** The key in `os-backend/.env` and in
+   `C:\Users\frank\AppData\Local\hermes\.env` is the local Docker gateway key and
+   remains valid. Vercel no longer needs an OmniRoute key at all.
 
 3. **Deploy the backend** so the `business.partner` route and the model override ship:
    `npx vercel --prod` in `digitallydefined-os-backend/`.

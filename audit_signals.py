@@ -75,7 +75,7 @@ for name, root in PROJ.items():
         for label, needles in {
             "notion-api-direct": ["api.notion.com/v1"],
             "supabase-rest-direct": ["/rest/v1/"],
-            "omniroute-direct": ["45.79.180.236", "omniroute"],
+            "omniroute-direct": ["localhost:20128", "omniroute"],
             "brevo-direct": ["brevo", "api.brevo.com"],
             "sendgrid-direct": ["sendgrid", "api.sendgrid.com"],
             "gumroad-direct": ["gumroad"],

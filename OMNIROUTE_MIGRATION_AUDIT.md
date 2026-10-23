@@ -1,6 +1,15 @@
 
 # OMNIROUTE MIGRATION AUDIT
 
+> **HISTORICAL RECORD — RETIRED INFRASTRUCTURE.** This document is an audit
+> snapshot. The `ai.digitallydefined.agency`, Cloudflare tunnel, `cloudflared`,
+> `api.omniroute.ai`, `ai.digitallydefined.online` and Linode
+> `45.79.180.236` references below are **retired/dead infrastructure** kept
+> for audit trail only. The current source of truth is
+> `docs/OMNIROUTE_LOCAL_ONLY_ARCHITECTURE.md` — OmniRoute is **local only**
+> at `http://localhost:20128/v1`; production uses direct Gemini.
+
+
 ## Scope
 Full audit of all obsolete AI gateway endpoints across the DigitallyDefined workspace.
 
