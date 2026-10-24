@@ -24,6 +24,7 @@ const ALLOWED_ORIGINS = new Set([
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:5173",
+  "http://localhost:4173",
 ]);
 const corsHeaders = (origin = "") => ({
   "Access-Control-Allow-Origin": ALLOWED_ORIGINS.has(origin) ? origin : "https://dashboard.digitallydefined.agency",

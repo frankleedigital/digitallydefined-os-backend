@@ -17,6 +17,7 @@ const ALLOWED_ORIGINS = new Set([
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:5173",
+  "http://localhost:4173",
 ]);
 
 // Echo an allowed origin back; never fall back to a wildcard for credentialed calls.
