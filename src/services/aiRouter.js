@@ -71,13 +71,13 @@ export function agnesModel() {
  *   fast      - short latency-sensitive summaries
  */
 export const JOB_MODELS = {
-  chat: process.env.AI_MODEL_CHAT || 'omni/free-best',
-  reasoning: process.env.AI_MODEL_REASONING || 'omni/premium-blueminds',
-  coding: process.env.AI_MODEL_CODING || 'omni/free-coding',
-  vision: process.env.AI_MODEL_VISION || 'omni/free-vision',
-  json: process.env.AI_MODEL_JSON || 'omni/free-best',
-  fast: process.env.AI_MODEL_FAST || 'omni/free-best',
-  fallback: process.env.AI_MODEL_FALLBACK || 'omni/free-fallback',
+  chat: process.env.AI_MODEL_CHAT || 'auto/best-chat',
+  reasoning: process.env.AI_MODEL_REASONING || 'auto/best-reasoning',
+  coding: process.env.AI_MODEL_CODING || 'auto/best-coding',
+  vision: process.env.AI_MODEL_VISION || 'auto/best-vision',
+  json: process.env.AI_MODEL_JSON || 'auto/best-chat',
+  fast: process.env.AI_MODEL_FAST || 'auto/best-fast',
+  fallback: process.env.AI_MODEL_FALLBACK || 'auto/best-free',
 };
 
 export const JOB_TYPES = Object.keys(JOB_MODELS);
