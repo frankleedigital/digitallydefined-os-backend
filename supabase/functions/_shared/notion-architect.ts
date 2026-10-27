@@ -128,6 +128,14 @@ export const NOTION_OS_DBS: Record<string, NotionDbSpec> = {
       { name: "Source", type: "rich_text", required: false, maxChars: 200 },
       { name: "Niche", type: "rich_text", required: false, maxChars: 500 },
       { name: "Created", type: "date", required: false, synonyms: DATE_SYNONYMS },
+      // BuildNow: when true, triggers the product factory pipeline.
+      // Ready for AI: when true, AI generates product metadata.
+      // Ready for Insights: when true, AI scores the idea for opportunity.
+      { name: "BuildNow", type: "select", required: false, options: ["true", "false"], synonyms: { "yes": "true", "no": "false", "1": "true", "0": "false" } },
+      { name: "Ready for AI", type: "select", required: false, options: ["true", "false"], synonyms: { "yes": "true", "no": "false", "1": "true", "0": "false" } },
+      { name: "Ready for Insights", type: "select", required: false, options: ["true", "false"], synonyms: { "yes": "true", "no": "false", "1": "true", "0": "false" } },
+      { name: "Opportunity Score", type: "number", required: false },
+      { name: "Build Decision", type: "select", required: false, options: ["Build", "Skip", "Research More"] },
     ],
   },
   money: {

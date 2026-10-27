@@ -1761,7 +1761,33 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(404).json({ error: `Unknown action: ${action}` });
+    if (action === 'product.factory') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      const ideaId = req.body?.ideaId || req.body?.id;
+      if (!ideaId) {
+        return res.status(400).json({ error: 'ideaId is required' });
+      }
+      // Call the product-factory edge function
+      const supabaseUrl = process.env.SUPABASE_URL || 'https://dijjlppdljpcgyoakdnq.supabase.co';
+      const serviceKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+      try {
+        const upstream = await fetchWithTimeout(`${supabaseUrl}/functions/v1/product-factory`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${serviceKey}`,
+          },
+          body: JSON.stringify({ action: 'build', ideaId }),
+        }, 60000);
+        const text = await upstream.text();
+        return res.status(upstream.status).setHeader('content-type', 'application/json').send(text);
+      } catch (error) {
+        return res.status(502).json({ error: error instanceof Error ? error.message : 'Product factory failed' });
+      }
+    }
+
   } catch (err) {
     console.error('Dashboard error:', err);
     const origin = (req.headers && req.headers.origin) || '';
