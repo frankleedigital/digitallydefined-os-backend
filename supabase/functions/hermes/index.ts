@@ -1367,12 +1367,19 @@ Return ONLY valid JSON with these keys (include only relevant ones):
           },
           body: JSON.stringify({
             parent: { database_id: logDbId },
+            // Property names MUST match the LIVE Automations Log schema:
+            //   title      = "Automation Name"  (not "Action")
+            //   "Source"   = rich_text          (not select)
+            //   "Created"  = the date column    (there is no "GeneratedAt")
+            //   there is no "Meta" column — metadata goes to "Error Log"
+            // Sending the old names made Notion return validation_error, which
+            // the cron surfaced as a 403-looking sync failure.
             properties: {
-              Action: { title: [{ text: { content: actionName } }] },
+              "Automation Name": { title: [{ text: { content: actionName } }] },
               Status: { select: { name: logStatus } },
-              Source: { select: { name: source } },
-              ...(meta ? { Meta: { rich_text: [{ text: { content: meta } }] } } : {}),
-              GeneratedAt: { date: { start: new Date().toISOString() } },
+              Source: { rich_text: [{ text: { content: source } }] },
+              ...(meta ? { "Error Log": { rich_text: [{ text: { content: meta } }] } } : {}),
+              Created: { date: { start: new Date().toISOString() } },
             },
           }),
         });

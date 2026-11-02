@@ -206,12 +206,23 @@ export const NOTION_OS_DBS: Record<string, NotionDbSpec> = {
     envVar: "NOTION_AUTOMATIONS_DB_ID",
     dedupKeys: ["Name", "Created"],
     properties: [
-      { name: "Name", type: "title", required: true, maxChars: 2000 },
-      { name: "Status", type: "select", required: false, options: ["Draft", "Published", "Done", "Failed"], synonyms: STATUS_SYNONYMS },
+      // Live title property is "Automation Name" (verified against the deployed
+      // DB on 2026-11-02). "Name" and "Action" are accepted legacy inputs so
+      // older callers keep working, but writes must emit "Automation Name" or
+      // Notion rejects the page with a validation_error.
+      { name: "Name", type: "title", required: true, maxChars: 2000, legacyNames: ["Automation Name", "Action"] },
+      // Live select carries a "Succeeded" option in addition to the base set.
+      { name: "Status", type: "select", required: false, options: ["Draft", "Published", "Done", "Failed", "Succeeded"], synonyms: STATUS_SYNONYMS },
+      // Live "Source" is rich_text, NOT select — sending select fails validation.
       { name: "Source", type: "rich_text", required: false, maxChars: 200 },
       { name: "Email", type: "email", required: false },
       { name: "Superpower", type: "rich_text", required: false, maxChars: 100 },
       { name: "Created", type: "date", required: false, synonyms: DATE_SYNONYMS },
+      // Additional live columns used by automation logging.
+      { name: "Error Log", type: "rich_text", required: false, maxChars: 2000 },
+      { name: "Payload", type: "rich_text", required: false, maxChars: 2000 },
+      { name: "Run ID", type: "rich_text", required: false, maxChars: 200 },
+      { name: "External ID", type: "rich_text", required: false, maxChars: 200 },
     ],
   },
   templates: {
