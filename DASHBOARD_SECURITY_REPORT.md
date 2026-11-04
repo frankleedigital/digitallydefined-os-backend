@@ -12,7 +12,7 @@
 - Unauthorized/unauthenticated visitors redirect to /login.
 
 ## Authorized Accounts
-- francesca@digitallydefined.online (only)
+- francesca@digitallydefined.agency (only)
 
 ## Security Validation Results
 - Build passes (581KB bundle, no errors).

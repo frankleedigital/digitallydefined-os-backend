@@ -116,7 +116,7 @@
 | Layer | Model | Price | Status |
 |---|---|---|---|
 | **Free** | — | — | — |
-| **Premium** | 8-database Notion workspace | $97–197 | ✅ **Already selling on Gumroad at $27** |
+| **Premium** | 8-database Notion workspace | $97–197 | ✅ Not on Gumroad |
 | **Subscription** | Monthly OS updates | $19–39/mo | ❌ Not built |
 | **Affiliate** | Notion template affiliates | — | ❌ Not built |
 
