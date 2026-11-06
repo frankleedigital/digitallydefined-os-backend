@@ -123,5 +123,3 @@ serve(async (req) => {
     });
   }
 });
-EOF
-echo "Created gumroad-webhook edge function"

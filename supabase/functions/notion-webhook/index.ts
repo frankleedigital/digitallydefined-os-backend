@@ -127,5 +127,3 @@ serve(async (req) => {
     });
   }
 });
-EOF
-echo "Created notion-webhook edge function"
