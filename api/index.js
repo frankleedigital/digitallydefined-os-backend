@@ -3,6 +3,8 @@
 // Optimized with Brevo email, multi-AI provider routing, caching, and timeouts
 
 import { antigravityHandle } from '../lib/antigravity.js';
+import { createSign } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 
 const ALLOWED_ORIGINS = [
   'https://dashboard.digitallydefined.agency',
@@ -196,6 +198,10 @@ if (!globalThis.__aiBriefCache) {
 const brevoCache = globalThis.__brevoCache || { data: null, expiry: 0 };
 if (!globalThis.__brevoCache) {
   globalThis.__brevoCache = brevoCache;
+}
+const gaCache = globalThis.__gaCache || { data: null, expiry: 0 };
+if (!globalThis.__gaCache) {
+  globalThis.__gaCache = gaCache;
 }
 
 const formatPct = (n) => `${Number.isFinite(n) ? n.toFixed(1) : '0.0'}%`;
@@ -575,6 +581,230 @@ async function fetchFacebookGroup() {
       error: maskErrorDetails(e, 'Facebook API'),
       debug: process.env.NODE_ENV !== 'production' ? e.message || 'Facebook fetch failed' : null,
     };
+  }
+}
+
+// ---- Google Analytics 4 Data API (real 30-day metrics) ----
+// GA Data API v1beta does NOT accept API keys — it requires OAuth2, so this
+// uses a GCP service account (JWT bearer-grant flow, no extra npm deps:
+// RS256 signing via node:crypto). The SA must have the GA4 property shared
+// with it (GA Admin → Data Access → Service accounts) and the Analytics
+// Data API enabled on its GCP project.
+//
+// SA key sources (first that resolves):
+//   1. GA_SA_KEY env var — the raw JSON of the service-account key file
+//   2. GA_SA_KEY_B64   — base64 of that JSON (safer for env pipelines)
+//   3. GOOGLE_APPLICATION_CREDENTIALS — file path (local dev)
+//
+// No numbers are invented: auth/config failures surface as honest errors.
+const gaOauth = globalThis.__gaOauth || { token: null, expiresAt: 0 };
+if (!globalThis.__gaOauth) globalThis.__gaOauth = gaOauth;
+
+function b64urlJson(obj) {
+  const b64 = Buffer.from(JSON.stringify(obj), 'utf8').toString('base64');
+  return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function resolveServiceAccountKey() {
+  // 1. raw JSON in env
+  const raw = String(process.env.GA_SA_KEY || '').trim();
+  if (raw && raw.startsWith('{')) {
+    try { return JSON.parse(raw); } catch { /* fall through */ }
+  }
+  // 2. base64 JSON in env
+  const b64 = String(process.env.GA_SA_KEY_B64 || '').trim();
+  if (b64) {
+    try { return JSON.parse(Buffer.from(b64, 'base64').toString('utf8')); } catch { /* fall through */ }
+  }
+  // 3. file path
+  const path = String(process.env.GOOGLE_APPLICATION_CREDENTIALS || '').trim();
+  if (path) {
+    try {
+      const text = readFileSync(path, 'utf8');
+      return JSON.parse(text);
+    } catch { /* fall through */ }
+  }
+  return null;
+}
+// Obtain (and cache) an OAuth2 access token for the service account via the
+// JWT bearer-grant. Cached ~50 min; refreshed on expiry or 401.
+async function gaAccessToken(forceRefresh = false) {
+  const now = Date.now();
+  if (!forceRefresh && gaOauth.token && now < gaOauth.expiresAt - 60_000) {
+    return gaOauth.token;
+  }
+  const sa = resolveServiceAccountKey();
+  if (!sa || !sa.client_email || !sa.private_key) {
+    return null;
+  }
+  const iat = Math.floor(now / 1000);
+  const exp = iat + 3600;
+  const claims = {
+    iss: sa.client_email,
+    scope: 'https://www.googleapis.com/auth/analytics.readonly',
+    aud: 'https://oauth2.googleapis.com/token',
+    iat,
+    exp,
+  };
+  const jwt = `${b64urlJson({ alg: 'RS256', typ: 'JWT' })}.${b64urlJson(claims)}.${
+    createSign('RSA-SHA256').update(`${b64urlJson({ alg: 'RS256', typ: 'JWT' })}.${b64urlJson(claims)}`).sign(sa.private_key, 'utf8')
+      .toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+  }`;
+  const res = await fetchWithTimeout(
+    'https://oauth2.googleapis.com/token',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        assertion: jwt,
+      }).toString(),
+    },
+    20000,
+  );
+  const data = await parseJsonSafe(res, {});
+  if (!res.ok || !data.access_token) {
+    throw new Error(data?.error_description || `OAuth token exchange failed (${res.status})`);
+  }
+  gaOauth.token = data.access_token;
+  gaOauth.expiresAt = now + (Number(data.expires_in) || 3599) * 1000;
+  return gaOauth.token;
+}
+
+async function fetchGa4Stats(propertyId) {
+  const now = Date.now();
+  if (gaCache.data && now < gaCache.expiry) return { ...gaCache.data, fromCache: true };
+
+  const prop = String(propertyId || process.env.GA_PROPERTY_ID || process.env.GA4_PROPERTY_ID || '').trim();
+  if (!prop || !/^\d+$/.test(prop)) {
+    return {
+      users30d: null, sessions30d: null, goalConversions: null,
+      revenue30d: null, bounceRate: null, topPages: [],
+      error: 'GA property ID (numeric) is required — set GA_PROPERTY_ID.',
+    };
+  }
+
+  // GA Data API needs a service-account OAuth token (API keys are unsupported).
+  let token;
+  try {
+    token = await gaAccessToken();
+  } catch (e) {
+    token = null;
+    const errorResult = {
+      users30d: null, sessions30d: null, goalConversions: null,
+      revenue30d: null, bounceRate: null, topPages: [],
+      error: `GA service-account OAuth failed — ${e.message}.`,
+    };
+    gaCache.data = errorResult;
+    gaCache.expiry = now + 2 * 60 * 1000;
+    return errorResult;
+  }
+  if (!token) {
+    return {
+      users30d: null, sessions30d: null, goalConversions: null,
+      revenue30d: null, bounceRate: null, topPages: [],
+      error: 'No GA service-account key found — set GA_SA_KEY (JSON) or GA_SA_KEY_B64, and share the GA property with the service account.',
+    };
+  }
+
+  const runReport = async (metrics, dimensions) => {
+    const body = {
+      dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+      metrics: metrics.map((m) => ({ name: m })),
+    };
+    if (dimensions) {
+      body.dimensions = dimensions.map((d) => ({ name: d }));
+      body.orderBy = [{ dimension: dimensions[0] }];
+      body.limit = 5;
+    }
+    const res = await fetchWithTimeout(
+      `https://analyticsdata.googleapis.com/v1beta/properties/${prop}:runReport`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      },
+      20000,
+    );
+    const data = await parseJsonSafe(res, {});
+    if (!res.ok) {
+      const msg = data?.error?.message || `GA Data API error ${res.status}`;
+      throw new Error(msg);
+    }
+    const row = (data.rows && data.rows[0]) || {};
+    const vals = row.metricValues || [];
+    return metrics.map((_, i) => (typeof vals[i] === 'object' && vals[i] !== null ? vals[i].value : null));
+  };
+
+  try {
+    let metricVals;
+    try {
+      metricVals = await runReport(['activeUsers', 'sessions', 'newUsers', 'events', 'nonBounceRate', 'webUserRevenue']);
+    } catch {
+      metricVals = await runReport(['activeUsers', 'sessions', 'newUsers', 'events']);
+    }
+
+    let topPages = [];
+    try {
+      const pageRes = await fetchWithTimeout(
+        `https://analyticsdata.googleapis.com/v1beta/properties/${prop}:runReport`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({
+            dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+            metrics: [{ name: 'activeUsers' }],
+            dimensions: [{ name: 'pageTitle' }],
+            orderBy: [{ metric: { metricName: 'activeUsers', direction: 'DESC' } }],
+            limit: 5,
+          }),
+        },
+        20000,
+      );
+      const pageData = await parseJsonSafe(pageRes, {});
+      if (pageRes.ok && Array.isArray(pageData.rows)) {
+        topPages = pageData.rows
+          .map((r) => ({
+            page: (r.dimensionValues && r.dimensionValues[0] && r.dimensionValues[0].value) || '(not set)',
+            users: r.metricValues && r.metricValues[0] ? r.metricValues[0].value : null,
+          }))
+          .filter((p) => p.users != null);
+      }
+    } catch {
+      topPages = [];
+    }
+
+    const [users30d, sessions30d, newUsers30d, events30d, nonBounceRate, revenue30d] = metricVals;
+    const result = {
+      users30d: users30d != null ? Number(users30d) : null,
+      sessions30d: sessions30d != null ? Number(sessions30d) : null,
+      goalConversions: newUsers30d != null ? Number(newUsers30d) : null,
+      revenue30d: revenue30d != null ? Number(revenue30d) : null,
+      bounceRate: nonBounceRate != null ? Math.max(0, 1 - Number(nonBounceRate)) : null,
+      events30d: events30d != null ? Number(events30d) : null,
+      topPages,
+      lastUpdated: new Date().toISOString(),
+      error: null,
+    };
+    gaCache.data = result;
+    gaCache.expiry = now + 15 * 60 * 1000;
+    return result;
+  } catch (e) {
+    const raw = e.message || 'Google Analytics fetch failed.';
+    const msg = /401|403|PERMISSION_DENIED|not been authorized|does not have access/i.test(raw)
+      ? `GA access denied (403): share the property with the service account (${raw})`
+      : raw;
+    const errorResult = {
+      users30d: null, sessions30d: null, goalConversions: null,
+      revenue30d: null, bounceRate: null, topPages: [],
+      error: msg,
+    };
+    gaCache.data = errorResult;
+    gaCache.expiry = now + 2 * 60 * 1000;
+    return errorResult;
   }
 }
 
@@ -1667,16 +1897,27 @@ export default async function handler(req, res) {
     // UI showed "Connected" even when no data was actually reachable.
     if (action === 'integration.google.start') {
       const b = req.body || {};
-      const measurementId = b.measurementId || process.env.VITE_GA_MEASUREMENT_ID || process.env.GA_MEASUREMENT_ID || process.env.GA_PROPERTY_ID;
-      const propertyId = b.propertyId || process.env.VITE_GA_PROPERTY_ID || process.env.GA_PROPERTY_ID || process.env.GA_MEASUREMENT_ID;
-      const configured = Boolean(measurementId && propertyId);
+      const propertyId = b.propertyId
+        || process.env.VITE_GA_PROPERTY_ID
+        || process.env.GA_PROPERTY_ID
+        || process.env.GA4_PROPERTY_ID
+        || '';
+      const measurementId = b.measurementId
+        || process.env.VITE_GA_MEASUREMENT_ID
+        || process.env.GA_MEASUREMENT_ID
+        || process.env.GA4_MEASUREMENT_ID
+        || '';
+      // Run the real GA4 fetch so the button reports reality, not optimism.
+      const stats = await fetchGa4Stats(propertyId);
+      const ok = !stats.error;
       return res.status(200).json({
-        success: configured,
-        connected: configured,
-        data: { configured },
-        message: configured
-          ? 'Google Analytics configured (live metrics need a GA4 service account with Viewer access).'
-          : 'Google Analytics not configured — add a measurement/property ID to see live traffic.',
+        success: ok,
+        connected: ok,
+        data: { configured: Boolean(measurementId || propertyId), ...stats },
+        error: stats.error,
+        message: ok
+          ? `Google Analytics connected — ${stats.users30d ?? 0} users in 30d.`
+          : `Google Analytics not connected — ${stats.error}.`,
       });
     }
     if (action === 'integration.social.start') {
@@ -1734,35 +1975,42 @@ export default async function handler(req, res) {
 
     if (action === 'integration.googleAnalytics') {
       const b = req.body || {};
-      const measurementId = b.measurementId || process.env.VITE_GA_MEASUREMENT_ID || process.env.GA_MEASUREMENT_ID || process.env.GA_PROPERTY_ID;
-      const propertyId = b.propertyId || process.env.VITE_GA_PROPERTY_ID || process.env.GA_PROPERTY_ID || process.env.GA_MEASUREMENT_ID;
-      // No sample metrics. Until a GA4 service account is wired up we cannot
-      // read real analytics, and inventing numbers is worse than showing none:
-      // it made the dashboard contradict itself ($0 on one screen, $4,200 on
-      // the next) and put fake revenue in a demo.
-      if (!measurementId || !propertyId) {
+      const propertyId = b.propertyId
+        || process.env.VITE_GA_PROPERTY_ID
+        || process.env.GA_PROPERTY_ID
+        || process.env.GA4_PROPERTY_ID
+        || '';
+      const measurementId = b.measurementId
+        || process.env.VITE_GA_MEASUREMENT_ID
+        || process.env.GA_MEASUREMENT_ID
+        || process.env.GA4_MEASUREMENT_ID
+        || '';
+      // No sample metrics. Either real numbers from the GA4 Data API, or an
+      // honest "not connected" with the exact reason — never invented data
+      // (fake numbers previously made the dashboard contradict itself).
+      if (!propertyId && !measurementId) {
         return res.status(200).json({
           connected: false,
           propertyId: null,
-          users30d: null,
-          sessions30d: null,
-          bounceRate: null,
-          topPages: [],
-          goalConversions: null,
-          revenue30d: null,
-          notice: 'Add your Google Analytics measurement ID and property ID to see live traffic.',
+          users30d: null, sessions30d: null, bounceRate: null,
+          topPages: [], goalConversions: null, revenue30d: null,
+          notice: 'Add your Google Analytics property/measurement ID to see live traffic.',
         });
       }
+      const stats = await fetchGa4Stats(propertyId);
       return res.status(200).json({
-        connected: false,
-        propertyId: measurementId,
-        users30d: null,
-        sessions30d: null,
-        bounceRate: null,
-        topPages: [],
-        goalConversions: null,
-        revenue30d: null,
-        notice: 'Your GA4 property is set, but reading analytics needs a service account with Viewer access. Connect it in Settings to see live traffic.',
+        connected: !stats.error,
+        propertyId: propertyId || null,
+        measurementId: measurementId || null,
+        users30d: stats.users30d,
+        sessions30d: stats.sessions30d,
+        bounceRate: stats.bounceRate,
+        topPages: stats.topPages,
+        goalConversions: stats.goalConversions,
+        revenue30d: stats.revenue30d,
+        lastUpdated: stats.lastUpdated || null,
+        fromCache: Boolean(stats.fromCache),
+        ...(stats.error ? { error: stats.error, notice: stats.error } : {}),
       });
     }
 
