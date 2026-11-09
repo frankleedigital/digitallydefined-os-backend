@@ -42,6 +42,8 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
+        "npm:@aws-sdk/client-s3@^3.1156.0",
+        "npm:@aws-sdk/s3-request-presigner@^3.1156.0",
         "npm:@modelcontextprotocol/sdk@^1.30.0",
         "npm:@supabase/supabase-js@^2.112.2",
         "npm:@types/node@^26.4.0",

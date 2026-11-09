@@ -1660,13 +1660,76 @@ export default async function handler(req, res) {
     // ---- Integration data + start flows (dashboard Connect buttons / Sync) ----
     // Mirrors supabase/functions/hermes/index.ts so the dashboard receives real
     // envelopes/data instead of a 404 "Unknown action".
-    if (
-      action === 'integration.google.start' ||
-      action === 'integration.social.start' ||
-      action === 'integration.email.start' ||
-      action === 'integration.community.start'
-    ) {
-      return res.status(200).json({ success: true, message: 'Integration flow started' });
+    // ---- Integration start flows (dashboard Connect buttons / Sync) ----
+    // These run the SAME fetch the data actions use and report honest status:
+    // success=true only when a real credential exists and the fetch did not
+    // error. The previous version returned success:true unconditionally, so the
+    // UI showed "Connected" even when no data was actually reachable.
+    if (action === 'integration.google.start') {
+      const b = req.body || {};
+      const measurementId = b.measurementId || process.env.VITE_GA_MEASUREMENT_ID || process.env.GA_MEASUREMENT_ID || process.env.GA_PROPERTY_ID;
+      const propertyId = b.propertyId || process.env.VITE_GA_PROPERTY_ID || process.env.GA_PROPERTY_ID || process.env.GA_MEASUREMENT_ID;
+      const configured = Boolean(measurementId && propertyId);
+      return res.status(200).json({
+        success: configured,
+        connected: configured,
+        data: { configured },
+        message: configured
+          ? 'Google Analytics configured (live metrics need a GA4 service account with Viewer access).'
+          : 'Google Analytics not configured — add a measurement/property ID to see live traffic.',
+      });
+    }
+    if (action === 'integration.social.start') {
+      const serverPlatforms = {};
+      if (process.env.FACEBOOK_PAGE_ID || process.env.FACEBOOK_ACCESS_TOKEN) serverPlatforms.facebook = { enabled: true };
+      if (process.env.INSTAGRAM_BUSINESS_ID || process.env.INSTAGRAM_ACCESS_TOKEN) serverPlatforms.instagram = { enabled: true };
+      if (process.env.YOUTUBE_CHANNEL_ID) serverPlatforms.youtube = { enabled: true };
+      const configured = Object.keys(serverPlatforms).length > 0;
+      return res.status(200).json({
+        success: configured,
+        connected: configured,
+        data: { platforms: serverPlatforms },
+        message: configured
+          ? 'Social accounts connected. Follower/impression reads are not implemented yet.'
+          : 'No social platform credentials configured.',
+      });
+    }
+    if (action === 'integration.email.start') {
+      const b = req.body || {};
+      const provider = b.provider || process.env.EMAIL_PROVIDER || 'brevo';
+      const hasBrevo = Boolean(b.hasBrevo ?? process.env.BREVO_API_KEY);
+      const hasMailchimp = Boolean(b.hasMailchimp ?? process.env.MAILCHIMP_API_KEY);
+      let stats = null;
+      if (provider === 'brevo' && hasBrevo) {
+        try { stats = await fetchBrevoStats(); } catch { stats = { error: 'Brevo fetch failed' }; }
+      }
+      const ok = provider !== 'brevo' ? hasMailchimp : !stats?.error;
+      return res.status(200).json({
+        success: ok,
+        connected: ok,
+        data: stats || {},
+        error: stats?.error || (ok ? undefined : 'No email provider available'),
+        message: ok ? `Email connected (${provider}).` : `Email not connected — ${stats?.error || 'no provider available'}.`,
+      });
+    }
+    if (action === 'integration.community.start') {
+      const b = req.body || {};
+      const platform = b.platform || process.env.COMMUNITY_PLATFORM || 'facebook';
+      const hasFacebook = Boolean(b.hasFacebook ?? process.env.FACEBOOK_GROUP_ID);
+      const hasDiscord = Boolean(b.hasDiscord ?? process.env.DISCORD_BOT_TOKEN);
+      const hasMighty = Boolean(b.hasMightyNetworks ?? process.env.MIGHTY_NETWORKS_API_KEY);
+      let group = null;
+      if (platform === 'facebook' && hasFacebook && process.env.FACEBOOK_ACCESS_TOKEN) {
+        try { group = await fetchFacebookGroup(); } catch { group = { error: 'Facebook fetch failed' }; }
+      }
+      const ok = group ? !group.error : (hasDiscord || hasMighty);
+      return res.status(200).json({
+        success: ok,
+        connected: ok,
+        data: group || {},
+        error: group?.error,
+        message: ok ? 'Community connected.' : `Community not connected — ${group?.error || 'no community platform credentials configured'}.`,
+      });
     }
 
     if (action === 'integration.googleAnalytics') {
