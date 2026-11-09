@@ -523,6 +523,12 @@ async function fetchNotionSnapshot() {
         status: notionPageStatus(page) || 'ok',
         url: `https://notion.so/${(page?.id || '').replace(/-/g, '')}`,
         last_edited_time: page?.last_edited_time || null,
+        // Full property payload so the dashboard's canonical mapper
+        // (mapNotionPageToView + normalizeProperties) can read real
+        // titles/status/niche per-DB. Without this the tab rendered
+        // every row as "Untitled".
+        properties: page?.properties || {},
+        created: page?.created_time || null,
       }));
     } catch {
       // A single database failing must not fail the whole dashboard sync.
@@ -1282,6 +1288,7 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: err.message });
       }
     }
+    if (action === 'asset.activate') {
       try {
         const payload = req.body?.payload || req.body || {};
         const dbId = process.env.NOTION_IDEAS_DB_ID;
@@ -1298,6 +1305,7 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: err.message });
       }
     }
+    if (action === 'intake.submit') {
       try {
         const payload = req.body?.payload || req.body || {};
         const dbId = process.env.NOTION_IDEAS_DB_ID;
@@ -1313,6 +1321,7 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: err.message });
       }
     }
+    if (action === 'feedback.submit') {
       try {
         const { recordFeedback, computeDemand, createOpportunity } = await import('../lib/hermesIntelligence.js');
         const payload = req.body?.payload || req.body || {};
@@ -1357,6 +1366,7 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: err.message });
       }
     }
+    if (action === 'hermes.status') {
       if (!checkDashboardApiKey(req)) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
