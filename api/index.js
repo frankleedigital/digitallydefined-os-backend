@@ -4,7 +4,7 @@
 
 import { antigravityHandle } from '../lib/antigravity.js';
 import { recommendForAudit, tagsFromFindings } from '../lib/affiliate.js';
-import { createSign } from 'node:crypto';
+import { createSign, createPrivateKey } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
 const ALLOWED_ORIGINS = [
@@ -778,7 +778,8 @@ async function gaAccessToken(forceRefresh = false) {
     exp,
   };
   const jwt = `${b64urlJson({ alg: 'RS256', typ: 'JWT' })}.${b64urlJson(claims)}.${
-    createSign('RSA-SHA256').update(`${b64urlJson({ alg: 'RS256', typ: 'JWT' })}.${b64urlJson(claims)}`).sign(sa.private_key, 'utf8')
+    createSign('RSA-SHA256').update(`${b64urlJson({ alg: 'RS256', typ: 'JWT' })}.${b64urlJson(claims)}`)
+      .sign(createPrivateKey(sa.private_key))
       .toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
   }`;
   const res = await fetchWithTimeout(
