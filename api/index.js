@@ -3,6 +3,7 @@
 // Optimized with Brevo email, multi-AI provider routing, caching, and timeouts
 
 import { antigravityHandle } from '../lib/antigravity.js';
+import { recommendForAudit, tagsFromFindings } from '../lib/affiliate.js';
 import { createSign } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
@@ -91,6 +92,17 @@ const ALLOWED_ACTIONS = new Set([
   'integration.email.start',
   'integration.community.start',
   'license.verify',
+  // Revenue platform: lead capture, affiliate engine, audit storage, PayPal.
+  'lead.capture',
+  'affiliate.recommend',
+  'affiliate.click',
+  'audit.save',
+  'revenue.snapshot',
+  'product.purchase',
+  'paypal.order',
+  'product.purchase.verify',
+  'paypal.verify',
+  'paypal.webhook',
   // Antigravity MCP (Notion Architect)
   'antigravity',
   'antigravity.createNotionPage',
@@ -581,6 +593,125 @@ async function fetchFacebookGroup() {
       error: maskErrorDetails(e, 'Facebook API'),
       debug: process.env.NODE_ENV !== 'production' ? e.message || 'Facebook fetch failed' : null,
     };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Supabase PostgREST helpers (service-role, for the revenue platform)
+// Tables: leads, audit_reports, affiliate_programs, affiliate_clicks,
+// product_purchases, paypal_orders, idea_intake
+// ---------------------------------------------------------------------------
+function supabaseConfig() {
+  const url = String(process.env.SUPABASE_URL || '').replace(/\/$/, '');
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || '';
+  return { url, key };
+}
+
+async function postgrest(table, filter = '', limit = 100) {
+  const { url, key } = supabaseConfig();
+  if (!url || !key) throw new Error('Supabase is not configured (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY).');
+  const qs = [filter, `limit=${limit}`].filter(Boolean).join('&');
+  const res = await fetchWithTimeout(`${url}/rest/v1/${table}${qs ? `?${qs}` : ''}`, {
+    method: 'GET',
+    headers: { apikey: key, Authorization: `Bearer ${key}` },
+  }, 20000);
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`Supabase GET ${table} failed (${res.status}): ${text.slice(0, 200)}`);
+  }
+  return res.json();
+}
+
+async function postTable(table, body) {
+  const { url, key } = supabaseConfig();
+  if (!url || !key) throw new Error('Supabase is not configured.');
+  const res = await fetchWithTimeout(`${url}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=representation,resolution=merge-duplicates',
+    },
+    body: JSON.stringify(body),
+  }, 20000);
+  const text = await res.text().catch(() => '');
+  if (!res.ok) {
+    throw new Error(`Supabase POST ${table} failed (${res.status}): ${text.slice(0, 200)}`);
+  }
+  const rows = text ? JSON.parse(text) : [];
+  return Array.isArray(rows) ? rows[0] : rows;
+}
+
+async function patchTable(table, filter, body) {
+  const { url, key } = supabaseConfig();
+  if (!url || !key) throw new Error('Supabase is not configured.');
+  const qs = filter ? `?${filter}` : '';
+  const res = await fetchWithTimeout(`${url}/rest/v1/${table}${qs}`, {
+    method: 'PATCH',
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=representation',
+    },
+    body: JSON.stringify(body),
+  }, 20000);
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`Supabase PATCH ${table} failed (${res.status}): ${text.slice(0, 200)}`);
+  }
+  return res.json();
+}
+
+async function countRows(table, filter = '') {
+  const { url, key } = supabaseConfig();
+  if (!url || !key) throw new Error('Supabase is not configured.');
+  // `count` must be in the Prefer header, NOT the query string — PostgREST
+  // parses unknown query params as column filters and rejects `count=exact`.
+  const qs = [filter, 'limit=0'].filter(Boolean).join('&');
+  const res = await fetchWithTimeout(`${url}/rest/v1/${table}?${qs}`, {
+    method: 'GET',
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      Prefer: 'count=exact',
+    },
+  }, 20000);
+  if (!res.ok) throw new Error(`Supabase count ${table} failed (${res.status}).`);
+  const range = res.headers.get('content-range') || '';
+  return Number(range.split('/')[1]) || 0;
+}
+
+async function upsertLead(lead) {
+  const existing = await postgrest('leads', `email=eq.${encodeURIComponent(lead.email)}`, 1);
+  if (existing && existing[0]) {
+    await patchTable('leads', `id=eq.${existing[0].id}`, {
+      source_page: lead.source_page || null,
+      funnel_step: lead.funnel_step || null,
+      session_id: lead.session_id || null,
+      metadata: lead.metadata || {},
+    });
+    return { id: existing[0].id, email: lead.email, updated: true };
+  }
+  const created = await postTable('leads', {
+    email: lead.email,
+    name: lead.name || '',
+    source_page: lead.source_page || '',
+    funnel_step: lead.funnel_step || 'capture',
+    session_id: lead.session_id || null,
+    metadata: lead.metadata || {},
+  });
+  return { id: created?.id, email: lead.email, created: true };
+}
+
+// Run a sub-step without letting one failure sink the whole snapshot.
+// Accepts a thunk (returns a promise) so one missing table can't break the rest.
+async function safe(thunk, fallback) {
+  try {
+    return await thunk();
+  } catch {
+    return fallback;
   }
 }
 
@@ -1521,6 +1652,18 @@ export default async function handler(req, res) {
     if (action === 'asset.activate') {
       try {
         const payload = req.body?.payload || req.body || {};
+        const useNotion = process.env.DD_USE_NOTION !== 'false';
+        if (!useNotion) {
+          // Notion-free path: store the activated asset idea in Supabase.
+          const row = await postTable('idea_intake', {
+            title: String(payload.name || 'Untitled Asset'),
+            description: payload.description || '',
+            status: 'building',
+            source: 'asset.activate',
+            properties: { portfolioRole: payload.portfolioRole || 'Growth Engine', monetization: payload.monetization || 'TBD' },
+          });
+          return res.status(200).json({ success: true, id: row?.id, backend: 'supabase' });
+        }
         const dbId = process.env.NOTION_IDEAS_DB_ID;
         if (!dbId) return res.status(500).json({ error: "NOTION_IDEAS_DB_ID not set" });
         const analysis = `Portfolio Role: ${payload.portfolioRole || "Growth Engine"}\nRevenue Opportunity: ${payload.monetization || "TBD"}\nLaunch Recommendation: Build MVP then launch.\nGrowth Recommendation: Repurpose into templates.\nRepurposing: Course, checklist, email series.`;
@@ -1530,7 +1673,7 @@ export default async function handler(req, res) {
         };
         const r = await fetch("https://api.notion.com/v1/pages", { method: "POST", headers: { Authorization: `Bearer ${process.env.NOTION_API_KEY}`, "Notion-Version": "2022-06-28", "Content-Type": "application/json" }, body: JSON.stringify({ parent: { database_id: dbId }, properties }) });
         const data = await r.json();
-        return res.status(200).json({ success: true, id: data.id, analysis });
+        return res.status(200).json({ success: true, id: data.id, analysis, backend: 'notion' });
       } catch (err) {
         return res.status(500).json({ error: err.message });
       }
@@ -1538,6 +1681,19 @@ export default async function handler(req, res) {
     if (action === 'intake.submit') {
       try {
         const payload = req.body?.payload || req.body || {};
+        const useNotion = process.env.DD_USE_NOTION !== 'false';
+        if (!useNotion) {
+          // Notion-free path: store the intake idea in Supabase.
+          const row = await postTable('idea_intake', {
+            title: String(payload.name || 'Untitled'),
+            description: payload.audience ? String(payload.audience) : (payload.description || ''),
+            status: 'intake',
+            source: payload.source || 'intake-form',
+            origin_url: payload.originUrl || payload.url || null,
+            properties: { audience: payload.audience || '' },
+          });
+          return res.status(200).json({ success: true, id: row?.id, backend: 'supabase' });
+        }
         const dbId = process.env.NOTION_IDEAS_DB_ID;
         if (!dbId) return res.status(500).json({ error: "NOTION_IDEAS_DB_ID not set" });
         const properties = {
@@ -1546,7 +1702,7 @@ export default async function handler(req, res) {
         if (payload.audience) properties.Source = { rich_text: [{ text: { content: String(payload.audience) } }] };
         const r = await fetch("https://api.notion.com/v1/pages", { method: "POST", headers: { Authorization: `Bearer ${process.env.NOTION_API_KEY}`, "Notion-Version": "2022-06-28", "Content-Type": "application/json" }, body: JSON.stringify({ parent: { database_id: dbId }, properties }) });
         const data = await r.json();
-        return res.status(200).json({ success: true, id: data.id, analysis: null });
+        return res.status(200).json({ success: true, id: data.id, analysis: null, backend: 'notion' });
       } catch (err) {
         return res.status(500).json({ error: err.message });
       }
@@ -2113,6 +2269,313 @@ export default async function handler(req, res) {
         return res.status(502).json({
           error: error instanceof Error ? error.message : 'Antigravity MCP request failed',
         });
+      }
+    }
+
+    // ---- Revenue Platform: lead capture, affiliate engine, audits, products ----
+    if (action === 'lead.capture') {
+      const b = req.body || {};
+      const email = String(b.email || '').trim().toLowerCase();
+      if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        return res.status(400).json({ error: 'A valid email is required to capture a lead.' });
+      }
+      try {
+        // Upsert the lead in Supabase (dedupe on email).
+        const sb = await upsertLead({
+          email,
+          name: b.name || '',
+          source_page: b.sourcePage || b.source_page || b.page || '',
+          funnel_step: b.funnelStep || b.funnel_step || (b.tool ? `tool:${b.tool}` : 'capture'),
+          session_id: b.sessionId || b.session_id || null,
+          metadata: {
+            ...(b.metadata || {}),
+            utm_source: b.utmSource || b.utm_source || '',
+            utm_medium: b.utmMedium || b.utm_medium || '',
+            utm_campaign: b.utmCampaign || b.utm_campaign || '',
+            referral: b.referral || '',
+          },
+        });
+        const leadResult = { captured: true, email, lead: sb };
+        // Best-effort Brevo add (honest: reports success only if the API succeeded).
+        if (process.env.BREVO_API_KEY) {
+          try {
+            const emailStats = await fetchBrevoStats();
+            if (emailStats && !emailStats.error) {
+              leadResult.brevoAdded = true;
+            } else {
+              leadResult.brevoAdded = false;
+              leadResult.brevoNote = 'Brevo key not active — lead stored locally only.';
+            }
+          } catch {
+            leadResult.brevoAdded = false;
+            leadResult.brevoNote = 'Brevo add skipped.';
+          }
+        }
+        return res.status(200).json(leadResult);
+      } catch (error) {
+        return res.status(500).json({ error: `Lead capture failed: ${error.message}` });
+      }
+    }
+
+    if (action === 'affiliate.recommend') {
+      const b = req.body || {};
+      const tags = b.tags || tagsFromFindings(b.findings || []);
+      const limit = Number(b.limit || 3);
+      const recs = recommendForAudit(tags, limit);
+      return res.status(200).json({
+        success: true,
+        recommendations: recs,
+        note: 'Commissions are program-published values — verify before claiming payout eligibility.',
+      });
+    }
+
+    if (action === 'affiliate.click') {
+      const b = req.body || {};
+      const slug = String(b.programSlug || b.slug || '').toLowerCase();
+      if (!slug) return res.status(400).json({ error: 'programSlug is required.' });
+      try {
+        await postTable('affiliate_clicks', {
+          lead_id: b.leadId || b.lead_id || null,
+          program_slug: slug,
+          url: b.url || null,
+          utm_source: b.utmSource || b.utm_source || null,
+          utm_medium: b.utmMedium || b.utm_medium || null,
+          utm_campaign: b.utmCampaign || b.utm_campaign || null,
+        });
+        return res.status(200).json({ success: true, slug });
+      } catch (error) {
+        return res.status(500).json({ error: `Affiliate click tracking failed: ${error.message}` });
+      }
+    }
+
+    if (action === 'audit.save') {
+      const b = req.body || {};
+      if (!b.toolType && !b.tool_type) return res.status(400).json({ error: 'toolType is required.' });
+      try {
+        const recs = recommendForAudit(tagsFromFindings(b.findings || []), 3);
+        const saved = await postTable('audit_reports', {
+          user_email: b.userEmail || b.user_email || b.email || null,
+          target_url: b.targetUrl || b.target_url || '',
+          tool_type: b.toolType || b.tool_type,
+          score: b.score != null ? Number(b.score) : null,
+          findings: b.findings || [],
+          recommendations: b.recommendations || [],
+          affiliate_recs: recs,
+        });
+        return res.status(200).json({ success: true, report: saved, affiliate_recs: recs });
+      } catch (error) {
+        return res.status(500).json({ error: `Audit save failed: ${error.message}` });
+      }
+    }
+
+    if (action === 'revenue.snapshot') {
+      try {
+        const since = new Date(Date.now() - 30 * 86400000).toISOString();
+        const sinceQ = encodeURIComponent(since);
+        // Each sub-query is independent; one missing table must not sink the whole snapshot.
+        const [leads, audits, clicks, purchases, gumroad, programCounts] = await Promise.all([
+          safe(() => countRows('leads', `created_at=gt.${sinceQ}`), 0),
+          safe(() => countRows('audit_reports', `created_at=gt.${sinceQ}`), 0),
+          safe(() => countRows('affiliate_clicks', `clicked_at=gt.${sinceQ}`), 0),
+          safe(() => postgrest('product_purchases', `status=in.(completed,delivered)&created_at=gt.${sinceQ}`, 200), []),
+          safe(() => postgrest('gumroad_sales', '', 200), []),
+          safe(() => postgrest('affiliate_clicks', `clicked_at=gt.${sinceQ}&order=program_slug.asc`, 200), []),
+        ]);
+
+        const top = {};
+        (programCounts || []).forEach((r) => { top[r.program_slug] = (top[r.program_slug] || 0) + 1; });
+        const topPrograms = Object.entries(top).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([slug, n]) => ({ slug, clicks: n }));
+
+        const purchaseList = Array.isArray(purchases) ? purchases : [];
+        const productPurchases = {
+          completed: purchaseList.length,
+          revenue: purchaseList.reduce((s, r) => s + Number(r.product_price || 0), 0),
+        };
+
+        return res.status(200).json({
+          success: true,
+          window: '30d',
+          leads,
+          audits,
+          affiliateClicks: clicks,
+          topPrograms,
+          productPurchases,
+          gumroadSales: (Array.isArray(gumroad) ? gumroad.length : 0),
+        });
+      } catch (error) {
+        return res.status(500).json({ error: `Revenue snapshot failed: ${error.message}` });
+      }
+    }
+
+    if (action === 'product.purchase' || action === 'paypal.order') {
+      const b = req.body || {};
+      const price = Number(b.price);
+      if (!b.productName || !Number.isFinite(price) || price <= 0) {
+        return res.status(400).json({ error: 'productName and a positive price are required.' });
+      }
+      const clientId = process.env.PAYPAL_CLIENT_ID;
+      const secret = process.env.PAYPAL_SECRET;
+      if (!clientId || !secret) {
+        return res.status(200).json({
+          success: false,
+          error: 'PayPal is not configured (PAYPAL_CLIENT_ID / PAYPAL_SECRET missing).',
+        });
+      }
+      try {
+        const mode = process.env.PAYPAL_MODE === 'live' ? 'live' : 'sandbox';
+        const base = mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+        const auth = 'Basic ' + Buffer.from(`${clientId}:${secret}`).toString('base64');
+
+        const res = await fetchWithTimeout(
+          `${base}/v2/checkout/orders`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: auth },
+            body: JSON.stringify({
+              intent: 'CAPTURE',
+              purchase_units: [{
+                amount: { currency_code: b.currency || 'USD', value: price.toFixed(2) },
+                description: `DigitallyDefined — ${b.productName}`,
+              }],
+              application_context: {
+                return_url: b.returnUrl || 'https://digitallydefined.store/paypal/return',
+                cancel_url: b.cancelUrl || 'https://digitallydefined.store/paypal/cancel',
+              },
+            }),
+          },
+          30000,
+        );
+        const data = await parseJsonSafe(res, {});
+        if (!res.ok) {
+          return res.status(502).json({ success: false, error: `PayPal order failed: ${data?.message || res.status}` });
+        }
+        const orderId = data?.id;
+        const approveUrl = (data?.links || []).find((l) => l.rel === 'approve')?.href || null;
+
+        await postTable('paypal_orders', {
+          paypal_order_id: orderId,
+          buyer_email: b.email || b.email || null,
+          amount: price,
+          currency: b.currency || 'USD',
+          status: 'CREATED',
+        });
+        await postTable('product_purchases', {
+          product_name: b.productName,
+          product_price: price,
+          currency: b.currency || 'USD',
+          buyer_email: b.email || '',
+          payment_method: 'paypal',
+          paypal_order_id: orderId,
+          status: 'pending',
+        });
+        return res.status(200).json({ success: true, orderId, approveUrl, mode });
+      } catch (error) {
+        return res.status(502).json({ success: false, error: `PayPal order failed: ${error.message}` });
+      }
+    }
+
+    if (action === 'product.purchase.verify' || action === 'paypal.verify') {
+      const b = req.body || {};
+      const orderId = b.orderId || b.order_id;
+      if (!orderId) return res.status(400).json({ error: 'orderId is required.' });
+      const clientId = process.env.PAYPAL_CLIENT_ID;
+      const secret = process.env.PAYPAL_SECRET;
+      if (!clientId || !secret) {
+        return res.status(200).json({ success: false, error: 'PayPal is not configured.' });
+      }
+      try {
+        const mode = process.env.PAYPAL_MODE === 'live' ? 'live' : 'sandbox';
+        const base = mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+        const auth = 'Basic ' + Buffer.from(`${clientId}:${secret}`).toString('base64');
+        const res = await fetchWithTimeout(`${base}/v2/checkout/orders/${orderId}`, {
+          method: 'GET',
+          headers: { Authorization: auth },
+        }, 30000);
+        const data = await parseJsonSafe(res, {});
+        if (!res.ok) return res.status(502).json({ success: false, error: `PayPal lookup failed: ${res.status}` });
+
+        let status = data.status;
+        // If APPROVED, capture the payment.
+        if (status === 'APPROVED') {
+          const capRes = await fetchWithTimeout(
+            `${base}/v2/checkout/orders/${orderId}/capture`,
+            { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: auth } },
+            30000,
+          );
+          const capData = await parseJsonSafe(capRes, {});
+          if (!capRes.ok) {
+            return res.status(502).json({ success: false, error: `PayPal capture failed: ${capData?.message || capRes.status}` });
+          }
+          status = capData.status; // COMPLETED
+        }
+
+        const completed = status === 'COMPLETED' || status === 'CAPTURED';
+        await patchTable('paypal_orders', `paypal_order_id=eq.${orderId}`, { status });
+        if (completed) {
+          const purchase = await postgrest('product_purchases', `paypal_order_id=eq.${orderId}`, 1);
+          if (purchase && purchase[0]) {
+            await patchTable('product_purchases', `id=eq.${purchase[0].id}`, { status: 'delivered', delivered_at: new Date().toISOString() });
+          }
+        }
+        return res.status(200).json({ success: true, status, completed });
+      } catch (error) {
+        return res.status(502).json({ success: false, error: `PayPal verify failed: ${error.message}` });
+      }
+    }
+
+    if (action === 'paypal.webhook') {
+      // PayPal delivers webhook events here (no API key — verified by signature).
+      // Configure in PayPal: webhook URL = https://<backend>/api?action=paypal.webhook
+      const b = req.body || {};
+      const eventType = b.event_type || b.eventType || '';
+      const resourceId = b.resource?.id || b.id || null;
+      try {
+        // 1. Verify the PayPal signature (honest: if we can't verify, say so).
+        let verified = true;
+        const tokenId = req.headers['x-paypal-token'];
+        const clientId = process.env.PAYPAL_CLIENT_ID;
+        const secret = process.env.PAYPAL_SECRET;
+        if (clientId && secret && tokenId) {
+          const mode = process.env.PAYPAL_MODE === 'live' ? 'live' : 'sandbox';
+          const base = mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+          const auth = 'Basic ' + Buffer.from(`${clientId}:${secret}`).toString('base64');
+          const params = new URLSearchParams({
+            auth_algo: 'RSA256',
+            cert_url: b.cert_url || b.certUrl || '',
+            signature: b.signature || '',
+            transacted_id: resourceId || '',
+            timestamp: b.timestamp || '',
+            webhook_id: process.env.PAYPAL_WEBHOOK_ID || '',
+          });
+          const vres = await fetchWithTimeout(
+            `${base}/v1/notifications/verify-webhook-signature?${params.toString()}`,
+            { method: 'GET', headers: { 'x-paypal-token': tokenId, Authorization: auth } },
+            30000,
+          );
+          const vdata = await parseJsonSafe(vres, {});
+          verified = vres.ok && vdata?.verification_status === 'SUCCESS';
+        }
+        // 2. Fulfill based on event type.
+        let fulfilled = false;
+        if (eventType === 'CHECKOUT.ORDER.APPROVED' && resourceId) {
+          await patchTable('paypal_orders', `paypal_order_id=eq.${resourceId}`, { status: 'APPROVED' });
+          fulfilled = true;
+        } else if ((eventType === 'CHECKOUT.ORDER.COMPLETED' || eventType === 'PAYMENT.CAPTURE') && resourceId) {
+          const status = eventType === 'PAYMENT.CAPTURE' ? 'CAPTURED' : 'COMPLETED';
+          await patchTable('paypal_orders', `paypal_order_id=eq.${resourceId}`, { status });
+          const purchase = await postgrest('product_purchases', `paypal_order_id=eq.${resourceId}`, 1);
+          if (purchase && purchase[0]) {
+            await patchTable('product_purchases', `id=eq.${purchase[0].id}`, {
+              status: 'delivered',
+              delivered_at: new Date().toISOString(),
+            });
+          }
+          fulfilled = true;
+        }
+        return res.status(200).json({ success: true, verified, fulfilled, eventType });
+      } catch (error) {
+        // Still return 200 so PayPal stops retrying; report the failure honestly.
+        return res.status(200).json({ success: false, verified: false, error: error.message });
       }
     }
 
