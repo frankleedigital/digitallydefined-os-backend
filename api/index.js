@@ -874,9 +874,9 @@ async function fetchGa4Stats(propertyId) {
   try {
     let metricVals;
     try {
-      metricVals = await runReport(['activeUsers', 'sessions', 'newUsers', 'events', 'nonBounceRate', 'webUserRevenue']);
+      metricVals = await runReport(['activeUsers', 'sessions', 'newUsers', 'eventCount', 'bounceRate', 'webUserRevenue']);
     } catch {
-      metricVals = await runReport(['activeUsers', 'sessions', 'newUsers', 'events']);
+      metricVals = await runReport(['activeUsers', 'sessions', 'newUsers', 'eventCount']);
     }
 
     let topPages = [];
@@ -909,13 +909,13 @@ async function fetchGa4Stats(propertyId) {
       topPages = [];
     }
 
-    const [users30d, sessions30d, newUsers30d, events30d, nonBounceRate, revenue30d] = metricVals;
+    const [users30d, sessions30d, newUsers30d, events30d, bounceRate30d, revenue30d] = metricVals;
     const result = {
       users30d: users30d != null ? Number(users30d) : null,
       sessions30d: sessions30d != null ? Number(sessions30d) : null,
       goalConversions: newUsers30d != null ? Number(newUsers30d) : null,
       revenue30d: revenue30d != null ? Number(revenue30d) : null,
-      bounceRate: nonBounceRate != null ? Math.max(0, 1 - Number(nonBounceRate)) : null,
+      bounceRate: bounceRate30d != null ? Number(bounceRate30d) : null,
       events30d: events30d != null ? Number(events30d) : null,
       topPages,
       lastUpdated: new Date().toISOString(),
