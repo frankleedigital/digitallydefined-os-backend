@@ -24,10 +24,7 @@ const DEFAULT_TIMEOUT = constants.AI_TIMEOUT_MS;
 // per-mode. Older code assumed mode freeMode/proMode/ultraMode chose the model;
 // it never did, so every call silently used env.omniroute.model.
 export function resolvePrimaryModel() {
-  // Direct Gemini API model — NEVER an OmniRoute omni/* or vertex/* id.
-  // gemini-2.5-flash and gemini-2.0-flash are retired by Google (404);
-  // gemini-3.5-flash verified live 2026-10-20.
-  return env.vertex.model || env.gemini.model || 'gemini-3.5-flash';
+  return env.vertex.model || env.gemini.model || 'gemini-3.5-flash-lite';
 }
 
 /** True when `id` is an OmniRoute-routed id that Vertex/Direct APIs cannot use. */
