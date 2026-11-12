@@ -15,7 +15,7 @@ import env from '../config/env.js';
 import constants from '../config/constants.js';
 import logger from '../utils/logger.js';
 
-const DEFAULT_TIMEOUT = constants.AI_TIMEOUT_MS;
+const DEFAULT_TIMEOUT = 25000;
 
 // Model resolution
 //
@@ -108,7 +108,7 @@ export function isAgnesConfigured() {
   return !!(env.agnes.apiKey && env.agnes.baseUrl);
 }
 export function isOmniRouteConfigured() {
-  // OmniRoute is enabled when API key and base URL are provided.
+  if (String(process.env.OMNIROUTE_DISABLED || '').toLowerCase() === 'true') return false;
   return !!(env.omniroute.apiKey && env.omniroute.baseUrl && env.omniroute.baseUrl.length > 0);
 }
 
