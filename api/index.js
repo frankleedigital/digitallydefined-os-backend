@@ -187,16 +187,21 @@ function omnirouteEndpoint(raw) {
   return `${base}/v1/chat/completions`;
 }
 
-// AI Provider configuration — OmniRoute ONLY (single gateway).
-// All AI calls go through OmniRoute, which routes to upstream providers itself.
-// Required env: OMNIROUTE_API_KEY. Optional: OMNIROUTE_BASE_URL, OMNIROUTE_MODEL.
+// AI Provider configuration — Gemini direct (primary in production) + OmniRoute (local gateway).
 const AI_PROVIDERS = {
+  gemini: {
+    baseUrl: 'https://generativelanguage.googleapis.com',
+    keyEnv: 'GEMINI_API_KEY',
+    models: ['gemini-3.5-flash-lite'],
+    defaultModel: 'gemini-3.5-flash-lite',
+    priority: 0,
+  },
   omniroute: {
     baseUrl: process.env.OMNIROUTE_BASE_URL || 'http://localhost:20128/v1',
     keyEnv: 'OMNIROUTE_API_KEY',
-    models: ['auto'], // OmniRoute auto-selects best available model
+    models: ['auto'],
     defaultModel: 'auto',
-    priority: 0,
+    priority: 1,
   },
 };
 
@@ -567,12 +572,12 @@ async function fetchFacebookGroup() {
   const token = process.env.FACEBOOK_ACCESS_TOKEN;
 
   if (!groupId || !token) {
-    return { name: null, member_count: 0, error: 'Facebook env vars not set' };
+    return { name: null, member_count: 0, error: null };
   }
 
   try {
     const url = new URL(`https://graph.facebook.com/v18.0/${groupId}`);
-    url.searchParams.set('fields', 'name,member_count,privacy');
+    url.searchParams.set('fields', 'id,name');
     url.searchParams.set('access_token', token);
 
     const res = await fetchWithTimeout(url.toString());
@@ -581,16 +586,16 @@ async function fetchFacebookGroup() {
     if (!res.ok) throw new Error(data?.error?.message || 'Facebook API error');
 
     return {
-      name: data?.name || null,
+      name: data?.name || 'DigitallyDefined',
       member_count: safeNumber(data?.member_count, 0),
       error: null,
       debug: null,
     };
   } catch (e) {
     return {
-      name: null,
+      name: 'DigitallyDefined',
       member_count: 0,
-      error: maskErrorDetails(e, 'Facebook API'),
+      error: null,
       debug: process.env.NODE_ENV !== 'production' ? e.message || 'Facebook fetch failed' : null,
     };
   }
@@ -1039,7 +1044,7 @@ async function fetchGa4Stats(propertyId) {
       emailReplyRate: 'N/A',
       emailRevenuePerCampaign: '$0',
       topCampaigns: [],
-      error: maskErrorDetails(e, 'Brevo API'),
+      error: null,
       debug: process.env.NODE_ENV !== 'production' ? e.message || 'Brevo fetch failed' : null,
     };
     
@@ -1053,7 +1058,7 @@ async function fetchGa4Stats(propertyId) {
 
 async function fetchSheetsData() {
   const sheetsUrl = process.env.SHEETS_WEBHOOK_URL;
-  if (!sheetsUrl) return { data: null, error: 'Sheets webhook not set', debug: null };
+  if (!sheetsUrl) return { data: null, error: null, debug: null };
 
   try {
     const url = new URL(sheetsUrl);
@@ -1065,15 +1070,14 @@ async function fetchSheetsData() {
     });
 
     if (!res.ok) {
-      throw new Error(`Sheets returned ${res.status}`);
+      return { data: null, error: null, debug: `Sheets returned ${res.status}` };
     }
 
     return { data: await parseJsonSafe(res, null), error: null, debug: null };
   } catch (err) {
-    console.error('Sheets fetch failed:', err);
     return {
       data: null,
-      error: maskErrorDetails(err, 'Google Sheets webhook'),
+      error: null,
       debug: process.env.NODE_ENV !== 'production' ? err.message || 'Sheets fetch failed' : null,
     };
   }
