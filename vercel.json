@@ -4,26 +4,62 @@
     {
       "src": "api/**/*.js",
       "use": "@vercel/node",
-      "config": { "maxDuration": 60 }
+      "config": {
+        "maxDuration": 60
+      }
     }
   ],
   "buildCommand": "npm run build",
   "outputDirectory": "",
   "rewrites": [
-    { "source": "/", "destination": "/api/index.js" },
-    { "source": "/api", "destination": "/api/index.js" },
-    { "source": "/hermes-mcp", "destination": "/api/hermes-mcp.js" },
-    { "source": "/mcp", "destination": "/api/hermes-mcp.js" }
+    {
+      "source": "/",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/api",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/hermes-mcp",
+      "destination": "/api/hermes-mcp.js"
+    },
+    {
+      "source": "/mcp",
+      "destination": "/api/hermes-mcp.js"
+    },
+    {
+      "source": "/api/cron-morning",
+      "destination": "/api/index.js"
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization, x-api-key, apikey, x-user-id" },
-        { "key": "Access-Control-Max-Age", "value": "86400" },
-        { "key": "Vary", "value": "Origin" }
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization, x-api-key, apikey, x-user-id"
+        },
+        {
+          "key": "Access-Control-Max-Age",
+          "value": "86400"
+        },
+        {
+          "key": "Vary",
+          "value": "Origin"
+        }
       ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron-morning",
+      "schedule": "30 12 * * *"
     }
   ]
 }

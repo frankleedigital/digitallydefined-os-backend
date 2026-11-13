@@ -45,6 +45,8 @@ const ALLOWED_ACTIONS = new Set([
   'dashboard',
   'ai.recommendations',
   'brain.brief',
+  'brain.latest-brief',
+  'morning.brief',
   'chat',
   'public.chat',
   'mentor.dev',
@@ -1323,6 +1325,146 @@ Respond ONLY with a JSON object in this exact format (no markdown, no extra text
   }
 }
 
+// ─── Morning-brief persistence + delivery (Step 4: daily AI advisor) ───
+// Shared context builder — identical data shape to the `dashboard` action so
+// the morning brief always reflects the same live signals.
+async function buildBriefContext() {
+  const [fbData, brevoData, sheetsResult] = await Promise.all([
+    fetchFacebookGroup(),
+    fetchBrevoStats(),
+    fetchSheetsData(),
+  ]);
+  const sheetsData = sheetsResult.data;
+  const communityCount = safeNumber(fbData?.member_count, safeNumber(sheetsData?.communityCount, 0));
+  const revenueNumber = safeNumber(sheetsData?.revenue, NaN);
+  const revenue = Number.isFinite(revenueNumber)
+    ? formatUSD(revenueNumber)
+    : safeString(sheetsData?.revenue, '$0');
+  return {
+    communityCount,
+    emailSubscribers: brevoData.totalSubscribers,
+    emailOpenRate: brevoData.emailOpenRate,
+    emailClickRate: brevoData.emailClickRate,
+    topAsset: safeString(sheetsData?.topAsset, 'N/A'),
+    revenue,
+    communityGrowth: safeString(sheetsData?.communityGrowth, '0%'),
+  };
+}
+
+// Save one brief per day to Supabase `ai_briefs` (service role bypasses RLS).
+async function saveMorningBrief(brief) {
+  const supabaseUrl = String(process.env.SUPABASE_URL || '').replace(/\/+$/, '');
+  const serviceKey = String(process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
+  if (!supabaseUrl || !serviceKey) return { saved: false, reason: 'supabase-rest-not-configured' };
+  const today = new Date().toISOString().slice(0, 10);
+  const auth = { apikey: serviceKey, Authorization: `Bearer ${serviceKey}`, 'Content-Type': 'application/json' };
+
+  // Idempotency: if today's brief is already stored, report success without rewriting.
+  const existing = await fetch(
+    `${supabaseUrl}/rest/v1/ai_briefs?brief_date=eq.${today}&select=brief_date`,
+    { headers: auth }
+  );
+  if (existing.ok) {
+    const rows = await existing.json();
+    if (Array.isArray(rows) && rows.length) return { saved: true, already_exists: true, brief_date: today };
+  }
+
+  const res = await fetch(`${supabaseUrl}/rest/v1/ai_briefs`, {
+    method: 'POST',
+    headers: { ...auth, Prefer: 'resolution=merge-duplicates, return=representation' },
+    body: JSON.stringify({
+      brief_date: today,
+      working: Array.isArray(brief.working) ? brief.working : [],
+      slipping: Array.isArray(brief.slipping) ? brief.slipping : [],
+      next_actions: Array.isArray(brief.nextActions) ? brief.nextActions : [],
+      provider: brief.provider || null,
+    }),
+  });
+  if (res.status === 409) return { saved: true, already_exists: true, brief_date: today };
+  if (!res.ok) return { saved: false, reason: `supabase-${res.status}` };
+  return { saved: true, brief_date: today };
+}
+
+// Latest stored brief for the COMMAND tab ("this morning's brief").
+async function fetchLatestBrief() {
+  const supabaseUrl = String(process.env.SUPABASE_URL || '').replace(/\/+$/, '');
+  const serviceKey = String(process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
+  if (!supabaseUrl || !serviceKey) return null;
+  const res = await fetch(
+    `${supabaseUrl}/rest/v1/ai_briefs?select=*&order=brief_date.desc&limit=1`,
+    { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
+  );
+  if (!res.ok) return null;
+  const rows = await res.json();
+  const row = Array.isArray(rows) && rows.length ? rows[0] : null;
+  if (!row) return null;
+  return {
+    brief_date: row.brief_date,
+    working: row.working || [],
+    slipping: row.slipping || [],
+    nextActions: row.next_actions || [],
+    provider: row.provider || null,
+    generatedAt: row.created_at || null,
+  };
+}
+
+// Deliver the brief to the owner via Brevo (same sender domain as quiz emails).
+async function emailMorningBrief(brief) {
+  const apiKey = String(process.env.BREVO_API_KEY || '').trim();
+  const to = String(process.env.BREVO_MORNING_BRIEF_TO || 'francesca@digitallydefined.agency').trim();
+  if (!apiKey) return { emailed: false, reason: 'brevo-key-missing' };
+  const date = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  const items = (arr, empty) =>
+    Array.isArray(arr) && arr.length
+      ? arr.map((x) => `<li style="margin:0 0 6px">${String(x).replace(/</g, '&lt;').replace(/>/g, '&gt;')}</li>`).join('')
+      : `<li style="color:#666">${empty}</li>`;
+  const heading = (t) => `<h3 style="margin:18px 0 6px;font-size:14px;color:#111">${t}</h3>`;
+  const html = [
+    `<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px">`,
+    `<p style="font-size:15px">Good morning. Here is your DigitallyDefined brief for <strong>${date}</strong>.</p>`,
+    heading('What\'s working') + `<ul style="padding-left:18px">${items(brief.working, 'No signals yet — the funnel is quiet this morning.')}</ul>`,
+    heading('What\'s slipping') + `<ul style="padding-left:18px">${items(brief.slipping, 'Nothing slipping. Keep the pace.')}</ul>`,
+    heading('Next actions') + `<ul style="padding-left:18px">${items(brief.nextActions, 'Open the dashboard and run a sync to generate priorities.')}</ul>`,
+    `<p style="margin-top:18px;font-size:13px;color:#666">One decision today beats ten reviews. — The AI Business Partner</p>`,
+    `</div>`,
+  ].join('');
+  const text = [
+    `Your DigitallyDefined morning brief (${date}):`,
+    '',
+    "WORKING:",
+    ...(Array.isArray(brief.working) && brief.working.length ? brief.working.map((x) => `  - ${x}`) : ['  (no signals yet)']),
+    '',
+    'SLIPPING:',
+    ...(Array.isArray(brief.slipping) && brief.slipping.length ? brief.slipping.map((x) => `  - ${x}`) : ['  (nothing slipping)']),
+    '',
+    'NEXT ACTIONS:',
+    ...(Array.isArray(brief.nextActions) && brief.nextActions.length ? brief.nextActions.map((x) => `  - ${x}`) : ['  (run a dashboard sync to generate priorities)']),
+    '',
+    'Open the dashboard: https://dashboard.digitallydefined.agency/dashboard',
+  ].join('\n');
+  try {
+    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'api-key': apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender: { email: String(process.env.BREVO_FROM_EMAIL || 'francesca@digitallydefined.agency'), name: 'DigitallyDefined' },
+        to: [{ email: to, name: 'Francesca' }],
+        subject: `Your morning brief — ${date}`,
+        htmlContent: html,
+        textContent: text,
+      }),
+    });
+    if (res.ok) return { emailed: true, to };
+    const body = await res.text().catch(() => '');
+    return { emailed: false, reason: `brevo-${res.status}`, detail: body.slice(0, 200) };
+  } catch (err) {
+    return { emailed: false, reason: err instanceof Error ? err.message : String(err) };
+  }
+}
+
 function buildAlerts(checks) {
   const alerts = [];
 
@@ -1412,11 +1554,22 @@ export default async function handler(req, res) {
     return res.status(rateLimitResult.status).json(rateLimitResult.body);
   }
 
-  const action = typeof req.query?.action === 'string'
+  let action = typeof req.query?.action === 'string'
     ? req.query.action
     : typeof req.body?.action === 'string'
       ? req.body.action
       : 'status';
+
+  // Vercel cron marker (per Vercel docs: GET requests with user agent
+  // "vercel-cron/1.0" and an x-vercel-cron-schedule header). The dedicated
+  // /api/cron-morning route maps to the daily morning-brief job.
+  const isVercelCronRequest =
+    !!(req.headers && req.headers['x-vercel-cron-schedule']) ||
+    String((req.headers && req.headers['user-agent']) || '').includes('vercel-cron/1.0');
+  if (isVercelCronRequest && !req.query?.action) {
+    action = 'morning.brief';
+  }
+
   const methodValidation = validateMethodForAction(req, action);
 
   if (methodValidation) {
@@ -1799,52 +1952,89 @@ export default async function handler(req, res) {
     }
 
     if (action === 'brain.brief') {
+      // Real generation (replaces the old hardcoded stub) — same live signals
+      // as the dashboard action, so the COMMAND tab and the morning email
+      // always agree.
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      let brief;
+      try {
+        const context = await buildBriefContext();
+        brief = await fetchAIBrief(context);
+      } catch (err) {
+        brief = {
+          working: [],
+          slipping: ['AI brief could not be generated right now.'],
+          nextActions: ['Open the dashboard and run a sync to retry the brief.'],
+          error: maskErrorDetails(err instanceof Error ? err.message : String(err), 'AI'),
+          provider: null,
+        };
+      }
       return res.status(200).json({
-        generatedAt: '2026-05-25T17:25:00-04:00',
         status: 'ok',
+        generatedAt: new Date().toISOString(),
+        brief,
         daily_brief: {
-          headline: 'One-sentence executive summary',
-          summary: 'Short paragraph explaining what matters most today.',
-          priority: 'high',
+          headline: Array.isArray(brief.working) && brief.working.length ? brief.working[0] : 'No signals yet.',
+          summary:
+            (Array.isArray(brief.nextActions) && brief.nextActions.length
+              ? brief.nextActions[0]
+              : 'Run a dashboard sync to generate priorities.') + '',
+          priority: Array.isArray(brief.slipping) && brief.slipping.length ? 'attention' : 'steady',
         },
-        market_gaps: [
-          {
-            title: 'Underserved offer angle',
-            why_it_matters: 'Why this looks profitable now',
-            source: 'Notion + Perplexity + Sheets',
-            confidence: 88,
-            recommended_action: 'Create lead magnet or validate with content',
-          },
-        ],
-        build_next: {
-          asset_type: 'Lead magnet',
-          title: 'Gen X digital income angle',
-          reason: 'Best mix of demand, speed, and fit',
-          cta: 'Draft in Notion AI agent',
-        },
-        stale_automations: [
-          {
-            name: 'Ideas Intake enrichment',
-            tool: 'Gumloop',
-            issue: 'No sync in 48 hours',
-            severity: 'medium',
-          },
-        ],
-        urgent_alerts: [
-          {
-            title: 'Meta insights sync failed',
-            detail: 'Last successful pull was over 24h ago',
-            action: 'Check Vercel env or token',
-          },
-        ],
-        source_health: {
-          notion: 'connected',
-          antigravity: 'connected',
-          google_sheets: 'connected',
-          slack: 'connected',
-          gumloop: 'connected',
-          meta_api: 'connected',
-        },
+        provider: brief.provider || null,
+      });
+    }
+
+    if (action === 'morning.brief') {
+      // Daily advisor job (triggered by the Vercel cron and on demand):
+      // generate -> persist (ai_briefs) -> email the owner via Brevo.
+      // Auth: dashboard API key, OR a Vercel cron request (user agent
+      // "vercel-cron/1.0" / x-vercel-cron-schedule header, set by Vercel's
+      // scheduler). The job is idempotent — one stored brief per day, one
+      // email per day — so a manual trigger at most duplicates today's.
+      const isVercelCron =
+        !!(req.headers && req.headers['x-vercel-cron-schedule']) ||
+        String((req.headers && req.headers['user-agent']) || '').includes('vercel-cron/1.0');
+      if (!isVercelCron && !checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      let context;
+      try {
+        context = await buildBriefContext();
+      } catch (err) {
+        context = {
+          communityCount: 0,
+          emailSubscribers: 0,
+          emailOpenRate: null,
+          emailClickRate: null,
+          topAsset: 'N/A',
+          revenue: '$0',
+          communityGrowth: '0%',
+        };
+      }
+      const brief = await fetchAIBrief(context);
+      const saved = await saveMorningBrief(brief).catch(() => ({ saved: false, reason: 'save-failed' }));
+      const mail = await emailMorningBrief(brief).catch(() => ({ emailed: false, reason: 'email-failed' }));
+      return res.status(200).json({
+        status: 'ok',
+        generatedAt: new Date().toISOString(),
+        brief,
+        saved,
+        emailed: mail,
+      });
+    }
+
+    if (action === 'brain.latest-brief') {
+      // Latest stored morning brief for the COMMAND tab ("This morning").
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      const row = await fetchLatestBrief().catch(() => null);
+      return res.status(200).json({
+        brief: row,
+        generatedAt: row?.generatedAt || null,
       });
     }
 
