@@ -307,7 +307,7 @@ export async function handleBusinessPartner(req, res) {
       if (parsed) {
         businessInsights = parsed;
         const prose = braceStart > 0 ? cleaned.slice(0, braceStart).trim() : '';
-        reply = prose || parsed.summary || parsed.recommended_next_action || (parsed.growth_opportunities ? parsed.growth_opportunities.join('. ') : '') || 'Here is my strategic analysis:';
+        reply = prose || parsed.response || parsed.message || parsed.summary || parsed.recommended_next_action || (parsed.growth_opportunities ? parsed.growth_opportunities.join('. ') : '') || 'Here is my strategic analysis:';
       }
     } catch {
       // Not JSON - use raw reply
