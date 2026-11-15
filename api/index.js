@@ -2402,6 +2402,18 @@ export default async function handler(req, res) {
     if (action === 'social.publish' || action === 'publisher.social.publish') {
       if (!checkDashboardApiKey(req)) return res.status(401).json({ error: 'Unauthorized' });
       const payload = req.body?.payload || req.body || {};
+      const engine = payload.engine || (process.env.FACEBOOK_ACCESS_TOKEN ? 'direct' : 'make');
+
+      if (engine === 'direct') {
+        try {
+          const { publishToMetaChannels } = await import('../src/services/metaPublisher.js');
+          const metaResult = await publishToMetaChannels(payload);
+          return res.status(metaResult.success ? 200 : 500).json(metaResult);
+        } catch (err) {
+          return res.status(500).json({ success: false, error: err.message });
+        }
+      }
+
       const { publishToMake } = await import('../src/services/makePublisher.js');
       const result = await publishToMake(payload);
       return res.status(result.success ? 200 : 500).json(result);
