@@ -88,6 +88,8 @@ const ALLOWED_ACTIONS = new Set([
   'integration.social',
   'integration.email',
   'integration.community',
+  'social.publish',
+  'publisher.social.publish',
   // Integration start flows (dashboard Connect buttons).
   'integration.google.start',
   'integration.social.start',
@@ -2395,6 +2397,14 @@ export default async function handler(req, res) {
         topPosts: [],
         notice: 'Your social accounts are connected. Follower and impression data is not read yet.',
       });
+    }
+
+    if (action === 'social.publish' || action === 'publisher.social.publish') {
+      if (!checkDashboardApiKey(req)) return res.status(401).json({ error: 'Unauthorized' });
+      const payload = req.body?.payload || req.body || {};
+      const { publishToMake } = await import('../src/services/makePublisher.js');
+      const result = await publishToMake(payload);
+      return res.status(result.success ? 200 : 500).json(result);
     }
 
     if (action === 'integration.email') {
