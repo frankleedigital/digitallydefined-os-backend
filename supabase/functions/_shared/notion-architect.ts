@@ -50,6 +50,13 @@ export type NotionPropSpec = {
    * the Notion API rejects writes to these.
    */
   readOnly?: boolean;
+  /**
+   * The name this property actually carries in the live Notion database when
+   * it differs from the canonical `name` (DB-wins). Set ONLY for live
+   * databases verified to use a non-canonical property name; writes and
+   * dedup filters emit this instead of `name`.
+   */
+  liveName?: string;
 };
 
 export type NotionDbSpec = {
@@ -210,7 +217,7 @@ export const NOTION_OS_DBS: Record<string, NotionDbSpec> = {
       // DB on 2026-11-02). "Name" and "Action" are accepted legacy inputs so
       // older callers keep working, but writes must emit "Automation Name" or
       // Notion rejects the page with a validation_error.
-      { name: "Name", type: "title", required: true, maxChars: 2000, legacyNames: ["Automation Name", "Action"] },
+      { name: "Name", type: "title", required: true, maxChars: 2000, legacyNames: ["Automation Name", "Action"], liveName: "Automation Name" },
       // Live select carries a "Succeeded" option in addition to the base set.
       { name: "Status", type: "select", required: false, options: ["Draft", "Published", "Done", "Failed", "Succeeded"], synonyms: STATUS_SYNONYMS },
       // Live "Source" is rich_text, NOT select — sending select fails validation.
@@ -257,9 +264,12 @@ export function getNotionDbId(key: string): string | null {
   return null;
 }
 
-/** The canonical architect property name. Returns the `name` field. */
+/**
+ * The property name to emit on the live Notion database. Prefers the verified
+ * live name (`liveName`) when set (DB-wins), else the canonical architect name.
+ */
 export function notionPropName(prop: NotionPropSpec): string {
-  return prop.name;
+  return prop.liveName ?? prop.name;
 }
 
 /**
