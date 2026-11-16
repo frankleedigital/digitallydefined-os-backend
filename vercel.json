@@ -31,6 +31,10 @@
     {
       "source": "/api/cron-morning",
       "destination": "/api/index.js"
+    },
+    {
+      "source": "/api/cron-social",
+      "destination": "/api/cron-social.js"
     }
   ],
   "headers": [

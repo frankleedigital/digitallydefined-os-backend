@@ -89,6 +89,8 @@ const ALLOWED_ACTIONS = new Set([
   'integration.email',
   'integration.community',
   'social.publish',
+  'social.auto-post',
+  'social.generate',
   'publisher.social.publish',
   // Integration start flows (dashboard Connect buttons).
   'integration.google.start',
@@ -2397,6 +2399,24 @@ export default async function handler(req, res) {
         topPosts: [],
         notice: 'Your social accounts are connected. Follower and impression data is not read yet.',
       });
+    }
+
+    if (action === 'social.generate') {
+      const { generateSocialPost } = await import('../src/services/socialContentEngine.js');
+      const timeOfDay = req.body?.timeOfDay || req.query?.slot;
+      const post = await generateSocialPost(timeOfDay);
+      return res.status(200).json({ success: true, post });
+    }
+
+    if (action === 'social.auto-post') {
+      const isCron = req.headers['x-vercel-cron'] || req.headers['authorization']?.includes(process.env.CRON_SECRET || 'cron');
+      if (!isCron && !checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      const { runAutoPost } = await import('../src/services/socialContentEngine.js');
+      const timeOfDay = req.body?.timeOfDay || req.query?.slot;
+      const result = await runAutoPost(timeOfDay);
+      return res.status(200).json(result);
     }
 
     if (action === 'social.publish' || action === 'publisher.social.publish') {
