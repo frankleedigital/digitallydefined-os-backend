@@ -32,9 +32,15 @@ async function notionPost(path: string, body: unknown) {
 }
 
 async function generateInsights(productName: string, revenue: number, buyerEmail: string) {
-  const apiKey = Deno.env.get("OMNIROUTE_API_KEY") || Deno.env.get("GEMINI_API_KEY") || "";
-  const baseUrl = Deno.env.get("OMNIROUTE_BASE_URL") || "https://generativelanguage.googleapis.com/v1beta/openai";
-  const model = Deno.env.get("OMNIROUTE_MODEL") || "gemini-3.5-flash";
+  // OMNIROUTE_DISABLED=true (temporary): spend the remaining Google Cloud credits on Gemini directly.
+  const disabled = Deno.env.get("OMNIROUTE_DISABLED") === "true";
+  const apiKey = disabled
+    ? Deno.env.get("GEMINI_API_KEY") || ""
+    : Deno.env.get("OMNIROUTE_API_KEY") || Deno.env.get("GEMINI_API_KEY") || "";
+  const baseUrl = disabled
+    ? "https://generativelanguage.googleapis.com/v1beta/openai"
+    : Deno.env.get("OMNIROUTE_BASE_URL") || "https://generativelanguage.googleapis.com/v1beta/openai";
+  const model = Deno.env.get("GEMINI_MODEL") || (disabled ? "gemini-3.5-flash" : Deno.env.get("OMNIROUTE_MODEL") || "gemini-3.5-flash");
 
   const prompt = `You are a revenue analyst for DigitallyDefined. Analyze this sale and provide brief insights.
 
@@ -81,7 +87,7 @@ Return ONLY a JSON object:
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders(req.headers.get("origin") || "") });
   }
 
   try {
@@ -90,7 +96,7 @@ serve(async (req) => {
 
     if (action === "status") {
       return new Response(JSON.stringify({ ok: true, service: "product-intelligence", version: "1.0" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders(req.headers.get("origin") || ""), "Content-Type": "application/json" },
       });
     }
 
@@ -121,7 +127,7 @@ serve(async (req) => {
       revenue,
       insights,
     }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders(req.headers.get("origin") || ""), "Content-Type": "application/json" },
     });
   } catch (error) {
     console.error("[product-intelligence] Error:", error);
@@ -130,8 +136,7 @@ serve(async (req) => {
       error: error instanceof Error ? error.message : "Unknown error",
     }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders(req.headers.get("origin") || ""), "Content-Type": "application/json" },
     });
   }
 });
-EOF

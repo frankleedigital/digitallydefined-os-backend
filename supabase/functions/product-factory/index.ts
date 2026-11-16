@@ -99,9 +99,15 @@ async function readIdea(ideaId: string) {
 
 // Step 2: AI generates product metadata
 async function generateProductMetadata(ideaData: { clean: Record<string, string> }) {
-  const apiKey = Deno.env.get("OMNIROUTE_API_KEY") || Deno.env.get("GEMINI_API_KEY") || "";
-  const baseUrl = Deno.env.get("OMNIROUTE_BASE_URL") || "https://generativelanguage.googleapis.com/v1beta/openai";
-  const model = Deno.env.get("OMNIROUTE_MODEL") || "gemini-3.5-flash";
+  // OMNIROUTE_DISABLED=true (temporary): spend the remaining Google Cloud credits on Gemini directly.
+  const disabled = Deno.env.get("OMNIROUTE_DISABLED") === "true";
+  const apiKey = disabled
+    ? Deno.env.get("GEMINI_API_KEY") || ""
+    : Deno.env.get("OMNIROUTE_API_KEY") || Deno.env.get("GEMINI_API_KEY") || "";
+  const baseUrl = disabled
+    ? "https://generativelanguage.googleapis.com/v1beta/openai"
+    : Deno.env.get("OMNIROUTE_BASE_URL") || "https://generativelanguage.googleapis.com/v1beta/openai";
+  const model = Deno.env.get("GEMINI_MODEL") || (disabled ? "gemini-3.5-flash" : Deno.env.get("OMNIROUTE_MODEL") || "gemini-3.5-flash");
 
   const c = ideaData.clean;
 
