@@ -316,7 +316,7 @@ async function queueForApproval(assetId: string, metadata: Record<string, unknow
 // Main handler
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders(req.headers.get("origin") || "") });
   }
 
   try {
@@ -326,14 +326,14 @@ serve(async (req) => {
 
     if (action === "status") {
       return new Response(JSON.stringify({ ok: true, service: "product-factory", version: "1.0" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders(req.headers.get("origin") || ""), "Content-Type": "application/json" },
       });
     }
 
     if (!ideaId) {
       return new Response(JSON.stringify({ ok: false, error: "ideaId is required" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders(req.headers.get("origin") || ""), "Content-Type": "application/json" },
       });
     }
 
