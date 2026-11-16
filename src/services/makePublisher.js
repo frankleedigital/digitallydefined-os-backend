@@ -42,14 +42,19 @@ export async function publishToMake(postData) {
   };
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
     const res = await fetch(MAKE_WEBHOOK_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'User-Agent': 'DigitallyDefined-OS-Backend/1.0 (+https://digitallydefined.store)'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
 
     if (!res.ok) {
       const errText = await res.text().catch(() => '');
