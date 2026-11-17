@@ -131,21 +131,18 @@ function failed(provider, error) {
 // NEVER receives OmniRoute ids (omni/*, auto/*, vertex/*); they are
 // sanitized via resolveVertexModel(). Independent of OmniRoute.
 export async function callVertexGemini(model, prompt, options = {}) {
-  const { systemPrompt, jsonMode, timeout = 35000 } = options;
+  const { systemPrompt, jsonMode, timeout = 15000 } = options;
   const apiKey = env.gemini.apiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '';
   if (!apiKey) return failed('vertex-gemini', 'GEMINI_API_KEY not configured');
 
   const modelId = resolveVertexModel(model) || 'gemini-3.5-flash-lite';
   const endpoint = (process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta/openai').replace(/\/+$/, '') + '/chat/completions';
 
-  const explicitModel = model && !isOmniRouteModelId(model) && !model.includes('/') ? model : null;
-  const candidateModels = [...new Set([
-    ...(explicitModel ? [explicitModel] : []),
+  // Verified live Google Cloud Vertex/Gemini models (fastest sub-second latency)
+  const candidateModels = [
     'gemini-3.5-flash-lite',
     'gemini-3.1-flash-lite',
-    'gemini-3.5-flash',
-    modelId,
-  ])];
+  ];
 
   const messages = [];
   if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });

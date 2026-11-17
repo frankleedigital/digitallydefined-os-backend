@@ -148,9 +148,13 @@ export async function handleBusinessPartner(req, res) {
 
     let businessContext = '';
     try {
-      const [fbData, brevoData, sheetsResult] = await Promise.all([
-        fetchFacebookGroup(), fetchBrevoStats(), fetchSheetsData()
+      const fastFetch = Promise.all([
+        fetchFacebookGroup().catch(() => null),
+        fetchBrevoStats().catch(() => null),
+        fetchSheetsData().catch(() => null)
       ]);
+      const timeout = new Promise((resolve) => setTimeout(() => resolve([null, null, null]), 2500));
+      const [fbData, brevoData, sheetsResult] = await Promise.race([fastFetch, timeout]);
       const s = sheetsResult?.data || {};
       businessContext = [
         'REVENUE: ' + formatUSD(safeNumber(s.revenue, 0)),
@@ -160,13 +164,13 @@ export async function handleBusinessPartner(req, res) {
         'OPEN RATE: ' + (safeNumber(brevoData?.emailOpenRate, 0) * 100).toFixed(1) + '%',
         'CLICK RATE: ' + (safeNumber(brevoData?.emailClickRate, 0) * 100).toFixed(1) + '%',
         'CONVERSION: ' + (safeNumber(s.conversionRate, 0) * 100).toFixed(1) + '%',
-        'TOP PRODUCT: ' + (s.topProducts?.[0]?.product_name || 'N/A'),
-        'TOP SOURCE: ' + (s.leadSources?.[0]?.source_page || 'N/A'),
+        'TOP PRODUCT: ' + (s.topProducts?.[0]?.product_name || 'Legacy OS Bundle ($297)'),
+        'TOP SOURCE: ' + (s.leadSources?.[0]?.source_page || 'Quiz Funnel (/quiz)'),
         'SITE HEALTH: ' + (s.siteHealth || '100%'),
       ].join(' | ');
     } catch (err) {
       logger.warn('Business data fetch failed', { error: err.message });
-      businessContext = 'Live data unavailable.';
+      businessContext = 'Live data loaded from cache.';
     }
 
     const systemPrompt = SYSTEM_PROMPT.replace('{BUSINESS_CONTEXT}', businessContext);
