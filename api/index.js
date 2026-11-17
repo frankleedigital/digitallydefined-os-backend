@@ -64,6 +64,7 @@ const ALLOWED_ACTIONS = new Set([
   // and is also exposed as the dedicated /api/business-partner function.
   'business.partner',
   'intelligence',
+  'gumroad.products',
   'automation.sync',
   'automation.list',
   'automation.logs',
@@ -1953,6 +1954,46 @@ export default async function handler(req, res) {
           },
         },
       });
+    }
+
+    if (action === 'gumroad.products') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      const apiKey = process.env.GUMROAD_API_KEY;
+      if (!apiKey) {
+        return res.status(200).json({ success: false, error: 'GUMROAD_API_KEY not configured', products: [] });
+      }
+
+      try {
+        const resp = await fetch(`https://api.gumroad.com/v2/products?access_token=${apiKey}`);
+        const data = await resp.json();
+        if (!data.success) {
+          return res.status(200).json({ success: false, error: data.message || 'Failed to fetch Gumroad products', products: [] });
+        }
+
+        const products = (data.products || []).map((p) => ({
+          id: p.id,
+          name: p.name,
+          price: (p.price || 0) / 100,
+          currency: p.currency || 'usd',
+          published: !!p.published,
+          short_url: p.short_url || '',
+          sales_count: p.sales_count || 0,
+          sales_usd: (p.sales_usd || 0) / 100,
+          formatted_price: p.formatted_price || `$${((p.price || 0) / 100).toFixed(2)}`,
+        }));
+
+        return res.status(200).json({
+          success: true,
+          total: products.length,
+          publishedCount: products.filter((p) => p.published).length,
+          products,
+        });
+      } catch (err) {
+        return res.status(200).json({ success: false, error: err.message, products: [] });
+      }
     }
 
     if (action === 'brain.brief') {
