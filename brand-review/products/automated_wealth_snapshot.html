@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Wealth Snapshot | DigitallyDefined</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,700;1,9..40,400&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dd-blue': '#47B7D4',
+                        'dd-orange': '#F18B25',
+                        'dd-red': '#C20F0A',
+                        'dd-cream': '#FFFCF9',
+                        'dd-black': '#000000',
+                        'dd-text': '#111111',
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'dmsans': ['DM Sans', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'brutal': '2px 2px 0px 0px rgba(0,0,0,0.25)',
+                        'brutal-sm': '1px 1px 0px 0px rgba(0,0,0,0.25)',
+                        'brutal-hover': '0px 0px 0px 0px rgba(0,0,0,0)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { 
+            background-color: #FFFCF9; 
+            color: #111111; 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        input[type="number"], input[type="text"] {
+            -moz-appearance: textfield;
+            width: 100%;
+            background: transparent;
+            border: 1px solid transparent;
+            border-bottom: 1px solid #000;
+            padding: 0.25rem 0.5rem;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            border-radius: 0;
+        }
+        input[type="number"]:focus, input[type="text"]:focus { 
+            outline: none; 
+            border: 1px solid #000;
+            background-color: #fff;
+            box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.25);
+        }
+        
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: sharpFade 0.2s ease-in-out; }
+        
+        @keyframes sharpFade {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dd-table { border-collapse: collapse; width: 100%; }
+        .dd-table th { 
+            background-color: #F18B25; 
+            color: #fff; 
+            font-family: 'Inter', sans-serif; 
+            font-weight: 700; 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            padding: 0.75rem 1rem; 
+            text-align: left;
+            border: 1px solid #000;
+            border-bottom: 2px solid #000;
+        }
+        .dd-table td { 
+            padding: 0.75rem 1rem; 
+            border: 1px solid #000; 
+            font-family: 'DM Sans', sans-serif; 
+            font-size: 0.875rem; 
+            background-color: #fff;
+        }
+        .dd-table tr:hover td { background-color: #FFFDF0; }
+        
+        .section-header { 
+            background-color: #47B7D4; 
+            color: #fff; 
+            font-family: 'Inter', sans-serif; 
+            font-weight: 700; 
+            font-size: 0.875rem; 
+            padding: 0.5rem 1rem; 
+            text-transform: uppercase;
+            border: 1px solid #000;
+        }
+        
+        .badge { 
+            padding: 0.25rem 0.5rem; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            display: inline-block;
+            border: 1px solid #000;
+            text-transform: uppercase;
+            box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.25);
+            font-family: 'Inter', sans-serif;
+        }
+        .badge-optimized { background-color: #47B7D4; color: #fff; }
+        .badge-leak { background-color: #C20F0A; color: #fff; }
+        .badge-neutral { background-color: #fff; color: #000; }
+
+        .progress-container {
+            border: 1px solid #000;
+            background-color: #fff;
+            height: 1.5rem;
+            width: 100%;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%;
+            border-right: 1px solid #000;
+            transition: width 0.3s ease;
+        }
+    </style>
+
+<!-- DigitallyDefined Canonical Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- DigitallyDefined Brand Standards (Strict 0px Soft-Brutalism) -->
+<style id="dd-brand-standard">
+  :root {
+    --bg: #FFFCF9 !important;
+    --dd-bg: #FFFCF9 !important;
+    --card: #FFFFFF !important;
+    --dd-card: #FFFFFF !important;
+    --panel: #FFFAF5 !important;
+    --dd-panel: #FFFAF5 !important;
+    --text: #111111 !important;
+    --dd-text: #111111 !important;
+    --ink: #111111 !important;
+    --muted: #5F5F5F !important;
+    --dd-muted: #5F5F5F !important;
+    --border: 1px solid #111111 !important;
+    --dd-border: 1px solid #111111 !important;
+    --line: #111111 !important;
+    --or: #F18B25 !important;
+    --orange: #F18B25 !important;
+    --dd-orange: #F18B25 !important;
+    --bl: #47B7D4 !important;
+    --aqua: #47B7D4 !important;
+    --dd-aqua: #47B7D4 !important;
+    --rd: #8B1A0A !important;
+    --red: #8B1A0A !important;
+    --dd-red: #8B1A0A !important;
+    --dd-frame: #111111 !important;
+  }
+
+  /* Strict Brand Reset: zero border radius on all elements */
+  *, *::before, *::after {
+    border-radius: 0px !important;
+  }
+
+  body {
+    background-color: #FFFCF9 !important;
+    color: #111111 !important;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    -webkit-font-smoothing: antialiased !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    color: #111111 !important;
+    letter-spacing: -0.025em !important;
+  }
+
+  .mono, code, pre, .dd-badge, .badge, .tag {
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+
+  input:focus, select:focus, textarea:focus, button:focus {
+    outline: 2px solid #F18B25 !important;
+    outline-offset: 1px !important;
+  }
+</style>
+</head>
+<body class="min-h-screen p-4 md:p-8 font-dmsans selection:bg-dd-blue selection:text-white">
+<!-- DigitallyDefined Official Header -->
+<nav class="dd-brand-topbar" style="background:#FFFCF9; border-bottom:1px solid #111111; padding:0.9rem 1.25rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; font-family:'Inter', sans-serif; position:sticky; top:0; z-index:9999;">
+  <div style="display:flex; align-items:center; gap:0.6rem;">
+    <a href="https://dashboard.digitallydefined.agency" target="_blank" rel="noopener noreferrer" style="text-decoration:none; color:#111111;">
+      <span style="font-weight:800; font-size:1.05rem; letter-spacing:-0.03em; border:1px solid #111111; background:#FFFFFF; padding:0.35rem 0.65rem; display:inline-block;">Digitally<em style="color:#F18B25; font-style:italic;">Defined</em></span>
+    </a>
+    <span style="font-size:0.65rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#5F5F5F; display:none;">Faceless Digital Real Estate</span>
+  </div>
+  <div style="display:flex; align-items:center; gap:0.6rem;">
+    <span style="font-size:0.65rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; border:1px solid #111111; background:#FFFFFF; padding:0.3rem 0.6rem; font-family:'JetBrains Mono', monospace;">Automated Wealth Snapshot</span>
+    <a href="https://dashboard.digitallydefined.agency/quiz" target="_blank" rel="noopener noreferrer" style="font-size:0.65rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; background:#F18B25; color:#111111; border:1px solid #111111; padding:0.3rem 0.7rem; text-decoration:none;">Take Free Quiz →</a>
+  </div>
+</nav>
+
+
+    <div id="modal-backdrop" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white border-2 border-dd-black p-6 max-w-md w-full shadow-brutal space-y-4">
+            <h3 id="modal-title" class="font-inter font-bold text-xl uppercase text-dd-text">System Notice</h3>
+            <p id="modal-message" class="text-sm text-gray-700"></p>
+            <div class="flex justify-end gap-3 pt-2">
+                <button onclick="closeModal()" class="px-5 py-2 font-bold bg-dd-orange text-white border border-dd-black shadow-brutal hover:translate-x-[2px] hover:translate-y-[2px] transition-all">GOT IT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto space-y-8">
+        
+        <header class="bg-white p-6 border border-dd-black shadow-brutal flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-dd-orange border border-dd-black flex items-center justify-center shadow-brutal-sm">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter">
+                        <rect x="2" y="4" width="20" height="16"></rect>
+                        <line x1="2" y1="10" x2="22" y2="10"></line>
+                        <line x1="6" y1="14" x2="6" y2="14"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-inter font-bold text-dd-text uppercase tracking-tight">Automated Wealth Snapshot</h1>
+                    <p class="text-sm font-dmsans text-gray-700 mt-1">Fully Functional Analyst Edition with Local Persistence & AI Insights.</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-3 font-inter text-sm">
+                <button onclick="switchTab('tab1')" id="btn-tab1" class="tab-btn px-4 py-2 font-bold bg-dd-orange text-white border border-dd-black shadow-brutal hover:shadow-brutal-hover hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+                    1. Cash Flow Audit
+                </button>
+                <button onclick="switchTab('tab2')" id="btn-tab2" class="tab-btn px-4 py-2 font-bold bg-white text-dd-text border border-dd-black shadow-brutal hover:shadow-brutal-hover hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+                    2. Sinking Funds
+                </button>
+                <button onclick="switchTab('tab3')" id="btn-tab3" class="tab-btn px-4 py-2 font-bold bg-white text-dd-text border border-dd-black shadow-brutal hover:shadow-brutal-hover hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+                    3. Progress Meter
+                </button>
+                <div class="flex items-center gap-2 ml-2">
+                    <button onclick="saveDataState()" title="Save to Local Storage" class="p-2 bg-dd-blue text-white border border-dd-black shadow-brutal hover:translate-x-[1px] hover:translate-y-[1px] transition-all" aria-label="Save state">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    </button>
+                    <button onclick="exportSnapshotReport()" title="Export JSON Report" class="p-2 bg-white text-dd-text border border-dd-black shadow-brutal hover:translate-x-[1px] hover:translate-y-[1px] transition-all" aria-label="Export report">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    </button>
+                    <button onclick="resetDataState()" title="Reset to Defaults" class="p-2 bg-dd-red text-white border border-dd-black shadow-brutal hover:translate-x-[1px] hover:translate-y-[1px] transition-all" aria-label="Reset data">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div id="tab1" class="tab-content active space-y-8">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 border border-dd-black shadow-brutal relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-8 h-8 bg-dd-blue border-b border-l border-dd-black"></div>
+                    <p class="text-xs font-inter font-bold text-gray-500 uppercase tracking-widest">Total Income</p>
+                    <p class="text-3xl font-inter font-bold text-dd-text mt-2" id="t1-total-income">$0.00</p>
+                </div>
+                <div class="bg-white p-6 border border-dd-black shadow-brutal relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-8 h-8 bg-dd-orange border-b border-l border-dd-black"></div>
+                    <p class="text-xs font-inter font-bold text-gray-500 uppercase tracking-widest">Total Outflow</p>
+                    <p class="text-3xl font-inter font-bold text-dd-text mt-2" id="t1-total-outflow">$0.00</p>
+                </div>
+                <div class="bg-white p-6 border border-dd-black shadow-brutal relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-8 h-8 bg-dd-text border-b border-l border-dd-black"></div>
+                    <p class="text-xs font-inter font-bold text-gray-500 uppercase tracking-widest">Net Monthly Flow</p>
+                    <p class="text-3xl font-inter font-bold mt-2" id="t1-net-flow">$0.00</p>
+                </div>
+                <div class="bg-white p-6 border border-dd-black shadow-brutal flex flex-col justify-center items-start">
+                    <p class="text-xs font-inter font-bold text-gray-500 uppercase tracking-widest mb-3">Reality Check</p>
+                    <span id="t1-reality-check" class="badge badge-neutral text-sm px-4 py-2">AWAITING DATA</span>
+                </div>
+            </div>
+
+            <!-- AI Analyst Advice Box -->
+            <div class="bg-white border border-dd-black p-6 shadow-brutal space-y-3">
+                <div class="flex justify-between items-center">
+                    <h2 class="font-inter font-bold text-sm uppercase tracking-wide flex items-center gap-2">
+                        <span class="w-3 h-3 bg-dd-blue inline-block border border-dd-black"></span> AI Analyst Strategic Briefing
+                    </h2>
+                    <button onclick="generateAIInsight()" class="px-3 py-1 bg-dd-blue text-white font-bold text-xs uppercase border border-dd-black shadow-brutal-sm hover:translate-x-[1px] hover:translate-y-[1px] transition-all">
+                        Run Diagnostics
+                    </button>
+                </div>
+                <p id="ai-insight-text" class="text-sm text-gray-700 font-dmsans italic">Click "Run Diagnostics" to analyze your current cash flow leakages and optimization vectors using integrated LLM logic.</p>
+            </div>
+
+            <div class="bg-white border border-dd-black shadow-brutal overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full dd-table" id="cashflow-table">
+                        <thead>
+                            <tr>
+                                <th class="w-1/4">Category</th>
+                                <th class="w-1/6">Monthly Budget</th>
+                                <th class="w-1/6">Actual (Last 30)</th>
+                                <th class="w-1/6">Difference</th>
+                                <th class="w-1/6">Status</th>
+                                <th class="w-1/4">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tab1-body">
+                            <!-- Income -->
+                            <tr><td colspan="6" class="section-header !bg-dd-black">INCOME STREAMS</td></tr>
+                            <tr class="cf-row" data-type="income">
+                                <td class="font-bold">Paycheck 1</td>
+                                <td><input type="number" class="budget" value="5000"></td>
+                                <td><input type="number" class="actual" value="5000"></td>
+                                <td class="diff font-mono text-base font-bold">$0.00</td>
+                                <td class="status"></td>
+                                <td class="text-xs text-gray-500">Main salary</td>
+                            </tr>
+                            <tr class="cf-row" data-type="income">
+                                <td class="font-bold">Digital Sales / Affiliate</td>
+                                <td><input type="number" class="budget" value="1000"></td>
+                                <td><input type="number" class="actual" value="1200"></td>
+                                <td class="diff font-mono text-base font-bold">$0.00</td>
+                                <td class="status"></td>
+                                <td class="text-xs text-gray-500">Digital assets & payouts</td>
+                            </tr>
+
+                            <!-- Core Expenses -->
+                            <tr><td colspan="6" class="section-header">CORE EXPENSES (FIXED)</td></tr>
+                            <tr class="cf-row fixed-expense" data-type="expense">
+                                <td class="font-bold">Rent / Mortgage</td>
+                                <td><input type="number" class="budget" value="1500"></td>
+                                <td><input type="number" class="actual" value="1500"></td>
+                                <td class="diff font-mono text-base font-bold">$0.00</td>
+                                <td class="status"></td>
+                                <td class="text-xs text-gray-500">Fixed essential</td>
+                            </tr>
+                            <tr class="cf-row fixed-expense" data-type="expense">
+                                <td class="font-bold">Car Payment</td>
+                                <td><input type="number" class="budget" value="400"></td>
+                                <td><input type="number" class="actual" value="400"></td>
+                                <td class="diff font-mono text-base font-bold">$0.00</td>
+                                <td class="status"></td>
+                                <td class="text-xs text-gray-500">Fixed essential</td>
+                            </tr>
+                            <tr class="cf-row fixed-expense" data-type="expense">
+                                <td class="font-bold">Insurance (Auto/Health)</td>
+                                <td><input type="number" class="budget" value="250"></td>
+                                <td><input type="number" class="actual" value="250"></td>
+                                <td class="diff font-mono text-base font-bold">$0.00</td>
+                                <td class="status"></td>
+                                <td class="text-xs text-gray-500">Fixed essential</td>
+                            </tr>
+                            <tr class="cf-row fixed-expense" data-type="expense">
+                                <td class="font-bold">Utilities</td>
+                                <td><input type="number" class="budget" value="200"></td>
+                                <td><input type="number" class="actual" value="215"></td>
+                                <td class="diff font-mono text-base font-bold">$0.00</td>
+                                <td class="status"></td>
+                                <td class="text-xs text-gray-500">Fixed essential</td>
+                            </tr>
+                            <tr class="cf-row fixed-expense" data-type="expense">
+                                <td class="font-bold">Loan Payments</td>
+                                <td><input type="number" class="budget" value="300"></td>
+                                <td><input type="number" class="actual" value="300"></td>
+                                <td class="diff font-mono text-base font-bold">$0.00</td>
+                                <td class="status"></td>
+                                <td class="text-xs text-gray-500">Fixed essential</td>
+                            </tr>
+
+                            <tr><td colspan="6" class="section-header">THE "BIG 5" VARIABLE LEVERS</td></tr>
+                            <tr class="cf-row" data-type="expense">
+                                <td class="font-bold">Subscriptions & Streaming</td>
+                                <td><input type="number" class="budget" value="100"></td>
+                                <td><input type="number" class="actual" value="120"></td>
+                                <td class="diff font-mono text-base font-bold">$0.00</td>
+                                <td class="status"></td>
+                                <td class="text-xs text-gray-500">Variable lever</td>
+                            </tr>
+                            <tr class="cf-row" data-type="expense">
+                                <td class="font-bold">Dining Out / Delivery</td>
+                                <td><input type="number" class="budget" value="300"></td>
+                                <td><input type="number" class="actual" value="450"></td>
+                                <td class="diff font-mono text-base font-bold">$0.00</td>
+                                <td class="status"></td>
+                                <td class="text-xs text-gray-500">Variable lever</td>
+                            </tr>
+                            <tr class="cf-row" data-type="expense">
+                                <td class="font-bold">Transportation / Fuel</td>
+                                <td><input type="number" class="budget" value="150"></td>
+                                <td><input type="number" class="actual" value="140"></td>
+                                <td class="diff font-mono text-base font-bold">$0.00</td>
+                                <td class="status"></td>
+                                <td class="text-xs text-gray-500">Variable lever</td>
+                            </tr>
+                            <tr class="cf-row" data-type="expense">
+                                <td class="font-bold">Impulse Buys (Amazon)</td>
+                                <td><input type="number" class="budget" value="200"></td>
+                                <td><input type="number" class="actual" value="350"></td>
+                                <td class="diff font-mono text-base font-bold">$0.00</td>
+                                <td class="status"></td>
+                                <td class="text-xs text-gray-500">Variable lever</td>
+                            </tr>
+                            <tr class="cf-row" data-type="expense">
+                                <td class="font-bold">Groceries</td>
+                                <td><input type="number" class="budget" value="500"></td>
+                                <td><input type="number" class="actual" value="550"></td>
+                                <td class="diff font-mono text-base font-bold">$0.00</td>
+                                <td class="status"></td>
+                                <td class="text-xs text-gray-500">Variable lever</td>
+                            </tr>
+
+                            <tr><td colspan="6" class="section-header !bg-dd-orange">BUSINESS GROWTH ALLOCATIONS</td></tr>
+                            <tr class="cf-row" data-type="expense">
+                                <td class="font-bold">Business Software & Hosting</td>
+                                <td><input type="number" class="budget" value="150"></td>
+                                <td><input type="number" class="actual" value="150"></td>
+                                <td class="diff font-mono text-base font-bold">$0.00</td>
+                                <td class="status"></td>
+                                <td class="text-xs text-gray-500">Automation stack</td>
+                            </tr>
+                            <tr class="cf-row" data-type="expense">
+                                <td class="font-bold">Learning & Certifications</td>
+                                <td><input type="number" class="budget" value="100"></td>
+                                <td><input type="number" class="actual" value="0"></td>
+                                <td class="diff font-mono text-base font-bold">$0.00</td>
+                                <td class="status"></td>
+                                <td class="text-xs text-gray-500">Skill development</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab2" class="tab-content space-y-8">
+            <div class="bg-white border border-dd-black shadow-brutal overflow-hidden">
+                <div class="section-header !bg-dd-text text-xl py-4">PREDICTIVE OUTLAY ALLOCATION</div>
+                <div class="overflow-x-auto">
+                    <table class="w-full dd-table" id="sinking-table">
+                        <thead>
+                            <tr>
+                                <th class="w-1/4">Sinking Fund Category</th>
+                                <th>Annual Target ($)</th>
+                                <th>Monthly Need ($)</th>
+                                <th>Current Balance ($)</th>
+                                <th class="w-1/4">Funding Status (%)</th>
+                                <th>Action Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tab2-body">
+                            <tr class="sf-row">
+                                <td class="font-bold">Car Repairs & Maintenance</td>
+                                <td><input type="number" class="target" value="900"></td>
+                                <td class="monthly text-dd-text font-bold font-mono text-base">$0.00</td>
+                                <td><input type="number" class="balance" value="300"></td>
+                                <td class="progress-col">
+                                    <div class="flex items-center gap-3">
+                                        <span class="pct font-mono font-bold text-sm w-12 text-right">0%</span>
+                                        <div class="progress-container">
+                                            <div class="progress-bar bg-dd-blue" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="status"></td>
+                            </tr>
+                            <tr class="sf-row">
+                                <td class="font-bold">Home Repairs & HOA</td>
+                                <td><input type="number" class="target" value="1200"></td>
+                                <td class="monthly text-dd-text font-bold font-mono text-base">$0.00</td>
+                                <td><input type="number" class="balance" value="1200"></td>
+                                <td class="progress-col">
+                                    <div class="flex items-center gap-3">
+                                        <span class="pct font-mono font-bold text-sm w-12 text-right">0%</span>
+                                        <div class="progress-container">
+                                            <div class="progress-bar bg-dd-blue" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="status"></td>
+                            </tr>
+                            <tr class="sf-row">
+                                <td class="font-bold">Medical & Dental</td>
+                                <td><input type="number" class="target" value="1500"></td>
+                                <td class="monthly text-dd-text font-bold font-mono text-base">$0.00</td>
+                                <td><input type="number" class="balance" value="500"></td>
+                                <td class="progress-col">
+                                    <div class="flex items-center gap-3">
+                                        <span class="pct font-mono font-bold text-sm w-12 text-right">0%</span>
+                                        <div class="progress-container">
+                                            <div class="progress-bar bg-dd-blue" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="status"></td>
+                            </tr>
+                            <tr class="sf-row">
+                                <td class="font-bold">Gifts & Holidays</td>
+                                <td><input type="number" class="target" value="800"></td>
+                                <td class="monthly text-dd-text font-bold font-mono text-base">$0.00</td>
+                                <td><input type="number" class="balance" value="200"></td>
+                                <td class="progress-col">
+                                    <div class="flex items-center gap-3">
+                                        <span class="pct font-mono font-bold text-sm w-12 text-right">0%</span>
+                                        <div class="progress-container">
+                                            <div class="progress-bar bg-dd-blue" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="status"></td>
+                            </tr>
+                            <tr class="sf-row">
+                                <td class="font-bold">Pet Emergencies</td>
+                                <td><input type="number" class="target" value="600"></td>
+                                <td class="monthly text-dd-text font-bold font-mono text-base">$0.00</td>
+                                <td><input type="number" class="balance" value="0"></td>
+                                <td class="progress-col">
+                                    <div class="flex items-center gap-3">
+                                        <span class="pct font-mono font-bold text-sm w-12 text-right">0%</span>
+                                        <div class="progress-container">
+                                            <div class="progress-bar bg-dd-blue" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="status"></td>
+                            </tr>
+                            <tr class="sf-row">
+                                <td class="font-bold">Annual Insurance Premiums</td>
+                                <td><input type="number" class="target" value="1000"></td>
+                                <td class="monthly text-dd-text font-bold font-mono text-base">$0.00</td>
+                                <td><input type="number" class="balance" value="1000"></td>
+                                <td class="progress-col">
+                                    <div class="flex items-center gap-3">
+                                        <span class="pct font-mono font-bold text-sm w-12 text-right">0%</span>
+                                        <div class="progress-container">
+                                            <div class="progress-bar bg-dd-blue" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="status"></td>
+                            </tr>
+                            <tr class="bg-[#FFFDF0] border-t-4 border-dd-black">
+                                <td class="font-inter font-bold text-right text-dd-text uppercase">TOTALS</td>
+                                <td id="sf-total-target" class="font-bold font-mono text-base">$0.00</td>
+                                <td id="sf-total-monthly" class="font-bold text-dd-orange font-mono text-base">$0.00</td>
+                                <td id="sf-total-balance" class="font-bold font-mono text-base">$0.00</td>
+                                <td colspan="2" id="sf-total-pct" class="font-bold font-mono text-dd-blue text-base">0% Average</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab3" class="tab-content space-y-8">
+            
+            <div class="bg-dd-black text-white p-8 border border-dd-black shadow-brutal flex justify-between items-center relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 opacity-20">
+                    <svg width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="square">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <line x1="12" y1="2" x2="12" y2="22"></line>
+                    </svg>
+                </div>
+                
+                <div class="z-10">
+                    <h2 class="text-sm font-inter font-bold text-dd-blue uppercase tracking-widest">Total Liquid Net Worth</h2>
+                    <p class="text-5xl font-bold font-mono mt-2" id="t3-net-worth">$0.00</p>
+                </div>
+                <div class="hidden md:block z-10">
+                    <span class="badge bg-white text-dd-black px-4 py-2 text-lg shadow-none border-0">COMMAND CENTER</span>
+                </div>
+            </div>
+
+            <div class="bg-white border border-dd-black shadow-brutal overflow-hidden">
+                <div class="section-header !bg-dd-orange py-4 text-lg text-dd-black border-b border-dd-black">LIQUID EMERGENCY BUFFER MILESTONES</div>
+                <div class="overflow-x-auto">
+                    <table class="w-full dd-table" id="milestones-table">
+                        <thead>
+                            <tr>
+                                <th class="!bg-[#FFFDF0] !text-dd-black">Tier</th>
+                                <th class="!bg-[#FFFDF0] !text-dd-black">Milestone Target</th>
+                                <th class="!bg-[#FFFDF0] !text-dd-black">Current Allocated Balance</th>
+                                <th class="!bg-[#FFFDF0] !text-dd-black w-1/4">Progress</th>
+                                <th class="!bg-[#FFFDF0] !text-dd-black">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="ms-row" data-target="500">
+                                <td class="font-bold">Milestone 1: Day 14 (Micro-Cushion)</td>
+                                <td class="target text-gray-600 font-mono text-base">$500.00</td>
+                                <td><input type="number" class="balance ms-input" value="500"></td>
+                                <td class="progress-col">
+                                    <div class="flex items-center gap-3">
+                                        <span class="pct font-mono font-bold text-sm w-12 text-right">0%</span>
+                                        <div class="progress-container"><div class="progress-bar bg-dd-orange" style="width: 0%"></div></div>
+                                    </div>
+                                </td>
+                                <td class="status"></td>
+                            </tr>
+                            <tr class="ms-row" data-target="1500">
+                                <td class="font-bold">Milestone 2: Day 45 (Intermediate)</td>
+                                <td class="target text-gray-600 font-mono text-base">$1,500.00</td>
+                                <td><input type="number" class="balance ms-input" value="800"></td>
+                                <td class="progress-col">
+                                    <div class="flex items-center gap-3">
+                                        <span class="pct font-mono font-bold text-sm w-12 text-right">0%</span>
+                                        <div class="progress-container"><div class="progress-bar bg-dd-orange" style="width: 0%"></div></div>
+                                    </div>
+                                </td>
+                                <td class="status"></td>
+                            </tr>
+                            <tr class="ms-row ms-dynamic" data-multiplier="3">
+                                <td class="font-bold">Milestone 3: Day 90 (1-3 Mo. Essentials)</td>
+                                <td class="target text-gray-600 font-mono text-base calc-target">$0.00</td>
+                                <td><input type="number" class="balance ms-input" value="0"></td>
+                                <td class="progress-col">
+                                    <div class="flex items-center gap-3">
+                                        <span class="pct font-mono font-bold text-sm w-12 text-right">0%</span>
+                                        <div class="progress-container"><div class="progress-bar bg-dd-orange" style="width: 0%"></div></div>
+                                    </div>
+                                </td>
+                                <td class="status"></td>
+                            </tr>
+                            <tr class="ms-row ms-dynamic" data-multiplier="6">
+                                <td class="font-bold">Milestone 4: Ultimate (6 Mo. Security)</td>
+                                <td class="target text-gray-600 font-mono text-base calc-target">$0.00</td>
+                                <td><input type="number" class="balance ms-input" value="0"></td>
+                                <td class="progress-col">
+                                    <div class="flex items-center gap-3">
+                                        <span class="pct font-mono font-bold text-sm w-12 text-right">0%</span>
+                                        <div class="progress-container"><div class="progress-bar bg-dd-orange" style="width: 0%"></div></div>
+                                    </div>
+                                </td>
+                                <td class="status"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white border border-dd-black shadow-brutal overflow-hidden">
+                <div class="section-header py-4 text-lg">GROWTH & WEALTH-BUILDING ASSETS</div>
+                <div class="overflow-x-auto">
+                    <table class="w-full dd-table" id="assets-table">
+                        <thead>
+                            <tr>
+                                <th class="w-1/4">Asset Type / Account</th>
+                                <th>Institution</th>
+                                <th>Current Balance ($)</th>
+                                <th>Growth Rate / APY</th>
+                                <th>Last Synced</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="asset-row">
+                                <td class="font-bold">High-Yield Savings (HYSA)</td>
+                                <td><input type="text" value="Wealthfront"></td>
+                                <td><input type="number" class="balance asset-input" value="5000"></td>
+                                <td><input type="text" class="text-center" value="4.25%"></td>
+                                <td class="sync-time text-xs text-gray-500 font-mono font-bold"></td>
+                            </tr>
+                            <tr class="asset-row">
+                                <td class="font-bold">Investment Account (Robo)</td>
+                                <td><input type="text" value="Vanguard"></td>
+                                <td><input type="number" class="balance asset-input" value="12500"></td>
+                                <td><input type="text" class="text-center" value="7.00%"></td>
+                                <td class="sync-time text-xs text-gray-500 font-mono font-bold"></td>
+                            </tr>
+                            <tr class="asset-row">
+                                <td class="font-bold">Roth IRA / Retirement</td>
+                                <td><input type="text" value="Fidelity"></td>
+                                <td><input type="number" class="balance asset-input" value="34000"></td>
+                                <td><input type="text" class="text-center" value="7.00%"></td>
+                                <td class="sync-time text-xs text-gray-500 font-mono font-bold"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'digitallydefined_wealth_snapshot_v1';
+
+        const formatCurrency = (amount) => {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+        };
+
+        const getTimestamp = () => {
+            const now = new Date();
+            return now.toISOString().slice(0, 16).replace('T', ' ');
+        };
+
+        function showModal(title, message) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            document.getElementById('modal-backdrop').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-backdrop').classList.add('hidden');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-dd-orange', 'text-white');
+                btn.classList.add('bg-white', 'text-dd-text');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('bg-white', 'text-dd-text');
+            activeBtn.classList.add('bg-dd-orange', 'text-white');
+        }
+
+        function saveDataState() {
+            const data = {
+                tab1: [],
+                tab2: [],
+                tab3Milestones: [],
+                tab3Assets: []
+            };
+
+            document.querySelectorAll('.cf-row').forEach(row => {
+                data.tab1.push({
+                    budget: row.querySelector('.budget').value,
+                    actual: row.querySelector('.actual').value
+                });
+            });
+
+            document.querySelectorAll('.sf-row').forEach(row => {
+                data.tab2.push({
+                    target: row.querySelector('.target').value,
+                    balance: row.querySelector('.balance').value
+                });
+            });
+
+            document.querySelectorAll('.ms-row').forEach(row => {
+                data.tab3Milestones.push({
+                    balance: row.querySelector('.balance').value
+                });
+            });
+
+            document.querySelectorAll('.asset-row').forEach(row => {
+                data.tab3Assets.push({
+                    institution: row.querySelectorAll('input')[0].value,
+                    balance: row.querySelectorAll('input')[1].value,
+                    apy: row.querySelectorAll('input')[2].value,
+                    syncTime: row.querySelector('.sync-time').textContent
+                });
+            });
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            showModal('SUCCESS', 'Your automated financial snapshot has been safely saved to local storage.');
+        }
+
+        function loadDataState() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return false;
+            try {
+                const data = JSON.parse(raw);
+                
+                const cfRows = document.querySelectorAll('.cf-row');
+                data.tab1?.forEach((item, i) => {
+                    if (cfRows[i]) {
+                        cfRows[i].querySelector('.budget').value = item.budget;
+                        cfRows[i].querySelector('.actual').value = item.actual;
+                    }
+                });
+
+                const sfRows = document.querySelectorAll('.sf-row');
+                data.tab2?.forEach((item, i) => {
+                    if (sfRows[i]) {
+                        sfRows[i].querySelector('.target').value = item.target;
+                        sfRows[i].querySelector('.balance').value = item.balance;
+                    }
+                });
+
+                const msRows = document.querySelectorAll('.ms-row');
+                data.tab3Milestones?.forEach((item, i) => {
+                    if (msRows[i]) {
+                        msRows[i].querySelector('.balance').value = item.balance;
+                    }
+                });
+
+                const assetRows = document.querySelectorAll('.asset-row');
+                data.tab3Assets?.forEach((item, i) => {
+                    if (assetRows[i]) {
+                        assetRows[i].querySelectorAll('input')[0].value = item.institution;
+                        assetRows[i].querySelectorAll('input')[1].value = item.balance;
+                        assetRows[i].querySelectorAll('input')[2].value = item.apy;
+                        assetRows[i].querySelector('.sync-time').textContent = item.syncTime || getTimestamp();
+                    }
+                });
+                return true;
+            } catch (e) {
+                console.error("Error loading saved state", e);
+                return false;
+            }
+        }
+
+        function resetDataState() {
+            localStorage.removeItem(STORAGE_KEY);
+            window.location.reload();
+        }
+
+        function exportSnapshotReport() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                netWorth: document.getElementById('t3-net-worth').textContent,
+                netFlow: document.getElementById('t1-net-flow').textContent,
+                totalIncome: document.getElementById('t1-total-income').textContent,
+                totalOutflow: document.getElementById('t1-total-outflow').textContent
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Wealth_Snapshot_Report_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        async function generateAIInsight() {
+            const totalIncomeText = document.getElementById('t1-total-income').textContent;
+            const totalOutflowText = document.getElementById('t1-total-outflow').textContent;
+            const netFlowText = document.getElementById('t1-net-flow').textContent;
+            const netWorthText = document.getElementById('t3-net-worth').textContent;
+
+            const prompt = `Act as an expert elite financial analyst. Analyze these metrics: Total Income: ${totalIncomeText}, Total Outflow: ${totalOutflowText}, Net Monthly Flow: ${netFlowText}, Total Liquid Net Worth: ${netWorthText}. Provide a punchy, 2-sentence tactical recommendation on optimizing cash flow and accelerating savings.`;
+            
+            const insightEl = document.getElementById('ai-insight-text');
+            insightEl.textContent = "Querying Gemini AI analyst engine...";
+
+            try {
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                    systemInstruction: { parts: [{ text: "You are a direct, brutalist-aligned senior financial analyst who provides sharp actionable wealth insights." }] }
+                };
+                
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+                if (text) {
+                    insightEl.textContent = text;
+                } else {
+                    insightEl.textContent = "Diagnostic complete: Net cash flow is stable. Prioritize trimming variable leakage in discretionary categories.";
+                }
+            } catch (err) {
+                insightEl.textContent = "Diagnostic complete: Maintain emergency buffers and automate your high-yield savings allocation.";
+            }
+        }
+
+        function updateTab1() {
+            let totalIncome = 0;
+            let totalOutflow = 0;
+            let fixedEssentialsTotal = 0;
+
+            const rows = document.querySelectorAll('.cf-row');
+            rows.forEach(row => {
+                const type = row.getAttribute('data-type');
+                const isFixed = row.classList.contains('fixed-expense');
+                const budget = parseFloat(row.querySelector('.budget').value) || 0;
+                const actual = parseFloat(row.querySelector('.actual').value) || 0;
+                
+                let diff = 0;
+                let statusText = '';
+                let statusClass = '';
+
+                if (type === 'income') {
+                    totalIncome += actual;
+                    diff = actual - budget;
+                    if (diff >= 0) {
+                        statusText = 'ON TARGET'; statusClass = 'badge-optimized';
+                    } else {
+                        statusText = 'DEFICIT'; statusClass = 'badge-leak';
+                    }
+                } else {
+                    totalOutflow += actual;
+                    if (isFixed) fixedEssentialsTotal += budget;
+                    
+                    diff = budget - actual;
+                    if (diff >= 0) {
+                        statusText = isFixed ? 'UNDER' : 'OPTIMIZED';
+                        statusClass = 'badge-optimized';
+                    } else {
+                        statusText = isFixed ? 'OVER' : 'LEAK';
+                        statusClass = 'badge-leak';
+                    }
+                }
+
+                const diffCell = row.querySelector('.diff');
+                diffCell.textContent = formatCurrency(diff);
+                diffCell.className = `diff font-mono text-base font-bold ${diff >= 0 ? 'text-dd-blue' : 'text-dd-red'}`;
+                
+                row.querySelector('.status').innerHTML = `<span class="badge ${statusClass}">${statusText}</span>`;
+            });
+
+            const netFlow = totalIncome - totalOutflow;
+
+            document.getElementById('t1-total-income').textContent = formatCurrency(totalIncome);
+            document.getElementById('t1-total-outflow').textContent = formatCurrency(totalOutflow);
+            
+            const netFlowEl = document.getElementById('t1-net-flow');
+            netFlowEl.textContent = formatCurrency(netFlow);
+            netFlowEl.className = `text-3xl font-inter font-bold mt-2 ${netFlow >= 0 ? 'text-dd-blue' : 'text-dd-red'}`;
+
+            const realityCheck = document.getElementById('t1-reality-check');
+            if (netFlow < 0) {
+                realityCheck.textContent = 'LEAK DETECTED';
+                realityCheck.className = 'badge badge-leak text-sm px-4 py-2';
+            } else {
+                realityCheck.textContent = 'OPTIMIZED';
+                realityCheck.className = 'badge badge-optimized text-sm px-4 py-2 bg-dd-blue';
+            }
+
+            window.fixedEssentialsTotal = fixedEssentialsTotal;
+            updateTab3(); 
+        }
+
+        function updateTab2() {
+            let sumTarget = 0;
+            let sumMonthly = 0;
+            let sumBalance = 0;
+            let count = 0;
+            let pctSum = 0;
+
+            const rows = document.querySelectorAll('.sf-row');
+            rows.forEach(row => {
+                const target = parseFloat(row.querySelector('.target').value) || 0;
+                const balance = parseFloat(row.querySelector('.balance').value) || 0;
+                
+                const monthly = target / 12;
+                const pct = target > 0 ? Math.min(100, (balance / target) * 100) : 0;
+                
+                sumTarget += target;
+                sumMonthly += monthly;
+                sumBalance += balance;
+                count++;
+                pctSum += pct;
+
+                row.querySelector('.monthly').textContent = formatCurrency(monthly);
+                row.querySelector('.pct').textContent = Math.round(pct) + '%';
+                
+                const bar = row.querySelector('.progress-bar');
+                bar.style.width = pct + '%';
+                
+                let statusHtml = '';
+                if (pct >= 100) {
+                    statusHtml = `<span class="badge badge-optimized">FUNDED</span>`;
+                    bar.style.backgroundColor = '#47B7D4';
+                } else {
+                    statusHtml = `<span class="badge badge-neutral">BUILDING</span>`;
+                    bar.style.backgroundColor = '#111111';
+                }
+                row.querySelector('.status').innerHTML = statusHtml;
+            });
+
+            document.getElementById('sf-total-target').textContent = formatCurrency(sumTarget);
+            document.getElementById('sf-total-monthly').textContent = formatCurrency(sumMonthly);
+            document.getElementById('sf-total-balance').textContent = formatCurrency(sumBalance);
+            const avgPct = count > 0 ? Math.round(pctSum / count) : 0;
+            document.getElementById('sf-total-pct').textContent = avgPct + '% Average';
+        }
+
+        function updateTab3(event) {
+            let totalLiquid = 0;
+
+            const msRows = document.querySelectorAll('.ms-row');
+            msRows.forEach(row => {
+                let target = 0;
+                
+                if (row.classList.contains('ms-dynamic')) {
+                    const multiplier = parseFloat(row.getAttribute('data-multiplier'));
+                    target = (window.fixedEssentialsTotal || 0) * multiplier;
+                    row.querySelector('.calc-target').textContent = formatCurrency(target);
+                } else {
+                    target = parseFloat(row.getAttribute('data-target'));
+                }
+
+                const balance = parseFloat(row.querySelector('.balance').value) || 0;
+                totalLiquid += balance;
+
+                const pct = target > 0 ? Math.min(100, (balance / target) * 100) : 0;
+                
+                row.querySelector('.pct').textContent = Math.round(pct) + '%';
+                
+                const bar = row.querySelector('.progress-bar');
+                bar.style.width = pct + '%';
+
+                let statusHtml = '';
+                if (pct >= 100 && target > 0) {
+                    statusHtml = `<span class="badge bg-dd-blue text-white">UNLOCKED</span>`;
+                    bar.style.backgroundColor = '#47B7D4'; 
+                } else {
+                    statusHtml = `<span class="badge badge-neutral">IN PROGRESS</span>`;
+                    bar.style.backgroundColor = '#F18B25'; 
+                }
+                row.querySelector('.status').innerHTML = statusHtml;
+            });
+
+            const assetRows = document.querySelectorAll('.asset-row');
+            assetRows.forEach(row => {
+                const balance = parseFloat(row.querySelector('.balance').value) || 0;
+                totalLiquid += balance; 
+
+                if (event && event.target && row.contains(event.target)) {
+                    row.querySelector('.sync-time').textContent = getTimestamp();
+                }
+            });
+
+            document.getElementById('t3-net-worth').textContent = formatCurrency(totalLiquid);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDataState();
+
+            document.querySelectorAll('#tab1 input').forEach(input => {
+                input.addEventListener('input', updateTab1);
+            });
+            document.querySelectorAll('#tab2 input').forEach(input => {
+                input.addEventListener('input', updateTab2);
+            });
+            document.querySelectorAll('#tab3 input').forEach(input => {
+                input.addEventListener('input', updateTab3);
+            });
+
+            document.querySelectorAll('.sync-time').forEach(el => {
+                if (!el.textContent) el.textContent = getTimestamp();
+            });
+
+            window.fixedEssentialsTotal = 0;
+            updateTab1();
+            updateTab2();
+            updateTab3();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DigitallyDefined — Digital Products & Brand Review Vault</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFFCF9;
+    --card: #FFFFFF;
+    --text: #111111;
+    --muted: #5F5F5F;
+    --border: #111111;
+    --accent: #F18B25;
+    --aqua: #47B7D4;
+    --red: #8B1A0A;
+    --font-heading: 'Inter', -apple-system, sans-serif;
+    --font-sans: 'DM Sans', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0px !important; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    padding: 32px 24px;
+    line-height: 1.5;
+  }
+  h1, h2, h3, h4 { font-family: var(--font-heading); }
+  .container { max-width: 1300px; margin: 0 auto; }
+  
+  /* Soft Brutalism Header */
+  .header-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    box-shadow: 4px 4px 0 var(--border);
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--text);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .subtitle { color: var(--muted); font-size: 16px; max-width: 800px; }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .stat-card {
+    background: #FAFAFA;
+    border: 1.5px solid var(--border);
+    padding: 16px 20px;
+  }
+  .stat-label { font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-transform: uppercase; }
+  .stat-val { font-size: 24px; font-weight: 800; margin-top: 4px; }
+  
+  /* Brand Guidelines Bar */
+  .brand-bar {
+    background: #FFFDF0;
+    border: 2px solid var(--border);
+    box-shadow: 3px 3px 0 var(--border);
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    font-size: 14px;
+  }
+  .brand-bar strong { color: var(--text); }
+  
+  /* Section Header */
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    font-family: var(--font-sans);
+  }
+  .section-tag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: var(--accent);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    font-weight: 700;
+  }
+  
+  /* Products Grid */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  .product-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    box-shadow: 4px 4px 0 var(--border);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .product-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--border);
+  }
+  .card-top { margin-bottom: 16px; }
+  .card-cat {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .card-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
+  .card-file { font-family: var(--font-mono); font-size: 12px; color: #555; word-break: break-all; margin-bottom: 8px; }
+  .card-size { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+  
+  .card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #EEE;
+  }
+  .btn {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    border: 1.5px solid var(--border);
+    box-shadow: 2px 2px 0 var(--border);
+    cursor: pointer;
+    text-align: center;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--text);
+  }
+  .btn-secondary {
+    background: var(--card);
+    color: var(--text);
+  }
+  .btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 var(--border);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header-card">
+    <div class="badge">DigitallyDefined · Product Vault</div>
+    <h1>Digital Products & Brand Review</h1>
+    <p class="subtitle">Complete catalog of interactive HTML tools, diagnostic calculators, Gen X wealth playbooks, and PDF guides recovered and organized for brand alignment review.</p>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Interactive HTML Tools</div>
+        <div class="stat-val">24</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">PDF Guides &amp; Playbooks</div>
+        <div class="stat-val">18</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Verified SKUs</div>
+        <div class="stat-val">42</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="brand-bar">
+    <strong>🎨 DigitallyDefined Brand Guideline Audit Criteria:</strong>
+    <ul style="margin-top: 8px; margin-left: 20px; line-height: 1.6;">
+      <li><strong>Aesthetic:</strong> Soft Brutalism (Clean white cards, 1.5–2px solid black frames, 3–4px hard offset shadows, zero skeuomorphism).</li>
+      <li><strong>Typography:</strong> Plus Jakarta Sans / Inter for UI, JetBrains Mono for system metrics &amp; badges. High contrast &amp; ample padding.</li>
+      <li><strong>Audience Alignment:</strong> Gen X women (40-60) closing the retirement gap via faceless digital real estate &amp; AI systems. Quiet power, intentional, no hype.</li>
+      <li><strong>Monetization &amp; CTA:</strong> Clear pricing tier, standalone value, friction-free purchase paths, and clean Gumroad checkout links.</li>
+    </ul>
+  </div>
+
+  <div class="section-title">
+    <span>⚡ Interactive HTML Tools &amp; Calculators</span>
+    <span class="section-tag">24 Tools</span>
+  </div>
+  
+  <div class="products-grid">
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Calculator / Estimator</div>
+        <div class="card-title">10x ROI Calculator &mdash; DigitallyDefined</div>
+        <div class="card-file">10x_roi_calculator.html</div>
+        <div class="card-size">Size: 22.2 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/10x_roi_calculator.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Calculator / Estimator</div>
+        <div class="card-title">Affiliate Market Flip Calculator &mdash; DigitallyDefined</div>
+        <div class="card-file">affiliate_flip_calculator.html</div>
+        <div class="card-size">Size: 22.5 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/affiliate_flip_calculator.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Diagnostic / Auditor</div>
+        <div class="card-title">AI Agent Pricing & Positioning Worksheet | DigitallyDefined</div>
+        <div class="card-file">ai_agent_pricing_positioning_worksheet.html</div>
+        <div class="card-size">Size: 39.7 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/ai_agent_pricing_positioning_worksheet.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Workflow / Business Engine</div>
+        <div class="card-title">DigitallyDefined - Automated Asset Engine</div>
+        <div class="card-file">automated_asset_engine.html</div>
+        <div class="card-size">Size: 57.4 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/automated_asset_engine.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Diagnostic / Auditor</div>
+        <div class="card-title">Automated Wealth Snapshot | DigitallyDefined</div>
+        <div class="card-file">automated_wealth_snapshot.html</div>
+        <div class="card-size">Size: 45.0 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/automated_wealth_snapshot.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Interactive Tool</div>
+        <div class="card-title">DigitallyDefined // Clicks to Cash Sovereignty</div>
+        <div class="card-file">clicks_to_conversion.html</div>
+        <div class="card-size">Size: 94.2 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/clicks_to_conversion.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Diagnostic / Auditor</div>
+        <div class="card-title">Dd Buyer Style Asset Auditor</div>
+        <div class="card-file">dd_buyer_style_asset_auditor.html</div>
+        <div class="card-size">Size: 34.7 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/dd_buyer_style_asset_auditor.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Diagnostic / Auditor</div>
+        <div class="card-title">Digital Asset Audit Simulator</div>
+        <div class="card-file">digital_asset_audit_simulator.html</div>
+        <div class="card-size">Size: 26.3 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/digital_asset_audit_simulator.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Workflow / Business Engine</div>
+        <div class="card-title">DIGITALLYDEFINED | Business Plan Architect</div>
+        <div class="card-file">digital_business_plan_architect.html</div>
+        <div class="card-size">Size: 54.3 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/digital_business_plan_architect.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Playbook / Prompt System</div>
+        <div class="card-title">Digital Deeds: IP & Asset Protection for Faceless Digital Real Estate</div>
+        <div class="card-file">digital_deeds_guide.html</div>
+        <div class="card-size">Size: 14.8 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/digital_deeds_guide.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Workflow / Business Engine</div>
+        <div class="card-title">The Digital Empire Blueprint | DigitallyDefined</div>
+        <div class="card-file">digital_empire_blueprint.html</div>
+        <div class="card-size">Size: 46.1 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/digital_empire_blueprint.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Playbook / Prompt System</div>
+        <div class="card-title">The Digital Landlord Playbook | By Francesca</div>
+        <div class="card-file">digital_landlord_playbook.html</div>
+        <div class="card-size">Size: 13.4 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/digital_landlord_playbook.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Playbook / Prompt System</div>
+        <div class="card-title">Digital Wealth Toolkit</div>
+        <div class="card-file">digital_wealth_toolkit.html</div>
+        <div class="card-size">Size: 31.2 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/digital_wealth_toolkit.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Workflow / Business Engine</div>
+        <div class="card-title">DIGITALLYDEFINED | AI Digital Product Architect</div>
+        <div class="card-file">digitallydefined_product_architect.html</div>
+        <div class="card-size">Size: 49.5 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/digitallydefined_product_architect.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Lead Magnet / Squeeze</div>
+        <div class="card-title">The 5 Estate Documents Gen X Women Actually Need | DigitallyDefined</div>
+        <div class="card-file">estate_documents_for_gen_x.html</div>
+        <div class="card-size">Size: 11.4 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/estate_documents_for_gen_x.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Calculator / Estimator</div>
+        <div class="card-title">DigitallyDefined - Freedom Number Calculator</div>
+        <div class="card-file">freedom_number_calculator.html</div>
+        <div class="card-size">Size: 31.7 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/freedom_number_calculator.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Playbook / Prompt System</div>
+        <div class="card-title">50 AI Prompts for Women Building Digital Products That Sell | DigitallyDefined</div>
+        <div class="card-file">genx_50_ai_prompts.html</div>
+        <div class="card-size">Size: 42.0 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/genx_50_ai_prompts.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Interactive Tool</div>
+        <div class="card-title">Intent to Income™ | Beyond Keywords & Search Volume</div>
+        <div class="card-file">intent_to_income_platform.html</div>
+        <div class="card-size">Size: 99.2 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/intent_to_income_platform.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Playbook / Prompt System</div>
+        <div class="card-title">Digital Landlady: Keyword Quest</div>
+        <div class="card-file">keyword_quest_digital_real_estate.html</div>
+        <div class="card-size">Size: 29.4 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/keyword_quest_digital_real_estate.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Interactive Tool</div>
+        <div class="card-title">DigitallyDefined · Legacy OS Bundle</div>
+        <div class="card-file">legacy_os_bundle_landing.html</div>
+        <div class="card-size">Size: 25.1 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/legacy_os_bundle_landing.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Interactive Tool</div>
+        <div class="card-title">Legacy OS · Phase 1 MVP</div>
+        <div class="card-file">legacy_os_phase1_mvp.html</div>
+        <div class="card-size">Size: 52.4 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/legacy_os_phase1_mvp.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Calculator / Estimator</div>
+        <div class="card-title">You're In — 10X ROI Calculator | Digitally Defined</div>
+        <div class="card-file">roi_calculator_thank_you.html</div>
+        <div class="card-size">Size: 11.0 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/roi_calculator_thank_you.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Lead Magnet / Squeeze</div>
+        <div class="card-title">The 96-Hour Scam Response Plan | DigitallyDefined</div>
+        <div class="card-file">scam_response_96_hour_plan.html</div>
+        <div class="card-size">Size: 15.4 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/scam_response_96_hour_plan.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Playbook / Prompt System</div>
+        <div class="card-title">The Faceless Business Launch Kit | DigitallyDefined</div>
+        <div class="card-file">the_faceless_business_launch_kit.html</div>
+        <div class="card-size">Size: 30.7 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/html-tools/the_faceless_business_launch_kit.html" target="_blank" class="btn btn-primary">Launch &amp; Review</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-title">
+    <span>📚 PDF Guides, Playbooks &amp; Lead Magnets</span>
+    <span class="section-tag">18 Guides</span>
+  </div>
+  
+  <div class="products-grid">
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Core Curriculum</div>
+        <div class="card-title">Building Your Digital Empire  A Gen X Woman's Guide to Faceless Digital Marketing and Digital Real Estate</div>
+        <div class="card-file">Building Your Digital Empire_ A Gen X Woman's Guide to Faceless Digital Marketing and Digital Real Estate.pdf</div>
+        <div class="card-size">Size: 2170.3 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/Building Your Digital Empire_ A Gen X Woman's Guide to Faceless Digital Marketing and Digital Real Estate.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Guide / Blueprint</div>
+        <div class="card-title">Digital Landlord Blueprint</div>
+        <div class="card-file">Digital Landlord Blueprint.docx.pdf</div>
+        <div class="card-size">Size: 2128.0 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/Digital Landlord Blueprint.docx.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Guide / Blueprint</div>
+        <div class="card-title">Json Schema Prompting Tools</div>
+        <div class="card-file">Json Schema Prompting Tools.pdf</div>
+        <div class="card-size">Size: 215.2 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/Json Schema Prompting Tools.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Checklist / Asset Kit</div>
+        <div class="card-title">Local SEO Quick-Start Checklist  Digital Asset Launch</div>
+        <div class="card-file">Local SEO Quick-Start Checklist_ Digital Asset Launch.pdf</div>
+        <div class="card-size">Size: 70.1 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/Local SEO Quick-Start Checklist_ Digital Asset Launch.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Core Curriculum</div>
+        <div class="card-title">Retirement Mastery for Gen X Women 2nd Part</div>
+        <div class="card-file">Retirement Mastery for Gen X Women 2nd Part.pdf</div>
+        <div class="card-size">Size: 16851.0 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/Retirement Mastery for Gen X Women 2nd Part.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">SEO / Keyword Intelligence</div>
+        <div class="card-title">THE KEYWORD ADVANTAGE</div>
+        <div class="card-file">THE KEYWORD ADVANTAGE.pdf</div>
+        <div class="card-size">Size: 331.4 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/THE KEYWORD ADVANTAGE.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Checklist / Asset Kit</div>
+        <div class="card-title">THE KEYWORD RESEARCH CHEAT SHEET</div>
+        <div class="card-file">THE KEYWORD RESEARCH CHEAT SHEET.pdf</div>
+        <div class="card-size">Size: 511.9 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/THE KEYWORD RESEARCH CHEAT SHEET.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Guide / Blueprint</div>
+        <div class="card-title">The Digital Landlord’s Toolkit for Maximizing Asset Value</div>
+        <div class="card-file">The Digital Landlord’s Toolkit for Maximizing Asset Value.docx.pdf</div>
+        <div class="card-size">Size: 64.1 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/The Digital Landlord’s Toolkit for Maximizing Asset Value.docx.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Guide / Blueprint</div>
+        <div class="card-title">The Digital Property Starter Kit by DigitallyDefined</div>
+        <div class="card-file">The Digital Property Starter Kit by DigitallyDefined.pdf</div>
+        <div class="card-size">Size: 151.5 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/The Digital Property Starter Kit by DigitallyDefined.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Guide / Blueprint</div>
+        <div class="card-title">The Ultimate Guide to Rank and Rent Websites  How to Build Passive Income Online</div>
+        <div class="card-file">The Ultimate Guide to Rank and Rent Websites_ How to Build Passive Income Online.pdf</div>
+        <div class="card-size">Size: 1828.1 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/The Ultimate Guide to Rank and Rent Websites_ How to Build Passive Income Online.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Guide / Blueprint</div>
+        <div class="card-title">The Ultimate Guide  Unlocking Passive Income with Digital leasing</div>
+        <div class="card-file">The Ultimate Guide_ Unlocking Passive Income with Digital leasing.pdf</div>
+        <div class="card-size">Size: 162.8 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/The Ultimate Guide_ Unlocking Passive Income with Digital leasing.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Guide / Blueprint</div>
+        <div class="card-title">Unlocking Passive Income with Digital Leasing  A Modern Wealth-Building Strategy</div>
+        <div class="card-file">Unlocking Passive Income with Digital Leasing_ A Modern Wealth-Building Strategy.docx.pdf</div>
+        <div class="card-size">Size: 193.0 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/Unlocking Passive Income with Digital Leasing_ A Modern Wealth-Building Strategy.docx.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Guide / Blueprint</div>
+        <div class="card-title">Unlocking Passive Income with Digital Leasing  A Modern Wealth-Building Strategy</div>
+        <div class="card-file">Unlocking Passive Income with Digital Leasing_ A Modern Wealth-Building Strategy.pdf</div>
+        <div class="card-size">Size: 134.2 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/Unlocking Passive Income with Digital Leasing_ A Modern Wealth-Building Strategy.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Guide / Blueprint</div>
+        <div class="card-title">ai-agent-setup-playbook</div>
+        <div class="card-file">ai-agent-setup-playbook.pdf</div>
+        <div class="card-size">Size: 380.6 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/ai-agent-setup-playbook.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Guide / Blueprint</div>
+        <div class="card-title">digitrend-dossier-notion-adhd-life-work-os (1) (1)</div>
+        <div class="card-file">digitrend-dossier-notion-adhd-life-work-os (1) (1).pdf</div>
+        <div class="card-size">Size: 22.5 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/digitrend-dossier-notion-adhd-life-work-os (1) (1).pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Guide / Blueprint</div>
+        <div class="card-title">digitrend-dossier-notion-adhd-life-work-os (1)</div>
+        <div class="card-file">digitrend-dossier-notion-adhd-life-work-os (1).pdf</div>
+        <div class="card-size">Size: 22.5 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/digitrend-dossier-notion-adhd-life-work-os (1).pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Guide / Blueprint</div>
+        <div class="card-title">digitrend-dossier-tiktok-creator-link-in-bio-blueprint-coaching-funnel</div>
+        <div class="card-file">digitrend-dossier-tiktok-creator-link-in-bio-blueprint-coaching-funnel.pdf</div>
+        <div class="card-size">Size: 21.0 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/digitrend-dossier-tiktok-creator-link-in-bio-blueprint-coaching-funnel.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-top">
+        <div class="card-cat">Checklist / Asset Kit</div>
+        <div class="card-title">🔥 The Ultimate Trigger Word Bank</div>
+        <div class="card-file">🔥 The Ultimate Trigger Word Bank.pdf</div>
+        <div class="card-size">Size: 387.1 KB</div>
+      </div>
+      <div class="card-actions">
+        <a href="../digital-products/shelf/pdf-guides/🔥 The Ultimate Trigger Word Bank.pdf" target="_blank" class="btn btn-secondary">Open PDF</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

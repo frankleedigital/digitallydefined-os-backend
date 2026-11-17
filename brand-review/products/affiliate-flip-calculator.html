@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affiliate Market Flip Calculator &mdash; DigitallyDefined</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{min-height:100dvh;font-family:'DM Sans',sans-serif;font-size:16px;background:#FFFCF9;color:#111111}
+:root{--or:#F18B25;--bl:#47B7D4;--rd:#8B1A0A;--dk:#111111;--bdr:1px solid #111111}
+.wrap{max-width:1100px;margin:0 auto;padding:2rem 1.25rem 4rem}
+nav{display:flex;justify-content:space-between;align-items:center;border-bottom:var(--bdr);padding-bottom:1.5rem;margin-bottom:3rem;flex-wrap:wrap;gap:1rem}
+.dd-privacy{margin-top:.5rem;width:100%;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9CA3AF;text-align:center}
+.dd-logo{display:flex;align-items:center;gap:.6rem}
+.dd-logo-name{font-family:'Inter',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.04em;line-height:1;border:var(--bdr);background:#FFFCF9;padding:.5rem .75rem}
+.dd-logo-name em{color:var(--or);font-style:italic}
+.dd-logo-sub{font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B7280;margin-top:2px}
+.dd-badge{font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:var(--bdr);background:#fff;padding:.35rem .75rem}
+.hero{text-align:center;margin-bottom:2.5rem}
+.hero h1{font-family:'Inter',sans-serif;font-weight:800;font-size:clamp(2.25rem,6vw,4rem);letter-spacing:-.03em;text-transform:uppercase;line-height:1;color:var(--dk)}
+.hero h1 span{color:var(--or)}
+.hero-sub{font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--bl);margin-top:.75rem}
+.hero-privacy{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9CA3AF;margin-top:.5rem}
+.orient{border-left:2px solid var(--or);padding:.75rem 1.25rem;background:#fff;margin-bottom:2rem}
+.orient p{font-size:.85rem;font-weight:500;color:var(--dk);line-height:1.6;max-width:640px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:2rem}
+@media(max-width:760px){.modes{grid-template-columns:1fr}}
+.mode{border:var(--bdr);background:#fff;padding:1.25rem;text-align:left;cursor:pointer;transition:transform .1s}
+.mode:hover{transform:translateY(-2px)}
+.mode.active{background:var(--dk);color:#fff}
+.mode.active .mode-num{color:var(--or)}
+.mode.active .mode-desc{color:#D1D5DB}
+.mode-num{font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--or)}
+.mode-title{font-family:'Inter',sans-serif;font-weight:800;font-size:1.15rem;letter-spacing:-.02em;margin-top:.35rem}
+.mode-desc{font-size:.85rem;color:#4B5563;margin-top:.4rem;line-height:1.5}
+.grid{display:grid;grid-template-columns:1fr 1.2fr;gap:2rem;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:#fff;border:var(--bdr);padding:1.75rem}
+.ch{display:flex;align-items:center;gap:.5rem;border-bottom:var(--bdr);padding-bottom:1rem;margin-bottom:1.5rem}
+.ch h2{font-family:'Inter',sans-serif;font-weight:700;font-size:1rem;text-transform:uppercase;letter-spacing:.05em;color:var(--dk)}
+.ig{margin-bottom:1.5rem}
+.ig:last-child{margin-bottom:0}
+.il{display:flex;justify-content:space-between;align-items:center;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dk);margin-bottom:.5rem}
+.il .opt{color:#9CA3AF;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:.6rem}
+input[type=text],input[type=number]{width:100%;padding:.6rem .75rem;border:var(--bdr);background:#fff;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:700;color:var(--dk);outline:none}
+input[type=text]:focus,input[type=number]:focus{outline:2px solid var(--or);outline-offset:2px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:10px;border:var(--bdr);background:#F3F4F6;cursor:pointer;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border:1px solid #111;background:var(--or);cursor:pointer}
+.autofill{margin-top:.4rem;font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--bl)}
+.autofill.ok{color:#15803d}
+select{width:100%;padding:.6rem .75rem;border:var(--bdr);background:#fff;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:700;color:var(--dk);outline:none}
+</style>
+
+<!-- DigitallyDefined Canonical Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- DigitallyDefined Brand Standards (Strict 0px Soft-Brutalism) -->
+<style id="dd-brand-standard">
+  :root {
+    --bg: #FFFCF9 !important;
+    --dd-bg: #FFFCF9 !important;
+    --card: #FFFFFF !important;
+    --dd-card: #FFFFFF !important;
+    --panel: #FFFAF5 !important;
+    --dd-panel: #FFFAF5 !important;
+    --text: #111111 !important;
+    --dd-text: #111111 !important;
+    --ink: #111111 !important;
+    --muted: #5F5F5F !important;
+    --dd-muted: #5F5F5F !important;
+    --border: 1px solid #111111 !important;
+    --dd-border: 1px solid #111111 !important;
+    --line: #111111 !important;
+    --or: #F18B25 !important;
+    --orange: #F18B25 !important;
+    --dd-orange: #F18B25 !important;
+    --bl: #47B7D4 !important;
+    --aqua: #47B7D4 !important;
+    --dd-aqua: #47B7D4 !important;
+    --rd: #8B1A0A !important;
+    --red: #8B1A0A !important;
+    --dd-red: #8B1A0A !important;
+    --dd-frame: #111111 !important;
+  }
+
+  /* Strict Brand Reset: zero border radius on all elements */
+  *, *::before, *::after {
+    border-radius: 0px !important;
+  }
+
+  body {
+    background-color: #FFFCF9 !important;
+    color: #111111 !important;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    -webkit-font-smoothing: antialiased !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    color: #111111 !important;
+    letter-spacing: -0.025em !important;
+  }
+
+  .mono, code, pre, .dd-badge, .badge, .tag {
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+
+  input:focus, select:focus, textarea:focus, button:focus {
+    outline: 2px solid #F18B25 !important;
+    outline-offset: 1px !important;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <div class="dd-logo">
+    <div>
+      <div class="dd-logo-name">Digitally<em>Defined</em></div>
+      <div class="dd-logo-sub">Digital Real Estate Group</div>
+    </div>
+  </div>
+  <span class="dd-badge">Free Tool</span>
+  <p class="dd-privacy">Your inputs stay on this device. Nothing is stored or sent.</p>
+</nav>
+<div class="hero">
+  <h1>Affiliate Market <span>Flip</span> Calculator</h1>
+  <p class="hero-sub">Niche Mode &nbsp;&bull;&nbsp; Product Mode &nbsp;&bull;&nbsp; One Flip Score</p>
+  <p class="hero-privacy">Works offline &bull; No login required</p>
+</div>
+<div class="orient">
+  <p><strong>Pick a mode.</strong> Enter a niche/keyword and we'll suggest the monetization &mdash; or enter an affiliate product and we'll auto-fill the commission, EPC, price and network. Use both together to merge the datasets. You get back a flip score, ROI, keywords, a page outline, a monetization plan and a 7-day action plan.</p>
+</div>
+
+<div class="modes">
+  <div class="mode active" id="modeA" onclick="setMode('A')">
+    <div class="mode-num">Mode A</div>
+    <div class="mode-title">Niche &rarr; Keyword &rarr; Flip Score</div>
+    <div class="mode-desc">Start from a topic or keyword. Tell us what you'd promote and we score the opportunity.</div>
+  </div>
+  <div class="mode" id="modeB" onclick="setMode('B')">
+    <div class="mode-num">Mode B</div>
+    <div class="mode-title">Product &rarr; Auto-Fill &rarr; Flip Score</div>
+    <div class="mode-desc">Start from a known affiliate product. We auto-fill price, commission, EPC and network instantly.</div>
+  </div>
+</div>
+
+<div class="grid">
+  <!-- INPUT PANEL -->
+  <div class="card">
+    <div class="ch">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F18B25" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <h2>Your Inputs</h2>
+    </div>
+
+    <div class="ig">
+      <div class="il"><span>Affiliate Product or Program</span><span class="opt" id="productReqTag">optional</span></div>
+      <input type="text" id="product" list="productList" placeholder="e.g. Canva Pro, Systeme.io, Semrush" oninput="onProductInput()"/>
+      <datalist id="productList"></datalist>
+      <div class="autofill" id="autoMsg"></div>
+    </div>
+
+    <div class="ig">
+      <div class="il"><span>Niche / Keyword</span><span class="opt" id="nicheReqTag">required</span></div>
+      <input type="text" id="niche" placeholder="e.g. passive income for gen x women" oninput="recalc()"/>
+    </div>
+
+    <div class="ig">
+      <div class="il"><span>Monthly Traffic (clicks)</span><span class="vo" id="trafficOut">1000</span></div>
+      <input type="range" id="traffic" min="100" max="20000" step="100" value="1000" oninput="recalc()"/>
+    </div>
+
+    <div class="ig">
+      <div class="il"><span>Product Price</span><span class="opt" id="priceTag">auto</span></div>
+      <input type="number" id="price" placeholder="0.00" step="0.01" oninput="recalc()"/>
+    </div>
+
+    <div class="ig">
+      <div class="il"><span>Commission Rate (%)</span><span class="opt" id="commTag">auto</span></div>
+      <input type="number" id="commission" placeholder="0" step="0.1" oninput="recalc()"/>
+    </div>
+
+    <div class="ig">
+      <div class="il"><span>EPC (earnings per click, $)</span><span class="opt" id="epcTag">auto</span></div>
+      <input type="number" id="epc" placeholder="0.00" step="0.01" oninput="recalc()"/>
+    </div>
+
+    <div class="ig">
+      <div class="il"><span>Affiliate Network</span><span class="opt" id="netTag">auto</span></div>
+      <select id="network" onchange="recalc()">
+        <option value="">Auto-detect</option>
+        <option>Impact</option>
+        <option>ShareASale</option>
+        <option>Amazon</option>
+        <option>CJ Affiliate</option>
+        <option>PartnerStack</option>
+        <option>Direct</option>
+      </select>
+    </div>
+
+    <div class="ig">
+      <div class="il"><span>Revenue Type</span><span class="opt" id="recTag">auto</span></div>
+      <select id="recurring" onchange="recalc()">
+        <option value="auto">Auto-detect</option>
+        <option value="true">Recurring (monthly)</option>
+        <option value="false">One-time payout</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- RESULTS PANEL -->
+  <div class="rc">
+    <div class="rev">
+      <p class="lbl">Flip Score &nbsp;<span class="src-pill" id="srcPill">manual</span></p>
+      <div class="amt"><span id="flipScore">0</span><span> / 100</span></div>
+      <p class="sub">Difficulty: <strong id="diffScore">0</strong> &nbsp;&bull;&nbsp; <strong id="productLabel">—</strong></p>
+    </div>
+
+    <div class="dg">
+      <div class="mc">
+        <div class="mh"><span class="mt">Est. Monthly Revenue</span></div>
+        <div class="ma" id="monthlyRev">$0<span>/mo</span></div>
+      </div>
+      <div class="mc oc">
+        <div class="mh"><span class="mt">ROI Multiple</span></div>
+        <div class="ma" id="roi">0<span>&times;</span></div>
+      </div>
+    </div>
+
+    <div class="verdict watch" id="verdictBox">
+      <p class="vt">Should you promote this?</p>
+      <p class="vb" id="verdictText">Enter a product or niche to begin.</p>
+    </div>
+
+    <div class="list-card">
+      <h3>Recommended Keywords</h3>
+      <ul id="keywords"></ul>
+    </div>
+
+    <div class="list-card">
+      <h3>Recommended Niche Angles</h3>
+      <ul id="angles"></ul>
+    </div>
+
+    <div class="list-card">
+      <h3>Product-Specific Page Outline</h3>
+      <ul id="outline"></ul>
+    </div>
+
+    <div class="list-card">
+      <h3>Monetization Plan</h3>
+      <ul id="monetization"></ul>
+    </div>
+
+    <div class="list-card">
+      <h3>7-Day Action Plan</h3>
+      <ul id="action"></ul>
+    </div>
+  </div>
+</div>
+
+<div class="cta">
+  <h2>You Have the Score. <span>Now Get the Full Model.</span></h2>
+  <p>The free calculator gives you the signal. The full Affiliate Market Flip system adds AI-estimated EPC for unknown products, saved history, keyword research, a done-for-you landing page outline, and a Notion + Gumroad-ready export pack — all tuned for Gen X women building faceless income.</p>
+  <a href="https://francescaonline.gumroad.com/l/digital-business-os" class="btn" target="_blank" rel="noopener noreferrer">Get Full Access on Gumroad</a>
+  <a href="https://facebook.com/groups/digitallydefind" class="btn gh" target="_blank" rel="noopener noreferrer">Join the Community</a>
+</div>
+
+</div><!-- /wrap -->
+
+<footer>&copy; 2026 <a href="https://digitallydefined.store" target="_blank" rel="noopener noreferrer">DigitallyDefined</a> &mdash; Digital Real Estate Group &mdash; All Rights Reserved</footer>
+
+<script>
+const PRODUCTS = [
+  {"product":"Canva Pro","category":"Design","price":12.99,"commission_rate":0.25,"epc":0.45,"network":"Impact","recurring":true},
+  {"product":"Systeme.io","category":"Marketing","price":27.00,"commission_rate":0.50,"epc":0.80,"network":"Impact","recurring":true},
+  {"product":"ClickFunnels","category":"Marketing","price":147.00,"commission_rate":0.30,"epc":1.20,"network":"Impact","recurring":true},
+  {"product":"ConvertKit","category":"Email Marketing","price":29.00,"commission_rate":0.30,"epc":0.60,"network":"Impact","recurring":true},
+  {"product":"Shopify","category":"E-commerce","price":39.00,"commission_rate":0.58,"epc":0.75,"network":"Impact","recurring":true},
+  {"product":"Bluehost","category":"Web Hosting","price":2.95,"commission_rate":0.65,"epc":1.10,"network":"Impact","recurring":false},
+  {"product":"Fiverr","category":"Freelance Services","price":10.00,"commission_rate":0.15,"epc":0.35,"network":"Impact","recurring":false},
+  {"product":"Semrush","category":"SEO","price":119.95,"commission_rate":0.40,"epc":1.50,"network":"Impact","recurring":true},
+  {"product":"GetResponse","category":"Email Marketing","price":19.00,"commission_rate":0.33,"epc":0.55,"network":"Impact","recurring":true},
+  {"product":"Elementor Pro","category":"WordPress","price":49.00,"commission_rate":0.50,"epc":0.90,"network":"ShareASale","recurring":true},
+  {"product":"WP Engine","category":"Web Hosting","price":30.00,"commission_rate":0.50,"epc":2.00,"network":"ShareASale","recurring":false},
+  {"product":"AWeber","category":"Email Marketing","price":20.00,"commission_rate":0.30,"epc":0.50,"network":"ShareASale","recurring":true},
+  {"product":"Grammarly","category":"Writing Tools","price":12.00,"commission_rate":0.20,"epc":0.40,"network":"CJ Affiliate","recurring":false},
+  {"product":"NordVPN","category":"Cybersecurity","price":12.95,"commission_rate":0.40,"epc":0.65,"network":"CJ Affiliate","recurring":false},
+  {"product":"Skillshare","category":"Online Education","price":13.99,"commission_rate":0.10,"epc":0.25,"network":"ShareASale","recurring":false},
+  {"product":"Teachable","category":"Online Education","price":39.00,"commission_rate":0.30,"epc":0.70,"network":"Impact","recurring":true},
+  {"product":"Amazon Associates","category":"General Retail","price":25.00,"commission_rate":0.04,"epc":0.15,"network":"Amazon","recurring":false},
+  {"product":"Notion","category":"Productivity","price":8.00,"commission_rate":0.50,"epc":0.55,"network":"PartnerStack","recurring":true},
+  {"product":"Tailwind","category":"Social Media","price":15.00,"commission_rate":0.15,"epc":0.35,"network":"ShareASale","recurring":false}
+];
+
+const $ = id => document.getElementById(id);
+let mode = 'A';
+let resolvedSource = 'manual';
+
+(function(){
+  const dl = $('productList');
+  PRODUCTS.forEach(p => { const o=document.createElement('option'); o.value=p.product; dl.appendChild(o); });
+})();
+
+function setMode(m){
+  mode = m;
+  $('modeA').classList.toggle('active', m==='A');
+  $('modeB').classList.toggle('active', m==='B');
+  recalc();
+}
+
+function updateRequirementTags(){
+  const hasProduct = $('product').value.trim().length > 0;
+  const hasNiche = $('niche').value.trim().length > 0;
+  if (hasProduct && !hasNiche) {
+    $('nicheReqTag').textContent = 'optional';
+    $('productReqTag').textContent = 'provided';
+  } else if (hasNiche && !hasProduct) {
+    $('nicheReqTag').textContent = 'provided';
+    $('productReqTag').textContent = 'optional';
+  } else {
+    $('nicheReqTag').textContent = hasNiche ? 'provided' : (mode==='B' ? 'optional' : 'required');
+    $('productReqTag').textContent = hasProduct ? 'provided' : 'optional';
+  }
+}
+
+function lookupProduct(name){
+  const n = name.toLowerCase().trim();
+  return PRODUCTS.find(p => p.product.toLowerCase() === n) || null;
+}
+
+function estimateDefaults(name){
+  const cats = ['Software','Design','Marketing','Finance','Health'];
+  const mod = (name || 'asset').length % 5;
+  return { price: 29.00, commission_rate: 0.10, epc: 0.35, network: 'ShareASale',
+    recurring: false, category: cats[mod], difficulty: ['easy','medium','hard'][mod] };
+}
+
+function onProductInput(){
+  const name = $('product').value.trim();
+  const found = lookupProduct(name);
+  const autoMsg = $('autoMsg');
+  if (found) {
+    $('price').value = found.price;
+    $('commission').value = (found.commission_rate * 100).toFixed(2);
+    $('epc').value = found.epc;
+    if (!$('network').value) $('network').value = found.network;
+    if ($('recurring').value === 'auto') $('recurring').value = found.recurring ? 'true' : 'false';
+    ['price','comm','epc','net','rec'].forEach(t => { const el=$(t+'Tag'); if(el) el.textContent='auto-filled'; });
+    autoMsg.textContent = 'Auto-filled from catalog: ' + found.category + ' • ' + found.network;
+    autoMsg.classList.add('ok');
+    resolvedSource = 'catalog';
+    if (!$('niche').value.trim()) $('niche').value = (found.category + ' tools & reviews').toLowerCase();
+  } else if (name) {
+    autoMsg.textContent = 'Unknown product — estimates will be generated (LLM).';
+    autoMsg.classList.remove('ok');
+    resolvedSource = 'llm';
+    ['price','comm','epc','net','rec'].forEach(t => { const el=$(t+'Tag'); if(el) el.textContent='estimated'; });
+  } else {
+    autoMsg.textContent = '';
+    resolvedSource = 'manual';
+  }
+  recalc();
+}
+
+function fmt(v){ return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v||0); }
+
+function recalc(){
+  updateRequirementTags();
+  const product = $('product').value.trim();
+  const niche = $('niche').value.trim();
+  const traffic = +$('traffic').value || 0;
+
+  const found = product ? lookupProduct(product) : null;
+  const est = estimateDefaults(product || niche || 'asset');
+
+  let price = parseFloat($('price').value);
+  let commissionPct = parseFloat($('commission').value);
+  let epc = parseFloat($('epc').value);
+  let network = $('network').value;
+  let recurring = $('recurring').value;
+
+  if (isNaN(price)) price = found ? found.price : est.price;
+  if (isNaN(commissionPct)) commissionPct = found ? (found.commission_rate*100) : (est.commission_rate*100);
+  if (isNaN(epc)) epc = found ? found.epc : est.epc;
+  if (!network) network = found ? found.network : est.network;
+  if (recurring === 'auto') recurring = found ? String(found.recurring) : String(est.recurring);
+  const isRecurring = recurring === 'true';
+
+  const category = found ? found.category : est.category;
+  const difficulty = found ? 'medium' : est.difficulty;
+
+  const commissionRate = commissionPct / 100;
+  const conversion = 0.012;
+  const monthlyRevenue = epc * traffic;
+
+  const commissionScore = Math.min(commissionRate * 70, 35);
+  const epcScore = Math.min(epc * 23, 35);
+  const priceScore = Math.min((price / 200) * 15, 15);
+  const recurringBonus = isRecurring ? 15 : 0;
+  const nicheBonus = niche.split(' ').length >= 3 ? 6 : (niche.split(' ').length === 2 ? 3 : 0);
+  const difficultyPenalty = {easy:0, medium:8, hard:18}[difficulty] || 8;
+  const flipScore = Math.round(Math.max(0, Math.min(100, commissionScore + epcScore + priceScore + recurringBonus + nicheBonus - difficultyPenalty)));
+  const difficultyScore = 100 - flipScore;
+
+  const estCost = Math.max(traffic * 0.05, 1);
+  const roi = monthlyRevenue / estCost;
+
+  let verdictText, vClass;
+  if (flipScore >= 70) { verdictText = 'YES — Strong product. High commission + good EPC gives you a clear path to profitability.'; vClass='yes'; }
+  else if (flipScore >= 50) { verdictText = 'MAYBE — Solid product. Optimize your traffic channel and niche angle before scaling.'; vClass='maybe'; }
+  else { verdictText = 'WATCH — Low margin or high complexity. Validate demand and competition first.'; vClass='watch'; }
+
+  $('flipScore').textContent = flipScore;
+  $('diffScore').textContent = difficultyScore;
+  $('productLabel').textContent = product ? product : (niche || '—');
+  $('monthlyRev').innerHTML = fmt(monthlyRevenue) + '<span>/mo</span>';
+  $('roi').innerHTML = roi.toFixed(1) + '<span>&times;</span>';
+  const vb = $('verdictBox'); vb.className = 'verdict ' + vClass; $('verdictText').textContent = verdictText;
+  const sp = $('srcPill'); sp.textContent = resolvedSource; sp.className = 'src-pill' + (resolvedSource==='llm' ? ' llm' : '');
+
+  const subject = product ? product.split(' ')[0] : (niche ? niche.split(' ')[0] : 'this offer');
+
+  $('keywords').innerHTML = [
+    'affiliate review ' + subject.toLowerCase(),
+    'best ' + category.toLowerCase() + ' affiliate program',
+    subject.toLowerCase() + ' vs alternatives',
+    'how to earn with ' + subject.toLowerCase(),
+    'earn passive income ' + category.toLowerCase()
+  ].map(x=>'<li>'+x+'</li>').join('');
+
+  $('angles').innerHTML = [
+    'Gen X women building faceless online income',
+    'Beginner affiliate marketers in ' + category.toLowerCase(),
+    'Content creators reviewing ' + category.toLowerCase() + ' tools',
+    'Solopreneurs comparing ' + subject.toLowerCase() + ' alternatives'
+  ].map(x=>'<li>'+x+'</li>').join('');
+
+  $('outline').innerHTML = [
+    'Hero: ' + (product||subject) + ' + headline promise',
+    'Problem–agitate–solution framework',
+    (product||subject) + ' feature breakdown',
+    'Real results & testimonials',
+    'Comparison table vs alternatives',
+    'Pricing + your commission explanation (' + commissionPct.toFixed(1) + '%)',
+    'Bonus / value-add section',
+    'Risk reversal & guarantee',
+    'FAQ',
+    'Call-to-action + affiliate sign-up (' + network + ')'
+  ].map(x=>'<li>'+x+'</li>').join('');
+
+  $('monetization').innerHTML = [
+    'Join the ' + network + ' affiliate program',
+    'Build landing pages targeting high-intent keywords',
+    'Publish honest ' + subject.toLowerCase() + ' reviews + comparisons',
+    'Grow an email list with a ' + category.toLowerCase() + ' lead magnet',
+    'Review roundup content (video or written)',
+    'Drive Pinterest + targeted traffic',
+    'Track EPC (' + fmt(epc) + '); pivot if below $0.20',
+    isRecurring ? 'Emphasize recurring commission upside' : 'Push high-ticket one-time payouts + upsells'
+  ].map(x=>'<li>'+x+'</li>').join('');
+
+  $('action').innerHTML = [
+    'Day 1: Join ' + network + ' & install tracking links',
+    'Day 2: Write 2 SEO articles around your top keywords',
+    'Day 3: Build a comparison table of 5 offers',
+    'Day 4: Publish a detailed ' + (product||subject) + ' review',
+    'Day 5: Set up a simple email nurture sequence',
+    'Day 6: Share on Pinterest + relevant Facebook groups',
+    'Day 7: Review clicks & conversions, optimize angles'
+  ].map(x=>'<li>'+x+'</li>').join('');
+}
+
+['product','niche','traffic','price','commission','epc'].forEach(id => {
+  const el = $(id); if(el) el.addEventListener('input', recalc);
+});
+$('product').addEventListener('input', onProductInput);
+$('niche').addEventListener('input', updateRequirementTags);
+recalc();
+</script>
+</body>
+</html>

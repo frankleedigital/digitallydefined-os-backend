@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10x ROI Calculator &mdash; DigitallyDefined</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{min-height:100dvh;font-family:'DM Sans',sans-serif;font-size:16px;background:#FFFCF9;color:#111111}
+:root{
+  --or:#F18B25;--bl:#47B7D4;--rd:#8B1A0A;
+  --dk:#111111;--bdr:1px solid #111111;--sh:none
+}
+.wrap{max-width:1100px;margin:0 auto;padding:2rem 1.25rem 4rem}
+/* NAV */
+/* Unified nav — matches DD shell nav markup */
+nav{display:flex;justify-content:space-between;align-items:center;border-bottom:var(--bdr);padding-bottom:1.5rem;margin-bottom:3rem;flex-wrap:wrap;gap:1rem}
+.dd-privacy{margin-top:.5rem;width:100%;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9CA3AF;text-align:center}
+.dd-logo{display:flex;align-items:center;gap:.6rem}
+.dd-logo-name{font-family:'Inter',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.04em;line-height:1;border:var(--bdr);background:#FFFCF9;padding:.5rem .75rem}
+.dd-logo-name em{color:var(--or);font-style:italic}
+.dd-logo-sub{font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B7280;margin-top:2px}
+.dd-badge{font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:var(--bdr);background:#fff;padding:.35rem .75rem}
+/* HERO */
+.hero{text-align:center;margin-bottom:3rem}
+.hero h1{font-family:'Inter',sans-serif;font-weight:800;font-size:clamp(2.5rem,6vw,4.5rem);letter-spacing:-.03em;text-transform:uppercase;line-height:1;color:var(--dk)}
+.hero h1 span{color:var(--or)}
+.hero-sub{font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--bl);margin-top:.75rem}
+.hero-privacy{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9CA3AF;margin-top:.5rem}
+/* ORIENTATION */
+.orient{border-left:2px solid var(--or);padding:.75rem 1.25rem;background:#fff;margin-bottom:2rem}
+.orient p{font-size:.85rem;font-weight:500;color:var(--dk);line-height:1.6;max-width:600px}
+/* GRID */
+.grid{display:grid;grid-template-columns:1fr 2fr;gap:2rem;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+/* CARD */
+.card{background:#fff;border:var(--bdr);padding:1.75rem}
+.ch{display:flex;align-items:center;gap:.5rem;border-bottom:var(--bdr);padding-bottom:1rem;margin-bottom:1.75rem}
+.ch h2{font-family:'Inter',sans-serif;font-weight:700;font-size:1rem;text-transform:uppercase;letter-spacing:.05em;color:var(--dk)}
+/* INPUTS */
+.ig{margin-bottom:2rem}
+.ig:last-child{margin-bottom:0}
+.il{display:flex;justify-content:space-between;align-items:center;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dk);margin-bottom:.6rem}
+.vo{color:var(--or);font-weight:700}.vb{color:var(--bl);font-weight:700}.vr{color:var(--rd);font-weight:700}
+input[type=text]{width:100%;padding:.6rem .75rem;border:var(--bdr);background:#fff;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:700;color:var(--dk);outline:none}
+input[type=text]:focus{outline:1px solid var(--or);outline-offset:2px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:10px;border:var(--bdr);background:#F3F4F6;cursor:pointer;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border:1px solid #111;background:var(--or);cursor:pointer}
+input[type=range].br::-webkit-slider-thumb{background:var(--bl)}
+input[type=range].rr::-webkit-slider-thumb{background:var(--rd)}
+/* RIGHT */
+.rc{display:flex;flex-direction:column;gap:1.5rem}
+/* REVENUE */
+.rev{background:var(--dk);color:#fff;border:var(--bdr);padding:2rem;position:relative;overflow:hidden}
+.rev .bgi{position:absolute;top:50%;right:1.5rem;transform:translateY(-50%);opacity:.08;pointer-events:none}
+.rev .lbl{font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#9CA3AF;margin-bottom:.5rem}
+.rev .amt{font-family:'Inter',sans-serif;font-weight:800;font-size:clamp(3rem,8vw,5rem);line-height:1;color:#fff}
+.rev .sub{font-size:.9rem;color:#9CA3AF;border-top:1px solid #374151;padding-top:1rem;margin-top:1rem;font-style:italic}
+.rev .sub strong{color:#fff;font-style:normal;text-decoration:underline;text-decoration-color:var(--or)}
+/* DUAL */
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media(max-width:600px){.dg{grid-template-columns:1fr}}
+.mc{background:#fff;border:var(--bdr);padding:1.5rem}
+.mc.oc{background:var(--or)}
+.mh{display:flex;align-items:center;gap:.5rem;border-bottom:var(--bdr);padding-bottom:.6rem;margin-bottom:1rem}
+.mt{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dk)}
+.ma{font-family:'Inter',sans-serif;font-weight:800;font-size:2.5rem;line-height:1;color:var(--dk)}
+.ma span{font-size:1rem;font-weight:400}
+/* VULN */
+.vc{background:#fff;border:var(--bdr);padding:1.5rem}
+.vh{display:flex;justify-content:space-between;align-items:center;border-bottom:var(--bdr);padding-bottom:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;gap:.5rem}
+.vhl{display:flex;align-items:center;gap:.5rem}
+.vhl h3{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dk)}
+.vtag{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:var(--bdr);background:#fff;color:var(--rd);padding:.25rem .6rem}
+.vc p{font-size:.9rem;font-weight:500;color:var(--dk);margin-bottom:.75rem;max-width:100%}
+.stk{font-family:'Inter',sans-serif;font-weight:800;font-size:2rem;color:#9CA3AF;text-decoration:line-through;display:inline-block}
+.plus{font-size:1.1rem;font-weight:700;text-transform:uppercase;color:var(--rd);margin-left:.75rem}
+.sav{font-size:.9rem;font-weight:500;color:var(--dk);margin-top:.75rem;max-width:100%}
+.sav strong{font-weight:700;text-decoration:underline}
+/* PITCH */
+.pc{background:#F9FAFB;border:var(--bdr);padding:1.5rem}
+.ph{display:flex;align-items:center;gap:.5rem;border-bottom:var(--bdr);padding-bottom:.75rem;margin-bottom:1.25rem}
+.ph h3{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dk)}
+.ps{background:#fff;border:var(--bdr);padding:1.5rem;font-size:.95rem;line-height:1.75;color:var(--dk);font-weight:500}
+.ps p{margin-bottom:1rem;max-width:100%}
+.ps p:last-child{margin-bottom:0}
+.hl{font-style:italic;font-weight:700;text-transform:uppercase;text-decoration:underline;text-decoration-color:var(--or);text-underline-offset:3px}
+.no{color:var(--or);font-weight:700}
+.nb{font-size:1.2rem;font-weight:800}
+.nu{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:3px}
+.ps-intro{font-size:.85rem;font-weight:500;color:#4B5563;margin:-.5rem 0 1rem;line-height:1.6}
+.ps-lease{font-size:.9rem;font-weight:500;color:var(--dk);margin-top:.5rem;max-width:100%}
+.ps-lease strong{font-weight:800;color:var(--or)}
+/* GATE OVERLAY */
+#dd-gate{position:fixed;inset:0;background:rgba(17,17,17,.85);display:flex;align-items:center;justify-content:center;padding:1.5rem;z-index:1000}
+.gate-inner{max-width:520px;background:#fff;border:1px solid var(--dk);padding:2.5rem;text-align:center}
+.gate-inner .logo{margin-bottom:1.5rem}
+.gate-inner h2{font-family:'Inter',sans-serif;font-weight:800;font-size:clamp(1.5rem,3vw,2.2rem);text-transform:uppercase;color:var(--dk);letter-spacing:-.02em;margin-bottom:.75rem}
+.gate-inner h2 span{color:var(--or)}
+.gate-sub{font-size:.85rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bl);margin-bottom:.75rem}
+.gate-why{font-size:.9rem;font-weight:500;color:var(--dk);margin-bottom:1.5rem;line-height:1.6}
+.gate-privacy{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9CA3AF;margin-top:1.5rem}
+.cta{margin-top:3rem;border:var(--bdr);background:var(--dk);padding:2.5rem;text-align:center}
+.cta h2{font-family:'Inter',sans-serif;font-weight:800;font-size:clamp(1.5rem,3vw,2.2rem);text-transform:uppercase;color:#fff;letter-spacing:-.02em;margin-bottom:.75rem}
+.cta h2 span{color:var(--or)}
+.cta p{color:#9CA3AF;font-size:.95rem;margin-bottom:2rem;max-width:520px;margin-left:auto;margin-right:auto}
+.btn{display:inline-block;font-family:'Inter',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;border:1px solid #fff;color:var(--dk);background:var(--or);padding:1rem 1.5rem;text-decoration:none;transition:all .2s}
+.btn:hover{background:#fff;color:var(--dk)}
+.btn.gh{background:transparent;color:#fff;border-color:#4B5563}
+.btn.gh:hover{background:#374151;border-color:#374151}
+footer{text-align:center;font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#9CA3AF;padding:2rem 1rem 1rem;border-top:1px solid #E5E7EB;margin-top:3rem}
+footer a{color:var(--or);text-decoration:none}
+</style>
+
+<!-- DigitallyDefined Canonical Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- DigitallyDefined Brand Standards (Strict 0px Soft-Brutalism) -->
+<style id="dd-brand-standard">
+  :root {
+    --bg: #FFFCF9 !important;
+    --dd-bg: #FFFCF9 !important;
+    --card: #FFFFFF !important;
+    --dd-card: #FFFFFF !important;
+    --panel: #FFFAF5 !important;
+    --dd-panel: #FFFAF5 !important;
+    --text: #111111 !important;
+    --dd-text: #111111 !important;
+    --ink: #111111 !important;
+    --muted: #5F5F5F !important;
+    --dd-muted: #5F5F5F !important;
+    --border: 1px solid #111111 !important;
+    --dd-border: 1px solid #111111 !important;
+    --line: #111111 !important;
+    --or: #F18B25 !important;
+    --orange: #F18B25 !important;
+    --dd-orange: #F18B25 !important;
+    --bl: #47B7D4 !important;
+    --aqua: #47B7D4 !important;
+    --dd-aqua: #47B7D4 !important;
+    --rd: #8B1A0A !important;
+    --red: #8B1A0A !important;
+    --dd-red: #8B1A0A !important;
+    --dd-frame: #111111 !important;
+  }
+
+  /* Strict Brand Reset: zero border radius on all elements */
+  *, *::before, *::after {
+    border-radius: 0px !important;
+  }
+
+  body {
+    background-color: #FFFCF9 !important;
+    color: #111111 !important;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    -webkit-font-smoothing: antialiased !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    color: #111111 !important;
+    letter-spacing: -0.025em !important;
+  }
+
+  .mono, code, pre, .dd-badge, .badge, .tag {
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+
+  input:focus, select:focus, textarea:focus, button:focus {
+    outline: 2px solid #F18B25 !important;
+    outline-offset: 1px !important;
+  }
+</style>
+</head>
+<body>
+
+<script>
+// ============================================
+// ACCESS GATE SYSTEM - 10x ROI Calculator
+// Supports: Static tokens, Wildcard patterns, Email validation
+// ============================================
+
+(function() {
+  'use strict';
+
+  // Configuration
+  const CONFIG = {
+    // Static tokens (manual access)
+    validTokens: ['DD2026', 'DD10X'],
+    
+    // Wildcard patterns (accept any token matching these prefixes)
+    // Useful for Gumroad order IDs, etc.
+    tokenPatterns: ['GUM-', 'PAID-'],
+    
+    // Valid email domains (if using email validation)
+    validEmailDomains: [],
+    
+    // Redirect URLs
+    salesPage: 'https://francescaonline.gumroad.com/l/digital-business-os',
+    fallbackPage: 'https://digitallydefined.store',
+    
+    // Storage key for saving tokens
+    storageKey: 'dd_calculator_access'
+  };
+
+  // ============================================
+  // TOKEN VALIDATION FUNCTIONS
+  // ============================================
+
+  function getTokenFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('access') || params.get('token');
+  }
+
+  function getTokenFromHash() {
+    const hash = window.location.hash.substring(1);
+    if (hash && hash.startsWith('access=')) {
+      return hash.substring(7);
+    }
+    return null;
+  }
+
+  function getTokenFromStorage() {
+    try {
+      return localStorage.getItem(CONFIG.storageKey) || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function isTokenValid(token) {
+    if (!token) return false;
+    
+    // Check static tokens
+    if (CONFIG.validTokens.includes(token)) {
+      return true;
+    }
+    
+    // Check wildcard patterns
+    for (const pattern of CONFIG.tokenPatterns) {
+      if (token.startsWith(pattern)) {
+        return true;
+      }
+    }
+    
+    // Check if it's a valid email (optional)
+    if (isValidEmail(token)) {
+      return true;
+    }
+    
+    return false;
+  }
+
+  function isValidEmail(email) {
+    if (!email || !email.includes('@')) return false;
+    
+    if (CONFIG.validEmailDomains.length === 0) return false;
+    
+    const domain = email.split('@')[1];
+    return CONFIG.validEmailDomains.some(d => domain === d || domain.endsWith('.' + d));
+  }
+
+  function saveTokenToStorage(token) {
+    try {
+      localStorage.setItem(CONFIG.storageKey, token);
+    } catch (e) {
+      // Ignore storage errors
+    }
+  }
+
+  // ============================================
+  // MAIN ACCESS CHECK
+  // ============================================
+
+  const urlToken = getTokenFromURL();
+  const hashToken = getTokenFromHash();
+  const storedToken = getTokenFromStorage();
+  
+  let activeToken = urlToken || hashToken || storedToken;
+
+  // If we have a token from URL/hash, save it to storage
+  if (urlToken || hashToken) {
+    saveTokenToStorage(activeToken);
+  }
+
+  // Validate the token
+  const hasAccess = isTokenValid(activeToken);
+
+  if (!hasAccess) {
+    // No valid token → show gate overlay (user-controlled navigation)
+    showGateOverlay();
+  }
+
+  // Token is valid - allow access
+  // Optionally clean the URL to hide the token
+  if (urlToken && window.history && window.history.replaceState) {
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  // Gate overlay function — shows when no valid token is present
+  function showGateOverlay() {
+    const overlay = document.createElement('div');
+    overlay.id = 'dd-gate';
+    overlay.innerHTML = `
+      <div class="gate-inner">
+        <div class="dd-logo">
+          <div>
+            <div class="dd-logo-name">Digitally<em>Defined</em></div>
+            <div class="dd-logo-sub">For Gen X Women Reinventing Themselves, Digitally</div>
+          </div>
+        </div>
+        <h2>10X ROI <span>Calculator</span></h2>
+        <p class="gate-sub">This calculator shows you the monthly yield of a digital property in 30 seconds — no sign-up, no tracking.</p>
+        <p class="gate-why">Full access unlocks the complete yield model. Get it on Gumroad and bring this calculator back with your token.</p>
+        <a href="${CONFIG.salesPage}" class="btn" target="_blank" rel="noopener noreferrer">Get Full Access on Gumroad</a>
+        <p class="gate-privacy">Your inputs stay on this device. Nothing is stored or sent.</p>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    document.body.style.overflow = 'hidden';
+  }
+
+})();
+</script>
+
+<div class="wrap">
+
+<nav>
+  <div class="dd-logo">
+    <div>
+      <div class="dd-logo-name">Digitally<em>Defined</em></div>
+      <div class="dd-logo-sub">For Gen X Women Reinventing Themselves, Digitally</div>
+    </div>
+  </div>
+  <span class="dd-badge">10x ROI Calculator</span>
+  <div class="dd-privacy">Your inputs stay on this device. No sign-up. No tracking.</div>
+</nav>
+
+<header class="hero">
+  <h1>10X ROI <span>Calculator</span></h1>
+  <p class="hero-sub">Find out what your digital property is worth per month — in 30 seconds, no sign-up.</p>
+  <p class="hero-privacy">Your inputs stay on this device. Nothing is stored or sent.</p>
+</header>
+
+<div class="orient">
+  <p>Slide the five inputs on the left. The numbers on the right update instantly. Use the script at the bottom to reach out to tenants.</p>
+</div>
+
+<div class="grid">
+  <div>
+    <div class="card">
+      <div class="ch">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F18B25" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="2" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <h2>Asset Metrics</h2>
+      </div>
+      <div class="ig">
+        <div class="il"><span>&#127968; Property Name</span></div>
+        <input type="text" id="pn" value="Main Street Plumbing" placeholder="e.g. Phoenix Roofing"/>
+      </div>
+      <div class="ig">
+        <div class="il"><span>Monthly Lead Traffic</span><span class="vo" id="lv">45 Calls</span></div>
+        <input type="range" id="ld" min="5" max="200" step="1" value="45"/>
+      </div>
+      <div class="ig">
+        <div class="il"><span>Avg Job Value</span><span class="vo" id="av">$1,500</span></div>
+        <input type="range" id="aj" min="100" max="10000" step="100" value="1500"/>
+      </div>
+      <div class="ig">
+        <div class="il"><span>Tenant Close Rate</span><span class="vb" id="cv">40%</span></div>
+        <input type="range" id="cr" class="br" min="10" max="80" step="5" value="40"/>
+      </div>
+      <div class="ig">
+        <div class="il"><span>Market PPC Cost</span><span class="vr" id="pv">$65/lead</span></div>
+        <input type="range" id="pc" class="rr" min="15" max="250" step="5" value="65"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="rc">
+    <div class="rev">
+      <div class="bgi"><svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+      <p class="lbl">Total Yield Capability</p>
+      <div class="amt" id="gr">$27,000</div>
+      <p class="sub">Monthly gross revenue generated by <strong id="pd">Main Street Plumbing</strong>.</p>
+    </div>
+
+    <div class="dg">
+      <div class="mc">
+        <div class="mh">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F18B25" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span class="mt">Equity Cap (10%)</span>
+        </div>
+        <div class="ma" id="mr">$2,700<span>/mo</span></div>
+        <p style="font-size:.8rem;color:#4B5563;margin-top:.75rem">Market standard for managed lead acquisition.</p>
+      </div>
+      <div class="mc oc">
+        <div class="mh">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span class="mt">Lease Price (40x ROI)</span>
+        </div>
+        <div class="ma" id="sr">$675<span>/mo</span></div>
+        <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:.75rem">Optimized Tenant Retention Pricing</p>
+      </div>
+    </div>
+
+    <div class="vc">
+      <div class="vh">
+        <div class="vhl">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B1A0A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <h3>Your Competitive Edge vs. Paid Ads</h3>
+        </div>
+        <span class="vtag">PPC Comparison</span>
+      </div>
+      <p>A tenant attempting to replicate this asset's traffic via Google Ads would pay:</p>
+      <div><span class="stk" id="pe">$2,925</span><span class="plus">+ Management Fees</span></div>
+      <p class="sav">Your lease saves the tenant <strong id="sv">$2,250</strong> in monthly overhead.</p>
+    </div>
+
+    <div class="pc">
+      <div class="ph">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47B7D4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <h3>The Script — Use This Exactly</h3>
+      </div>
+      <p class="ps-intro">Copy this. Send it to the business owner. The bracketed parts update live as you slide.</p>
+      <div class="ps">
+        <p>"Hey [Name], I'm auditing the traffic for my digital property, <span class="hl" id="p1">Main Street Plumbing</span>."</p>
+        <p>"Last month, this asset delivered <span class="no" id="p2">45 exclusive calls</span> directly to your phone. You've heard the DigitallyDefined watermark on every single one of them."</p>
+        <p>"Even if your team only converts <strong id="p3">40%</strong> of those, that's <span class="nb" id="p4">$27,000</span> in gross revenue generated by my property."</p>
+        <p>"To buy this same traffic from Google, you'd burn <strong id="p5">$2,925</strong> plus agency fees. I'm not a marketing agency&mdash;I'm a landlord. I'm leasing this exclusive territory to you, guaranteed."</p>
+        <p>"Does it make sense to secure this asset now, or should I release the lease to someone else?"</p>
+        <p class="ps-lease"><strong class="nb" id="p6"></strong>/ month — that's the lease price for this territory.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cta">
+  <h2>You Have the Numbers. <span>Now Get the Full Model.</span></h2>
+  <p>The free calculator above is a snapshot. The full Digital Business OS gives you revenue projections, lead flow modeling, digital asset valuation, competitor benchmarks, and opportunity forecasting — all in one place.</p>
+  <a href="https://francescaonline.gumroad.com/l/digital-business-os" class="btn" target="_blank" rel="noopener noreferrer">Get Full Access on Gumroad</a>
+  <a href="https://facebook.com/groups/digitallydefind" class="btn gh" target="_blank" rel="noopener noreferrer">Join the Community</a>
+</div>
+
+</div>
+<footer>&copy; 2026 <a href="https://digitallydefined.store" target="_blank" rel="noopener noreferrer">DigitallyDefined</a> &mdash; Digital Real Estate Group &mdash; All Rights Reserved</footer>
+
+<script>
+const f=v=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v);
+function calc(){
+  const n=document.getElementById('pn').value||'this asset';
+  const l=+document.getElementById('ld').value;
+  const a=+document.getElementById('aj').value;
+  const c=+document.getElementById('cr').value;
+  const p=+document.getElementById('pc').value;
+  const cl=Math.floor(l*(c/100));
+  const g=cl*a,mr=g*.10,ls=g/40,pe=l*p,sv=Math.max(pe-ls,0);
+  document.getElementById('lv').textContent=l+' Calls';
+  document.getElementById('av').textContent=f(a);
+  document.getElementById('cv').textContent=c+'%';
+  document.getElementById('pv').textContent=f(p)+'/lead';
+  document.getElementById('gr').textContent=f(g);
+  document.getElementById('pd').textContent=n;
+  document.getElementById('mr').innerHTML=f(mr)+'<span>/mo</span>';
+  document.getElementById('sr').innerHTML=f(ls)+'<span>/mo</span>';
+  document.getElementById('pe').textContent=f(pe);
+  document.getElementById('sv').textContent=f(sv);
+  document.getElementById('p1').textContent=n;
+  document.getElementById('p2').textContent=l+' exclusive calls';
+  document.getElementById('p3').textContent=c+'%';
+  document.getElementById('p4').textContent=f(g);
+  document.getElementById('p5').textContent=f(pe);
+  document.getElementById('p6').textContent=f(ls)+'/month';
+}
+['pn','ld','aj','cr','pc'].forEach(id=>document.getElementById(id).addEventListener('input',calc));
+calc();
+</script>
+</body>
+</html>

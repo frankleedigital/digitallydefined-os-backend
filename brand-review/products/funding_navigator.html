@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funding Navigator | DigitallyDefined</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,700;1,9..40,400&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dd-blue': '#47B7D4',
+                        'dd-orange': '#F18B25',
+                        'dd-red': '#C20F0A',
+                        'dd-cream': '#FFFCF9',
+                        'dd-black': '#000000',
+                        'dd-text': '#111111',
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'dmsans': ['DM Sans', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'brutal': '2px 2px 0px 0px rgba(0,0,0,0.25)',
+                        'brutal-sm': '1px 1px 0px 0px rgba(0,0,0,0.25)',
+                        'brutal-hover': '0px 0px 0px 0px rgba(0,0,0,0)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FFFCF9;
+            color: #111111;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            background: transparent;
+            border: 1px solid transparent;
+            border-bottom: 1px solid #000;
+            padding: 0.25rem 0.5rem;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            border-radius: 0;
+        }
+        textarea { min-height: 3rem; resize: vertical; }
+        input:focus, textarea:focus {
+            outline: none;
+            border: 1px solid #000;
+            background-color: #fff;
+            box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.25);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: sharpFade 0.2s ease-in-out; }
+
+        @keyframes sharpFade {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dd-table { border-collapse: collapse; width: 100%; }
+        .dd-table th {
+            background-color: #F18B25;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid #000;
+            border-bottom: 2px solid #000;
+        }
+        .dd-table td {
+            padding: 0.75rem 1rem;
+            border: 1px solid #000;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            background-color: #fff;
+            vertical-align: top;
+        }
+
+        .section-header {
+            background-color: #47B7D4;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            text-transform: uppercase;
+            border: 1px solid #000;
+        }
+
+        .badge {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+            border: 1px solid #000;
+            text-transform: uppercase;
+            box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.25);
+            font-family: 'Inter', sans-serif;
+        }
+        .badge-blue { background-color: #47B7D4; color: #fff; }
+        .badge-orange { background-color: #F18B25; color: #fff; }
+        .badge-red { background-color: #C20F0A; color: #fff; }
+        .badge-neutral { background-color: #fff; color: #000; }
+        .badge-black { background-color: #111111; color: #fff; }
+
+        .fit-radio {
+            width: 1.1rem; height: 1.1rem;
+            accent-color: #000;
+            cursor: pointer;
+        }
+
+        .pitch-line {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.7;
+        }
+
+        .stamp {
+            display: inline-block;
+            border: 3px solid #000;
+            padding: 0.25rem 0.9rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            transform: rotate(-2deg);
+            box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.25);
+            background-color: #FFFCF9;
+        }
+    </style>
+
+<!-- DigitallyDefined Canonical Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- DigitallyDefined Brand Standards (Strict 0px Soft-Brutalism) -->
+<style id="dd-brand-standard">
+  :root {
+    --bg: #FFFCF9 !important;
+    --dd-bg: #FFFCF9 !important;
+    --card: #FFFFFF !important;
+    --dd-card: #FFFFFF !important;
+    --panel: #FFFAF5 !important;
+    --dd-panel: #FFFAF5 !important;
+    --text: #111111 !important;
+    --dd-text: #111111 !important;
+    --ink: #111111 !important;
+    --muted: #5F5F5F !important;
+    --dd-muted: #5F5F5F !important;
+    --border: 1px solid #111111 !important;
+    --dd-border: 1px solid #111111 !important;
+    --line: #111111 !important;
+    --or: #F18B25 !important;
+    --orange: #F18B25 !important;
+    --dd-orange: #F18B25 !important;
+    --bl: #47B7D4 !important;
+    --aqua: #47B7D4 !important;
+    --dd-aqua: #47B7D4 !important;
+    --rd: #8B1A0A !important;
+    --red: #8B1A0A !important;
+    --dd-red: #8B1A0A !important;
+    --dd-frame: #111111 !important;
+  }
+
+  /* Strict Brand Reset: zero border radius on all elements */
+  *, *::before, *::after {
+    border-radius: 0px !important;
+  }
+
+  body {
+    background-color: #FFFCF9 !important;
+    color: #111111 !important;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    -webkit-font-smoothing: antialiased !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    color: #111111 !important;
+    letter-spacing: -0.025em !important;
+  }
+
+  .mono, code, pre, .dd-badge, .badge, .tag {
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+
+  input:focus, select:focus, textarea:focus, button:focus {
+    outline: 2px solid #F18B25 !important;
+    outline-offset: 1px !important;
+  }
+</style>
+</head>
+<body class="min-h-screen p-4 md:p-8 font-dmsans selection:bg-dd-blue selection:text-white">
+<!-- DigitallyDefined Official Header -->
+<nav class="dd-brand-topbar" style="background:#FFFCF9; border-bottom:1px solid #111111; padding:0.9rem 1.25rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; font-family:'Inter', sans-serif; position:sticky; top:0; z-index:9999;">
+  <div style="display:flex; align-items:center; gap:0.6rem;">
+    <a href="https://dashboard.digitallydefined.agency" target="_blank" rel="noopener noreferrer" style="text-decoration:none; color:#111111;">
+      <span style="font-weight:800; font-size:1.05rem; letter-spacing:-0.03em; border:1px solid #111111; background:#FFFFFF; padding:0.35rem 0.65rem; display:inline-block;">Digitally<em style="color:#F18B25; font-style:italic;">Defined</em></span>
+    </a>
+    <span style="font-size:0.65rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#5F5F5F; display:none;">Faceless Digital Real Estate</span>
+  </div>
+  <div style="display:flex; align-items:center; gap:0.6rem;">
+    <span style="font-size:0.65rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; border:1px solid #111111; background:#FFFFFF; padding:0.3rem 0.6rem; font-family:'JetBrains Mono', monospace;">Funding Navigator</span>
+    <a href="https://dashboard.digitallydefined.agency/quiz" target="_blank" rel="noopener noreferrer" style="font-size:0.65rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; background:#F18B25; color:#111111; border:1px solid #111111; padding:0.3rem 0.7rem; text-decoration:none;">Take Free Quiz →</a>
+  </div>
+</nav>
+
+
+    <div id="modal-backdrop" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white border-2 border-dd-black p-6 max-w-md w-full shadow-brutal space-y-4">
+            <h3 id="modal-title" class="font-inter font-bold text-xl uppercase text-dd-text">System Notice</h3>
+            <p id="modal-message" class="text-sm text-gray-700"></p>
+            <div class="flex justify-end gap-3 pt-2">
+                <button onclick="closeModal()" class="px-5 py-2 font-bold bg-dd-orange text-white border border-dd-black shadow-brutal hover:translate-x-[2px] hover:translate-y-[2px] transition-all">GOT IT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto space-y-8">
+
+        <header class="bg-white p-6 border border-dd-black shadow-brutal flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-dd-orange border border-dd-black flex items-center justify-center shadow-brutal-sm">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter">
+                        <circle cx="12" cy="5" r="2.5"></circle>
+                        <path d="M12 8v3"></path>
+                        <path d="M8 11h8l-1 10H9L8 11z"></path>
+                        <path d="M12 20v2"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-inter font-bold text-dd-text uppercase tracking-tight">Funding Navigator</h1>
+                    <p class="text-sm font-dmsans text-gray-700 mt-1">The paint-by-numbers funding system for the fastest-growing, least-seen generation of founders.</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 font-inter text-sm">
+                <button onclick="switchTab('tab1')" id="btn-tab1" class="tab-btn px-4 py-2 font-bold bg-dd-orange text-white border border-dd-black shadow-brutal hover:shadow-brutal-hover hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+                    1. Track & Fit
+                </button>
+                <button onclick="switchTab('tab2')" id="btn-tab2" class="tab-btn px-4 py-2 font-bold bg-white text-dd-text border border-dd-black shadow-brutal hover:shadow-brutal-hover hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+                    2. The 4-Line Pitch
+                </button>
+                <button onclick="switchTab('tab3')" id="btn-tab3" class="tab-btn px-4 py-2 font-bold bg-white text-dd-text border border-dd-black shadow-brutal hover:shadow-brutal-hover hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+                    3. Application
+                </button>
+                <div class="flex items-center gap-2 ml-2">
+                    <button onclick="saveDataState()" title="Save to Local Storage" class="p-2 bg-dd-blue text-white border border-dd-black shadow-brutal hover:translate-x-[1px] hover:translate-y-[1px] transition-all" aria-label="Save state">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    </button>
+                    <button onclick="exportSnapshotReport()" title="Export My Plan (JSON)" class="p-2 bg-white text-dd-text border border-dd-black shadow-brutal hover:translate-x-[1px] hover:translate-y-[1px] transition-all" aria-label="Export plan">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x1="12" x2="12" y2="3"></line></svg>
+                    </button>
+                    <button onclick="resetDataState()" title="Reset to Defaults" class="p-2 bg-dd-red text-white border border-dd-black shadow-brutal hover:translate-x-[1px] hover:translate-y-[1px] transition-all" aria-label="Reset data">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- ============ TAB 1: TRACK & FIT ============ -->
+        <div id="tab1" class="tab-content active space-y-8">
+
+            <div class="bg-white border border-dd-black shadow-brutal p-6 space-y-4">
+                <div class="section-header !bg-dd-black">THE STRATEGY PAGE &mdash; Figure Out Where You Actually Are</div>
+                <p class="text-sm text-gray-700">"You are about to circle the instruments that actually fit <b>your</b> business &mdash; before you read a single grant. This page is the whole strategy. Everything else in this book is execution."</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="text-xs font-inter font-bold uppercase text-gray-500">Your name</label>
+                        <input type="text" id="f-name" placeholder="Francesca">
+                    </div>
+                    <div>
+                        <label class="text-xs font-inter font-bold uppercase text-gray-500">Your track</label>
+                        <div class="flex gap-2 mt-1">
+                            <label class="flex items-center gap-1 border border-black px-2 py-1 text-xs font-bold"><input type="radio" name="track" class="fit-radio" value="Founder"> Founder</label>
+                            <label class="flex items-center gap-1 border border-black px-2 py-1 text-xs font-bold"><input type="radio" name="track" class="fit-radio" value="Creator"> Creator</label>
+                            <label class="flex items-center gap-1 border border-black px-2 py-1 text-xs font-bold"><input type="radio" name="track" class="fit-radio" value="Hybrid" checked> Hybrid</label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs font-inter font-bold uppercase text-gray-500">Date</label>
+                        <input type="text" id="f-date" placeholder="Oct 2026">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-inter font-bold uppercase text-gray-500">Business in one line</label>
+                    <input type="text" id="f-biz" placeholder="Faceless digital real estate for Gen X women">
+                </div>
+            </div>
+
+            <div class="bg-white border border-dd-black shadow-brutal overflow-hidden">
+                <div class="section-header !bg-dd-orange">THE FUNDING FIT MATRIX (P7)</div>
+                <div class="overflow-x-auto">
+                    <table class="dd-table" id="fit-table">
+                        <thead>
+                            <tr>
+                                <th class="w-1/4">Instrument</th>
+                                <th class="w-1/4">What it is</th>
+                                <th>Fits a business with&hellip;</th>
+                                <th class="w-40 text-center">Your Fit</th>
+                                <th class="w-1/4">Your "why" in 5 words</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="fit-row" data-inst="grants"><td class="font-bold">Women's Grants</td><td class="text-gray-700">Free money, no equity, high effort to apply</td><td>A clear story + a specific use-of-funds</td><td class="text-center fit-col"><label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-grants" class="fit-radio" value="High"> High</label> <label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-grants" class="fit-radio" value="Med"> Med</label> <label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-grants" class="fit-radio" value="Low"> Low</label></td><td><input type="text" class="fit-why" placeholder="e.g. clear story + use"></td></tr>
+                            <tr class="fit-row" data-inst="sba"><td class="font-bold">SBA / Federal</td><td class="text-gray-700">Free counseling + access to capital</td><td>A registered, revenue-generating US business</td><td class="text-center fit-col"><label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-sba" class="fit-radio" value="High"> High</label> <label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-sba" class="fit-radio" value="Med"> Med</label> <label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-sba" class="fit-radio" value="Low"> Low</label></td><td><input type="text" class="fit-why" placeholder="e.g. registered + revenue"></td></tr>
+                            <tr class="fit-row" data-inst="revenue"><td class="font-bold">Revenue-Based</td><td class="text-gray-700">Keep 100% equity, repay from revenue</td><td>Steady recurring revenue</td><td class="text-center fit-col"><label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-revenue" class="fit-radio" value="High"> High</label> <label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-revenue" class="fit-radio" value="Med"> Med</label> <label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-revenue" class="fit-radio" value="Low"> Low</label></td><td><input type="text" class="fit-why" placeholder="e.g. steady e-com revenue"></td></tr>
+                            <tr class="fit-row" data-inst="angel"><td class="font-bold">Angel / Syndicate</td><td class="text-gray-700">Small equity round, relationship-driven</td><td>A pitch + a community that believes</td><td class="text-center fit-col"><label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-angel" class="fit-radio" value="High"> High</label> <label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-angel" class="fit-radio" value="Med"> Med</label> <label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-angel" class="fit-radio" value="Low"> Low</label></td><td><input type="text" class="fit-why" placeholder="e.g. warm community"></td></tr>
+                            <tr class="fit-row" data-inst="crowdfund"><td class="font-bold">Equity Crowdfunding</td><td class="text-gray-700">Sell small stakes to your audience</td><td>A real audience + a compelling story</td><td class="text-center fit-col"><label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-crowdfund" class="fit-radio" value="High"> High</label> <label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-crowdfund" class="fit-radio" value="Med"> Med</label> <label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-crowdfund" class="fit-radio" value="Low"> Low</label></td><td><input type="text" class="fit-why" placeholder="e.g. audience is the market"></td></tr>
+                            <tr class="fit-row" data-inst="microgrant"><td class="font-bold">Microgrants</td><td class="text-gray-700">Fast, low-barrier, small amounts</td><td>A first asset + an impact angle</td><td class="text-center fit-col"><label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-microgrant" class="fit-radio" value="High"> High</label> <label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-microgrant" class="fit-radio" value="Med"> Med</label> <label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-microgrant" class="fit-radio" value="Low"> Low</label></td><td><input type="text" class="fit-why" placeholder="e.g. first POD asset"></td></tr>
+                            <tr class="fit-row" data-inst="presell"><td class="font-bold">Community Pre-Sell</td><td class="text-gray-700">Working capital + validation before you build</td><td>An email list + a product they'll pre-order</td><td class="text-center fit-col"><label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-presell" class="fit-radio" value="High"> High</label> <label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-presell" class="fit-radio" value="Med"> Med</label> <label class="inline-flex items-center gap-1 text-xs"><input type="radio" name="fit-presell" class="fit-radio" value="Low"> Low</label></td><td><input type="text" class="fit-why" placeholder="e.g. list + next asset"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-dd-black text-white p-6 border border-dd-black shadow-brutal space-y-4">
+                <div class="font-inter font-bold text-dd-blue text-sm uppercase tracking-widest">The Strategic Output &mdash; Your Top 3</div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="text-xs text-gray-300 font-inter uppercase">1. Top instrument</label>
+                        <input type="text" id="f-top1" class="!border-b-2 !border-dd-orange !text-white placeholder:text-gray-500" placeholder="e.g. Women's Grants">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-300 font-inter uppercase">2. Second instrument</label>
+                        <input type="text" id="f-top2" class="!border-b-2 !border-dd-orange !text-white placeholder:text-gray-500" placeholder="e.g. Pre-sell">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-300 font-inter uppercase">3. Third instrument</label>
+                        <input type="text" id="f-top3" class="!border-b-2 !border-dd-orange !text-white placeholder:text-gray-500" placeholder="e.g. Revenue-based">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-gray-300 font-inter uppercase">The one I'm NOT doing &mdash; and why</label>
+                        <input type="text" id="f-notdoing" class="!border-b-2 !border-dd-red !text-white placeholder:text-gray-500" placeholder="e.g. VC &mdash; wrong room for me">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-300 font-inter uppercase">My first low-cost application</label>
+                        <input type="text" id="f-first" class="!border-b-2 !border-dd-blue !text-white placeholder:text-gray-500" placeholder="e.g. Amber Grant ($15)">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ TAB 2: 4-LINE PITCH ============ -->
+        <div id="tab2" class="tab-content space-y-8">
+
+            <div class="bg-white border border-dd-black shadow-brutal p-6 space-y-2">
+                <div class="section-header !bg-dd-black">The 4-Line Pitch (P19) &mdash; The Soul</div>
+                <p class="text-sm text-gray-700">Your story, not a performance. Specific beats polished. Fill these in and screenshot the result &mdash; you'll reuse it for every application, email, and call.</p>
+            </div>
+
+            <div class="bg-white border border-dd-black shadow-brutal p-6 space-y-6">
+                <div>
+                    <span class="badge badge-orange">Line 1 &mdash; The aha (specific, felt)</span>
+                    <textarea id="p-aha" class="pitch-line mt-3" placeholder="I'm a Gen X woman who, at 50, looked at what I'd actually secured for my family and saw ___. I'd spent my whole life ___. The moment I stopped waiting for someone else to save me, I started building ___." rows="3"></textarea>
+                </div>
+                <div>
+                    <span class="badge badge-blue">Line 2 &mdash; The gap (only you can fill it)</span>
+                    <textarea id="p-gap" class="pitch-line mt-3" placeholder="What's missing in this market is ___, and the reason I'm the right person to fill it isn't a pitch deck &mdash; it's my ___ (30 years of expertise / outsider's vantage / 'too-much' sensitivity)." rows="3"></textarea>
+                </div>
+                <div>
+                    <span class="badge badge-blue">Line 3 &mdash; The ask + the use (one number, one milestone)</span>
+                    <textarea id="p-ask" class="pitch-line mt-3" placeholder="I'm raising $___ for ___ specifically. This funds ___ (one concrete milestone: the next 90 days of building my [asset] / the pre-sell run / WOSB certification + my first SBA center)." rows="3"></textarea>
+                </div>
+                <div>
+                    <span class="badge badge-red">Line 4 &mdash; The reciprocity line (your signature, always include it)</span>
+                    <textarea id="p-recip" class="pitch-line mt-3" placeholder="This isn't a handout. It's the first brick of a system I'm building to help other women in the exact same spot. I need them to help me help me &mdash; and that's what this capital becomes." rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white border border-dd-black shadow-brutal overflow-hidden">
+                    <div class="section-header !bg-dd-orange">Don't Say This / Do Say This</div>
+                    <div class="overflow-x-auto">
+                        <table class="dd-table">
+                            <thead>
+                                <tr>
+                                    <th class="!bg-dd-red !text-white">Guru / Hockey-stick</th>
+                                    <th class="!bg-dd-blue !text-white">Specific / Felt</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>"I need funding to grow my business."</td><td>"I'm raising $25K for the next 90 days of building [asset], so it's a real product by Day 90."</td></tr>
+                                <tr><td>"My revenue will 10x."</td><td>"Pre-sell: [X] warm leads, [Y]% historical conversion. This round funds the build, not the promise."</td></tr>
+                                <tr><td>"I'm a visionary entrepreneur."</td><td>"I'm the woman who got sober, started over at 50, and refused to leave herself behind."</td></tr>
+                                <tr><td>"Market size is billions."</td><td>"I drive 90% of the household decisions in my household. My audience does too."</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="bg-[#111111] text-white border border-dd-black shadow-brutal overflow-hidden">
+                    <div class="section-header !bg-dd-red !text-white">The Objection Script (calm, not salesy)</div>
+                    <div class="p-5 space-y-4 text-sm">
+                        <div><p class="font-inter font-bold text-dd-orange">1. "You're not a digital person."</p><p class="font-dmsans">"I wasn't. I built this with AI and 20 hours of learning. That's the point &mdash; I'm proof it's doable."</p></div>
+                        <div><p class="font-inter font-bold text-dd-orange">2. "Where's your traction?"</p><p class="font-dmsans">"Here: [one real number &mdash; list size, pre-sell, a completed asset, a customer]."</p></div>
+                        <div><p class="font-inter font-bold text-dd-orange">3. "Can you scale?"</p><p class="font-dmsans">"The asset is digital. Marginal cost of one more copy is near zero. Scaling is [one sentence]."</p></div>
+                        <div><p class="font-inter font-bold text-dd-orange">4. "Why you?"</p><p class="font-dmsans">"Because I've lived the gap I'm filling. I'm not selling a theory. I'm selling the thing that got me across it."</p></div>
+                        <div><p class="font-inter font-bold text-dd-orange">5. "What if this doesn't work?"</p><p class="font-dmsans">"Then I've lost [X] to learn it the way I was built to learn &mdash; through experiment. The downside is bounded. The downside of not trying is the 1% gap this generation is stuck in."</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ TAB 3: APPLICATION ============ -->
+        <div id="tab3" class="tab-content space-y-8">
+
+            <div class="bg-white border border-dd-black shadow-brutal p-6 space-y-2">
+                <div class="section-header !bg-dd-black">Application Scaffolds (P12 / P17) &mdash; Pick Your Track</div>
+                <p class="text-sm text-gray-700">The pre-written paragraph is the <b>example</b>. The fill-in strip at the bottom is <b>yours</b> &mdash; drop your real numbers in.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Founder -->
+                <div class="bg-white border border-dd-black shadow-brutal overflow-hidden">
+                    <div class="section-header !bg-dd-black !text-white">Founder &mdash; Grant Application Body (P12)</div>
+                    <div class="p-6 space-y-4">
+                        <p class="text-sm text-gray-700 italic border-l-4 border-dd-blue pl-3">"I'm a women-owned [your business type] in [your state], with [X] months of revenue and [one real traction point]. I'm applying for [Grant Name] to fund [one concrete milestone from your 90-day plan]. This capital covers [use-of-funds], and it will be deployed in [timeframe]. I'm not looking for equity or control &mdash; I'm looking for the runway to prove the model, and I'm building the first brick of a system designed to fund other women in the exact same spot."</p>
+                        <div class="space-y-2">
+                            <div><label class="text-xs font-inter font-bold uppercase text-gray-500">Grant</label><input type="text" id="a-f-grant" placeholder="e.g. Amber Grant ($10,000)"></div>
+                            <div><label class="text-xs font-inter font-bold uppercase text-gray-500">Amount</label><input type="text" id="a-f-amount" placeholder="$10,000"></div>
+                            <div><label class="text-xs font-inter font-bold uppercase text-gray-500">Use-of-funds (3 items)</label><input type="text" id="a-f-use" placeholder="asset build, SBA cert, 90-day runway"></div>
+                            <div><label class="text-xs font-inter font-bold uppercase text-gray-500">Timeframe</label><input type="text" id="a-f-time" placeholder="next 90 days"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Creator -->
+                <div class="bg-white border border-dd-black shadow-brutal overflow-hidden">
+                    <div class="section-header !bg-dd-black !text-white">Creator &mdash; Audience-First Body (P17)</div>
+                    <div class="p-6 space-y-4">
+                        <p class="text-sm text-gray-700 italic border-l-4 border-dd-orange pl-3">"I built [your digital asset/POD/digital real estate] because I'm the 'too-much kid' who never had a map, and I'm finally making one. My audience of [X] women who live this exact problem is who this is for &mdash; and I'm not just pitching them; I'm bringing them in. I'm pre-selling [asset] to my list before I build it / I'm opening a small stake to the women who ARE the market / I'm applying for [Grant] to fund [specific asset milestone]. This isn't a handout. It's the first brick of a system built to help the women behind me."</p>
+                        <div class="space-y-2">
+                            <div><label class="text-xs font-inter font-bold uppercase text-gray-500">Asset</label><input type="text" id="a-c-asset" placeholder="e.g. 90-Day Guide + POD line"></div>
+                            <div><label class="text-xs font-inter font-bold uppercase text-gray-500">Audience size</label><input type="text" id="a-c-aud" placeholder="e.g. 1,200 warm leads"></div>
+                            <div><label class="text-xs font-inter font-bold uppercase text-gray-500">Pre-sell target</label><input type="text" id="a-c-presell" placeholder="$5,000 before build"></div>
+                            <div><label class="text-xs font-inter font-bold uppercase text-gray-500">Platform / Grant</label><input type="text" id="a-c-plat" placeholder="Republic / IFundWomen"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white border border-dd-black shadow-brutal overflow-hidden">
+                <div class="section-header !bg-dd-orange">The Application Tracker (re-use every quarter)</div>
+                <div class="overflow-x-auto">
+                    <table class="dd-table" id="tracker-table">
+                        <thead>
+                            <tr>
+                                <th class="w-1/4">Grant / Instrument</th>
+                                <th>Deadline</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="trk-row"><td class="font-bold">Amber Grant</td><td><input type="text" class="trk-dl" placeholder="Oct 31, 2026"></td><td><input type="text" class="trk-amt" placeholder="$10,000"></td><td><span class="badge badge-neutral">NOT FILED</span></td></tr>
+                            <tr class="trk-row"><td class="font-bold">IFundWomen</td><td><input type="text" class="trk-dl" placeholder="rolling"></td><td><input type="text" class="trk-amt" placeholder="$25,000"></td><td><span class="badge badge-neutral">NOT FILED</span></td></tr>
+                            <tr class="trk-row"><td class="font-bold">Pre-sell campaign</td><td><input type="text" class="trk-dl" placeholder="Day 30"></td><td><input type="text" class="trk-amt" placeholder="$5,000"></td><td><span class="badge badge-neutral">NOT FILED</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-[#111111] text-white p-8 border border-dd-black shadow-brutal relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="z-10 space-y-1">
+                    <h2 class="text-sm font-inter font-bold text-dd-blue uppercase tracking-widest">The Pledge</h2>
+                    <p class="text-sm font-dmsans text-gray-300 max-w-2xl">"I will not give up equity to fix cash flow. I will re-check my grants quarterly. I will fund myself and the women behind me. <span class="text-dd-orange font-bold">I need them to help me help me.</span>"</p>
+                </div>
+                <div class="z-10 w-full md:w-64 space-y-2">
+                    <div class="flex items-center gap-3 border border-dd-orange px-4 py-3">
+                        <span class="text-xs font-inter uppercase text-gray-400">Signed</span>
+                        <input type="text" id="f-sign" class="!border-b !border-dd-orange !text-white">
+                        <span class="text-xs font-inter uppercase text-gray-400">Date</span>
+                        <input type="text" id="f-signdate" class="!border-b !border-dd-orange !text-white !w-24">
+                    </div>
+                    <button onclick="signPledge()" class="w-full px-5 py-3 font-bold bg-dd-red text-white border border-dd-black shadow-brutal hover:shadow-brutal-hover hover:translate-x-[2px] hover:translate-y-[2px] transition-all uppercase">Sign the Pledge</button>
+                    <div id="pledge-status" class="text-center"><span class="badge badge-neutral">UNSIGNED</span></div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center text-xs font-inter text-gray-500 py-4">
+            &copy; DigitallyDefined &mdash; helping Gen X women reinvent themselves, digitally. General guidance, not financial advice. Verify all grant details with the funder before applying. &middot; Last updated: October 2026
+        </footer>
+
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'digitallydefined_funding_navigator_v1';
+
+        function showModal(title, message) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            document.getElementById('modal-backdrop').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('modal-backdrop').classList.add('hidden');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-dd-orange', 'text-white');
+                btn.classList.add('bg-white', 'text-dd-text');
+            });
+            document.getElementById(tabId).classList.add('active');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('bg-white', 'text-dd-text');
+            activeBtn.classList.add('bg-dd-orange', 'text-white');
+        }
+
+        function signPledge() {
+            const name = document.getElementById('f-sign').value.trim();
+            const date = document.getElementById('f-signdate').value.trim();
+            const statusEl = document.getElementById('pledge-status');
+            if (!name || !date) {
+                showModal('NEEDS A SIGNATURE', 'Enter your name and date before signing.');
+                return;
+            }
+            statusEl.innerHTML = '<span class="badge badge-blue">SIGNED</span>';
+            showModal('PLEDGE SIGNED', `The Reciprocity Pledge is signed &mdash; ${name}, ${date}. Now go fund the women behind you.`);
+        }
+
+        function saveDataState() {
+            const radios = {};
+            document.querySelectorAll('input[type="radio"]:checked').forEach(r => { radios[r.name] = r.value; });
+            const textFields = {};
+            ['f-name','f-date','f-biz','f-top1','f-top2','f-top3','f-notdoing','f-first','p-aha','p-gap','p-ask','p-recip','a-f-grant','a-f-amount','a-f-use','a-f-time','a-c-asset','a-c-aud','a-c-presell','a-c-plat','f-sign','f-signdate'].forEach(id => { textFields[id] = document.getElementById(id).value; });
+            document.querySelectorAll('.fit-why').forEach((el, i) => { textFields['fitwhy-' + i] = el.value; });
+            document.querySelectorAll('.trk-dl').forEach((el, i) => { textFields['trkdl-' + i] = el.value; });
+            document.querySelectorAll('.trk-amt').forEach((el, i) => { textFields['trkamt-' + i] = el.value; });
+
+            const data = { radios, textFields, pledged: document.getElementById('pledge-status').textContent.trim() === 'SIGNED' };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            showModal('SAVED', 'Your funding plan is saved to this device. Re-open anytime.');
+        }
+
+        function loadDataState() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return false;
+            try {
+                const data = JSON.parse(raw);
+                data.radios?.forEach((val, name) => {
+                    const el = document.querySelector(`input[name="${name}"][value="${val}"]`);
+                    if (el) el.checked = true;
+                });
+                data.textFields?.forEach((val, key) => {
+                    if (key.startsWith('fitwhy-')) { document.querySelectorAll('.fit-why')[parseInt(key.replace('fitwhy-',''))]?.value = val; return; }
+                    if (key.startsWith('trkdl-')) { document.querySelectorAll('.trk-dl')[parseInt(key.replace('trkdl-',''))]?.value = val; return; }
+                    if (key.startsWith('trkamt-')) { document.querySelectorAll('.trk-amt')[parseInt(key.replace('trkamt-',''))]?.value = val; return; }
+                    const el = document.getElementById(key);
+                    if (el && val !== undefined) el.value = val;
+                });
+                if (data.pledged) document.getElementById('pledge-status').innerHTML = '<span class="badge badge-blue">SIGNED</span>';
+                return true;
+            } catch (e) { console.error('load error', e); return false; }
+        }
+
+        function resetDataState() {
+            localStorage.removeItem(STORAGE_KEY);
+            window.location.reload();
+        }
+
+        function exportSnapshotReport() {
+            const radios = {};
+            document.querySelectorAll('input[type="radio"]:checked').forEach(r => { radios[r.name] = r.value; });
+            const data = {
+                generated: new Date().toISOString(),
+                name: document.getElementById('f-name').value,
+                track: radios['track'] || '',
+                business: document.getElementById('f-biz').value,
+                top3: [document.getElementById('f-top1').value, document.getElementById('f-top2').value, document.getElementById('f-top3').value],
+                notDoing: document.getElementById('f-notdoing').value,
+                firstApplication: document.getElementById('f-first').value,
+                pitch: {
+                    aha: document.getElementById('p-aha').value,
+                    gap: document.getElementById('p-gap').value,
+                    ask: document.getElementById('p-ask').value,
+                    reciprocity: document.getElementById('p-recip').value
+                },
+                application: {
+                    founder: { grant: document.getElementById('a-f-grant').value, amount: document.getElementById('a-f-amount').value, use: document.getElementById('a-f-use').value, timeframe: document.getElementById('a-f-time').value },
+                    creator: { asset: document.getElementById('a-c-asset').value, audience: document.getElementById('a-c-aud').value, presell: document.getElementById('a-c-presell').value, platform: document.getElementById('a-c-plat').value }
+                },
+                signed: document.getElementById('pledge-status').textContent.trim() === 'SIGNED',
+                signer: document.getElementById('f-sign').value
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `DigitallyDefined_Funding_Plan_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showModal('EXPORTED', 'Your funding plan JSON has been downloaded.');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDataState();
+        });
+    </script>
+</body>
+</html>

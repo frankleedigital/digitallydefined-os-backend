@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Deeds: IP & Asset Protection for Faceless Digital Real Estate</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;700&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dd-bg: #FFFCF9;
+            --dd-card-bg: #FFFFFF;
+            --dd-frame: #000000;
+            --dd-text: #2D3748;
+            --dd-orange: #F18B25;
+            --dd-blue: #47B7D4;
+            --dd-red: #C20F0A;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+        }
+
+        body {
+            background-color: var(--dd-bg);
+            color: var(--dd-text);
+            font-family: 'DM Sans', sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        h1, h2, h3, h4, h5, h6, th, .tag {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: var(--dd-frame);
+            letter-spacing: -0.5px;
+            margin-top: 0;
+        }
+
+        h1 { font-size: 2.2rem; line-height: 1.1; margin-bottom: 15px; }
+        h2 { font-size: 1.5rem; margin-bottom: 15px; border-bottom: 2px solid var(--dd-frame); padding-bottom: 8px; }
+        h3 { font-size: 1.25rem; margin-top: 25px; margin-bottom: 10px; }
+        h4 { font-size: 1.05rem; margin-top: 20px; margin-bottom: 10px; }
+
+        p, li {
+            font-size: 1.05rem;
+            color: var(--dd-text);
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background-color: var(--dd-card-bg);
+            border: 2px solid var(--dd-frame);
+            padding: 35px;
+            margin-bottom: 30px;
+        }
+
+        .text-blue { color: var(--dd-blue); font-weight: 700; }
+        .text-orange { color: var(--dd-orange); font-weight: 700; }
+        .text-warning { color: var(--dd-red); font-weight: 700; }
+
+        .highlight-box {
+            border: 2px solid var(--dd-frame);
+            border-left: 6px solid var(--dd-orange);
+            background-color: var(--dd-bg);
+            padding: 15px 20px;
+            margin: 20px 0;
+            font-size: 1rem;
+        }
+
+        .warning-box {
+            border: 2px solid var(--dd-frame);
+            border-left: 6px solid var(--dd-red);
+            background-color: #FFF5F5;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        /* NEW: Legal disclaimer styles */
+        .legal-disclaimer {
+            background-color: #1a1a1a;
+            color: #fff;
+            border: 2px solid var(--dd-red);
+            border-left: 8px solid var(--dd-red);
+            padding: 25px 30px;
+            margin-bottom: 30px;
+        }
+        .legal-disclaimer h2 {
+            color: #fff;
+            border-bottom-color: var(--dd-red);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        .legal-disclaimer p {
+            color: #e5e5e5;
+            font-size: 0.92rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.55;
+        }
+        .legal-disclaimer strong { color: #fff; font-weight: 900; }
+        .legal-disclaimer ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 0.5rem;
+        }
+        .legal-disclaimer li {
+            color: #e5e5e5;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            padding-left: 1.25rem;
+            position: relative;
+        }
+        .legal-disclaimer li::before {
+            content: "⚠";
+            position: absolute;
+            left: 0;
+            color: var(--dd-orange);
+            font-size: 0.8rem;
+        }
+        .legal-disclaimer .advisory {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 12px 16px;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+        .legal-disclaimer .advisory strong { color: var(--dd-orange); }
+
+        /* NEW: Lease template document styles */
+        .lease-doc {
+            background-color: #fff;
+            border: 2px solid var(--dd-frame);
+            padding: 0;
+            margin-bottom: 30px;
+        }
+        .lease-doc-header {
+            background: var(--dd-frame);
+            color: var(--dd-blue);
+            padding: 20px 35px;
+            border-bottom: 2px solid var(--dd-frame);
+        }
+        .lease-doc-header h2 {
+            color: var(--dd-blue);
+            border-bottom: none;
+            margin-bottom: 0;
+            font-size: 1.35rem;
+        }
+        .lease-doc-header p {
+            color: #ccc;
+            font-size: 0.85rem;
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+        .lease-doc-body {
+            padding: 35px;
+        }
+        .lease-section {
+            margin-bottom: 28px;
+        }
+        .lease-section h4 {
+            font-size: 0.95rem;
+            color: var(--dd-red);
+            margin-bottom: 12px;
+            letter-spacing: 0.05em;
+        }
+        .lease-section p, .lease-section li {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #2d3748;
+        }
+        .lease-section ol, .lease-section ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .lease-section li { margin-bottom: 0.6rem; }
+        .fill-blank {
+            display: inline-block;
+            min-width: 140px;
+            border-bottom: 1.5px solid var(--dd-orange);
+            height: 1em;
+            vertical-align: bottom;
+        }
+        .fill-blank.short { min-width: 80px; }
+        .fill-blank.wide { min-width: 240px; }
+        .clause-number {
+            display: inline-block;
+            background: var(--dd-orange);
+            color: #000;
+            font-weight: 900;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .signature-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid var(--dd-frame);
+        }
+        .signature-line {
+            border-bottom: 1.5px solid var(--dd-frame);
+            height: 2em;
+            margin-bottom: 6px;
+        }
+        .signature-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--dd-text);
+        }
+        .download-hint {
+            background: #f0f8ff;
+            border: 2px dashed var(--dd-blue);
+            padding: 15px 20px;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+        .download-hint strong {
+            color: var(--dd-blue);
+        }
+
+        @media (max-width: 600px) {
+            .signature-block { grid-template-columns: 1fr; gap: 30px; }
+            .lease-doc-body { padding: 25px; }
+            .legal-disclaimer { padding: 20px; }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border: 2px solid var(--dd-frame);
+        }
+
+        th, td {
+            border: 2px solid var(--dd-frame);
+            padding: 14px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--dd-blue);
+            color: #000;
+            font-size: 0.85rem;
+        }
+
+        td {
+            background-color: #FFF;
+            font-size: 0.95rem;
+        }
+
+        .svg-icon {
+            width: 44px;
+            height: 44px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .tag {
+            display: inline-block;
+            border: 2px solid var(--dd-frame);
+            padding: 4px 10px;
+            margin: 0 6px 8px 0;
+            font-size: 0.75rem;
+            color: #000;
+            background-color: var(--dd-bg);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--dd-frame);
+            margin: 30px 0;
+        }
+
+        ul { padding-left: 20px; margin-bottom: 20px; }
+        li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- NEW: PROMINENT LEGAL DISCLAIMER (UPGRADE #1) -->
+    <div class="legal-disclaimer">
+        <h2>⚠ Important Legal Disclaimer — Read First</h2>
+        <p><strong>Digital Deeds is an educational information product. It is NOT a law firm, and nothing in this guide constitutes legal, tax, or financial advice.</strong> This content was prepared to help you understand common digital-asset protection concepts and structure practical checklists. It should not be relied upon as a substitute for professional counsel in your specific situation.</p>
+        <ul>
+            <li>Laws vary by state, country, and local jurisdiction. Requirements for LLCs, trademarks, contracts, and taxes differ significantly.</li>
+            <li>Contract language, including lease and service agreements, must be reviewed by a licensed attorney licensed in your jurisdiction before execution.</li>
+            <li>Tax treatment of digital-asset income, capital gains, and cost basis requires guidance from a qualified CPA or tax professional.</li>
+            <li>Trademark registration, exit-multiple estimates, and valuation figures are illustrative teaching examples, not guarantees.</li>
+        </ul>
+        <div class="advisory">
+            <strong>Advice:</strong> Before signing any contract, transferring a domain, registering an LLC, or executing an exit, consult a qualified attorney and CPA in your jurisdiction. Use the checklists in this guide as a conversation starter with your professionals, not as a final authority.
+        </div>
+    </div>
+
+    <!-- GUMROAD COPY -->
+    <div class="card">
+        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 3H21V21H3V3Z" stroke="#F18B25" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3 9H21" stroke="#F18B25" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 21V9" stroke="#F18B25" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h2>Gumroad Product Listing</h2>
+        <p><strong>SEO Title:</strong> Digital Deeds: IP & Asset Protection for Faceless Digital Real Estate</p>
+        <div style="margin: 15px 0;">
+            <span class="tag">DigitalRealEstate</span>
+            <span class="tag">FacelessMarketing</span>
+            <span class="tag">GenXWomen</span>
+            <span class="tag">AssetProtection</span>
+            <span class="tag">DigitalLeasing</span>
+            <span class="tag">RankAndRent</span>
+        </div>
+        
+        <hr>
+
+        <h3>Stop Guessing What You Own. Start Protecting Your Legacy.</h3>
+        <p>You’re building cash-flowing digital real estate—rank-and-rent sites, faceless brands, and automated digital products. But here is the multi-thousand-dollar question: <span class="text-orange">Do you legally own the assets you’re building, or are you just renting space on a platform that can shut you down tomorrow?</span></p>
+        <p>For Gen X women building sovereign wealth online, professional judgment is your greatest superpower. <strong>Digital Deeds</strong> is your no-fluff, 5-step architectural playbook to ensure your faceless digital assets are legally protected, FTC compliant, and structured for a future liquidation exit.</p>
+        
+        <h4>By the end of this weekend, you will:</h4>
+        <ul>
+            <li>Verify exactly what you own—and eliminate the loopholes where platforms can take it away.</li>
+            <li>Run the <span class="text-blue">3-step Brand Safety Check</span> to ensure your faceless niche sites avoid trademark disputes.</li>
+            <li>Implement the ironclad Rank-and-Rent leasing structures that protect your IP from rogue local contractors.</li>
+            <li>Build a "Dead-End Email Architecture" to keep your personal life unlinked from your digital properties.</li>
+            <li>Prepare your asset portfolio for a high-multiple exit (typically 3x–8x annual profit for service-type digital assets).</li>
+        </ul>
+
+        <hr>
+
+        <h4>What's Included</h4>
+        <ul>
+            <li>The 5-Step Protection Playbook (this guide)</li>
+            <li>Digital IP & Audit Checklist</li>
+            <li><strong>Sample Rank-and-Rent Service Agreement (fillable template)</strong> — ready to adapt and take to your attorney</li>
+        </ul>
+
+        <hr>
+
+        <h4>Frequently Asked Questions</h4>
+        <p><strong>Q: I'm not a lawyer, will this overwhelm me?</strong><br>
+        A: No. This guide translates complex legal concepts into clean, actionable checklists you can execute in an afternoon. It is educational — your attorney finalizes the language.</p>
+        <p><strong>Q: Do I need this if my business is entirely faceless?</strong><br>
+        A: <span class="text-orange">Yes.</span> Faceless businesses rely heavily on brand authority and domains. Because your personal identity isn't front-facing, your legal contract foundation must carry the authority.</p>
+        <p><strong>Q: Is the sample lease template legally binding?</strong><br>
+        A: No. It is a starting structure. Have a qualified attorney licensed in your jurisdiction review and adapt it before use.</p>
+    </div>
+
+    <!-- PLAYBOOK -->
+    <div class="card">
+        <svg class="svg-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 22S19 18 19 12V5L12 2L5 5V12C5 18 12 22 12 22Z" stroke="#47B7D4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h2>The 5-Step Protection Playbook</h2>
+        <p>Welcome to your operational manual for a protected digital legacy. As a digital landlord, your goal is simple: Build once, protect fiercely, earn forever.</p>
+
+        <!-- Module 1 -->
+        <h3>Module 1: Trademarking vs. Copyrighting Faceless Content</h3>
+        <p>When you build an anonymous brand, the <span class="text-orange">brand name and content are your only visible assets</span>. You must know how to shield them.</p>
+        <ul>
+            <li><strong>Copyright:</strong> Automatically protects your original content (blog posts, Notion templates, digital guides) the moment you hit publish.</li>
+            <li><strong>Trademark:</strong> Protects your brand identifier (domain name, logo, podcast title).</li>
+        </ul>
+        <div class="highlight-box">
+            <strong>The 3-Step Database Check (Before Buying a Domain):</strong> Never buy a domain without checking USPTO and WIPO databases. A quick check for your intended brand name in Class 35 (Advertising/Business Management) avoids costly rebrands.
+        </div>
+
+        <!-- Module 2 -->
+        <h3>Module 2: Structuring Digital Leasing Agreements (Rank-and-Rent)</h3>
+        <p>In Rank-and-Rent, <span class="text-blue">ownership is everything</span>. You are leasing the <em>leads</em>, not the asset itself. Your contracts must reflect this explicitly to protect your digital property.</p>
+        <ul>
+            <li><strong>The Non-Interference Clause:</strong> State explicitly that the client has no ownership of the domain, the hosting, or the content.</li>
+            <li><strong>The Suspension Protocol:</strong> Write into your agreement that if payment is late, you may pause lead routing after notice and a cure period — in line with applicable law. A sample template is included below.</li>
+        </ul>
+        
+        <div class="warning-box">
+            <span class="text-warning">LEGAL ALERT: THE "JOINT VENTURE" TRAP</span><br>
+            Never use the terms "partner" or "joint venture" with local contractors. This can imply shared ownership. You are a Digital Landlord; they are a Tenant. Use "Service Agreement." <em>This is general guidance, not legal advice — confirm with an attorney.</em>
+        </div>
+
+        <!-- Module 3 -->
+        <h3>Module 3: FTC Disclosures & Privacy Architectures</h3>
+        <ul>
+            <li><strong>Dead-End Email Architecture:</strong> Create separate, encrypted emails for domain registrations unlinked from personal accounts.</li>
+            <li><strong>FTC Disclosures:</strong> For faceless affiliate marketing, your disclosure must be clear, conspicuous, and above the fold.</li>
+        </ul>
+
+        <!-- Module 4 -->
+        <h3>Module 4: Digital Asset Valuation & Tax Tracking</h3>
+        <p>Track the lifecycle of digital equity across three categories: <strong>Income Tax (Rent)</strong>, <strong>Capital Gains (Flipping)</strong>, and <strong>Cost Basis (Hosting/Tools)</strong>. Work with a CPA on your specific treatment.</p>
+
+        <!-- Module 5 -->
+        <h3>Module 5: Sovereign Liquidation (Exit Readiness)</h3>
+        <p>A buyer cannot purchase "you." They can only purchase an autonomous system. By keeping the brand faceless and documenting your Standard Operating Procedures (SOPs), you create a turnkey asset ready for sale. Site-flip multiples vary widely with profit level, brand strength, and due diligence — typical service-business multiples are roughly 3x–8x annual profit; document everything so a buyer can underwrite it.</p>
+    </div>
+
+    <!-- NEW: SAMPLE LEASE / SERVICE AGREEMENT TEMPLATE (UPGRADE #2) -->
+    <div class="lease-doc">
+        <div class="lease-doc-header">
+            <h2>Sample Template: Rank-and-Rent Service Agreement</h2>
+            <p>Fill-in-the-blank structure for review by a licensed attorney in your jurisdiction before use.</p>
+        </div>
+        <div class="lease-doc-body">
+            <div class="download-hint">
+                <strong>How to use this template:</strong> Duplicate it for each client and property. Fill every blank, then have a licensed attorney review the final draft. Replace bracketed examples with your actual details. This is a starting structure, not a final legal document.
+            </div>
+
+            <div class="lease-section">
+                <h4>1. Parties & Effective Date</h4>
+                <p>This Service Agreement ("Agreement") is effective as of <span class="fill-blank short">______</span> ("Effective Date") between:</p>
+                <ol>
+                    <li><strong>Service Provider ("Landlord"):</strong> <span class="fill-blank wide">LLC/entity name</span>, with principal contact <span class="fill-blank">email</span>, registered in <span class="fill-blank">state</span>.</li>
+                    <li><strong>Client ("Tenant"):</strong> <span class="fill-blank wide">Business name</span>, operating at <span class="fill-blank wide">address</span>, represented by <span class="fill-blank">name/title</span>.</li>
+                </ol>
+                <p>The parties agree to the following terms for the provision of lead-generation and website services related to the digital property identified in Exhibit A.</p>
+            </div>
+
+            <div class="lease-section">
+                <h4>2. Scope of Services</h4>
+                <p>Landlord will provide the following services for the Digital Property:</p>
+                <ul>
+                    <li>Ownership, hosting, and maintenance of the domain: <span class="fill-blank wide">domain.com</span></li>
+                    <li>Local SEO and content upkeep</li>
+                    <li>Routing of inbound inquiries (leads) to Tenant's designated contact: <span class="fill-blank">phone/email</span></li>
+                </ul>
+                <p>Tenant will <strong>not</strong> own, control, or access the underlying domain, hosting, source files, or content by virtue of this Agreement.</p>
+            </div>
+
+            <div class="lease-section">
+                <h4>3. Ownership of the Digital Property</h4>
+                <p><span class="clause-number">3.1</span> Landlord retains <strong>100% ownership</strong> of the domain name, website, content, analytics, and all related intellectual property (collectively, the "Digital Property").</p>
+                <p><span class="clause-number">3.2</span> This Agreement grants Tenant a <strong>non-exclusive, non-transferable right to receive the leads</strong> generated by the Digital Property during the Term. No ownership, license, or interest in the Digital Property itself is transferred to Tenant.</p>
+                <p><span class="clause-number">3.3</span> Upon termination, all rights to the Digital Property revert to Landlord without further obligation.</p>
+            </div>
+
+            <div class="lease-section">
+                <h4>4. Fees & Payment</h4>
+                <p><span class="clause-number">4.1</span> Tenant will pay Landlord <strong>$<span class="fill-blank short">___</span> per month</strong>, invoiced monthly in advance on <span class="fill-blank">day of month</span>.</p>
+                <p><span class="clause-number">4.2</span> Payments are due by the 15th of each month and may be made by <span class="fill-blank">method</span>.</p>
+                <p><span class="clause-number">4.3</span> A late fee of <span class="fill-blank short">___%</span> applies to amounts unpaid after a <span class="fill-blank short">___-day</span> grace period, to the extent permitted by applicable law.</p>
+            </div>
+
+            <div class="lease-section">
+                <h4>5. Term & Renewal</h4>
+                <p>This Agreement begins on the Effective Date and continues for <span class="fill-blank">term length, e.g., 12 months</span> ("Initial Term"), and renews automatically for successive <span class="fill-blank">period</span> unless either party gives <span class="fill-blank">___ days</span> written notice of non-renewal.</p>
+            </div>
+
+            <div class="lease-section">
+                <h4>6. Suspension & Termination</h4>
+                <p><span class="clause-number">6.1</span> If a payment is more than <span class="fill-blank short">___</span> days past due, Landlord may provide written notice and, after a <span class="fill-blank short">___-day</span> cure period, <strong>pause lead routing</strong> until the account is current.</p>
+                <p><span class="clause-number">6.2</span> Either party may terminate for material breach upon <span class="fill-blank short">___ days</span> written notice if the breach is not cured. Any suspension or termination must comply with applicable law.</p>
+                <p><span class="clause-number">6.3</span> On termination, Landlord may resume or redirect the Digital Property to other clients without liability to Tenant.</p>
+            </div>
+
+            <div class="lease-section">
+                <h4>7. Non-Interference & Restrictions</h4>
+                <p><span class="clause-number">7.1</span> Tenant shall not attempt to acquire, register, or divert the domain or Digital Property.</p>
+                <p><span class="clause-number">7.2</span> Tenant acknowledges Landlord's ownership and shall not create confusion about the source of the leads or the Digital Property.</p>
+            </div>
+
+            <div class="lease-section">
+                <h4>8. Confidentiality</h4>
+                <p>Each party will keep the other's non-public business information confidential for <span class="fill-blank">duration</span> and use it only to perform this Agreement.</p>
+            </div>
+
+            <div class="lease-section">
+                <h4>9. Independent Contractor</h4>
+                <p>Landlord is an independent contractor. Nothing in this Agreement creates an employment, partnership, agency, or joint-venture relationship. The parties are landlord and tenant for the Digital Property.</p>
+            </div>
+
+            <div class="lease-section">
+                <h4>10. Liability & Indemnification</h4>
+                <p><span class="clause-number">10.1</span> Landlord's total liability under this Agreement is limited to fees paid in the <span class="fill-blank short">___ months</span> preceding the claim, to the extent permitted by law.</p>
+                <p><span class="clause-number">10.2</span> Tenant will defend and indemnify Landlord against claims arising from Tenant's own business activities, including lead follow-up and service delivery.</p>
+            </div>
+
+            <div class="lease-section">
+                <h4>11. Governing Law & Disputes</h4>
+                <p>This Agreement is governed by the laws of the State of <span class="fill-blank">______</span>. Disputes will first be addressed through good-faith negotiation, then <span class="fill-blank">mediation/arbitration or courts in ____________</span>.</p>
+            </div>
+
+            <div class="lease-section">
+                <h4>Exhibit A — Digital Property Details</h4>
+                <table>
+                    <thead><tr><th>Item</th><th>Detail</th></tr></thead>
+                    <tbody>
+                        <tr><td>Domain</td><td><span class="fill-blank wide"></span></td></tr>
+                        <tr><td>Hosting account owner</td><td><span class="fill-blank wide">Landlord entity</span></td></tr>
+                        <tr><td>Service category</td><td><span class="fill-blank wide">e.g., roofing, HVAC</span></td></tr>
+                        <tr><td>Tenant lead contact</td><td><span class="fill-blank wide">phone/email</span></td></tr>
+                        <tr><td>Monthly fee</td><td><span class="fill-blank short"></span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="signature-block">
+                <div>
+                    <div class="signature-line"></div>
+                    <p class="signature-label">Landlord — <span class="fill-blank wide" style="border-bottom-color:transparent; min-width:auto;"></span></p>
+                    <p class="signature-label">Date: <span class="fill-blank short" style="border-bottom-color:transparent; min-width:auto;"></span></p>
+                </div>
+                <div>
+                    <div class="signature-line"></div>
+                    <p class="signature-label">Tenant — <span class="fill-blank wide" style="border-bottom-color:transparent; min-width:auto;"></span></p>
+                    <p class="signature-label">Date: <span class="fill-blank short" style="border-bottom-color:transparent; min-width:auto;"></span></p>
+                </div>
+            </div>
+
+            <div class="warning-box" style="margin-top:30px;">
+                <span class="text-warning">Attorney Review Required</span><br>
+                This template is an educational structure. Have a licensed attorney in your jurisdiction review and customize it before it is used with a real client. Local consumer-protection, service-contract, and usury rules can change specific clauses.
+            </div>
+        </div>
+    </div>
+
+    <!-- AUDIT CHECKLIST -->
+    <div class="card">
+        <h2>Digital IP & Audit Checklist</h2>
+        <p>Complete this audit for every digital property in your portfolio.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Audit Category</th>
+                    <th>Action Item</th>
+                    <th>Status / Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Domain Security</strong></td>
+                    <td>Auto-renew active, WHOIS privacy enabled.</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>Trademark Safe</strong></td>
+                    <td>USPTO / WIPO searched for conflicting brand names.</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>Compliance</strong></td>
+                    <td>FTC disclosures and Privacy Policy visible on site.</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>Contract Integrity</strong></td>
+                    <td>Service agreements specify 100% domain and asset ownership. Attorney-reviewed.</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>Exit Readiness</strong></td>
+                    <td>Digital Asset Inventory updated with cost basis and SOPs.</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- REPEAT LEGAL DISCLAIMER AT BOTTOM -->
+    <div class="legal-disclaimer">
+        <h2>Reminder: Educational Product — Not Legal Advice</h2>
+        <p><strong>Digital Deeds is educational content, not a law firm.</strong> Nothing here is legal, tax, or financial advice. Contract language, entity formation, trademark filing, and valuation decisions should be reviewed by a licensed attorney and qualified CPA in your jurisdiction before you act.</p>
+    </div>
+
+</div>
+
+</body>
+</html>

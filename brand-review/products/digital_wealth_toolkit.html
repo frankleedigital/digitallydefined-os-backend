@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Wealth Snapshot™ | DigitallyDefined</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FFFCF9;--bg2:#F7F4EF;--card:#FFFFFF;--card2:#F9FAFB;
+  --line:#111111;--line2:#111111;
+  --txt:#111111;--mut:#4B5563;--dim:#9CA3AF;
+  --or:#F18B25;--or2:#F18B25;--bl:#47B7D4;--bl2:#47B7D4;
+  --rd:#C20F0A;--gn:#1E9E72;--vi:#9B7BFF;--pk:#F472B6;
+  --sh:4px 4px 0 0 #111;
+}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{min-height:100dvh;font-family:'DM Sans',sans-serif;font-size:16px;background:var(--bg);color:var(--txt);overflow-x:hidden}
+.wrap{max-width:1140px;margin:0 auto;padding:1.5rem 1.25rem 5rem;position:relative;z-index:1}
+.hid{display:none!important}
+/* NAV */
+nav{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--line);padding-bottom:1.25rem;margin-bottom:2.5rem;flex-wrap:wrap;gap:1rem}
+.logo{display:flex;align-items:center;gap:.6rem}
+.logo-icon{width:40px;height:40px;border:2px solid var(--line2);background:#fff;display:flex;align-items:center;justify-content:center;border-radius:0;box-shadow:var(--sh)}
+.logo-name{font-family:'Inter',sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-.03em;text-transform:uppercase;line-height:1}
+.logo-name em{color:var(--or);font-style:italic}
+.logo-sub{font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-top:3px}
+.badge{font-size:.62rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:1px solid var(--line2);background:#fff;padding:.4rem .8rem;border-radius:0;color:var(--or2)}
+/* HEADINGS */
+h1{font-family:'Inter',sans-serif;font-weight:800;font-size:clamp(2rem,4.5vw,3.25rem);letter-spacing:-.02em;line-height:1.1}
+h1 span{color:var(--or)}
+.sec-tag{display:inline-flex;align-items:center;gap:.5rem;font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--bl2);border:1px solid var(--line2);padding:.35rem .8rem;border-radius:0;margin-bottom:1rem}
+.sub{color:var(--mut);font-size:1rem;line-height:1.7;max-width:640px;margin-top:.75rem}
+.sub strong{color:var(--txt)}
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--line);border-radius:0;padding:1.75rem;position:relative}
+.card .ch{display:flex;align-items:center;gap:.6rem;margin-bottom:1.5rem}
+.card .ch h2{font-family:'Inter',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:.04em;text-transform:uppercase}
+/* INPUTS */
+label.f{display:block;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-bottom:.4rem}
+input[type=text],input[type=url],input[type=number],input[type=email],select{
+  width:100%;padding:.7rem .85rem;border:1px solid var(--line2);background:var(--card2);color:var(--txt);
+  font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:500;border-radius:0;outline:none;transition:border .15s}
+input:focus,select:focus{border-color:var(--or);box-shadow:inset 0 0 0 1px var(--or)}
+input::placeholder{color:var(--dim)}
+select option{background:#fff;color:var(--txt)}
+.fl{margin-bottom:1.1rem}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:640px){.fg{grid-template-columns:1fr}}
+input[type=number]{font-weight:700;font-size:1.05rem}
+.hint{font-size:.75rem;color:var(--dim);margin-top:.3rem}
+/* CHECKBOX CARDS */
+.ckgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.6rem}
+.ck{display:flex;align-items:center;gap:.6rem;border:1px solid var(--line);border-radius:8px;padding:.7rem .8rem;cursor:pointer;user-select:none;transition:all .15s;background:var(--card2)}
+.ck:hover{border-color:var(--line2);background:#fff}
+.ck input{appearance:none;width:18px;height:18px;border:1.5px solid var(--line2);border-radius:4px;flex-shrink:0;cursor:pointer;display:grid;place-items:center;transition:all .15s}
+.ck input:checked{background:var(--or);border-color:var(--or)}
+.ck input:checked::after{content:"✓";color:#111;font-size:.7rem;font-weight:900}
+.ck span{font-size:.82rem;font-weight:500;color:var(--txt)}
+.ck input:checked~span{color:var(--or2);font-weight:700}
+/* TOGGLE CARDS */
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+@media(max-width:560px){.tg{grid-template-columns:1fr}}
+.tgitem{display:flex;align-items:center;justify-content:space-between;gap:1rem;border:1px solid var(--line);border-radius:8px;padding:.8rem .9rem;cursor:pointer;user-select:none;transition:all .15s;background:var(--card2)}
+.tgitem span{font-size:.85rem;font-weight:500}
+.tgitem input{appearance:none;width:40px;height:22px;border-radius:99px;background:var(--line2);position:relative;cursor:pointer;flex-shrink:0;transition:background .15s}
+.tgitem input::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s}
+.tgitem input:checked{background:var(--or)}
+.tgitem input:checked::after{transform:translateX(18px);background:#111}
+.tgitem input:checked~span{color:var(--or2);font-weight:700}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Inter',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:0;padding:.85rem 1.6rem;cursor:pointer;transition:all .15s;text-decoration:none}
+.btn-p{background:var(--or);color:#111;border-color:var(--line)}
+.btn-p:hover{background:var(--or2);transform:translateY(-1px)}
+.btn-g{background:#fff;color:var(--txt);border-color:var(--line)}
+.btn-g:hover{background:var(--bg2)}
+.btn-d{background:transparent;color:var(--mut);border-color:transparent}
+.btn-d:hover{color:var(--txt);background:rgba(17,17,17,.05)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+/* STEPPER */
+.stepper{display:flex;gap:.35rem;margin-bottom:2rem;overflow-x:auto;padding-bottom:4px}
+.st{display:flex;align-items:center;gap:.45rem;flex:1;min-width:110px}
+.st:last-child{flex:0 0 auto}
+.st .n{width:28px;height:28px;border-radius:0;border:1px solid var(--line2);display:grid;place-items:center;font-family:'Inter',sans-serif;font-weight:800;font-size:.75rem;color:var(--mut);flex-shrink:0;transition:all .2s}
+.st .l{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);white-space:nowrap}
+.st .bar{height:1px;background:var(--line);flex:1;min-width:20px}
+.st.on .n{background:var(--or);border-color:var(--line2);color:#111}
+.st.on .l{color:var(--txt)}
+.st.done .n{background:var(--gn);border-color:var(--line2);color:#fff}
+.st.done .l{color:var(--mut)}
+.stepbox{display:grid;grid-template-columns:240px 1fr;gap:2rem;align-items:start}
+@media(max-width:860px){.stepbox{grid-template-columns:1fr}}
+.rail{position:sticky;top:1.5rem}
+@media(max-width:860px){.rail{position:static}}
+.railcard{background:var(--card);border:1px solid var(--line);border-radius:0;padding:1.4rem}
+.railcard .rt{font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-bottom:1rem}
+.rrow{display:flex;align-items:center;gap:.6rem;padding:.5rem 0;font-size:.8rem;font-weight:500;color:var(--mut)}
+.rrow b{font-family:'Inter',sans-serif;font-weight:800;color:var(--txt);font-size:.9rem;min-width:44px}
+.rrow .mini{width:44px;height:44px}
+.progress-note{font-size:.75rem;color:var(--dim);margin-top:1rem;line-height:1.6}
+.stepcard{min-height:560px}
+.stepcard .stitle{font-family:'Inter',sans-serif;font-weight:800;font-size:1.4rem;margin-bottom:.35rem}
+.stepcard .ssub{color:var(--mut);font-size:.9rem;margin-bottom:1.5rem;line-height:1.6}
+.stepnav{display:flex;justify-content:space-between;gap:1rem;margin-top:2rem}
+/* HERO */
+.hero{text-align:center;margin-bottom:2.5rem}
+.hero .htag{display:inline-block;font-size:.65rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--or2);border:1px solid var(--line);padding:.45rem 1rem;border-radius:0;margin-bottom:1.25rem}
+.hero h1{max-width:820px;margin:0 auto}
+.hero p{color:var(--mut);max-width:640px;margin:1rem auto 0;line-height:1.8;font-size:1.02rem}
+.hero p strong{color:var(--txt)}
+.hero .cta-row{display:flex;gap:1rem;justify-content:center;margin-top:2.25rem;flex-wrap:wrap}
+.hero .promise{margin-top:2.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;max-width:760px;margin-left:auto;margin-right:auto}
+.promise .pi{border:1px solid var(--line);border-radius:0;padding:1.1rem;background:var(--card)}
+.promise .pi b{display:block;font-family:'Inter',sans-serif;font-weight:800;color:var(--or2);font-size:1.15rem;margin-bottom:.35rem}
+.promise .pi span{font-size:.8rem;color:var(--mut);line-height:1.5}
+/* GAGES */
+.gage{position:relative;width:230px;height:120px;margin:0 auto}
+.gage svg{width:100%;height:100%}
+.gage .gv{position:absolute;left:0;right:0;bottom:6px;text-align:center}
+.gage .gv b{font-family:'Inter',sans-serif;font-weight:900;font-size:2.6rem;line-height:1;display:block}
+.gage .gv span{font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+/* REPORT */
+.rp-grid{display:grid;grid-template-columns:340px 1fr;gap:1.75rem;align-items:start}
+@media(max-width:900px){.rp-grid{grid-template-columns:1fr}}
+.overall{text-align:center}
+.overall .olabel{font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--mut);margin-bottom:1rem}
+.scorebar-row{margin:.9rem 0}
+.scorebar-row .sl{display:flex;justify-content:space-between;font-size:.75rem;font-weight:700;margin-bottom:.35rem}
+.scorebar-row .sl span:first-child{color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
+.sbar{height:8px;background:rgba(17,17,17,.08);border-radius:0;overflow:hidden}
+.sbar i{display:block;height:100%;border-radius:0;transition:width .8s cubic-bezier(.2,.7,.3,1)}
+.legend{display:flex;gap:1.25rem;margin-top:1.25rem;font-size:.68rem;color:var(--dim);flex-wrap:wrap}
+.legend i{width:10px;height:10px;display:inline-block;border-radius:0;margin-right:.35rem;vertical-align:-1px}
+/* LEAK */
+.leak{border:1px solid var(--rd);background:var(--card);border-radius:0;padding:1.75rem;margin-top:1.75rem}
+.leak .lt{font-family:'Inter',sans-serif;font-weight:800;font-size:1.1rem;color:var(--rd);text-transform:uppercase;letter-spacing:.03em;margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem}
+.leak-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem}
+.leak-grid .li{background:var(--bg2);border:1px solid var(--line);border-radius:0;padding:1rem}
+.leak-grid .li b{display:block;font-family:'Inter',sans-serif;font-weight:800;font-size:1.5rem;color:var(--rd);margin-bottom:.3rem}
+.leak-grid .li span{font-size:.72rem;color:var(--mut);line-height:1.5}
+.leak .note{margin-top:1.25rem;font-size:.85rem;color:var(--mut);line-height:1.7}
+.leak .note strong{color:var(--txt)}
+/* OPPS */
+.opp{display:grid;grid-template-columns:1fr;gap:.85rem;margin-top:1rem}
+.opp-item{display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center;border:1px solid var(--line);background:var(--card);border-radius:0;padding:1.1rem 1.25rem}
+.opp-item .rank{width:38px;height:38px;border-radius:0;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-family:'Inter',sans-serif;font-weight:900;color:var(--or2)}
+.opp-item .oi b{display:block;font-weight:700;font-size:.95rem}
+.opp-item .oi span{font-size:.8rem;color:var(--mut);line-height:1.5;display:block;margin-top:.2rem}
+.opp-item .impact{text-align:right;font-family:'Inter',sans-serif}
+.opp-item .impact b{display:block;font-weight:800;color:var(--gn);font-size:1.05rem}
+.opp-item .impact span{font-size:.62rem;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+/* AI COMP */
+.ai-item{display:flex;align-items:center;gap:.7rem;padding:.7rem 0;border-bottom:1px solid var(--line);font-size:.88rem}
+.ai-item:last-child{border-bottom:none}
+.ai-item .box{width:20px;height:20px;border:1px solid var(--line2);border-radius:0;display:grid;place-items:center;font-size:.65rem;font-weight:900;flex-shrink:0}
+.ai-item.missed .box{border-color:var(--rd);color:var(--rd)}
+.ai-item.missed .box::after{content:"!"}
+.ai-item.won .box{border-color:var(--gn);color:var(--gn)}
+.ai-item.won .box::after{content:"✓"}
+.ai-item .gain{margin-left:auto;font-family:'Inter',sans-serif;font-weight:800;color:var(--gn);font-size:.85rem}
+.ai-item .gain small{display:block;font-size:.6rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+/* CHART */
+.barchart{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:.6rem;align-items:end;height:180px;margin-top:1rem;padding-top:1rem}
+.barchart .bc{display:flex;flex-direction:column;align-items:center;gap:.4rem;height:100%;justify-content:flex-end}
+.barchart .bi{width:100%;max-width:52px;border-radius:6px 6px 0 0;transition:height .7s cubic-bezier(.2,.7,.3,1);min-height:4px}
+.barchart .bl{font-size:.6rem;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.barchart .bv{font-size:.75rem;font-weight:800;font-family:'Inter',sans-serif}
+/* PRICING */
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin-top:2rem}
+.plan{border:1px solid var(--line);border-radius:16px;padding:1.75rem;background:var(--card);backdrop-filter:blur(14px);position:relative;display:flex;flex-direction:column}
+.plan.feat{border-color:rgba(241,139,37,.5);background:linear-gradient(170deg,rgba(241,139,37,.12),rgba(241,139,37,.02));box-shadow:var(--glow)}
+.plan .pt{font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--mut)}
+.plan .pp{font-family:'Inter',sans-serif;font-weight:900;font-size:2.6rem;margin:.6rem 0 .2rem}
+.plan .pp span{font-size:.9rem;font-weight:500;color:var(--mut)}
+.plan ul{list-style:none;margin:1.25rem 0 1.5rem;flex:1}
+.plan li{display:flex;gap:.6rem;font-size:.85rem;color:var(--mut);padding:.4rem 0;line-height:1.5}
+.plan li::before{content:"✓";color:var(--gn);font-weight:900;flex-shrink:0}
+.plan.locked li::before{content:"";color:var(--dim)}
+.plan .fl{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:1rem}
+.plan .fl.unl{color:var(--gn)}
+.ribbon{position:absolute;top:-12px;right:1.25rem;background:var(--or);color:#111;font-size:.6rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;padding:.35rem .8rem;border-radius:99px}
+/* REPORT ACTIONS */
+.rp-actions{display:flex;gap:.75rem;margin-top:1.5rem;flex-wrap:wrap}
+.rp-note{font-size:.72rem;color:var(--dim);margin-top:1rem;line-height:1.6}
+/* ROADMAP */
+.roadmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:1.25rem}
+.rm-phase{border:1px solid var(--line);border-radius:12px;padding:1.25rem;background:var(--card);backdrop-filter:blur(10px)}
+.rm-phase h4{font-family:'Inter',sans-serif;font-weight:800;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.rm-phase h4 .pn2{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:.75rem}
+.rm-phase.im h4 .pn2{background:rgba(240,91,78,.2);color:var(--rd)}
+.rm-phase.d30 h4 .pn2{background:rgba(241,139,37,.2);color:var(--or2)}
+.rm-phase.d90 h4 .pn2{background:rgba(61,220,151,.2);color:var(--gn)}
+.rm-phase ul{list-style:none}
+.rm-phase li{font-size:.82rem;color:var(--mut);padding:.45rem 0;border-top:1px solid var(--line);line-height:1.5}
+.rm-phase li b{color:var(--txt);font-weight:700}
+/* LOCKED */
+.locked-box{border:1px dashed rgba(240,91,78,.5);border-radius:14px;padding:2.5rem;text-align:center;margin-top:1.75rem;background:rgba(240,91,78,.04)}
+.locked-box .ll{font-family:'Inter',sans-serif;font-weight:800;font-size:1.1rem;margin:1rem 0 .5rem}
+.locked-box p{font-size:.9rem;color:var(--mut);max-width:420px;margin:0 auto;line-height:1.7}
+/* FOOTER */
+footer{text-align:center;font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);padding:2.5rem 1rem 1rem;border-top:1px solid var(--line);margin-top:3rem}
+footer a{color:var(--or);text-decoration:none}
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg2);border:1px solid var(--line2);color:var(--txt);padding:.8rem 1.4rem;border-radius:10px;font-size:.85rem;font-weight:500;opacity:0;pointer-events:none;transition:all .25s;z-index:50;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* PRINT */
+@media print{
+  body{background:#fff;color:#111}
+  body::before{display:none}
+  .no-print{display:none!important}
+  .wrap{max-width:100%;padding:0}
+  .card,.plan,.rm-phase,.leak,.locked-box,.opp-item,.ck,.tgitem{background:#fff!important;border:1px solid #ddd!important;backdrop-filter:none;box-shadow:none}
+  *{color:#111!important}
+  .leak{border-color:#e55!important;background:#fff5f5!important}
+}
+</style>
+
+<!-- DigitallyDefined Canonical Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- DigitallyDefined Brand Standards (Strict 0px Soft-Brutalism) -->
+<style id="dd-brand-standard">
+  :root {
+    --bg: #FFFCF9 !important;
+    --dd-bg: #FFFCF9 !important;
+    --card: #FFFFFF !important;
+    --dd-card: #FFFFFF !important;
+    --panel: #FFFAF5 !important;
+    --dd-panel: #FFFAF5 !important;
+    --text: #111111 !important;
+    --dd-text: #111111 !important;
+    --ink: #111111 !important;
+    --muted: #5F5F5F !important;
+    --dd-muted: #5F5F5F !important;
+    --border: 1px solid #111111 !important;
+    --dd-border: 1px solid #111111 !important;
+    --line: #111111 !important;
+    --or: #F18B25 !important;
+    --orange: #F18B25 !important;
+    --dd-orange: #F18B25 !important;
+    --bl: #47B7D4 !important;
+    --aqua: #47B7D4 !important;
+    --dd-aqua: #47B7D4 !important;
+    --rd: #8B1A0A !important;
+    --red: #8B1A0A !important;
+    --dd-red: #8B1A0A !important;
+    --dd-frame: #111111 !important;
+  }
+
+  /* Strict Brand Reset: zero border radius on all elements */
+  *, *::before, *::after {
+    border-radius: 0px !important;
+  }
+
+  body {
+    background-color: #FFFCF9 !important;
+    color: #111111 !important;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    -webkit-font-smoothing: antialiased !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    color: #111111 !important;
+    letter-spacing: -0.025em !important;
+  }
+
+  .mono, code, pre, .dd-badge, .badge, .tag {
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+
+  input:focus, select:focus, textarea:focus, button:focus {
+    outline: 2px solid #F18B25 !important;
+    outline-offset: 1px !important;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#F18B25" stroke="#F18B25" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    </div>
+    <div>
+      <div class="logo-name">Digitally<em>Defined</em></div>
+      <div class="logo-sub">For Gen X Women Reinventing Themselves, Digitally</div>
+    </div>
+  </div>
+  <span class="badge">Digital Wealth Snapshot™</span>
+</nav>
+
+<!-- ===== VIEW: INTRO ===== -->
+<section id="view-intro">
+  <div class="hero">
+    <div class="htag">™ DigitallyDefined Strategic Assessment</div>
+    <h1>Turn Hidden Opportunities Into <span>Predictable Income</span></h1>
+    <p>The <strong>Digital Wealth Snapshot™</strong> is a premium business analysis platform that identifies the revenue leaks, automation gaps, and AI opportunities your competitors are quietly exploiting. In under 5 minutes, you'll get a strategic growth map worth $97–$197 to act on.</p>
+    <div class="cta-row">
+      <button class="btn btn-p" id="startBtn">Begin Your Assessment →</button>
+    </div>
+    <div class="promise">
+      <div class="pi"><b>6 Modules</b><span>Business profile, revenue, lead gen, trust, conversion, automation, and AI readiness.</span></div>
+      <div class="pi"><b>Revenue Leak Map</b><span>Quantify exactly how much income you're leaving on the table every year.</span></div>
+      <div class="pi"><b>AI Advantage Report</b><span>See what AI-using competitors can do that you can't — and close the gap.</span></div>
+      <div class="pi"><b>90-Day Roadmap</b><span>A prioritized action plan: immediate, 30-day, and 90-day plays.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VIEW: ASSESSMENT ===== -->
+<section id="view-assess" class="hid">
+  <div class="stepper" id="stepper"></div>
+  <div class="stepbox">
+    <aside class="rail no-print">
+      <div class="railcard" id="railCard">
+        <div class="rt">Live Assessment Pulse</div>
+        <div id="railBody"></div>
+        <p class="progress-note">Answers update your live pulse in real time. Unlocked on your final report.</p>
+      </div>
+    </aside>
+
+    <div class="card stepcard">
+
+      <!-- STEP 1 -->
+      <div class="step" id="step-1">
+        <div class="sec-tag">Module 01 — Foundation</div>
+        <div class="stitle">Business Profile</div>
+        <p class="ssub">We calibrate everything downstream to your industry. This is where your insights engine activates.</p>
+        <div class="fl">
+          <label class="f">Business Name</label>
+          <input type="text" id="in-bname" placeholder="e.g. Lakeside Dental Group">
+        </div>
+        <div class="fg">
+          <div class="fl">
+            <label class="f">Industry</label>
+            <select id="in-industry">
+              <option value="Attorney">Attorney / Legal</option>
+              <option value="Real Estate Agent">Real Estate Agent</option>
+              <option value="Financial Advisor">Financial Advisor</option>
+              <option value="Marketing Agency">Marketing Agency</option>
+              <option value="Dental / Medical">Dental / Medical</option>
+              <option value="HVAC / Home Services">HVAC / Home Services</option>
+              <option value="Retail / E-commerce">Retail / E-commerce</option>
+              <option value="Fitness / Wellness">Fitness / Wellness</option>
+              <option value="Consultant / Coach">Consultant / Coach</option>
+              <option value="Other">Other Service Provider</option>
+            </select>
+          </div>
+          <div class="fl">
+            <label class="f">Years in Business</label>
+            <input type="number" id="in-years" min="0" max="80" value="5">
+          </div>
+        </div>
+        <div class="fg">
+          <div class="fl">
+            <label class="f">Number of Employees</label>
+            <input type="number" id="in-employees" min="1" max="500" value="3">
+          </div>
+          <div class="fl">
+            <label class="f">Location</label>
+            <input type="text" id="in-location" placeholder="City, State">
+          </div>
+        </div>
+        <div class="fl">
+          <label class="f">Website URL</label>
+          <input type="url" id="in-website" placeholder="https://yourbusiness.com">
+          <p class="hint">Optional — leave blank if you don't have a website yet.</p>
+        </div>
+        <div class="stepnav">
+          <button class="btn btn-d" data-back>← Back</button>
+          <button class="btn btn-p" data-next>Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step hid" id="step-2">
+        <div class="sec-tag">Module 02 — Revenue</div>
+        <div class="stitle">Revenue Data</div>
+        <p class="ssub">Rough numbers are fine. We're mapping the leaks, not auditing your books.</p>
+        <div class="fl">
+          <label class="f">Monthly Revenue (USD)</label>
+          <input type="number" id="in-rev" min="0" value="50000">
+        </div>
+        <div class="fg">
+          <div class="fl">
+            <label class="f">Monthly Website Visitors</label>
+            <input type="number" id="in-visitors" min="0" value="2000">
+            <p class="hint">0 if no website yet.</p>
+          </div>
+          <div class="fl">
+            <label class="f">Monthly Leads</label>
+            <input type="number" id="in-leads" min="0" value="50">
+          </div>
+        </div>
+        <div class="fg">
+          <div class="fl">
+            <label class="f">Lead-to-Customer Closing Rate (%)</label>
+            <input type="number" id="in-close" min="0" max="100" value="30">
+          </div>
+          <div class="fl">
+            <label class="f">Average Customer Value (USD)</label>
+            <input type="number" id="in-acv" min="0" value="500">
+          </div>
+        </div>
+        <div class="fl">
+          <label class="f">Lifetime Customer Value (USD)</label>
+          <input type="number" id="in-ltv" min="0" value="2500">
+          <p class="hint">Estimated total revenue a customer generates over the relationship. Roughly average value × expected years.</p>
+        </div>
+        <div class="stepnav">
+          <button class="btn btn-d" data-back>← Back</button>
+          <button class="btn btn-p" data-next>Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step hid" id="step-3">
+        <div class="sec-tag">Module 03 — Acquisition</div>
+        <div class="stitle">Lead Generation</div>
+        <p class="ssub">Which channels are you currently using to acquire customers? Select all that apply.</p>
+        <div class="ckgrid" id="ck-leads"></div>
+        <p class="hint" style="margin-top:1rem">Breadth + strength of channels drives your <b style="color:var(--txt)">Visibility Score</b>.</p>
+        <div class="stepnav">
+          <button class="btn btn-d" data-back>← Back</button>
+          <button class="btn btn-p" data-next>Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step hid" id="step-4">
+        <div class="sec-tag">Module 04 — Trust</div>
+        <div class="stitle">Trust &amp; Authority</div>
+        <p class="ssub">Buyers don't buy from strangers. What proof are you showing them?</p>
+        <div class="ckgrid" id="ck-trust"></div>
+        <div class="stepnav">
+          <button class="btn btn-d" data-back>← Back</button>
+          <button class="btn btn-p" data-next>Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="step hid" id="step-5">
+        <div class="sec-tag">Module 05 — Conversion</div>
+        <div class="stitle">Conversion Infrastructure</div>
+        <p class="ssub">Every missing conversion surface is a door to your business that's currently shut.</p>
+        <div class="tg" id="tg-conv"></div>
+        <div class="stepnav">
+          <button class="btn btn-d" data-back>← Back</button>
+          <button class="btn btn-p" data-next>Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 6 -->
+      <div class="step hid" id="step-6">
+        <div class="sec-tag">Module 06 — Systems</div>
+        <div class="stitle">Automation Stack</div>
+        <p class="ssub">What systems are already running your business while you sleep?</p>
+        <div class="tg" id="tg-auto"></div>
+        <div class="stepnav">
+          <button class="btn btn-d" data-back>← Back</button>
+          <button class="btn btn-p" data-next>Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 7 -->
+      <div class="step hid" id="step-7">
+        <div class="sec-tag">Module 07 — Future</div>
+        <div class="stitle">AI Readiness</div>
+        <p class="ssub">The AI divide is widening. Where does your operation stand today?</p>
+        <div class="tg" id="tg-ai"></div>
+        <div class="stepnav">
+          <button class="btn btn-d" data-back>← Back</button>
+          <button class="btn btn-p" id="finishBtn">Generate My Snapshot →</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== VIEW: REPORT ===== -->
+<section id="view-report" class="hid">
+  <div class="hero" style="margin-bottom:2rem">
+    <div class="htag">™ Digital Wealth Snapshot™ — Final Report</div>
+    <h1>Your Business, <span>Quantified</span></h1>
+    <p id="rp-intro"></p>
+  </div>
+
+  <div class="rp-grid">
+    <!-- OVERALL SCORE -->
+    <div class="card overall">
+      <div class="olabel">Overall Business Growth Score</div>
+      <div class="gage">
+        <svg viewBox="0 0 230 120">
+          <path d="M15 110 A95 95 0 0 1 215 110" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="14" stroke-linecap="round"/>
+          <path id="gArc" d="M15 110 A95 95 0 0 1 215 110" fill="none" stroke="url(#gg)" stroke-width="14" stroke-linecap="round" stroke-dasharray="298" stroke-dashoffset="298"/>
+          <defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#F18B25"/><stop offset="100%" stop-color="#3DDC97"/>
+          </linearGradient></defs>
+        </svg>
+        <div class="gv"><b id="gVal">0</b><span>Growth Score / 100</span></div>
+      </div>
+      <div style="margin-top:1.5rem">
+        <div id="scoreBars"></div>
+      </div>
+      <div class="legend">
+        <span><i style="background:#F05B4E"></i>Critical &lt; 40</span>
+        <span><i style="background:#F18B25"></i>Developing 40–69</span>
+        <span><i style="background:#3DDC97"></i>Strong 70+</span>
+      </div>
+    </div>
+
+    <!-- CHART + OPS -->
+    <div>
+      <div class="card">
+        <div class="ch"><h2>Revenue Funnel — Where You Lose Money</h2></div>
+        <div class="barchart" id="funnel"></div>
+        <p class="hint" style="margin-top:.75rem">Visitors → Leads → Closed Customers, with revenue at each stage.</p>
+      </div>
+      <div class="card" style="margin-top:1.25rem">
+        <div class="ch"><h2>Top 3 Quick Wins</h2></div>
+        <div class="opp" id="quickWins"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEAKAGE -->
+  <div class="leak" id="leakBox">
+    <div class="lt">⚠ Estimated Annual Revenue Leakage</div>
+    <div class="leak-grid" id="leakGrid"></div>
+    <p class="note" id="leakNote"></p>
+  </div>
+
+  <!-- AI ADVANTAGE -->
+  <div class="card" style="margin-top:1.75rem">
+    <div class="ch"><h2>AI Advantage Gap — What Competitors Using AI Can Do That You Can't</h2></div>
+    <div id="aiGap"></div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="card" style="margin-top:1.75rem">
+    <div class="ch"><h2 id="insTitle">DigitallyDefined Insights Engine</h2></div>
+    <div id="insBody"></div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div class="card" style="margin-top:1.75rem" id="roadmapCard">
+    <div class="ch"><h2>90-Day Implementation Roadmap</h2></div>
+    <div class="roadmap" id="roadmap"></div>
+  </div>
+
+  <!-- EXPORTS -->
+  <div class="rp-actions no-print">
+    <button class="btn btn-p" onclick="window.print()">Download PDF Report</button>
+    <button class="btn btn-g" id="dlAction">Download Action Plan</button>
+    <button class="btn btn-g" id="dlFull">Download Full Report</button>
+  </div>
+  <p class="rp-note no-print">Exports render your full report as a clean, branded PDF. Use "Print to PDF" for a shareable document.</p>
+
+  <!-- PRICING -->
+  <div class="card" style="margin-top:2rem" id="pricingCard">
+    <div class="ch"><h2>Unlock Your Full Digital Wealth Snapshot™</h2></div>
+    <div class="plans" id="plans"></div>
+  </div>
+</section>
+
+</div>
+
+<footer class="no-print">
+  © 2026 <a href="https://digitallydefined.online" target="_blank" rel="noopener noreferrer">DigitallyDefined</a> — Digital Real Estate Group — All Rights Reserved
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ DATA ============ */
+const LEAD_CHANNELS = ["SEO","Google Business Profile","Google Ads","Facebook Ads","Instagram","LinkedIn","Email Marketing","Referrals","Networking","Direct Mail","YouTube","AI Search"];
+const TRUST_ITEMS = ["Testimonials","Case Studies","Video Testimonials","Professional Photography","About Page","Team Page","Awards","Certifications","Reviews on Google"];
+const CONV_ITEMS = ["Online Booking","Contact Form","Live Chat","AI Chatbot","Free Consultation","Lead Magnet","SMS Follow-Up","Mobile Optimized","Fast Website"];
+const AUTO_ITEMS = ["CRM","Marketing Automation","AI Chatbot","Automated Email Follow-Up","SMS Automation","Appointment Reminders","Pipeline Management","AI Content Creation"];
+const AI_ITEMS = ["ChatGPT","AI Voice Agents","AI Lead Qualification","AI Appointment Booking","AI Content Systems","AI Analytics"];
+const AI_CAPS = ["Missed Call Text Back","AI Receptionist","AI Lead Qualification","AI Appointment Scheduling","Automated Follow-Up","AI Content Systems"];
+const INSIGHTS = {
+  "Attorney":{t:"Legal Practice Growth",i:[
+    ["Local SEO","Own the map pack for your practice areas. Most legal clients search 'lawyer near me' — being top 3 here drives 40%+ of new client inquiries."],
+    ["Consultation Funnels","A structured intake-to-consult pipeline (lead magnet → quiz → booking) converts cold traffic into billable clients without you chasing them."],
+    ["Review Systems","Automated post-case review requests. Legal buyers lean on social proof — a consistent review engine lifts conversion 25–40%."]]},
+  "Real Estate Agent":{t:"Real Estate Pipeline",i:[
+    ["Lead Nurture Automation","Agents win on speed. Automated nurture sequences move 80% of leads into weekly touchpoints so no lead goes cold."],
+    ["AI Follow-Up","AI-qualified follow-up at 2 a.m. — while every other agent sleeps. Response speed is the #1 predictor of listing wins."],
+    ["Listing Funnels","Package list-ready assets: virtual tours, listing pages, ad variants. One listing becomes ten acquisition channels."]]},
+  "Financial Advisor":{t:"Advisor Authority & Acquisition",i:[
+    ["Authority Content","Position yourself as the trusted voice in your niche. Monthly insight content compounds into your #1 acquisition channel."],
+    ["Lead Qualification","AI-qualified discovery calls filter tire-kickers from fit clients before you spend a minute on them."],
+    ["Appointment Automation","One-click scheduling + AI reminders. Advisors who automate discovery call booking report 30%+ higher show-up rates."]]},
+  "Marketing Agency":{t:"Agency Scale & Retention",i:[
+    ["Automation","Systems that run your delivery while you sleep. Automation turns a 40-hour week into a leverage you can sell."],
+    ["CRM Optimization","Every deal and every dollar in one pipeline. Agencies without a clean CRM leak 15–30% of client LTV."],
+    ["Client Acquisition Systems","Faceless, compounding acquisition — digital real estate that keeps producing leads while you sleep."]]}
+};
+const STEP_LABELS = ["Profile","Revenue","Lead Gen","Trust","Conversion","Automation","AI Readiness"];
+
+/* ============ STATE ============ */
+let step = 1;
+const $ = id => document.getElementById(id);
+
+function num(id){ const v = parseFloat($(id).value); return isNaN(v) ? 0 : v; }
+function checked(container){ return [...document.querySelectorAll(container+' input:checked')].map(i=>i.value); }
+
+/* Build checkboxes / toggles */
+function buildChecks(container, items, prefix){
+  const el = $(container); el.innerHTML='';
+  items.forEach((it,i)=>{
+    const label = document.createElement('label');
+    label.className = 'ck';
+    label.innerHTML = `<input type="checkbox" value="${it}"><span>${it}</span>`;
+    el.appendChild(label);
+  });
+}
+function buildToggles(container, items){
+  const el = $(container); el.innerHTML='';
+  items.forEach(it=>{
+    const label = document.createElement('label');
+    label.className = 'tgitem';
+    label.innerHTML = `<input type="checkbox" value="${it}"><span>${it}</span>`;
+    el.appendChild(label);
+  });
+}
+buildChecks('ck-leads', LEAD_CHANNELS);
+buildChecks('ck-trust', TRUST_ITEMS);
+buildToggles('tg-conv', CONV_ITEMS);
+buildToggles('tg-auto', AUTO_ITEMS);
+buildToggles('tg-ai', AI_ITEMS);
+
+/* Stepper */
+function renderStepper(){
+  const s = $('stepper'); s.innerHTML='';
+  STEP_LABELS.forEach((l,i)=>{
+    const n = i+1;
+    const st = document.createElement('div');
+    st.className = 'st' + (n===step?' on':'') + (n<step?' done':'');
+    st.innerHTML = `<span class="n">${n<step?'✓':n}</span><span class="l">${l}</span>`;
+    if(i<STEP_LABELS.length-1) st.innerHTML += `<span class="bar"></span>`;
+    s.appendChild(st);
+  });
+}
+
+/* Live rail pulse */
+function renderRail(){
+  const body = $('railBody');
+  const vis = Math.min(100, checked('ck-leads').length/LEAD_CHANNELS.length*100*1.6);
+  const trust = Math.min(100, checked('ck-trust').length/TRUST_ITEMS.length*100);
+  const conv = Math.min(100, checked('tg-conv').length/CONV_ITEMS.length*100);
+  const auto = Math.min(100, checked('tg-auto').length/AUTO_ITEMS.length*100);
+  const ai = Math.min(100, checked('tg-ai').length/AI_ITEMS.length*100);
+  const items = [
+    ['Visibility', vis, 'var(--bl)'],
+    ['Trust', trust, 'var(--or)'],
+    ['Conversion', conv, 'var(--vi)'],
+    ['Automation', auto, 'var(--pk)'],
+    ['AI Ready', ai, 'var(--gn)']
+  ];
+  body.innerHTML = items.map(([l,v,c])=>`
+    <div class="rrow"><b style="color:${v>=70?'var(--gn)':v>=40?'var(--or2)':'var(--rd)'}">${Math.round(v)}</b>
+    ${l}</div>
+    <div class="sbar" style="height:6px"><i style="width:${v}%;background:${c}"></i></div>`).join('');
+}
+['ck-leads','ck-trust','tg-conv','tg-auto','tg-ai'].forEach(c=>document.addEventListener('change',e=>{ if(e.target.closest('#'+c)) renderRail(); }));
+['in-rev','in-leads','in-close','in-acv','in-ltv'].forEach(id=>document.addEventListener('input',()=>renderRail()));
+
+/* Navigation */
+function goTo(n){
+  step = Math.max(1, Math.min(7, n));
+  for(let i=1;i<=7;i++) $('step-'+i).classList.toggle('hid', i!==step);
+  renderStepper(); renderRail();
+  document.querySelector('#view-assess').scrollIntoView({behavior:'smooth', block:'start'});
+}
+document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>{
+  if(step===1 && !$('in-bname').value.trim()){ toast('Add your business name to continue'); return; }
+  goTo(step+1);
+});
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>goTo(step-1));
+$('startBtn').onclick = ()=>{
+  $('view-intro').classList.add('hid');
+  $('view-assess').classList.remove('hid');
+  goTo(1);
+};
+
+/* ============ CALCULATIONS ============ */
+function computeScores(){
+  const rev = num('in-rev'), leads = num('in-leads'), close = num('in-close'), acv = num('in-acv'), ltv = num('in-ltv'), visitors = num('in-visitors');
+  const leadCh = checked('ck-leads'), trust = checked('ck-trust'), conv = checked('tg-conv'), auto = checked('tg-auto'), ai = checked('tg-ai');
+
+  const visScore = Math.min(100, Math.round(leadCh.length/LEAD_CHANNELS.length*100*1.6));
+  const trustScore = Math.round(trust.length/TRUST_ITEMS.length*100);
+  const convScore = Math.round(conv.length/CONV_ITEMS.length*100);
+  const autoScore = Math.round(auto.length/AUTO_ITEMS.length*100);
+  const aiScore = Math.round(ai.length/AI_ITEMS.length*100);
+
+  const overall = Math.round(visScore*.22 + trustScore*.20 + convScore*.20 + autoScore*.18 + aiScore*.20);
+
+  // funnel + leak
+  const visitorConv = visitors>0 ? (leads/visitors*100) : 0;
+  const revPerLead = leads>0 ? rev/leads : 0;
+  const potentialLeads = Math.max(leads*2, Math.round(visitors*0.04));
+  const lostLeads = Math.max(0, potentialLeads - leads);
+  const lostAnnual = lostLeads * (acv || rev/Math.max(leads,1)*0) * 12 || 0;
+  const revAnnual = rev*12;
+  const potentialAnnual = Math.max(revAnnual*1.6, potentialLeads*revPerLead*12);
+  const annualLeak = Math.max(0, potentialAnnual - revAnnual);
+
+  return { rev,leads,close,acv,ltv,visitors,leadCh,trust,conv,auto,ai,
+    visScore,trustScore,convScore,autoScore,aiScore,overall,
+    visitorConv,revPerLead,potentialLeads,lostLeads,revAnnual,potentialAnnual,annualLeak };
+}
+
+/* Quick wins */
+function quickWins(s){
+  const wins = [];
+  const acv = s.acv || 500;
+  if(!s.conv.includes('SMS Follow-Up')) wins.push(['Add SMS Follow-Up','Text back within 5 minutes of any lead. Closes 2–3 extra deals a month on your current volume.', Math.round(3*acv*12)]);
+  if(!s.conv.includes('Online Booking')) wins.push(['Add Online Scheduling','Let customers book 24/7. Cuts no-shows and uncovers after-hours demand you never see.', Math.round(4*acv*12)]);
+  if(!s.trust.includes('Reviews on Google')) wins.push(['Improve Google Reviews','A review engine lifts local search conversion and trust. Fastest ROI in local markets.', Math.round(5*acv*12)]);
+  if(!s.auto.includes('Automated Email Follow-Up')) wins.push(['Automated Email Follow-Up','Stop manual follow-up. A 5-touch sequence recovers 15–20% of stale leads.', Math.round(5*acv*12)]);
+  if(!s.conv.includes('Lead Magnet')) wins.push(['Launch a Lead Magnet','A valuable free asset converts visitors into qualified leads automatically.', Math.round(4*acv*12)]);
+  if(!s.ai.includes('AI Content Systems')) wins.push(['AI Content Systems','Publish 3x more with 1/3 the hours. Compounds into your #1 long-term channel.', Math.round(6*acv*12)]);
+  if(!wins.length) wins.push(['Double Down on What Works','Your infrastructure is strong. Scale your highest-ROI channel and add a new top-of-funnel asset.', Math.round(6*acv*12)]);
+  return wins.sort((a,b)=>b[2]-a[2]).slice(0,3);
+}
+
+/* AI gap */
+function aiGap(s){
+  const hasAiReception = s.auto.includes('AI Chatbot') || s.conv.includes('AI Chatbot');
+  const hasQual = s.ai.includes('AI Lead Qualification');
+  const hasSched = s.ai.includes('AI Appointment Booking');
+  const hasFollow = s.auto.includes('Automated Email Follow-Up') || s.auto.includes('SMS Automation');
+  const hasContent = s.ai.includes('AI Content Systems');
+  const items = [
+    ['Missed Call Text Back', s.conv.includes('SMS Follow-Up') || s.auto.includes('SMS Automation')],
+    ['AI Receptionist', hasAiReception],
+    ['AI Lead Qualification', hasQual],
+    ['AI Appointment Scheduling', hasSched],
+    ['Automated Follow-Up', hasFollow],
+    ['AI Content Systems', hasContent],
+  ];
+  const acv = s.acv||500;
+  const gains = {
+    'Missed Call Text Back': Math.round(2*acv*12),
+    'AI Receptionist': Math.round(6*acv*12),
+    'AI Lead Qualification': Math.round(4*acv*12),
+    'AI Appointment Scheduling': Math.round(5*acv*12),
+    'Automated Follow-Up': Math.round(5*acv*12),
+    'AI Content Systems': Math.round(6*acv*12),
+  };
+  return { items, missed: items.filter(i=>!i[1]), totalGained: items.filter(i=>!i[1]).reduce((sum,i)=>sum+gains[i[0]],0), gains };
+}
+
+/* ============ REPORT ============ */
+function fmtMoney(v){ return '$'+Math.round(v).toLocaleString(); }
+
+function drawReport(){
+  const s = computeScores();
+  const bname = $('in-bname').value.trim()||'your business';
+  const industry = $('in-industry').value;
+
+  // intro
+  $('rp-intro').innerHTML = `A strategic Digital Wealth Snapshot™ for <strong>${bname}</strong> — ${industry}. Here's exactly where your business leaks, where it wins, and what it takes to turn hidden opportunity into predictable income.`;
+
+  // gauge
+  animateGauge(s.overall);
+
+  // score bars
+  const bars = [
+    ['Visibility', s.visScore, 'var(--bl)'],
+    ['Trust', s.trustScore, 'var(--or)'],
+    ['Conversion', s.convScore, 'var(--vi)'],
+    ['Automation', s.autoScore, 'var(--pk)'],
+    ['AI Readiness', s.aiScore, 'var(--gn)']
+  ];
+  $('scoreBars').innerHTML = bars.map(([l,v,c])=>`
+    <div class="scorebar-row">
+      <div class="sl"><span>${l}</span><b style="font-family:'Inter',sans-serif">${v}</b></div>
+      <div class="sbar"><i style="width:0%;background:${c}" data-w="${v}"></i></div>
+    </div>`).join('');
+  requestAnimationFrame(()=>setTimeout(()=>{
+    document.querySelectorAll('#scoreBars .sbar i').forEach(el=>{ el.style.width = el.dataset.w+'%'; });
+  },50));
+
+  // funnel
+  const revAnnual = s.revAnnual, potLeads = s.potentialLeads, lost = s.annualLeak;
+  const funnel = [
+    [s.visitors||potLeads, 'Visitors', 'var(--bl)', revAnnual>0?revAnnual/Math.max(s.visitors,1)* (s.visitors||potLeads)*1 : 0],
+    [s.leads||potLeads, 'Leads', 'var(--vi)', (s.leads||0)*(s.acv||0)*12],
+    [Math.round((s.leads||0)*s.close/100), 'Customers', 'var(--gn)', (s.leads||0)*s.close/100*(s.ltv||s.acv||0)*12],
+  ];
+  const maxV = Math.max(...funnel.map(f=>f[0]),1);
+  $('funnel').innerHTML = funnel.map(([v,l,c,rev])=>`
+    <div class="bc">
+      <div class="bv">${v? v.toLocaleString() : '—'}</div>
+      <div class="bi" style="height:0%;background:${c}" data-h="${Math.max(4, v/maxV*100)}"></div>
+      <div class="bl">${l}</div>
+      <div class="bl" style="color:var(--mut);text-transform:none;letter-spacing:0">${rev?('≈ '+fmtMoney(rev)+'/yr'):''}</div>
+    </div>`).join('');
+  requestAnimationFrame(()=>setTimeout(()=>{
+    document.querySelectorAll('#funnel .bi').forEach(el=>{ el.style.height = el.dataset.h+'%'; });
+  },80));
+
+  // quick wins
+  const qw = quickWins(s);
+  $('quickWins').innerHTML = qw.map((w,i)=>`
+    <div class="opp-item">
+      <div class="rank">${i+1}</div>
+      <div class="oi"><b>${w[0]}</b><span>${w[1]}</span></div>
+      <div class="impact"><b>+${fmtMoney(w[2])}</b><span>Est. Annual</span></div>
+    </div>`).join('');
+
+  // leak
+  const leak = s.annualLeak;
+  $('leakGrid').innerHTML = `
+    <div class="li"><b>${fmtMoney(s.potentialLeads - s.leads)}</b><span>Leads you're not capturing each month</span></div>
+    <div class="li"><b>${fmtMoney((s.potentialLeads-s.leads)*(s.acv||0)*12)}</b><span>Annual revenue lost to unconverted leads</span></div>
+    <div class="li"><b>${fmtMoney(leak)}</b><span>Total estimated annual leakage vs. optimized state</span></div>`;
+  $('leakNote').innerHTML = `Your business is currently operating at <strong>${leak>0? Math.max(5, Math.round(s.revAnnual/(s.revAnnual+leak)*100)) : 100}% of its modeled potential</strong>. Every month you don't act, that ${fmtMoney(leak/12)} walks back into your competitors' accounts.`;
+
+  // AI gap
+  const gap = aiGap(s);
+  $('aiGap').innerHTML = gap.items.map(([cap,has])=>`
+    <div class="ai-item ${has?'won':'missed'}">
+      <div class="box"></div><span>${cap}</span>
+      ${has?'':`<div class="gain"><small>Est. annual</small> +${fmtMoney(gap.gains[cap])}</div>`}
+    </div>`).join('')
+    + (gap.missed.length? `<div style="margin-top:1rem;padding:1rem;background:rgba(240,91,78,.08);border:1px solid rgba(240,91,78,.3);border-radius:10px;font-size:.88rem;line-height:1.6">
+        <b style="color:var(--rd)">Total AI Advantage Gap:</b>
+        Competitors running these systems are capturing <b style="color:var(--txt)">≈ ${fmtMoney(gap.totalGained)}/yr</b> of value your business is currently forfeiting.
+       </div>` : `<p style="margin-top:1rem;font-size:.88rem;color:var(--mut)">You're already out-AI-ing your local competition. Keep building.</p>`);
+
+  // insights
+  const ins = INSIGHTS[industry] || INSIGHTS['Marketing Agency'];
+  $('insTitle').textContent = ins.t + ' — ' + bname;
+  $('insBody').innerHTML = ins.i.map(([t,d])=>`
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:1rem;padding:.9rem 0;border-bottom:1px solid var(--line);align-items:start">
+      <div style="width:34px;height:34px;border-radius:50%;background:rgba(241,139,37,.15);border:1px solid rgba(241,139,37,.4);display:grid;place-items:center;color:var(--or2);font-weight:900;font-family:'Inter',sans-serif">${t[0]}</div>
+      <div><b style="font-size:.92rem">${t}</b><p style="font-size:.83rem;color:var(--mut);line-height:1.6;margin-top:.3rem">${d}</p></div>
+    </div>`).join('');
+
+  // roadmap
+  const rw = quickWins(s).concat(gap.missed.map(m=>[m[0], m[1]])).slice(0,9);
+  const p1 = rw.slice(0,3), p2 = rw.slice(3,6), p3 = rw.slice(6,9);
+  const phase = (cls, label, items)=>`
+    <div class="rm-phase ${cls}">
+      <h4><span class="pn2">${label[0]}</span>${label}</h4>
+      <ul>${items.map(i=>`<li><b>${i[0]}</b><br><span style="font-size:.78rem">${i[1]}</span></li>`).join('')||'<li><b>Hold pattern.</b><br><span style="font-size:.78rem">Re-evaluate after the previous phase ships.</span></li>'}</ul>
+    </div>`;
+  $('roadmap').innerHTML =
+    phase('im','Immediate', p1.length? p1 : [['Diagnose','Confirm your top leakage source with this report.']]) +
+    phase('d30','30 Days', p2.length? p2 : [['Automate one follow-up','Pick your highest-leverage channel and ship it.']]) +
+    phase('d90','90 Days', p3.length? p3 : [['Scale the winner','Double down on the channel that produced the first wins.']]);
+
+  // plans
+  $('plans').innerHTML = planHtml();
+  wirePlanButtons();
+}
+
+function planHtml(){
+  return `
+  <div class="plan">
+    <div class="pt">Free Snapshot</div>
+    <div class="pp">$0<span>/one-time</span></div>
+    <div class="fl unl">Unlocked now</div>
+    <ul>
+      <li>Overall Growth Score (0–100)</li>
+      <li>Five module scores at a glance</li>
+      <li>Live revenue funnel visualization</li>
+      <li>Top 3 quick wins with annual estimates</li>
+    </ul>
+    <button class="btn btn-g" data-plan="free">You're here ✓</button>
+  </div>
+  <div class="plan feat">
+    <div class="ribbon">Most Chosen</div>
+    <div class="pt">Pro</div>
+    <div class="pp">$97<span>/report</span></div>
+    <div class="fl unlocked">Unlock with Pro</div>
+    <ul>
+      <li>Full Revenue Leakage Analysis</li>
+      <li>Business Growth Report (PDF)</li>
+      <li>30-Day Action Plan</li>
+      <li>DigitallyDefined insights for your industry</li>
+      <li>Export: branded PDF + Action Plan</li>
+    </ul>
+    <button class="btn btn-p" data-plan="pro">Unlock Pro Report — $97</button>
+  </div>
+  <div class="plan">
+    <div class="pt">Wealth Architect</div>
+    <div class="pp">$197<span>/report</span></div>
+    <div class="fl">Everything in Pro, plus</div>
+    <ul>
+      <li>Full Strategic Assessment</li>
+      <li>AI Opportunity Report (dollarized)</li>
+      <li>Digital Asset Analysis</li>
+      <li>90-Day Implementation Roadmap</li>
+      <li>Priority: Immediate / 30 / 90 plays</li>
+      <li>Export: full branded report</li>
+    </ul>
+    <button class="btn btn-g" data-plan="wealth">Unlock Wealth Architect — $197</button>
+  </div>`;
+}
+function wirePlanButtons(){
+  document.querySelectorAll('[data-plan]').forEach(b=>{
+    b.onclick = ()=>{
+      const p = b.dataset.plan;
+      if(p==='free'){ toast('Free snapshot is live above. Share it or print it anytime.'); return; }
+      toast(p==='pro' ? 'Pro is a live checkout — connect Stripe/PayPal to collect $97.' : 'Wealth Architect is a live checkout — connect Stripe/PayPal to collect $197.');
+    };
+  });
+}
+
+/* Gauge animation */
+function animateGauge(v){
+  const arc = $('gArc'), val = $('gVal');
+  const total = 298; // approx arc length for the 180° path
+  const target = total * (1 - v/100);
+  let cur = total;
+  val.textContent = '0';
+  const t0 = performance.now();
+  function tick(t){
+    const p = Math.min(1,(t-t0)/900);
+    const eased = 1-Math.pow(1-p,3);
+    cur = total + (target-total)*eased;
+    arc.style.strokeDashoffset = cur;
+    val.textContent = Math.round(v*eased);
+    if(p<1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ============ EXPORTS ============ */
+function toast(msg){
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3200);
+}
+function exportAs(kind){
+  const doc = document.createElement('div');
+  doc.innerHTML = '';
+  const reportEl = document.getElementById('view-report');
+  const wrapClone = document.querySelector('.wrap').cloneNode(true);
+  // Remove the other views from clone, keep only report visible
+  const intro = wrapClone.querySelector('#view-intro'); if(intro) intro.remove();
+  const assess = wrapClone.querySelector('#view-assess'); if(assess) assess.remove();
+  const rp = wrapClone.querySelector('#view-report');
+  if(rp) rp.classList.remove('hid');
+  const nav = wrapClone.querySelector('nav'); if(nav) nav.classList.add('no-print');
+  const foot = wrapClone.querySelector('footer'); if(foot) foot.classList.add('no-print');
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Digital Wealth Snapshot — DigitallyDefined</title><style>
+    ${document.querySelectorAll('style')[0].outerHTML}
+    .no-print{display:none}
+  </style></head><body>${wrapClone.outerHTML}</body></html>`;
+  const blob = new Blob([html], {type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = kind==='full' ? 'DigitallyDefined_Full_Report.html' : 'DigitallyDefined_Action_Plan.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast(kind==='full' ? 'Full report exported. Print to PDF from the file for a shareable document.' : 'Action plan exported.');
+}
+$('finishBtn').onclick = ()=>{
+  $('view-assess').classList.add('hid');
+  $('view-report').classList.remove('hid');
+  drawReport();
+  window.scrollTo({top:0, behavior:'smooth'});
+};
+$('dlAction').onclick = ()=>exportAs('action');
+$('dlFull').onclick = ()=>exportAs('full');
+
+renderStepper(); renderRail();
+</script>
+</body>
+</html>

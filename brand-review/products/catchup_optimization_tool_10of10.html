@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DIGITALLYDEFINED // CATCH-UP OPTIMIZATION OS</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.0/index.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.0/index.css" />
+<style>
+  :root {
+    --bg: #FFFCF9;
+    --card: #FFFFFF;
+    --ink: #0A0A0A;
+    --ink-2: #1A1A1A;
+    --muted: #6B6B6B;
+    --line: #0A0A0A;
+    --line-soft: #E5E5E5;
+    --aqua: #47B7D4;
+    --orange: #F18B25;
+    --red: #C20F0A;
+    --aqua-soft: #E8F5F9;
+    --orange-soft: #FEF0E2;
+    --red-soft: #FCE8E7;
+    --good: #22C55E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0 !important; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* TOP BAR */
+  .dd-topbar {
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    margin: 16px;
+    margin-bottom: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .dd-topbar-inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1.2fr;
+    min-height: 110px;
+  }
+  .dd-topbar-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .dd-topbar-avatar {
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--line-soft);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .dd-topbar-avatar::before {
+    content: '';
+    width: 40px; height: 40px;
+    border: 1px solid var(--line-soft);
+    background: var(--card);
+  }
+  .dd-topbar-divider {
+    width: 1px;
+    background: var(--line);
+    align-self: stretch;
+  }
+  .dd-topbar-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 24px 32px;
+    position: relative;
+  }
+  .dd-topbar-dots {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    display: flex;
+    gap: 8px;
+  }
+  .dd-topbar-dots span {
+    width: 10px; height: 10px;
+    display: inline-block;
+  }
+  .dd-topbar-dots span:nth-child(1) { background: var(--red); }
+  .dd-topbar-dots span:nth-child(2) { background: var(--orange); }
+  .dd-topbar-dots span:nth-child(3) { background: var(--aqua); }
+  .dd-topbar-brand {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 42px;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .dd-topbar-brand .black { color: var(--ink); }
+  .dd-topbar-brand .orange { color: var(--orange); }
+  .dd-topbar-tagline {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .dd-topbar-accent {
+    width: 60px;
+    height: 3px;
+    background: var(--orange);
+  }
+  .dd-topbar-cta {
+    padding: 10px 18px;
+    background: var(--ink);
+    color: var(--card);
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--ink);
+    transition: all 0.15s;
+  }
+  .dd-topbar-cta:hover {
+    background: var(--red);
+    border-color: var(--red);
+  }
+
+  /* HERO */
+  .dd-hero {
+    padding: 60px 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .dd-hero-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .dd-hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .dd-hero-tag .dot {
+    width: 6px; height: 6px;
+    background: var(--red);
+  }
+  .dd-hero h1 {
+    font-size: clamp(40px, 6vw, 72px);
+    margin-bottom: 24px;
+  }
+  .dd-hero h1 .accent {
+    color: var(--red);
+    position: relative;
+    display: inline-block;
+  }
+  .dd-hero h1 .accent::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 4px;
+    height: 8px;
+    background: var(--red);
+    opacity: 0.15;
+    z-index: -1;
+  }
+  .dd-hero-sub {
+    font-size: 17px;
+    color: var(--ink-2);
+    max-width: 580px;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+  .dd-hero-quote {
+    padding: 20px 24px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--red);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 32px;
+    max-width: 580px;
+  }
+  .dd-hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .dd-btn {
+    padding: 14px 24px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dd-btn-primary {
+    background: var(--red);
+    color: var(--card);
+    border-color: var(--red);
+  }
+  .dd-btn-primary:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+  .dd-btn-ghost {
+    background: var(--card);
+    color: var(--ink);
+  }
+  .dd-btn-ghost:hover {
+    background: var(--ink);
+    color: var(--card);
+  }
+
+  /* HERO VISUAL CARD */
+  .dd-visual-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 0;
+    position: relative;
+  }
+  .dd-visual-head {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .dd-visual-head .title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: -0.01em;
+  }
+  .dd-visual-body {
+    padding: 24px 20px;
+  }
+  .dd-visual-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 70px;
+    gap: 16px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .dd-visual-row:last-child { border-bottom: none; }
+  .dd-visual-row .lbl {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .dd-visual-bar {
+    height: 20px;
+    background: var(--line-soft);
+    position: relative;
+    overflow: hidden;
+  }
+  .dd-visual-bar-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    animation: fillBar 1.2s ease-out forwards;
+  }
+  .dd-visual-bar-fill.red { background: var(--red); }
+  .dd-visual-bar-fill.aqua { background: var(--aqua); }
+  .dd-visual-bar-fill.orange { background: var(--orange); }
+  @keyframes fillBar { from { width: 0; } }
+  .dd-visual-row .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: right;
+  }
+  .dd-visual-foot {
+    padding: 16px 20px;
+    border-top: 1px solid var(--line);
+    background: var(--bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .dd-visual-foot .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .dd-visual-foot .big {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--red);
+    letter-spacing: -0.02em;
+  }
+
+  /* HERO STATS */
+  .dd-hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 60px;
+    border: 1px solid var(--line);
+    background: var(--card);
+  }
+  .dd-hero-stat {
+    padding: 24px;
+    border-right: 1px solid var(--line);
+  }
+  .dd-hero-stat:last-child { border-right: none; }
+  .dd-hero-stat .num {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .dd-hero-stat:nth-child(1) .num { color: var(--red); }
+  .dd-hero-stat:nth-child(2) .num { color: var(--aqua); }
+  .dd-hero-stat:nth-child(3) .num { color: var(--orange); }
+  .dd-hero-stat:nth-child(4) .num { color: var(--ink); }
+  .dd-hero-stat .lbl {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* SECTION */
+  .dd-section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 80px 32px;
+  }
+  .dd-section-head {
+    margin-bottom: 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: end;
+  }
+  .dd-section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .dd-section-label .bar {
+    width: 24px; height: 2px;
+    background: var(--red);
+  }
+  .dd-section-label.aqua .bar { background: var(--aqua); }
+  .dd-section-label.orange .bar { background: var(--orange); }
+  .dd-section h2 {
+    font-size: clamp(28px, 4vw, 44px);
+    margin-bottom: 12px;
+  }
+  .dd-section-sub {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 640px;
+  }
+
+  /* TABS */
+  .dd-tabs {
+    display: flex;
+    border: 1px solid var(--line);
+    background: var(--card);
+    margin-bottom: 32px;
+    overflow-x: auto;
+  }
+  .dd-tab {
+    flex: 1;
+    min-width: 200px;
+    padding: 20px 24px;
+    background: transparent;
+    color: var(--ink);
+    border: none;
+    border-right: 1px solid var(--line);
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-align: left;
+  }
+  .dd-tab:last-child { border-right: none; }
+  .dd-tab:hover { background: var(--bg); }
+  .dd-tab.active {
+    background: var(--ink);
+    color: var(--card);
+  }
+  .dd-tab .idx {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 2px 6px;
+    border: 1px solid var(--line-soft);
+  }
+  .dd-tab.active .idx {
+    color: var(--card);
+    border-color: var(--card);
+    opacity: 0.6;
+  }
+  .dd-tab-icon {
+    width: 28px; height: 28px;
+    flex-shrink: 0;
+  }
+
+  /* PANEL */
+  .dd-panel { display: none; }
+  .dd-panel.active { display: block; }
+
+  /* STRATEGY CARD */
+  .dd-strategy-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 32px;
+    margin-bottom: 32px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .dd-strategy-icon {
+    width: 64px; height: 64px;
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+  }
+  .dd-strategy-card h3 {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+  .dd-strategy-card p {
+    color: var(--ink-2);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* CALC GRID */
+  .dd-calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    background: var(--card);
+  }
+  .dd-calc-left {
+    padding: 32px;
+    border-right: 1px solid var(--line);
+  }
+  .dd-calc-right {
+    padding: 32px;
+    background: var(--card);
+  }
+  .dd-calc-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .dd-calc-title h4 {
+    font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+  .dd-calc-title .status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .dd-calc-title .status::before {
+    content: '';
+    width: 8px; height: 8px;
+    background: var(--good);
+    border: 1px solid var(--line);
+  }
+
+  /* FORM FIELDS */
+  .dd-field {
+    margin-bottom: 20px;
+  }
+  .dd-field label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+  .dd-field input, .dd-field select {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--card);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    transition: border 0.15s;
+  }
+  .dd-field input:focus, .dd-field select:focus {
+    outline: none;
+    border-color: var(--aqua);
+    box-shadow: inset 0 0 0 1px var(--aqua);
+  }
+  .dd-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .dd-field-hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  /* PRESETS */
+  .dd-presets {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--line-soft);
+  }
+  .dd-presets-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .dd-presets-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .dd-preset {
+    padding: 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .dd-preset:hover {
+    border-color: var(--aqua);
+    background: var(--aqua-soft);
+  }
+  .dd-preset .name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .dd-preset .desc {
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  /* ACTIONS */
+  .dd-actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  /* STATS */
+  .dd-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    margin-bottom: 24px;
+  }
+  .dd-stat {
+    padding: 18px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .dd-stat:nth-child(2n) { border-right: none; }
+  .dd-stat:nth-last-child(-n+2) { border-bottom: none; }
+  .dd-stat .lbl {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .dd-stat .val {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .dd-stat .val.highlight { color: var(--red); font-size: 24px; }
+  .dd-stat .val.aqua { color: var(--aqua); }
+  .dd-stat .val.orange { color: var(--orange); }
+
+  /* LEDGER */
+  .dd-ledger {
+    border: 1px solid var(--line);
+    margin-bottom: 24px;
+    background: var(--card);
+  }
+  .dd-ledger-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    background: var(--bg);
+  }
+  .dd-ledger-row {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+  .dd-ledger-row:last-child { border-bottom: none; }
+  .dd-ledger-row .lbl { color: var(--ink-2); }
+  .dd-ledger-row .val {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .dd-ledger-row.total {
+    background: var(--bg);
+    padding: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .dd-ledger-row.total .lbl {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+  .dd-ledger-row.total .val {
+    color: var(--red);
+    font-size: 18px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+  }
+
+  /* BRUTAL TRUTH */
+  .dd-truth {
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--red);
+    background: var(--card);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink-2);
+  }
+  .dd-truth strong {
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .dd-truth .red { color: var(--red); font-weight: 700; }
+
+  /* RATIONALE / EMAIL */
+  .dd-ai-block {
+    border: 1px solid var(--line);
+    background: var(--card);
+    margin-top: 24px;
+  }
+  .dd-ai-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dd-ai-body {
+    padding: 20px;
+  }
+  .dd-ai-placeholder {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .dd-ai-email {
+    background: var(--bg);
+    border: 1px solid var(--line-soft);
+    padding: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    margin-bottom: 14px;
+  }
+  .dd-loading {
+    display: none;
+  }
+  .dd-loading.show {
+    display: block;
+  }
+  .dd-loading-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--orange);
+    margin-right: 6px;
+    animation: blink 1s infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  /* METHOD */
+  .dd-method-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--line);
+    background: var(--card);
+  }
+  .dd-method-item {
+    padding: 24px;
+    border-right: 1px solid var(--line);
+  }
+  .dd-method-item:last-child { border-right: none; }
+  .dd-method-item .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--red);
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .dd-method-item .num::before {
+    content: '';
+    width: 14px; height: 14px;
+    background: var(--red);
+  }
+  .dd-method-item:nth-child(2) .num::before { background: var(--aqua); }
+  .dd-method-item:nth-child(3) .num::before { background: var(--orange); }
+  .dd-method-item:nth-child(4) .num::before { background: var(--ink); }
+  .dd-method-item h4 {
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+  .dd-method-item p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  /* DISCLAIMER */
+  .dd-disclaimer {
+    padding: 16px 20px;
+    border: 1px solid var(--line-soft);
+    background: var(--bg);
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.7;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* FOOTER */
+  .dd-footer {
+    padding: 40px 32px;
+    border-top: 1px solid var(--line);
+    background: var(--card);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .dd-footer span { color: var(--red); }
+
+  /* TOAST */
+  .dd-toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--aqua);
+    padding: 16px 24px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    z-index: 200;
+    display: none;
+  }
+  .dd-toast.show { display: block; animation: slideIn 0.3s ease; }
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 960px) {
+    .dd-hero-grid, .dd-calc-grid { grid-template-columns: 1fr; }
+    .dd-calc-left { border-right: none; border-bottom: 1px solid var(--line); }
+    .dd-method-grid { grid-template-columns: 1fr 1fr; }
+    .dd-method-item { border-right: none; border-bottom: 1px solid var(--line); }
+    .dd-method-item:nth-child(2n) { border-right: none; }
+    .dd-method-item:nth-last-child(-n+2) { border-bottom: none; }
+    .dd-hero-stats { grid-template-columns: 1fr 1fr; }
+    .dd-hero-stat { border-bottom: 1px solid var(--line); }
+    .dd-hero-stat:nth-child(2n) { border-right: none; }
+    .dd-hero-stat:nth-last-child(-n+2) { border-bottom: none; }
+    .dd-topbar { margin: 12px; }
+    .dd-topbar-inner { grid-template-columns: 1fr; min-height: auto; }
+    .dd-topbar-left { padding: 16px; }
+    .dd-topbar-divider { width: 100%; height: 1px; }
+    .dd-topbar-right { padding: 20px 24px; }
+    .dd-topbar-brand { font-size: 32px; }
+    .dd-topbar-avatar { width: 60px; height: 60px; }
+  }
+  @media (max-width: 560px) {
+    .dd-field-row, .dd-presets-grid, .dd-stats { grid-template-columns: 1fr; }
+    .dd-stat { border-right: none !important; border-bottom: 1px solid var(--line) !important; }
+    .dd-stat:last-child { border-bottom: none !important; }
+    .dd-tab { min-width: 140px; padding: 16px; font-size: 12px; }
+    .dd-section { padding: 60px 20px; }
+    .dd-hero { padding: 48px 20px 40px; }
+    .dd-calc-left, .dd-calc-right { padding: 24px; }
+    .dd-method-grid { grid-template-columns: 1fr; }
+    .dd-method-item { border-bottom: 1px solid var(--line) !important; }
+    .dd-method-item:last-child { border-bottom: none !important; }
+    .dd-footer { flex-direction: column; gap: 12px; text-align: center; }
+    .dd-strategy-card { grid-template-columns: 1fr; }
+    .dd-topbar-brand { font-size: 26px; }
+    .dd-topbar-tagline { font-size: 11px; }
+  }
+</style>
+
+<!-- DigitallyDefined Canonical Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- DigitallyDefined Brand Standards (Strict 0px Soft-Brutalism) -->
+<style id="dd-brand-standard">
+  :root {
+    --bg: #FFFCF9 !important;
+    --dd-bg: #FFFCF9 !important;
+    --card: #FFFFFF !important;
+    --dd-card: #FFFFFF !important;
+    --panel: #FFFAF5 !important;
+    --dd-panel: #FFFAF5 !important;
+    --text: #111111 !important;
+    --dd-text: #111111 !important;
+    --ink: #111111 !important;
+    --muted: #5F5F5F !important;
+    --dd-muted: #5F5F5F !important;
+    --border: 1px solid #111111 !important;
+    --dd-border: 1px solid #111111 !important;
+    --line: #111111 !important;
+    --or: #F18B25 !important;
+    --orange: #F18B25 !important;
+    --dd-orange: #F18B25 !important;
+    --bl: #47B7D4 !important;
+    --aqua: #47B7D4 !important;
+    --dd-aqua: #47B7D4 !important;
+    --rd: #8B1A0A !important;
+    --red: #8B1A0A !important;
+    --dd-red: #8B1A0A !important;
+    --dd-frame: #111111 !important;
+  }
+
+  /* Strict Brand Reset: zero border radius on all elements */
+  *, *::before, *::after {
+    border-radius: 0px !important;
+  }
+
+  body {
+    background-color: #FFFCF9 !important;
+    color: #111111 !important;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    -webkit-font-smoothing: antialiased !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    color: #111111 !important;
+    letter-spacing: -0.025em !important;
+  }
+
+  .mono, code, pre, .dd-badge, .badge, .tag {
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+
+  input:focus, select:focus, textarea:focus, button:focus {
+    outline: 2px solid #F18B25 !important;
+    outline-offset: 1px !important;
+  }
+</style>
+</head>
+<body>
+<!-- DigitallyDefined Official Header -->
+<nav class="dd-brand-topbar" style="background:#FFFCF9; border-bottom:1px solid #111111; padding:0.9rem 1.25rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; font-family:'Inter', sans-serif; position:sticky; top:0; z-index:9999;">
+  <div style="display:flex; align-items:center; gap:0.6rem;">
+    <a href="https://dashboard.digitallydefined.agency" target="_blank" rel="noopener noreferrer" style="text-decoration:none; color:#111111;">
+      <span style="font-weight:800; font-size:1.05rem; letter-spacing:-0.03em; border:1px solid #111111; background:#FFFFFF; padding:0.35rem 0.65rem; display:inline-block;">Digitally<em style="color:#F18B25; font-style:italic;">Defined</em></span>
+    </a>
+    <span style="font-size:0.65rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#5F5F5F; display:none;">Faceless Digital Real Estate</span>
+  </div>
+  <div style="display:flex; align-items:center; gap:0.6rem;">
+    <span style="font-size:0.65rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; border:1px solid #111111; background:#FFFFFF; padding:0.3rem 0.6rem; font-family:'JetBrains Mono', monospace;">Interactive Tool</span>
+    <a href="https://dashboard.digitallydefined.agency/quiz" target="_blank" rel="noopener noreferrer" style="font-size:0.65rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; background:#F18B25; color:#111111; border:1px solid #111111; padding:0.3rem 0.7rem; text-decoration:none;">Take Free Quiz →</a>
+  </div>
+</nav>
+
+
+<!-- TOP BAR -->
+<div class="dd-topbar">
+  <div class="dd-topbar-inner">
+    <div class="dd-topbar-left">
+      <div class="dd-topbar-avatar"></div>
+    </div>
+    <div class="dd-topbar-divider"></div>
+    <div class="dd-topbar-right">
+      <div class="dd-topbar-dots">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="dd-topbar-brand">
+        <span class="black">Digitally</span><span class="orange">Defined.</span>
+      </div>
+      <div class="dd-topbar-tagline">Catch-Up Optimization OS</div>
+      <div class="dd-topbar-accent"></div>
+    </div>
+  </div>
+  <a href="#suite" class="dd-topbar-cta">Run Optimization →</a>
+</div>
+
+<!-- HERO -->
+<section class="dd-hero">
+  <div class="dd-hero-grid">
+    <div>
+      <div class="dd-hero-tag">
+        <span class="dot"></span>
+        <span>Gen X Retirement Protocol / Vol. 02</span>
+      </div>
+      <h1>Catch-Up<br><span class="accent">Optimization</span> OS.</h1>
+      <p class="dd-hero-sub">
+        A tactical system for the final retirement push. Three instruments. One contribution
+        hierarchy. Zero guesswork. Built for Gen X women who are done under-saving and done
+        leaving tax money on the table.
+      </p>
+      <div class="dd-hero-quote">
+        "Your last push is not motivation. It is allocation, timing, and leverage."
+      </div>
+      <div class="dd-hero-actions">
+        <a href="#offer" class="dd-btn dd-btn-primary">Get The Protocol — $97</a>
+        <a href="#suite" class="dd-btn dd-btn-ghost">Run The Tools</a>
+      </div>
+    </div>
+
+    <div class="dd-visual-card">
+      <div class="dd-visual-head">
+        <span class="title">Contribution Snapshot</span>
+        <span>2025 / SECURE 2.0</span>
+      </div>
+      <div class="dd-visual-body">
+        <div class="dd-visual-row">
+          <span class="lbl">401(k)</span>
+          <div class="dd-visual-bar"><div class="dd-visual-bar-fill red" style="width: 92%"></div></div>
+          <span class="val">$31,000</span>
+        </div>
+        <div class="dd-visual-row">
+          <span class="lbl">IRA</span>
+          <div class="dd-visual-bar"><div class="dd-visual-bar-fill aqua" style="width: 64%"></div></div>
+          <span class="val">$8,000</span>
+        </div>
+        <div class="dd-visual-row">
+          <span class="lbl">HSA</span>
+          <div class="dd-visual-bar"><div class="dd-visual-bar-fill orange" style="width: 52%"></div></div>
+          <span class="val">$5,300</span>
+        </div>
+        <div class="dd-visual-row">
+          <span class="lbl">Match</span>
+          <div class="dd-visual-bar"><div class="dd-visual-bar-fill red" style="width: 88%"></div></div>
+          <span class="val">$3,600</span>
+        </div>
+      </div>
+      <div class="dd-visual-foot">
+        <span class="lbl">Optimized Total</span>
+        <span class="big">$47,900</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dd-hero-stats">
+    <div class="dd-hero-stat">
+      <div class="num">03</div>
+      <div class="lbl">Optimization Modules</div>
+    </div>
+    <div class="dd-hero-stat">
+      <div class="num">4</div>
+      <div class="lbl">Leverage Hierarchy</div>
+    </div>
+    <div class="dd-hero-stat">
+      <div class="num">2025</div>
+      <div class="lbl">IRS Reference</div>
+    </div>
+    <div class="dd-hero-stat">
+      <div class="num">10x</div>
+      <div class="lbl">ROI Standard</div>
+    </div>
+  </div>
+</section>
+
+<!-- SUITE -->
+<section class="dd-section" id="suite">
+  <div class="dd-section-head">
+    <div>
+      <div class="dd-section-label"><span class="bar"></span>The Instruments</div>
+      <h2>Three modules. One optimized path.</h2>
+      <p class="dd-section-sub">
+        Run each instrument against your reality. The output is not a worksheet. It is a
+        decision: where to contribute, how much, when, and what to tell HR without sounding
+        uncertain.
+      </p>
+    </div>
+  </div>
+
+  <div class="dd-tabs">
+    <button class="dd-tab active" data-tab="catchup">
+      <span class="idx">01</span>
+      <svg class="dd-tab-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="6" width="12" height="18" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="16" y="10" width="8" height="14" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <span>Smart Catch-Up</span>
+    </button>
+    <button class="dd-tab" data-tab="taxtiming">
+      <span class="idx">02</span>
+      <svg class="dd-tab-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 22L12 14L17 18L24 7" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M18 7H24V13" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <span>Tax-Bracket Timing</span>
+    </button>
+    <button class="dd-tab" data-tab="multiaccount">
+      <span class="idx">03</span>
+      <svg class="dd-tab-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="6" width="20" height="16" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="4" y1="12" x2="24" y2="12" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="10" y1="12" x2="10" y2="22" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <span>Multi-Account Hierarchy</span>
+    </button>
+  </div>
+
+  <!-- ============ CATCH-UP PANEL ============ -->
+  <div class="dd-panel active" data-panel="catchup">
+    <div class="dd-strategy-card">
+      <div class="dd-strategy-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect x="4" y="7" width="12" height="18" stroke="#C20F0A" stroke-width="1.5"/>
+          <rect x="18" y="11" width="10" height="14" stroke="#C20F0A" stroke-width="1.5"/>
+          <path d="M7 11L11 16L14 13" stroke="#47B7D4" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div>
+        <h3>Your catch-up status is not a detail. It is the multiplier.</h3>
+        <p>
+          The Super Catch-Up window changes the entire final retirement math. If you are in
+          the eligible window, you do not save a little more — you restructure the whole
+          contribution stack. This module tells you exactly what your 2025 limit is and
+          whether you are in the high-leverage zone.
+        </p>
+      </div>
+    </div>
+
+    <div class="dd-calc-grid">
+      <div class="dd-calc-left">
+        <div class="dd-calc-title">
+          <h4>Configure Smart Catch-Up</h4>
+          <span class="status">Live</span>
+        </div>
+        <div class="dd-field">
+          <label>Your Age (50-64)</label>
+          <input type="number" id="currentAge" min="50" max="64" value="52" />
+          <div class="dd-field-hint">Valid range: 50-64. The Super Catch-Up applies to ages 60-63 under the 2025 framework.</div>
+        </div>
+        <div class="dd-presets">
+          <div class="dd-presets-label">Quick-Load Scenarios</div>
+          <div class="dd-presets-grid">
+            <button class="dd-preset" data-preset="age-52">
+              <div class="name">Standard 50+</div>
+              <div class="desc">52 / Standard Catch-Up</div>
+            </button>
+            <button class="dd-preset" data-preset="age-58">
+              <div class="name">Pre-Super Zone</div>
+              <div class="desc">58 / Plan the Push</div>
+            </button>
+            <button class="dd-preset" data-preset="age-61">
+              <div class="name">Super Catch-Up</div>
+              <div class="desc">61 / High Leverage</div>
+            </button>
+            <button class="dd-preset" data-preset="age-64">
+              <div class="name">Final Year</div>
+              <div class="desc">64 / Maximize Now</div>
+            </button>
+          </div>
+        </div>
+        <div class="dd-actions">
+          <button class="dd-btn dd-btn-primary" onclick="calculateSmartCatchUp()">Calculate Power</button>
+          <button class="dd-btn dd-btn-ghost" onclick="exportSmartCatchUp()">Export Config</button>
+        </div>
+      </div>
+
+      <div class="dd-calc-right">
+        <div class="dd-stats">
+          <div class="dd-stat">
+            <div class="lbl">Standard 401(k)</div>
+            <div class="val" id="cu-standard">$23,500</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Eligible Catch-Up</div>
+            <div class="val aqua" id="cu-catchup">$7,500</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Total 2025 Limit</div>
+            <div class="val orange" id="cu-total">$31,000</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Leverage Zone</div>
+            <div class="val highlight" id="cu-zone">Standard</div>
+          </div>
+        </div>
+
+        <div class="dd-ledger">
+          <div class="dd-ledger-head">
+            <span>Catch-Up Ledger</span>
+            <span>2025</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Base Deferral</span>
+            <span class="val" id="cu-led-standard">$23,500</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">50+ Catch-Up</span>
+            <span class="val" id="cu-led-catchup">$7,500</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Super Catch-Up Adjustment</span>
+            <span class="val" id="cu-led-super">+$0</span>
+          </div>
+          <div class="dd-ledger-row total">
+            <span class="lbl">Total Eligible 401(k)</span>
+            <span class="val" id="cu-led-total">$31,000</span>
+          </div>
+        </div>
+
+        <div class="dd-truth" id="cu-truth">
+          <strong>The Brutal Truth</strong>
+          If you are in the Super Catch-Up window and you are not maxing the adjusted limit,
+          you are leaving the final stretch under-leveraged. The window is short. The math
+          does not wait.
+        </div>
+
+        <div class="dd-ai-block">
+          <div class="dd-ai-head">
+            <span>Tactical Read</span>
+            <span class="mono">Auto</span>
+          </div>
+          <div class="dd-ai-body">
+            <div id="cu-ai" class="dd-ai-placeholder">This section displays the tactical read for your catch-up status. No external API required.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAX TIMING PANEL ============ -->
+  <div class="dd-panel" data-panel="taxtiming">
+    <div class="dd-strategy-card">
+      <div class="dd-strategy-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <path d="M5 26L13 17L18 21L28 8" stroke="#F18B25" stroke-width="1.5"/>
+          <path d="M21 8H28V15" stroke="#F18B25" stroke-width="1.5"/>
+          <line x1="4" y1="28" x2="28" y2="28" stroke="#F18B25" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div>
+        <h3>Tax timing is a free decision most people never make.</h3>
+        <p>
+          If your marginal rate is dropping next year, contribution timing changes. If your
+          rate is rising, you are leaving tax savings on the table. This module turns that
+          decision into a clean two-year comparison, so you are not guessing between this
+          year and next year.
+        </p>
+      </div>
+    </div>
+
+    <div class="dd-calc-grid">
+      <div class="dd-calc-left">
+        <div class="dd-calc-title">
+          <h4>Configure Tax-Bracket Timing</h4>
+          <span class="status">Live</span>
+        </div>
+        <div class="dd-field-row">
+          <div class="dd-field">
+            <label>Current AGI ($)</label>
+            <input type="number" id="currentAgi" value="150000" />
+          </div>
+          <div class="dd-field">
+            <label>Current Marginal Rate (%)</label>
+            <input type="number" id="currentTaxRate" value="24" />
+          </div>
+        </div>
+        <div class="dd-field-row">
+          <div class="dd-field">
+            <label>Next Year AGI ($)</label>
+            <input type="number" id="nextAgi" value="100000" />
+          </div>
+          <div class="dd-field">
+            <label>Next Year Rate (%)</label>
+            <input type="number" id="nextTaxRate" value="22" />
+          </div>
+        </div>
+        <div class="dd-field">
+          <label>Contribution To Evaluate ($)</label>
+          <input type="number" id="catchupAmount" value="7500" />
+        </div>
+        <div class="dd-presets">
+          <div class="dd-presets-label">Quick-Load Scenarios</div>
+          <div class="dd-presets-grid">
+            <button class="dd-preset" data-preset="tax-high-now">
+              <div class="name">High Now / Lower Later</div>
+              <div class="desc">24% → 22%</div>
+            </button>
+            <button class="dd-preset" data-preset="tax-low-now">
+              <div class="name">Low Now / Higher Later</div>
+              <div class="desc">22% → 24%</div>
+            </button>
+            <button class="dd-preset" data-preset="tax-neutral">
+              <div class="name">Neutral Timing</div>
+              <div class="desc">24% → 24%</div>
+            </button>
+            <button class="dd-preset" data-preset="tax-late-pivot">
+              <div class="name">Late Career Pivot</div>
+              <div class="desc">32% → 28%</div>
+            </button>
+          </div>
+        </div>
+        <div class="dd-actions">
+          <button class="dd-btn dd-btn-primary" onclick="calculateTaxTiming()">Run Optimization</button>
+          <button class="dd-btn dd-btn-ghost" onclick="exportTaxTiming()">Export Config</button>
+        </div>
+      </div>
+
+      <div class="dd-calc-right">
+        <div class="dd-stats">
+          <div class="dd-stat">
+            <div class="lbl">This Year Savings</div>
+            <div class="val" id="tt-out-now">$1,800</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Next Year Savings</div>
+            <div class="val aqua" id="tt-out-later">$1,650</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Timing Advantage</div>
+            <div class="val orange" id="tt-out-diff">$150</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Decision</div>
+            <div class="val highlight" id="tt-out-decision">Contribute Now</div>
+          </div>
+        </div>
+
+        <div class="dd-ledger">
+          <div class="dd-ledger-head">
+            <span>Timing Ledger</span>
+            <span>Two-Year View</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Contribution Evaluated</span>
+            <span class="val" id="tt-led-amount">$7,500</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Current Year Tax Effect</span>
+            <span class="val" id="tt-led-now">$1,800</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Next Year Tax Effect</span>
+            <span class="val" id="tt-led-later">$1,650</span>
+          </div>
+          <div class="dd-ledger-row total">
+            <span class="lbl">Net Timing Edge</span>
+            <span class="val" id="tt-led-total">$150</span>
+          </div>
+        </div>
+
+        <div class="dd-truth" id="tt-truth">
+          <strong>The Brutal Truth</strong>
+          Timing is not trivia. If your rate is dropping, delaying a contribution can be the
+          smarter move. If it is rising, waiting is a quiet giveaway.
+        </div>
+
+        <div class="dd-ai-block">
+          <div class="dd-ai-head">
+            <span>Plain-English Rationale</span>
+            <span class="mono">Auto</span>
+          </div>
+          <div class="dd-ai-body">
+            <div id="tt-ai" class="dd-ai-placeholder">This section shows the plain-English explanation for the timing decision without requiring an external API.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MULTI-ACCOUNT PANEL ============ -->
+  <div class="dd-panel" data-panel="multiaccount">
+    <div class="dd-strategy-card">
+      <div class="dd-strategy-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect x="4" y="6" width="24" height="20" stroke="#47B7D4" stroke-width="1.5"/>
+          <line x1="4" y1="12" x2="28" y2="12" stroke="#47B7D4" stroke-width="1.5"/>
+          <line x1="12" y1="12" x2="12" y2="26" stroke="#47B7D4" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div>
+        <h3>Your money works harder when it flows in the right order.</h3>
+        <p>
+          HSA, employer match, 401(k), IRA. The hierarchy is not optional. If you contribute
+          in the wrong sequence, you leave returns on the table every single year. This module
+          gives you the execution plan and the HR-ready numbers.
+        </p>
+      </div>
+    </div>
+
+    <div class="dd-calc-grid">
+      <div class="dd-calc-left">
+        <div class="dd-calc-title">
+          <h4>Configure Multi-Account Hierarchy</h4>
+          <span class="status">Live</span>
+        </div>
+        <div class="dd-field-row">
+          <div class="dd-field">
+            <label>Annual Income ($)</label>
+            <input type="number" id="income" value="120000" />
+          </div>
+          <div class="dd-field">
+            <label>Employer Match (%)</label>
+            <input type="number" id="matchRate" value="3" />
+          </div>
+        </div>
+        <div class="dd-field-row">
+          <div class="dd-field">
+            <label>HSA Coverage</label>
+            <select id="hsaType">
+              <option value="none">Not Eligible</option>
+              <option value="self">Self-Only HDHP</option>
+              <option value="family">Family HDHP</option>
+            </select>
+          </div>
+          <div class="dd-field">
+            <label>Age For HSA Catch-Up</label>
+            <input type="number" id="ageMulti" value="55" min="50" />
+          </div>
+        </div>
+        <div class="dd-presets">
+          <div class="dd-presets-label">Quick-Load Scenarios</div>
+          <div class="dd-presets-grid">
+            <button class="dd-preset" data-preset="ma-base">
+              <div class="name">Base</div>
+              <div class="desc">$120K / 3% / Self HSA</div>
+            </button>
+            <button class="dd-preset" data-preset="ma-family">
+              <div class="name">Family Coverage</div>
+              <div class="desc">$145K / 4% / Family</div>
+            </button>
+            <button class="dd-preset" data-preset="ma-nohsa">
+              <div class="name">No HSA</div>
+              <div class="desc">$95K / 3% / Ineligible</div>
+            </button>
+            <button class="dd-preset" data-preset="ma-senior">
+              <div class="name">Senior Push</div>
+              <div class="desc">$160K / 5% / 55+</div>
+            </button>
+          </div>
+        </div>
+        <div class="dd-actions">
+          <button class="dd-btn dd-btn-primary" onclick="calculateMultiAccount()">Generate Strategy</button>
+          <button class="dd-btn dd-btn-ghost" onclick="draftHREmail()">Draft HR Email</button>
+          <button class="dd-btn dd-btn-ghost" onclick="exportMultiAccount()">Export Config</button>
+        </div>
+      </div>
+
+      <div class="dd-calc-right">
+        <div class="dd-stats">
+          <div class="dd-stat">
+            <div class="lbl">HSA Potential</div>
+            <div class="val" id="ma-out-hsa">$5,300</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Employer Match</div>
+            <div class="val aqua" id="ma-out-match">$3,600</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">401(k) Max</div>
+            <div class="val orange" id="ma-out-401k">$31,000</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">IRA Max</div>
+            <div class="val" id="ma-out-ira">$8,000</div>
+          </div>
+        </div>
+
+        <div class="dd-ledger">
+          <div class="dd-ledger-head">
+            <span>Execution Hierarchy</span>
+            <span>Priority Order</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">1. HSA</span>
+            <span class="val" id="ma-led-hsa">$5,300</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">2. Employer Match</span>
+            <span class="val" id="ma-led-match">$3,600</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">3. 401(k) Max</span>
+            <span class="val" id="ma-led-401k">$31,000</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">4. IRA Max</span>
+            <span class="val" id="ma-led-ira">$8,000</span>
+          </div>
+          <div class="dd-ledger-row total">
+            <span class="lbl">Total Optimized Potential</span>
+            <span class="val" id="ma-out-total">$47,900</span>
+          </div>
+        </div>
+
+        <div class="dd-truth" id="ma-truth">
+          <strong>The Brutal Truth</strong>
+          Most people fund the IRA before the match, skip the HSA, and contribute to the 401(k)
+          in the wrong order. That is not strategy. That is drift.
+        </div>
+
+        <div class="dd-ai-block">
+          <div class="dd-ai-head">
+            <span>HR-Ready Email Draft</span>
+            <span class="mono">Template</span>
+          </div>
+          <div class="dd-ai-body">
+            <div class="dd-ai-email" id="ma-email">Click “Draft HR Email” to generate the HR-ready message from your current configuration.</div>
+            <button class="dd-btn dd-btn-ghost" onclick="copyEmailToClipboard(document.getElementById('ma-email'))">Copy Email To Clipboard</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METHODOLOGY / AUTHORITY -->
+<section class="dd-section">
+  <div class="dd-section-head">
+    <div>
+      <div class="dd-section-label aqua"><span class="bar"></span>Authority Layer</div>
+      <h2>Why this is a system, not a worksheet.</h2>
+      <p class="dd-section-sub">
+        A sellable tool needs more than pretty outputs. It needs a clear standard, a
+        repeatable method, and a professional boundary. This section is the credibility
+        layer that keeps the presentation sharp and defensible.
+      </p>
+    </div>
+  </div>
+
+  <div class="dd-method-grid">
+    <div class="dd-method-item">
+      <div class="num">01</div>
+      <h4>2025 IRS Reference</h4>
+      <p>The limits used are organized around the 2025 reference framework, including the Super Catch-Up window for eligible ages.</p>
+    </div>
+    <div class="dd-method-item">
+      <div class="num">02</div>
+      <h4>Fixed Hierarchy</h4>
+      <p>Every recommendation follows the same leverage order: HSA first, match second, 401(k) max third, IRA max fourth.</p>
+    </div>
+    <div class="dd-method-item">
+      <div class="num">03</div>
+      <h4>Decision-First Output</h4>
+      <p>Each module outputs a clear recommendation, not just a number. The user is told what to do, why, and how to execute.</p>
+    </div>
+    <div class="dd-method-item">
+      <div class="num">04</div>
+      <h4>Professional Boundary</h4>
+      <p>The tool is positioned as a planning and prioritization system, not personalized tax or legal advice.</p>
+    </div>
+  </div>
+
+  <div class="dd-disclaimer" style="margin-top:24px;">
+    This presentation is an educational planning framework. It is not individualized tax, legal,
+    or investment advice. Limits and rules change. Verify against current IRS guidance and consult
+    a qualified tax professional before executing.
+  </div>
+</section>
+
+<!-- OFFER -->
+<section class="dd-section" id="offer">
+  <div class="dd-section-head">
+    <div>
+      <div class="dd-section-label orange"><span class="bar"></span>The Offer</div>
+      <h2>Own the system. Not just the calculation.</h2>
+      <p class="dd-section-sub">
+        This is not a one-time calculator. It is a repeatable operating system for the final
+        years of contribution, timing, and account sequencing.
+      </p>
+    </div>
+  </div>
+
+  <div class="dd-ledger" style="margin-bottom:24px;">
+    <div class="dd-ledger-head"><span>What Is Included</span><span>Buyer Framework</span></div>
+    <div class="dd-ledger-row"><span class="lbl">Smart Catch-Up Instrument</span><span class="val">INCLUDED</span></div>
+    <div class="dd-ledger-row"><span class="lbl">Tax-Bracket Timing Instrument</span><span class="val">INCLUDED</span></div>
+    <div class="dd-ledger-row"><span class="lbl">Multi-Account Hierarchy Instrument</span><span class="val">INCLUDED</span></div>
+    <div class="dd-ledger-row"><span class="lbl">HR-Ready Email Template</span><span class="val">INCLUDED</span></div>
+    <div class="dd-ledger-row"><span class="lbl">Methodology & Authority Layer</span><span class="val">INCLUDED</span></div>
+    <div class="dd-ledger-row total"><span class="lbl">Front-End Price</span><span class="val">$97</span></div>
+  </div>
+
+  <div class="dd-actions">
+    <button class="dd-btn dd-btn-primary" onclick="showToast('Offer CTA Ready')">Get The Protocol — $97</button>
+    <button class="dd-btn dd-btn-ghost" onclick="exportAllConfigs()">Export My Full Plan</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="dd-footer">
+  <div>DIGITALLYDEFINED // CATCH-UP OPTIMIZATION OS</div>
+  <div>COPYRIGHT <span>2026</span></div>
+</footer>
+
+<!-- TOAST -->
+<div class="dd-toast" id="dd-toast">Action complete</div>
+
+<script>
+  // ============ STATE ============
+  let currentCatchUp = null;
+  let currentTax = null;
+  let currentMulti = null;
+
+  // ============ TABS ============
+  const tabs = document.querySelectorAll('.dd-tab');
+  const panels = document.querySelectorAll('.dd-panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector(`[data-panel="${target}"]`).classList.add('active');
+    });
+  });
+
+  // ============ FORMAT ============
+  const fmt = n => '$' + Math.round(n || 0).toLocaleString('en-US');
+  const fmtPct = n => (n || 0).toFixed(1) + '%';
+
+  // ============ TOAST ============
+  function showToast(msg) {
+    const toast = document.getElementById('dd-toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  // ============ PRESETS ============
+  const presets = {
+    'age-52': { currentAge: 52 },
+    'age-58': { currentAge: 58 },
+    'age-61': { currentAge: 61 },
+    'age-64': { currentAge: 64 },
+    'tax-high-now': { currentAgi: 180000, currentTaxRate: 32, nextAgi: 145000, nextTaxRate: 28, catchupAmount: 11250 },
+    'tax-low-now': { currentAgi: 95000, currentTaxRate: 22, nextAgi: 135000, nextTaxRate: 24, catchupAmount: 7500 },
+    'tax-neutral': { currentAgi: 150000, currentTaxRate: 24, nextAgi: 148000, nextTaxRate: 24, catchupAmount: 7500 },
+    'tax-late-pivot': { currentAgi: 210000, currentTaxRate: 32, nextAgi: 170000, nextTaxRate: 28, catchupAmount: 11250 },
+    'ma-base': { income: 120000, matchRate: 3, hsaType: 'self', ageMulti: 55 },
+    'ma-family': { income: 145000, matchRate: 4, hsaType: 'family', ageMulti: 55 },
+    'ma-nohsa': { income: 95000, matchRate: 3, hsaType: 'none', ageMulti: 52 },
+    'ma-senior': { income: 160000, matchRate: 5, hsaType: 'family', ageMulti: 60 }
+  };
+
+  document.querySelectorAll('.dd-preset').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.preset;
+      const data = presets[key];
+      if (!data) return;
+      Object.entries(data).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+      });
+      runAll();
+      showToast('Scenario Loaded');
+    });
+  });
+
+  function setValues(obj, prefixIds) {
+    Object.entries(obj).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val;
+    });
+  }
+
+  // ============ 1. SMART CATCH-UP ============
+  function calculateSmartCatchUp() {
+    const age = parseInt(document.getElementById('currentAge').value, 10) || 0;
+    const isValid = age >= 50 && age <= 64;
+
+    const standard = 23500;
+    let catchup = 7500;
+    let superBoost = 0;
+    let zone = 'Standard 50+';
+    let zoneColor = 'Standard';
+
+    if (isValid && age >= 60 && age <= 63) {
+      catchup = 11250;
+      zone = 'Super Catch-Up';
+      zoneColor = 'High Leverage';
+    } else if (isValid && age >= 64) {
+      zone = 'Final Window';
+      zoneColor = 'Execute Now';
+    }
+
+    const total = standard + catchup;
+    currentCatchUp = { age: isValid ? age : '', standard, catchup, total, zone, zoneColor, superBoost };
+
+    if (!isValid) {
+      document.getElementById('cu-ai').innerHTML = 'Enter an age between 50 and 64 to unlock the tactical read. The instrument is built for the 50-64 contribution window.';
+      document.getElementById('cu-zone').textContent = 'Invalid';
+      document.getElementById('cu-standard').textContent = '$0';
+      document.getElementById('cu-catchup').textContent = '$0';
+      document.getElementById('cu-total').textContent = '$0';
+      document.getElementById('cu-led-standard').textContent = '$0';
+      document.getElementById('cu-led-catchup').textContent = '$0';
+      document.getElementById('cu-led-super').textContent = '$0';
+      document.getElementById('cu-led-total').textContent = '$0';
+      return;
+    }
+
+    document.getElementById('cu-standard').textContent = fmt(standard);
+    document.getElementById('cu-catchup').textContent = fmt(catchup);
+    document.getElementById('cu-total').textContent = fmt(total);
+    document.getElementById('cu-zone').textContent = zone;
+    document.getElementById('cu-led-standard').textContent = fmt(standard);
+    document.getElementById('cu-led-catchup').textContent = fmt(catchup);
+    document.getElementById('cu-led-super').textContent = catchup === 11250 ? '+$3,750' : '+$0';
+    document.getElementById('cu-led-total').textContent = fmt(total);
+
+    const message =
+      zone === 'Super Catch-Up'
+        ? 'You are in the highest-leverage window. This is not a “try a little more” situation. This is a max-or-lose situation.'
+        : zone === 'Final Window'
+        ? 'You are in the final contribution window. The decision is no longer planning. It is execution.'
+        : 'You are in the standard catch-up zone. Strong foundation, but the next phase is about preparation, not just contribution.';
+
+    document.getElementById('cu-truth').innerHTML =
+      `<strong>The Brutal Truth</strong>
+      ${message} The eligible total for your 2025 401(k) contribution is <span class="red">${fmt(total)}</span>.`;
+    document.getElementById('cu-ai').innerHTML =
+      `Tactical read: At age ${age}, your 2025 eligible 401(k) total is ${fmt(total)}.
+      ${zone === 'Super Catch-Up' ? 'Because you qualify for the Super Catch-Up window, every dollar of the adjusted limit has higher impact than the standard limit.' :
+       zone === 'Final Window' ? 'Because this is the final window, prioritize contribution capacity now rather than deferring the decision.' :
+       'Because you are not yet in the Super window, use this year to build the habit and documentation that makes the next window automatic.'}`;
+  }
+
+  function exportSmartCatchUp() {
+    const payload = {
+      module: 'smart-catchup',
+      age: document.getElementById('currentAge').value,
+      snapshot: currentCatchUp || null,
+      exportedAt: new Date().toISOString()
+    };
+    downloadJSON(payload, 'catchup-smart.json');
+    showToast('Catch-Up Exported');
+  }
+
+  // ============ 2. TAX TIMING ============
+  function calculateTaxTiming() {
+    const currentAgi = parseFloat(document.getElementById('currentAgi').value) || 0;
+    const currentRate = (parseFloat(document.getElementById('currentTaxRate').value) || 0) / 100;
+    const nextAgi = parseFloat(document.getElementById('nextAgi').value) || 0;
+    const nextRate = (parseFloat(document.getElementById('nextTaxRate').value) || 0) / 100;
+    const contribution = parseFloat(document.getElementById('catchupAmount').value) || 0;
+
+    if (contribution <= 0) {
+      currentTax = null;
+      document.getElementById('tt-ai').innerHTML = 'Enter a positive contribution amount to compare this-year versus next-year tax impact.';
+      document.getElementById('tt-out-now').textContent = '$0';
+      document.getElementById('tt-out-later').textContent = '$0';
+      document.getElementById('tt-out-diff').textContent = '$0';
+      document.getElementById('tt-out-decision').textContent = 'No Data';
+      document.getElementById('tt-led-amount').textContent = '$0';
+      document.getElementById('tt-led-now').textContent = '$0';
+      document.getElementById('tt-led-later').textContent = '$0';
+      document.getElementById('tt-led-total').textContent = '$0';
+      return;
+    }
+
+    const nowSavings = contribution * currentRate;
+    const laterSavings = contribution * nextRate;
+    const diff = Math.abs(nowSavings - laterSavings);
+    const decision =
+      nowSavings > laterSavings ? 'Contribute Now' :
+      laterSavings > nowSavings ? 'Contribute Next Year' : 'Neutral Timing';
+
+    currentTax = { contribution, nowSavings, laterSavings, diff, decision };
+
+    document.getElementById('tt-out-now').textContent = fmt(nowSavings);
+    document.getElementById('tt-out-later').textContent = fmt(laterSavings);
+    document.getElementById('tt-out-diff').textContent = fmt(diff);
+    document.getElementById('tt-out-decision').textContent = decision;
+    document.getElementById('tt-led-amount').textContent = fmt(contribution);
+    document.getElementById('tt-led-now').textContent = fmt(nowSavings);
+    document.getElementById('tt-led-later').textContent = fmt(laterSavings);
+    document.getElementById('tt-led-total').textContent = fmt(diff);
+
+    const rationale =
+      decision === 'Contribute Now'
+        ? `Contributing this year produces the larger tax effect because your current marginal rate is higher than next year's estimate. The net timing edge is ${fmt(diff)}.`
+        : decision === 'Contribute Next Year'
+        ? `Delaying the contribution to next year produces the larger tax effect because the estimated next-year rate is higher than the current rate. The net timing edge is ${fmt(diff)}.`
+        : 'The tax impact is essentially identical between the two years. Choose based on cash-flow and administrative timing, not tax advantage.';
+
+    document.getElementById('tt-truth').innerHTML =
+      `<strong>The Brutal Truth</strong>
+      The timing decision is <span class="red">${decision}</span> with a net edge of <span class="red">${fmt(diff)}</span>.
+      ${rationale}`;
+    document.getElementById('tt-ai').innerHTML =
+      `Plain-English rationale: You are evaluating ${fmt(contribution)} against a current rate of ${fmtPct(currentRate * 100)}
+      and an estimated next-year rate of ${fmtPct(nextRate * 100)}. The better choice is <strong>${decision}</strong>.`;
+  }
+
+  function exportTaxTiming() {
+    const payload = {
+      module: 'tax-timing',
+      inputs: {
+        currentAgi: document.getElementById('currentAgi').value,
+        currentTaxRate: document.getElementById('currentTaxRate').value,
+        nextAgi: document.getElementById('nextAgi').value,
+        nextTaxRate: document.getElementById('nextTaxRate').value,
+        catchupAmount: document.getElementById('catchupAmount').value
+      },
+      snapshot: currentTax || null,
+      exportedAt: new Date().toISOString()
+    };
+    downloadJSON(payload, 'catchup-tax-timing.json');
+    showToast('Tax Timing Exported');
+  }
+
+  // ============ 3. MULTI-ACCOUNT ============
+  function calculateMultiAccount() {
+    const income = parseFloat(document.getElementById('income').value) || 0;
+    const matchRatePct = parseFloat(document.getElementById('matchRate').value) || 0;
+    const matchRate = matchRatePct / 100;
+    const hsaType = document.getElementById('hsaType').value;
+    const age = parseInt(document.getElementById('ageMulti').value, 10) || 50;
+
+    if (income <= 0) {
+      currentMulti = null;
+      document.getElementById('ma-email').textContent = 'Enter a positive annual income to generate the HR-ready email.';
+      return;
+    }
+
+    let hsa = 0;
+    if (hsaType === 'self') hsa = 4300;
+    if (hsaType === 'family') hsa = 8550;
+    if (age >= 55) hsa += 1000;
+
+    const match = income * matchRate;
+    let max401k = 23500 + 7500;
+    if (age >= 60 && age <= 63) max401k = 23500 + 11250;
+    const ira = 7000 + 1000;
+    const total = hsa + match + max401k + ira;
+
+    currentMulti = { income, matchRatePct, hsaType, age, hsa, match, max401k, ira, total };
+
+    document.getElementById('ma-out-hsa').textContent = fmt(hsa);
+    document.getElementById('ma-out-match').textContent = fmt(match);
+    document.getElementById('ma-out-401k').textContent = fmt(max401k);
+    document.getElementById('ma-out-ira').textContent = fmt(ira);
+    document.getElementById('ma-out-total').textContent = fmt(total);
+    document.getElementById('ma-led-hsa').textContent = fmt(hsa);
+    document.getElementById('ma-led-match').textContent = fmt(match);
+    document.getElementById('ma-led-401k').textContent = fmt(max401k);
+    document.getElementById('ma-led-ira').textContent = fmt(ira);
+    document.getElementById('ma-truth').innerHTML =
+      `<strong>The Brutal Truth</strong>
+      Your full optimized annual contribution potential is <span class="red">${fmt(total)}</span>.
+      The order matters: HSA first, then the match, then 401(k) max, then IRA.`;
+  }
+
+  function draftHREmail() {
+    if (!currentMulti) calculateMultiAccount();
+    if (!currentMulti || currentMulti.income <= 0) {
+      document.getElementById('ma-email').textContent = 'Enter a positive annual income before drafting the HR email.';
+      return;
+    }
+
+    const hsaLine = currentMulti.hsa > 0 ? `HSA: ${fmt(currentMulti.hsa)}` : null;
+    const k401Line = `401(k) employee deferral: ${fmt(currentMulti.max401k)}`;
+    const matchLine = `Employer match target: ${fmt(currentMulti.match)}`;
+    const body = `Hi HR/Benefits Team,
+
+I would like to update my retirement contribution elections for the coming year based on my personal maxing strategy.
+
+Requested elections:
+- ${hsaLine || 'HSA: not applicable'}
+- ${k401Line}
+- ${matchLine}
+
+Please confirm the contribution percentages and effective date. I want to ensure the full eligible limits are funded in the correct order.
+
+Thank you.
+Frankie`;
+
+    document.getElementById('ma-email').textContent = body;
+    showToast('HR Email Drafted');
+  }
+
+  function exportMultiAccount() {
+    if (!currentMulti) calculateMultiAccount();
+    const payload = {
+      module: 'multi-account',
+      inputs: {
+        income: document.getElementById('income').value,
+        matchRate: document.getElementById('matchRate').value,
+        hsaType: document.getElementById('hsaType').value,
+        ageMulti: document.getElementById('ageMulti').value
+      },
+      snapshot: currentMulti || null,
+      hrEmail: document.getElementById('ma-email').textContent,
+      exportedAt: new Date().toISOString()
+    };
+    downloadJSON(payload, 'catchup-multi-account.json');
+    showToast('Multi-Account Exported');
+  }
+
+  function exportAllConfigs() {
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      smartCatchup: document.getElementById('currentAge').value,
+      taxTiming: {
+        currentAgi: document.getElementById('currentAgi').value,
+        currentTaxRate: document.getElementById('currentTaxRate').value,
+        nextAgi: document.getElementById('nextAgi').value,
+        nextTaxRate: document.getElementById('nextTaxRate').value,
+        catchupAmount: document.getElementById('catchupAmount').value
+      },
+      multiAccount: {
+        income: document.getElementById('income').value,
+        matchRate: document.getElementById('matchRate').value,
+        hsaType: document.getElementById('hsaType').value,
+        ageMulti: document.getElementById('ageMulti').value
+      }
+    };
+    downloadJSON(payload, 'catchup-full-plan.json');
+    showToast('Full Plan Exported');
+  }
+
+  // ============ UTIL ============
+  function downloadJSON(obj, filename) {
+    const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function copyEmailToClipboard(el) {
+    const text = el.innerText || el.textContent;
+    navigator.clipboard?.writeText(text)
+      .then(() => showToast('Email Copied'))
+      .catch(() => showToast('Copy Failed'));
+  }
+
+  function runAll() {
+    calculateSmartCatchUp();
+    calculateTaxTiming();
+    calculateMultiAccount();
+  }
+
+  // bind live inputs
+  document.querySelectorAll('[id]').forEach(el => {
+    const id = el.id;
+    if (['currentAge','cu-ai','cu-standard','cu-catchup','cu-total','cu-zone','cu-led-standard','cu-led-catchup','cu-led-super','cu-led-total'].includes(id)) {
+      el.addEventListener('input', calculateSmartCatchUp);
+    }
+    if (['currentAgi','currentTaxRate','nextAgi','nextTaxRate','catchupAmount','tt-ai','tt-out-now','tt-out-later','tt-out-diff','tt-out-decision','tt-led-amount','tt-led-now','tt-led-later','tt-led-total'].includes(id)) {
+      el.addEventListener('input', calculateTaxTiming);
+    }
+    if (['income','matchRate','hsaType','ageMulti','ma-email'].includes(id)) {
+      el.addEventListener('input', calculateMultiAccount);
+    }
+  });
+
+  runAll();
+</script>
+
+</body>
+</html>

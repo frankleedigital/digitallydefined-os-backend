@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigitallyDefined · Legacy OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --dd-bg:#FFFCF9;
+      --dd-ink:#111111;
+      --dd-text:#2D3748;
+      --dd-line:#111111;
+      --dd-blue:#47B7D4;
+      --dd-orange:#F18B25;
+      --dd-red:#D64545;
+      --dd-green:#2A9D5C;
+      --dd-shadow:5px 5px 0 var(--dd-ink);
+      --dd-shadow-sm:3px 3px 0 var(--dd-ink);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;border-radius:0}
+    html{scroll-behavior:smooth}
+    body{
+      background:var(--dd-bg);
+      color:var(--dd-text);
+      font-family:"DM Sans",sans-serif;
+      font-size:16px;
+      line-height:1.65;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    h1,h2,h3,h4,.eyebrow,.section-index,.stack-step,.btn,.tab-btn,.metric-value,.hero-cta,.panel-title{
+      font-family:"Inter",sans-serif;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color:var(--dd-orange);
+      border:1px solid var(--dd-ink);
+      background:var(--dd-bg);
+      padding:5px 10px;
+    }
+
+    .page-shell{max-width:1320px;margin:0 auto;padding:0 20px}
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:50;
+      background:var(--dd-bg);
+      border-bottom:2px solid var(--dd-ink);
+    }
+    .topbar-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      padding:14px 0;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+    .brand-mark{
+      width:36px;height:36px;
+      display:grid;place-items:center;
+      background:var(--dd-ink);
+      color:var(--dd-bg);
+      font-weight:900;font-size:15px;
+      flex:0 0 auto;
+    }
+    .brand-copy{display:flex;flex-direction:column;min-width:0}
+    .brand-title{font-weight:900;font-size:18px;letter-spacing:-.02em;color:var(--dd-ink);white-space:nowrap}
+    .brand-title span{color:var(--dd-orange);font-style:italic}
+    .brand-sub{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#555}
+
+    .top-status{
+      display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+      font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dd-ink);
+    }
+    .status-dot{
+      width:10px;height:10px;display:inline-block;margin-right:6px;
+      background:var(--dd-red);
+      vertical-align:middle;
+    }
+    .status-dot.ok{background:var(--dd-green)}
+
+    .tabs{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      padding:18px 0;
+      border-bottom:2px solid var(--dd-ink);
+    }
+    .tab-btn{
+      display:grid;
+      grid-template-columns:38px 1fr;
+      grid-template-rows:auto auto;
+      column-gap:14px;
+      row-gap:8px;
+      align-items:center;
+      border:2px solid var(--dd-ink);
+      background:var(--dd-bg);
+      color:var(--dd-ink);
+      padding:16px 18px;
+      text-align:left;
+      cursor:pointer;
+      box-shadow:var(--dd-shadow-sm);
+      transition:transform .12s ease, box-shadow .12s ease, background .12s ease, color .12s ease;
+    }
+    .tab-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--dd-ink)}
+    .tab-btn:active{transform:translate(2px,2px);box-shadow:none}
+    .tab-btn.active{
+      background:var(--dd-ink);
+      color:var(--dd-bg);
+      box-shadow:var(--dd-shadow);
+    }
+    .tab-btn .index{
+      grid-row:span 2;
+      width:38px;height:38px;
+      display:grid;place-items:center;
+      border:2px solid var(--dd-ink);
+      background:var(--dd-bg);
+      color:var(--dd-ink);
+      font-weight:900;font-size:16px;
+    }
+    .tab-btn.active .index{background:var(--dd-orange);color:var(--dd-ink);border-color:var(--dd-orange)}
+    .tab-btn .tab-title{font-size:18px;font-weight:900;letter-spacing:-.02em}
+    .tab-btn .tab-sub{grid-column:2;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:inherit;opacity:.8}
+
+    .board{display:none;padding:40px 0 72px}
+    .board.active{display:block}
+
+    .section-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:24px;
+      padding-bottom:24px;
+      border-bottom:2px solid var(--dd-ink);
+      margin-bottom:36px;
+      flex-wrap:wrap;
+    }
+    .section-head .lead{max-width:760px}
+    .section-index{
+      font-size:11px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--dd-ink);
+      border:2px solid var(--dd-ink);
+      padding:6px 10px;
+      background:var(--dd-bg);
+      display:inline-block;
+      margin-bottom:18px;
+    }
+    .section-head h2{
+      font-size:clamp(34px,4vw,52px);
+      line-height:.98;
+      letter-spacing:-.035em;
+      font-weight:900;
+      color:var(--dd-ink);
+      margin-bottom:16px;
+    }
+    .section-head p{font-size:16px;color:#4b5563;max-width:680px}
+
+    .stack{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+      margin-top:28px;
+    }
+    .stack-step{
+      border:2px solid var(--dd-ink);
+      background:#fff;
+      padding:18px;
+      box-shadow:var(--dd-shadow-sm);
+    }
+    .stack-step .num{
+      font-size:11px;font-weight:900;letter-spacing:.16em;color:var(--dd-orange);
+      text-transform:uppercase;
+    }
+    .stack-step h3{
+      font-size:20px;font-weight:900;color:var(--dd-ink);margin:10px 0 8px;letter-spacing:-.02em;
+    }
+    .stack-step p{font-size:13px;color:#4b5563}
+
+    .grid-2{display:grid;grid-template-columns:1.05fr .95fr;gap:24px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .stack-vertical{display:flex;flex-direction:column;gap:18px}
+    .stack-horizontal{display:flex;flex-direction:column;gap:24px}
+
+    .panel{
+      border:2px solid var(--dd-ink);
+      background:#fff;
+      padding:28px;
+      position:relative;
+      box-shadow:var(--dd-shadow);
+    }
+    .panel--fill{background:var(--dd-bg)}
+    .panel--dark{background:var(--dd-ink);color:var(--dd-bg);border-color:var(--dd-ink)}
+    .panel--dark h2,.panel--dark h3,.panel--dark h4,.panel--dark .metric-value{color:var(--dd-bg)}
+
+    .panel-head{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap;
+    }
+    .panel-head h3{font-size:24px;font-weight:900;color:var(---ink);letter-spacing:-.02em;line-height:1.05}
+    .panel-head h3{color:var(--dd-ink)}
+    .panel-sub{font-size:13px;color:#555;max-width:420px;margin-top:8px}
+
+    .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+    .metric{
+      border:2px solid var(--dd-ink);
+      background:var(--dd-bg);
+      padding:16px;
+      min-height:118px;
+      display:flex;flex-direction:column;justify-content:space-between;gap:14px;
+    }
+    .metric .metric-value{font-size:34px;line-height:1;font-weight:900;color:var(--dd-ink);letter-spacing:-.02em}
+    .metric .metric-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#555}
+    .metric .metric-sub{font-size:11px;color:#6b7280}
+    .metric--accent{background:var(--dd-orange);color:var(--dd-bg);border-color:var(--dd-ink)}
+    .metric--accent .metric-value,.metric--accent .metric-label,.metric--accent .metric-sub{color:var(--dd-bg)}
+    .metric--accent .metric-value{opacity:.95}
+    .metric--dark{background:var(--dd-ink);color:var(--dd-bg)}
+    .metric--dark .metric-value{color:var(--dd-orange)}
+    .metric--dark .metric-label,.metric--dark .metric-sub{color:#d1d5db}
+
+    .metric--wide{grid-column:span 2}
+    .metric--full{grid-column:1 / -1}
+
+    .input-group{margin-bottom:18px}
+    .input-label{
+      display:block;font-family:"Inter",sans-serif;font-weight:700;font-size:10px;
+      letter-spacing:.12em;text-transform:uppercase;color:var(--dd-ink);margin-bottom:8px;
+    }
+    .input,.select,.textarea{
+      width:100%;
+      border:2px solid var(--dd-ink);
+      background:var(--dd-bg);
+      color:var(--dd-text);
+      font-family:inherit;
+      font-size:15px;
+      padding:12px 14px;
+      outline:none;
+    }
+    .textarea{resize:vertical;min-height:96px;line-height:1.5}
+    .input:focus,.select:focus,.textarea:focus{box-shadow:var(--dd-shadow-sm);border-color:var(--dd-orange)}
+
+    .range-row{display:flex;align-items:center;gap:14px}
+    .range{
+      flex:1;appearance:none;width:100%;height:4px;background:var(--dd-ink);outline:none;
+    }
+    .range::-webkit-slider-thumb{
+      appearance:none;width:20px;height:20px;background:var(--dd-orange);border:2px solid var(--dd-ink);cursor:pointer;
+    }
+    .range::-moz-range-thumb{width:20px;height:20px;background:var(--dd-orange);border:2px solid var(--dd-ink);cursor:pointer}
+    .range-value{
+      min-width:98px;text-align:right;font-family:"Inter";font-weight:900;font-size:15px;color:var(--dd-ink);
+    }
+
+    .checkbox{display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;color:var(--dd-text)}
+    .checkbox input{width:18px;height:18px;accent-color:var(--dd-red)}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      border:2px solid var(--dd-ink);background:#fff;color:var(--dd-ink);
+      font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+      padding:13px 18px;cursor:pointer;text-decoration:none;
+      box-shadow:var(--dd-shadow-sm);
+      transition:transform .12s ease,box-shadow .12s ease,background .12s ease,color .12s ease;
+    }
+    .btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--dd-ink)}
+    .btn:active{transform:translate(2px,2px);box-shadow:none}
+    .btn--primary{background:var(--dd-orange);color:#fff;border-color:var(--dd-ink)}
+    .btn--secondary{background:var(--dd-blue);color:#fff;border-color:var(--dd-ink)}
+    .btn--dark{background:var(--dd-ink);color:var(--dd-bg);border-color:var(--dd-ink)}
+    .btn--outline{background:transparent;color:var(--dd-ink);border-color:var(--dd-ink);box-shadow:none}
+    .btn--sm{padding:8px 12px;font-size:10px;box-shadow:2px 2px 0 var(--dd-ink)}
+    .btn--full{width:100%}
+
+    .list{display:flex;flex-direction:column;gap:12px}
+    .list-item{
+      border:2px solid var(--dd-ink);background:#fff;padding:14px;display:flex;justify-content:space-between;gap:14px;align-items:center;
+    }
+    .list-item--critical{border-left:6px solid var(--dd-red);background:#fff5f5}
+    .list-item--normal{border-left:6px solid var(--dd-blue)}
+    .list-item--warning{border-left:6px solid var(--dd-orange);background:#fff7ee}
+    .list-title{font-family:"Inter";font-weight:700;font-size:15px;color:var(--dd-ink);margin-bottom:4px}
+    .list-meta{font-size:12px;color:#555}
+    .list-action{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+    .progress{height:14px;border:2px solid var(--dd-ink);background:var(--dd-bg);overflow:hidden}
+    .progress-bar{height:100%;background:var(--dd-orange);width:0}
+    .progress-bar.done{background:var(--dd-green)}
+    .progress-bar.low{background:var(--dd-red)}
+
+    .note{
+      border:2px solid var(--dd-ink);background:var(--dd-bg);padding:14px;font-size:13px;color:#4b5563;
+    }
+    .note strong{color:var(--dd-ink)}
+    .note--red{border-color:var(--dd-red);background:#fff5f5}
+    .note--green{border-color:var(--dd-green);background:#f2fbf6}
+    .note--blue{border-color:var(--dd-blue);background:#f1fbfd}
+
+    .divider{border:0;border-top:2px solid var(--dd-ink);margin:28px 0}
+
+    .table{width:100%;border-collapse:collapse;font-size:14px}
+    .table th,.table td{border:2px solid var(--dd-ink);padding:14px 16px;text-align:left;vertical-align:top}
+    .table th{font-family:"Inter";font-weight:700;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--dd-ink);color:var(--dd-bg)}
+    .table td strong{color:var(--dd-ink)}
+    .table .highlight{background:rgba(241,139,37,.06)}
+    .table .highlight-head{background:var(--dd-orange);color:var(--dd-bg)}
+
+    .tag{
+      display:inline-block;border:1px solid var(--dd-ink);background:var(--dd-bg);
+      font-family:"Inter";font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;
+    }
+    .tag--red{background:var(--dd-red);color:#fff;border-color:var(--dd-ink)}
+    .tag--blue{background:var(--dd-blue);color:#fff;border-color:var(--dd-ink)}
+    .tag--green{background:var(--dd-green);color:#fff;border-color:var(--dd-ink)}
+    .tag--orange{background:var(--dd-orange);color:#fff;border-color:var(--dd-ink)}
+
+    .benefit-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .benefit-card{
+      border:2px solid var(--dd-ink);background:#fff;padding:18px;box-shadow:var(--dd-shadow-sm);
+    }
+    .benefit-card h4{font-size:15px;font-weight:900;color:var(--dd-ink);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+    .benefit-card p{font-size:13px;color:#4b5563}
+
+    .steps{display:grid;gap:14px}
+    .step{
+      border:2px solid var(--dd-ink);background:#fff;padding:18px;display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start;
+    }
+    .step-num{
+      width:40px;height:40px;display:grid;place-items:center;background:var(--dd-ink);color:var(--dd-bg);
+      font-family:"Inter";font-weight:900;font-size:18px;
+    }
+    .step h3{font-size:18px;font-weight:900;color:var(--dd-ink);margin-bottom:6px}
+    .step p{font-size:13px;color:#4b5563}
+
+    .hero{
+      border:2px solid var(--dd-ink);
+      background:#fff;
+      padding:42px;
+      box-shadow:var(--dd-shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::before{
+      content:"";
+      position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(71,183,212,.14),transparent 45%,rgba(241,139,37,.16));
+      pointer-events:none;
+    }
+    .hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center}
+    .hero h1{
+      font-size:clamp(36px,5.5vw,64px);
+      line-height:.98;
+      letter-spacing:-.04em;
+      font-weight:900;
+      color:var(--dd-ink);
+      margin-bottom:18px;
+    }
+    .hero h1 span{color:var(--dd-orange)}
+    .hero-sub{font-size:16px;color:#4b5563;max-width:560px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+    .hero-meta{
+      border:2px solid var(--dd-ink);
+      background:var(--dd-bg);
+      padding:22px;
+      box-shadow:var(--dd-shadow-sm);
+    }
+    .hero-meta-list{display:grid;gap:12px}
+    .hero-meta-item{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}
+    .hero-meta-item .dot{width:12px;height:12px;background:var(--dd-orange);border:2px solid var(--dd-ink);margin-top:6px}
+    .hero-meta-item strong{display:block;font-family:"Inter";font-weight:700;font-size:13px;color:var(--dd-ink);margin-bottom:4px}
+    .hero-meta-item span{font-size:12px;color:#555}
+
+    .footer{
+      border-top:2px solid var(--dd-ink);
+      padding:30px 0;
+      display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;
+      font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dd-ink);
+    }
+    .footer-quote{font-size:18px;font-weight:900;letter-spacing:-.01em;text-transform:none;max-width:52ch;line-height:1.3}
+    .footer-quote::before{content:"“";color:var(--dd-orange)}
+    .footer-quote::after{content:"”";color:var(--dd-orange)}
+
+    .hidden{display:none}
+
+    @media (max-width:1100px){
+      .grid-2,.hero-inner,.grid-3,.metrics,.stack,.tabs,.benefit-grid{grid-template-columns:1fr}
+      .tab-btn{grid-template-columns:38px 1fr}
+      .tab-btn .tab-sub{grid-column:2}
+    }
+
+    @media (max-width:760px){
+      .hero{padding:28px}
+      .panel{padding:22px}
+      .list-item{flex-direction:column;align-items:flex-start}
+      .list-action{justify-content:flex-start}
+      .top-status{width:100%;justify-content:flex-start}
+      .tab-btn{grid-template-columns:1fr;gap:10px}
+      .tab-btn .index{grid-row:auto}
+      .tab-btn .tab-title,.tab-btn .tab-sub{grid-column:1}
+      .section-head h2{font-size:32px}
+      .step{grid-template-columns:1fr}
+      .step-num{width:36px;height:36px;font-size:16px}
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="page-shell topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">DD</div>
+        <div class="brand-copy">
+          <div class="brand-title">DIGITALLY<span>DEFINED.</span></div>
+          <div class="brand-sub">Build what you own · Legacy OS</div>
+        </div>
+      </div>
+      <div class="top-status">
+        <div><span class="status-dot" id="authStatusDot"></span><span id="authStatusText">LOCAL MODE</span></div>
+        <div>LOCAL DATA ONLY</div>
+      </div>
+    </div>
+    <div class="page-shell">
+      <div class="tabs" role="tablist" aria-label="Main navigation">
+        <button class="tab-btn active" data-tab="plan" role="tab" aria-selected="true">
+          <span class="index">01</span>
+          <span class="tab-title">Plan</span>
+          <span class="tab-sub">Financial Autonomy Planner</span>
+        </button>
+        <button class="tab-btn" data-tab="protect" role="tab" aria-selected="false">
+          <span class="index">02</span>
+          <span class="tab-title">Protect</span>
+          <span class="tab-sub">Caregiver Financial Survival Kit</span>
+        </button>
+        <button class="tab-btn" data-tab="operate" role="tab" aria-selected="false">
+          <span class="index">03</span>
+          <span class="tab-title">Operate</span>
+          <span class="tab-sub">Legacy Command Center</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-shell">
+
+    <!-- PLAN -->
+    <section class="board active" id="plan">
+      <div class="hero">
+        <div class="hero-inner">
+          <div>
+            <span class="eyebrow">The Gen X retirement gap solver</span>
+            <h1>One OS for <span>plan,</span> <span>protect,</span> and <span>operate.</span></h1>
+            <p class="hero-sub">
+              This is the combined build of the Financial Autonomy Planner, the Caregiver’s Financial Survival Kit,
+              and the Legacy Command Center — one system that connects your exit math, your caregiving realities,
+              and your day-to-day operational control.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn--primary" href="#planCalc">Start with Plan</a>
+              <a class="btn btn--outline" href="#protectSteps">Jump to Protect</a>
+              <a class="btn btn--secondary" href="#operate">Jump to Operate</a>
+            </div>
+          </div>
+          <div class="hero-meta">
+            <div class="eyebrow" style="margin-bottom:16px;">How the three pieces connect</div>
+            <div class="hero-meta-list">
+              <div class="hero-meta-item">
+                <span class="dot"></span>
+                <div>
+                  <strong>01 / Plan</strong>
+                  <span>Defines your Freedom Number, digital asset mix, and sovereign cashflow target.</span>
+                </div>
+              </div>
+              <div class="hero-meta-item">
+                <span class="dot"></span>
+                <div>
+                  <strong>02 / Protect</strong>
+                  <span>Quantifies caregiving strain and maps the Medicaid, VA, and PFL survival paths.</span>
+                </div>
+              </div>
+              <div class="hero-meta-item">
+                <span class="dot"></span>
+                <div>
+                  <strong>03 / Operate</strong>
+                  <span>Runs the daily mission control: appointments, delegation, budgets, and firm diplomacy.</span>
+                </div>
+              </div>
+            </div>
+            <div class="note note--blue" style="margin-top:18px;">
+              <strong>Why this works as one system:</strong>
+              Plan is the strategy. Protect is the emergency rail. Operate is the operating system.
+              The three are only powerful when they are linked into one stack.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head" id="planCalc" style="margin-top:42px">
+        <div class="lead">
+          <span class="section-index">01 / Plan</span>
+          <h2>Financial Autonomy Planner</h2>
+          <p>Build the sovereign math first. This is where you stop guessing and start defining the portfolio that actually replaces the missing retirement bridge.</p>
+        </div>
+      </div>
+
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-value" id="planGoal">$8,000/mo</div>
+          <div>
+            <div class="metric-label">Monthly Freedom Goal</div>
+            <div class="metric-sub">Your target passive cashflow</div>
+          </div>
+        </div>
+        <div class="metric metric--accent">
+          <div class="metric-value" id="planIncome">$10,500</div>
+          <div>
+            <div class="metric-label">Projected Digital Cashflow</div>
+            <div class="metric-sub">From your asset stack</div>
+          </div>
+        </div>
+        <div class="metric metric--dark">
+          <div class="metric-value" id="planExit">$367,500</div>
+          <div>
+            <div class="metric-label">Estimated Liquidation Value</div>
+            <div class="metric-sub">At your selected exit multiple</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>Portfolio Sliders</h3>
+              <p class="panel-sub">Move the levers until your projected cashflow beats your Freedom Number.</p>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="planFreedom">Monthly Freedom Goal</label>
+            <div class="range-row">
+              <input id="planFreedom" class="range" type="range" min="2000" max="25000" step="500" value="8000">
+              <div class="range-value" id="planFreedomVal">$8,000</div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="planTemplates">Template Hubs / Printables</label>
+            <div class="range-row">
+              <input id="planTemplates" class="range" type="range" min="0" max="10" step="1" value="3">
+              <div class="range-value" id="planTemplatesVal">3 × $1,000</div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="planNewsletters">Paid Newsletters</label>
+            <div class="range-row">
+              <input id="planNewsletters" class="range" type="range" min="0" max="5" step="1" value="1">
+              <div class="range-value" id="planNewslettersVal">1 × $4,500</div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="planYouTube">YouTube Automation</label>
+            <div class="range-row">
+              <input id="planYouTube" class="range" type="range" min="0" max="5" step="1" value="1">
+              <div class="range-value" id="planYouTubeVal">1 × $3,000</div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="planMultiplier">Exit Multiple</label>
+            <div class="range-row">
+              <input id="planMultiplier" class="range" type="range" min="30" max="40" step="1" value="35">
+              <div class="range-value" id="planMultiplierVal">35×</div>
+            </div>
+          </div>
+
+          <div class="note">
+            <strong>Interpretation:</strong>
+            If your projected cashflow exceeds your Freedom Goal, the surplus is your runway for caregiving resilience, legacy protection, and operational control.
+          </div>
+        </div>
+
+        <div class="panel panel--fill">
+          <div class="panel-head">
+            <div>
+              <h3>Why This Is the Planner</h3>
+              <p class="panel-sub">Strategy before execution. This is the “why” and “what” of the whole Legacy OS.</p>
+            </div>
+          </div>
+
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-value">+<span id="planSurplusValue">$2,500</span></div>
+              <div>
+                <div class="metric-label">Surplus / Gap</div>
+                <div class="metric-sub" id="planSurplusLabel">Current projection surplus</div>
+              </div>
+            </div>
+            <div class="metric">
+              <div class="metric-value">35×</div>
+              <div>
+                <div class="metric-label">Exit Logic</div>
+                <div class="metric-sub">Digital assets are sellable entities</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note note--orange" style="border-color:var(--dd-orange)">
+            <strong>The bridge:</strong>
+            The planner alone is not enough. If you are in the sandwich generation, the money only means anything if you can protect the caregiving layer without losing control.
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+            <button class="btn btn--primary" data-goto="protect">Go to Protect</button>
+            <button class="btn btn--outline" data-goto="operate">Go to Operate</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head" id="framework" style="margin-top:42px">
+        <div class="lead">
+          <span class="section-index">01B / Framework</span>
+          <h2>The L.E.G.A.C.Y. Lens</h2>
+          <p>Every asset, benefit path, and operational task gets filtered through this same architecture. That is how the three tools stay connected instead of drifting apart.</p>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="panel">
+          <div class="stack-step">
+            <div class="num">L · Leverageable</div>
+            <h3>Can it work without you?</h3>
+            <p>If it only moves when you show up, it is not an asset. It is a job with better branding.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="stack-step">
+            <div class="num">E · Expensive</div>
+            <h3>Does it solve a bleeding-neck problem?</h3>
+            <p>Utility beats aspirational hype. Solve what keeps your audience up at 2 AM.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="stack-step">
+            <div class="num">G · Generational</div>
+            <h3>Is it built to last?</h3>
+            <p>Digital real estate compounds. The same is true for a well-built caregiving and legacy system.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="stack-step">
+            <div class="num">A · Automated</div>
+            <h3>Is the system doing the heavy lifting?</h3>
+            <p>AI is your chief of staff, not your replacement. The goal is controlled automation.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="stack-step">
+            <div class="num">C · Centered</div>
+            <h3>Does it align with your mission?</h3>
+            <p>The ADHD advantage is parallel processing. Weaponize it intentionally.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="stack-step">
+            <div class="num">Y · Yield-Focused</div>
+            <h3>What is the ROI on your energy?</h3>
+            <p>No vanity metrics. Only sovereign outcomes: cashflow, protection, leverage, legacy.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head" id="compare" style="margin-top:42px">
+        <div class="lead">
+          <span class="section-index">01C / Contrast</span>
+          <h2>Traditional Savings vs Digital Sovereign Wealth</h2>
+          <p>This is the narrative anchor for the whole OS. It explains why the financial layer and the caregiving layer have to live together.</p>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Traditional Savings</th>
+              <th class="highlight-head">Digital Sovereign Wealth</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Strategy</strong></td>
+              <td>401(k) + Index Funds</td>
+              <td class="highlight"><strong>Faceless digital assets</strong></td>
+            </tr>
+            <tr>
+              <td><strong>12-Month Outlook</strong></td>
+              <td>$12,000 after inflation erosion</td>
+              <td class="highlight"><strong>$84,000+ cashflow</strong></td>
+            </tr>
+            <tr>
+              <td><strong>24-Month Liquidity</strong></td>
+              <td>$24,000 with declined purchasing power</td>
+              <td class="highlight"><strong>$168,000+ cashflow</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Exit Valuation</strong></td>
+              <td>Market-dependent and illiquid</td>
+              <td class="highlight"><strong>35× monthly profit model</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Time Freedom</strong></td>
+              <td>Retire at 67, maybe</td>
+              <td class="highlight"><strong>Autonomy in 14–24 months</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PROTECT -->
+    <section class="board" id="protect">
+      <div class="section-head">
+        <div class="lead">
+          <span class="section-index">02 / Protect</span>
+          <h2>Caregiver’s Financial Survival Kit</h2>
+          <p>This is the emergency rail. It turns caregiving from an endless drain into a mapped system: costs, hours, benefit paths, and survival math.</p>
+        </div>
+      </div>
+
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-value">$7,200</div>
+          <div>
+            <div class="metric-label">Avg. Out-of-Pocket / Year</div>
+            <div class="metric-sub">Care-related expenses</div>
+          </div>
+        </div>
+        <div class="metric metric--accent">
+          <div class="metric-value">$432,031</div>
+          <div>
+            <div class="metric-label">Lifetime Lost Value</div>
+            <div class="metric-sub">Inflation-adjusted caregiver loss</div>
+          </div>
+        </div>
+        <div class="metric metric--dark">
+          <div class="metric-value">63M</div>
+          <div>
+            <div class="metric-label">U.S. Family Caregivers</div>
+            <div class="metric-sub">This is not a niche problem</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" id="protectSteps">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>Survival Inputs</h3>
+              <p class="panel-sub">Enter your caregiving and income reality. The system will recalculate your exposed gap.</p>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="protectHourly">Your Gross Hourly Wage</label>
+            <input id="protectHourly" class="input" type="number" min="0" step="0.01" value="55">
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="protectHours">Care Hours Per Week</label>
+            <input id="protectHours" class="input" type="number" min="0" step="0.5" value="22">
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="protectMonthly">Monthly Care Costs</label>
+            <input id="protectMonthly" class="input" type="number" min="0" step="50" value="1800">
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="protectSandwich">Sandwich Generation Load</label>
+            <select id="protectSandwich" class="select">
+              <option value="0">No child/parent double-load</option>
+              <option value="0.15" selected>Elevated stress, manageable</option>
+              <option value="0.30">High stress, active double-load</option>
+              <option value="0.45">Severe double-load, high strain</option>
+            </select>
+          </div>
+
+          <div class="note note--red">
+            <strong>Reality check:</strong>
+            Medicaid, VA, and PFL are not interchangeable. The right path depends on care-recipient eligibility, caregiver relationship, state rules, and tax status.
+          </div>
+        </div>
+
+        <div class="panel panel--dark">
+          <div class="panel-head">
+            <div>
+              <h3>Survival Outputs</h3>
+              <p class="panel-sub" style="color:#d1d5db">This is where the caregiving burden becomes a number you can manage instead of a feeling you inherit.</p>
+            </div>
+          </div>
+
+          <div class="metrics">
+            <div class="metric metric--dark">
+              <div class="metric-value" id="protectAnnualBurn">0</div>
+              <div>
+                <div class="metric-label">Annual Care Burn</div>
+                <div class="metric-sub">Weekly hours + costs annualized</div>
+              </div>
+            </div>
+            <div class="metric metric--dark">
+              <div class="metric-value" id="protectOpportunityCost">0</div>
+              <div>
+                <div class="metric-label">Annual Opportunity Cost</div>
+                <div class="metric-sub">Uncompensated care time</div>
+              </div>
+            </div>
+            <div class="metric metric--dark">
+              <div class="metric-value" id="protectExposure">0</div>
+              <div>
+                <div class="metric-label">Risk Multiplier</div>
+                <div class="metric-sub">Includes sandwich-generation strain</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note" style="background:#111;border-color:#111">
+            <strong style="color:#fff">Use this as a planning input, not legal or tax advice.</strong>
+            <span style="color:#d1d5db"> These numbers are directional and designed to show scale. Confirm state-specific eligibility with a professional before filing.</span>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+            <button class="btn btn--primary" data-goto="operate">Go to Operate</button>
+            <button class="btn btn--outline" style="background:transparent;color:#fff" data-goto="plan">Back to Plan</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head" id="protectPaths">
+        <div class="lead">
+          <span class="section-index">02B / Benefit Paths</span>
+          <h2>The Three Survival Rails</h2>
+          <p>This is the government benefits guide, rebuilt as a working product instead of a PDF. Each path gets mapped to eligibility logic, not just good intentions.</p>
+        </div>
+      </div>
+
+      <div class="benefit-grid">
+        <div class="benefit-card">
+          <h4>Medicaid Self-Directed Care</h4>
+          <p>Available in all 50 states + DC. The care recipient chooses who provides care — including family — and Medicaid may reimburse that person’s wages. Typical range: $10–$25/hr, with state and program variation.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+            <span class="tag">State Specific</span>
+            <span class="tag tag--blue">Waitlists Possible</span>
+            <span class="tag tag--orange">Relationship Rules</span>
+          </div>
+        </div>
+
+        <div class="benefit-card">
+          <h4>VA Family Caregiver Program</h4>
+          <p>For caregivers of qualifying veterans. Stipend range: $1,800–$2,900/month. Requirements include disability rating, VA enrollment, and continuous in-person care needs. Support line: 1-855-260-3274.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+            <span class="tag tag--green">Stipend Path</span>
+            <span class="tag">90-Day Target</span>
+            <span class="tag tag--orange">Assessment Required</span>
+          </div>
+        </div>
+
+        <div class="benefit-card">
+          <h4>Paid Family Leave</h4>
+          <p>Operational in 15 states as of 2026. This is wage replacement during leave from your own job, not payment for caregiving itself. It has caps, waiting periods, and coverage gaps for hourly or self-employed workers.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+            <span class="tag">Wage Replacement</span>
+            <span class="tag tag--blue">State Matrix Needed</span>
+            <span class="tag tag--orange">Not Care Payment</span>
+          </div>
+        </div>
+
+        <div class="benefit-card">
+          <h4>The Eligibility Chain</h4>
+          <p>Many caregivers fail here: they file for their own distress relief before they establish care-recipient eligibility. The system to use is always this order: recipient eligibility first, then caregiver compensation second.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+            <span class="tag tag--red">Critical Logic</span>
+            <span class="tag">Order Matters</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <div class="lead">
+          <span class="section-index">02C / Boundaries</span>
+          <h2>What This Kit Does — and Does Not — Do</h2>
+          <p>Authority increases when you are explicit about the line between planning support and professional advice.</p>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="note note--green">
+          <strong>It does:</strong>
+          <p style="margin:8px 0 0">Quantify caregiving exposure, map benefit paths, and turn scattered logistics into one operational system.</p>
+        </div>
+        <div class="note note--red">
+          <strong>It does not:</strong>
+          <p style="margin:8px 0 0">Replace legal, tax, or Medicaid asset-transfer counsel. Those boundaries are part of the product’s credibility.</p>
+        </div>
+        <div class="note note--blue">
+          <strong>It positions:</strong>
+          <p style="margin:8px 0 0">This OS as the connective layer between strategy, survival, and operations.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- OPERATE -->
+    <section class="board" id="operate">
+      <div class="section-head">
+        <div class="lead">
+          <span class="section-index">03 / Operate</span>
+          <h2>Legacy Command Center</h2>
+          <p>This is where the system becomes useful in real life: appointments, delegation, child-focused budget goals, and firm, professional communication.</p>
+        </div>
+      </div>
+
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-value" id="operateAptCount">0</div>
+          <div>
+            <div class="metric-label">Appointments</div>
+            <div class="metric-sub">Stored locally in this browser</div>
+          </div>
+        </div>
+        <div class="metric">
+          <div class="metric-value" id="operateTaskCount">0</div>
+          <div>
+            <div class="metric-label">Active Tasks</div>
+            <div class="metric-sub">Pending delegation items</div>
+          </div>
+        </div>
+        <div class="metric metric--accent">
+          <div class="metric-value" id="operateBudgetCount">0</div>
+          <div>
+            <div class="metric-label">Budget Goals</div>
+            <div class="metric-sub">Stored locally for demo use</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>Add Appointment</h3>
+              <p class="panel-sub">The care calendar module, rebuilt to work without backend dependencies.</p>
+            </div>
+          </div>
+
+          <form id="operateAptForm">
+            <div class="input-group">
+              <label class="input-label" for="operateAptTitle">Event Title</label>
+              <input id="operateAptTitle" class="input" placeholder="Cardiologist — Dr. Patel" required>
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="operateAptParent">Parent / Member</label>
+              <input id="operateAptParent" class="input" placeholder="Mom" required>
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="operateAptDate">Date & Time</label>
+              <input id="operateAptDate" class="input" type="datetime-local" required>
+            </div>
+            <label class="checkbox">
+              <input id="operateAptCritical" type="checkbox">
+              Mark as <strong>Critical</strong>
+            </label>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+              <button class="btn btn--primary" type="submit">Save Appointment</button>
+              <button class="btn btn--outline" type="reset">Clear</button>
+            </div>
+          </form>
+
+          <div class="divider"></div>
+
+          <div class="list" id="operateAptList"></div>
+        </div>
+
+        <div class="panel panel--fill">
+          <div class="panel-head">
+            <div>
+              <h3>Diplomat AI</h3>
+              <p class="panel-sub">Drafts firm, professional caregiver communication in a controlled demo mode.</p>
+            </div>
+            <span class="tag tag--orange">Local Draft Mode</span>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="operatePrompt">Your Request</label>
+            <textarea id="operatePrompt" class="textarea" placeholder="e.g., I need a firm but professional email asking my brother to take over evening shifts for Mom this week."></textarea>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <button class="btn btn--primary" id="operateDraftBtn">Draft Template Now</button>
+            <span id="operateDraftStatus" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#555"></span>
+          </div>
+
+          <div id="operateOutput" class="hidden" style="margin-top:20px">
+            <div class="input-label" style="margin-bottom:8px">Draft Output</div>
+            <div id="operateOutputText" class="note" style="white-space:pre-wrap;font-size:14px;line-height:1.7"></div>
+            <div style="margin-top:14px">
+              <button class="btn btn--sm" id="operateCopyBtn">Copy Draft</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>Financial Force Field</h3>
+              <p class="panel-sub">Budget goals for adult children or care recipients, with progress tracking.</p>
+            </div>
+          </div>
+
+          <form id="operateBudgetForm">
+            <div class="input-group">
+              <label class="input-label" for="operateBudgetMember">Member</label>
+              <input id="operateBudgetMember" class="input" placeholder="Junior / Mom / Dad" required>
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="operateBudgetGoal">Goal</label>
+              <input id="operateBudgetGoal" class="input" placeholder="Emergency Fund" required>
+            </div>
+            <div class="grid-3" style="grid-template-columns:1fr 1fr;gap:14px">
+              <div>
+                <label class="input-label" for="operateBudgetTarget">Target ($)</label>
+                <input id="operateBudgetTarget" class="input" type="number" min="0" step="0.01" required>
+              </div>
+              <div>
+                <label class="input-label" for="operateBudgetCurrent">Current ($)</label>
+                <input id="operateBudgetCurrent" class="input" type="number" min="0" step="0.01" required>
+              </div>
+            </div>
+            <div style="margin-top:16px">
+              <button class="btn btn--primary" type="submit">Add Goal</button>
+            </div>
+          </form>
+
+          <div class="divider"></div>
+
+          <div class="list" id="operateBudgetList"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>Shared Control Panel</h3>
+              <p class="panel-sub">Delegation is not an ask — it is a requirement.</p>
+            </div>
+          </div>
+
+          <form id="operateTaskForm">
+            <div class="input-group">
+              <label class="input-label" for="operateTaskName">Task</label>
+              <input id="operateTaskName" class="input" placeholder="Pay Dad's electric bill" required>
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="operateTaskAssignee">Assigned To</label>
+              <input id="operateTaskAssignee" class="input" placeholder="Mark, Sarah, or ME" required>
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="operateTaskDue">Due Date</label>
+              <input id="operateTaskDue" class="input" type="date" required>
+            </div>
+            <label class="checkbox">
+              <input id="operateTaskCritical" type="checkbox">
+              Mark as <strong>Critical</strong>
+            </label>
+            <div style="margin-top:16px">
+              <button class="btn btn--primary" type="submit">Delegate Task</button>
+            </div>
+          </form>
+
+          <div class="divider"></div>
+
+          <div class="list" id="operateTaskList"></div>
+        </div>
+      </div>
+
+      <div class="panel panel--dark" style="margin-top:28px">
+        <div class="panel-head">
+          <div>
+            <h3>How the Three Tools Become One System</h3>
+            <p class="panel-sub" style="color:#d1d5db">
+              This is the real point of the combined build. The value is not the individual tools. It is the operational chain.
+            </p>
+          </div>
+        </div>
+        <div class="stack-vertical">
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div>
+                <h3>Plan gives you the destination</h3>
+                <p>The planner tells you how much cashflow you need and what kind of portfolio closes the gap.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div>
+                <h3>Protect gives you the survival map</h3>
+                <p>The caregiver kit turns emotional overwhelm into measurable exposure, benefit paths, and decision logic.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div>
+                <h3>Operate gives you the daily cockpit</h3>
+                <p>The command center keeps appointments, budgets, delegation, and communication from collapsing under you.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="page-shell">
+    <footer class="footer">
+      <div class="footer-quote">Stop burning out. Start building the legacy system.</div>
+      <div>© DigitallyDefined · Legacy OS · 2026</div>
+    </footer>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "dd_legacy_os_v1";
+
+    const planYields = {
+      templates: 1000,
+      newsletters: 4500,
+      youtube: 3000
+    };
+
+    const els = {
+      planFreedom: document.getElementById("planFreedom"),
+      planTemplates: document.getElementById("planTemplates"),
+      planNewsletters: document.getElementById("planNewsletters"),
+      planYouTube: document.getElementById("planYouTube"),
+      planMultiplier: document.getElementById("planMultiplier"),
+      planGoal: document.getElementById("planGoal"),
+      planIncome: document.getElementById("planIncome"),
+      planExit: document.getElementById("planExit"),
+      planSurplusValue: document.getElementById("planSurplusValue"),
+      planSurplusLabel: document.getElementById("planSurplusLabel"),
+
+      protectHourly: document.getElementById("protectHourly"),
+      protectHours: document.getElementById("protectHours"),
+      protectMonthly: document.getElementById("protectMonthly"),
+      protectSandwich: document.getElementById("protectSandwich"),
+      protectAnnualBurn: document.getElementById("protectAnnualBurn"),
+      protectOpportunityCost: document.getElementById("protectOpportunityCost"),
+      protectExposure: document.getElementById("protectExposure"),
+
+      operateAptCount: document.getElementById("operateAptCount"),
+      operateTaskCount: document.getElementById("operateTaskCount"),
+      operateBudgetCount: document.getElementById("operateBudgetCount"),
+
+      operateAptList: document.getElementById("operateAptList"),
+      operateTaskList: document.getElementById("operateTaskList"),
+      operateBudgetList: document.getElementById("operateBudgetList"),
+
+      operateDraftStatus: document.getElementById("operateDraftStatus"),
+      operateOutput: document.getElementById("operateOutput"),
+      operateOutputText: document.getElementById("operateOutputText")
+    };
+
+    function formatMoney(value) {
+      return "$" + Number(value).toLocaleString("en-US", { maximumFractionDigits: 0 });
+    }
+
+    function getStored() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch {
+        return null;
+      }
+    }
+
+    function persist(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function ensureIds(items) {
+      return items.map((item, index) => ({
+        id: item.id || `${item.id || "item"}-${Date.now()}-${index}`,
+        ...item
+      }));
+    }
+
+    function loadState() {
+      const stored = getStored();
+      const state = {
+        appointments: stored?.appointments ? ensureIds(stored.appointments) : [],
+        tasks: stored?.tasks ? ensureIds(stored.tasks) : [],
+        budgets: stored?.budgets ? ensureIds(stored.budgets) : []
+      };
+      return state;
+    }
+
+    const state = loadState();
+
+    function saveState() {
+      persist({
+        appointments: state.appointments,
+        tasks: state.tasks,
+        budgets: state.budgets,
+        updatedAt: new Date().toISOString()
+      });
+      refreshOperateUI();
+    }
+
+    /* =====================
+       PLAN
+    ===================== */
+    function updatePlanUI() {
+      const fg = Number(els.planFreedom.value);
+      const t = Number(els.planTemplates.value);
+      const n = Number(els.planNewsletters.value);
+      const y = Number(els.planYouTube.value);
+      const m = Number(els.planMultiplier.value);
+
+      document.getElementById("planFreedomVal").textContent = formatMoney(fg);
+      document.getElementById("planTemplatesVal").textContent = `${t} × ${formatMoney(planYields.templates)}`;
+      document.getElementById("planNewslettersVal").textContent = `${n} × ${formatMoney(planYields.newsletters)}`;
+      document.getElementById("planYouTubeVal").textContent = `${y} × ${formatMoney(planYields.youtube)}`;
+      document.getElementById("planMultiplierVal").textContent = `${m}×`;
+
+      const income = t * planYields.templates + n * planYields.newsletters + y * planYields.youtube;
+      const exit = income * m;
+      const surplus = income - fg;
+
+      els.planGoal.textContent = formatMoney(fg) + "/mo";
+      els.planIncome.textContent = formatMoney(income);
+      els.planExit.textContent = formatMoney(exit);
+
+      if (surplus >= 0) {
+        els.planSurplusValue.textContent = formatMoney(surplus);
+        els.planSurplusLabel.textContent = "Current projection surplus";
+        document.querySelector("#plan .metric .metric-value")?.classList.remove();
+      } else {
+        els.planSurplusValue.textContent = "−" + formatMoney(Math.abs(surplus));
+        els.planSurplusLabel.textContent = "Gap before freedom target";
+      }
+
+      return { fg, t, n, y, m, income, exit, surplus };
+    }
+
+    /* =====================
+       PROTECT
+    ===================== */
+    function updateProtectUI() {
+      const hourly = Number(els.protectHourly.value) || 0;
+      const hours = Number(els.protectHours.value) || 0;
+      const monthly = Number(els.protectMonthly.value) || 0;
+      const sandwich = Number(els.protectSandwich.value) || 0;
+
+      const opportunityCost = hourly * hours * 52;
+      const directBurn = monthly * 12;
+      const totalBurn = directBurn + opportunityCost;
+      const exposure = totalBurn * (1 + sandwich);
+
+      els.protectAnnualBurn.textContent = formatMoney(totalBurn);
+      els.protectOpportunityCost.textContent = formatMoney(opportunityCost);
+      els.protectExposure.textContent = formatMoney(exposure);
+    }
+
+    /* =====================
+       OPERATE — LIST RENDERING
+    ===================== */
+    function emptyNode(message) {
+      const node = document.createElement("div");
+      node.className = "note";
+      node.innerHTML = `<strong>No items yet.</strong> ${message}`;
+      return node;
+    }
+
+    function renderAppointments() {
+      els.operateAptCount.textContent = String(state.appointments.length);
+      els.operateAptList.innerHTML = "";
+      if (!state.appointments.length) {
+        els.operateAptList.appendChild(emptyNode("Add your first appointment to start the care calendar."));
+        return;
+      }
+
+      [...state.appointments]
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+        .forEach(item => {
+          const row = document.createElement("div");
+          row.className = `list-item ${item.isCritical ? "list-item--critical" : "list-item--normal"}`;
+          row.innerHTML = `
+            <div>
+              <div class="list-title">${item.title}</div>
+              <div class="list-meta">${item.parentName} · ${new Date(item.date).toLocaleString()}</div>
+            </div>
+            <div class="list-action">
+              ${item.isCritical ? '<span class="tag tag--red">Critical</span>' : ""}
+              <button class="btn btn--sm" data-apt-delete="${item.id}">Delete</button>
+            </div>
+          `;
+          els.operateAptList.appendChild(row);
+        });
+
+      els.operateAptList.querySelectorAll("[data-apt-delete]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          state.appointments = state.appointments.filter(a => a.id !== btn.dataset.aptDelete);
+          saveState();
+        });
+      });
+    }
+
+    function renderBudgets() {
+      els.operateBudgetCount.textContent = String(state.budgets.length);
+      els.operateBudgetList.innerHTML = "";
+      if (!state.budgets.length) {
+        els.operateBudgetList.appendChild(emptyNode("Add a budget goal to start the financial force field."));
+        return;
+      }
+
+      state.budgets.forEach(item => {
+        const pct = item.targetAmount > 0 ? Math.min(100, Math.round((item.currentAmount / item.targetAmount) * 100)) : 0;
+        const barClass = pct >= 100 ? "done" : pct < 50 ? "low" : "";
+        const row = document.createElement("div");
+        row.className = "list-item";
+        row.style.flexDirection = "column";
+        row.style.alignItems = "stretch";
+        row.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px">
+            <div>
+              <div class="list-title">${item.goalName}</div>
+              <div class="list-meta">${item.member} · ${formatMoney(item.currentAmount)} / ${formatMoney(item.targetAmount)}</div>
+            </div>
+            <button class="btn btn--sm" data-budget-update="${item.id}">Update</button>
+          </div>
+          <div class="progress"><div class="progress-bar ${barClass}" style="width:${pct}%"></div></div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:#555">
+            <span>${pct}% complete</span>
+            ${pct >= 100 ? '<span class="tag tag--green">Goal reached</span>' : ""}
+          </div>
+        `;
+        els.operateBudgetList.appendChild(row);
+
+        const updateBtn = row.querySelector("[data-budget-update]");
+        updateBtn.addEventListener("click", () => {
+          const next = prompt("Enter updated current amount ($):", item.currentAmount);
+          if (next === null) return;
+          const parsed = Number(next);
+          if (Number.isNaN(parsed) || parsed < 0) {
+            alert("Enter a valid dollar amount.");
+            return;
+          }
+          item.currentAmount = parsed;
+          saveState();
+        });
+      });
+    }
+
+    function renderTasks() {
+      const pending = state.tasks.filter(t => t.status === "pending");
+      const completed = state.tasks.filter(t => t.status === "completed");
+      els.operateTaskCount.textContent = String(pending.length);
+      els.operateTaskList.innerHTML = "";
+      if (!state.tasks.length) {
+        els.operateTaskList.appendChild(emptyNode("Add a delegation task to start the shared control panel."));
+        return;
+      }
+
+      pending
+        .sort((a, b) => {
+          if (a.isCritical && !b.isCritical) return -1;
+          if (!a.isCritical && b.isCritical) return 1;
+          return new Date(a.dueDate) - new Date(b.dueDate);
+        })
+        .forEach(item => {
+          const overdue = new Date(item.dueDate) < new Date();
+          const row = document.createElement("div");
+          row.className = `list-item ${item.isCritical || overdue ? "list-item--critical" : "list-item--warning"}`;
+          row.innerHTML = `
+            <div>
+              <div class="list-title">${item.taskName}</div>
+              <div class="list-meta">Assigned: ${item.assignedTo} · Due: ${new Date(item.dueDate).toLocaleDateString()} ${overdue ? "· Overdue" : ""}</div>
+            </div>
+            <div class="list-action">
+              ${item.isCritical ? '<span class="tag tag--red">Critical</span>' : ""}
+              <button class="btn btn--sm" data-task-complete="${item.id}">Done</button>
+              <button class="btn btn--sm" data-task-delete="${item.id}">Delete</button>
+            </div>
+          `;
+          els.operateTaskList.appendChild(row);
+        });
+
+      if (completed.length) {
+        const header = document.createElement("div");
+        header.style.cssText = "font-family:Inter,sans-serif;font-weight:700;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#666;margin-top:16px;padding-top:16px;border-top:2px solid var(--dd-ink)";
+        header.textContent = `Completed (${completed.length})`;
+        els.operateTaskList.appendChild(header);
+
+        completed.forEach(item => {
+          const row = document.createElement("div");
+          row.className = "list-item";
+          row.style.opacity = ".55";
+          row.innerHTML = `
+            <div>
+              <div class="list-title" style="text-decoration:line-through">${item.taskName}</div>
+              <div class="list-meta">Completed by ${item.assignedTo}</div>
+            </div>
+            <div class="list-action"><span class="tag tag--green">Done</span></div>
+          `;
+          els.operateTaskList.appendChild(row);
+        });
+      }
+
+      els.operateTaskList.querySelectorAll("[data-task-complete]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const task = state.tasks.find(t => t.id === btn.dataset.taskComplete);
+          if (task) task.status = "completed";
+          saveState();
+        });
+      });
+
+      els.operateTaskList.querySelectorAll("[data-task-delete]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          state.tasks = state.tasks.filter(t => t.id !== btn.dataset.taskDelete);
+          saveState();
+        });
+      });
+    }
+
+    function refreshOperateUI() {
+      renderAppointments();
+      renderBudgets();
+      renderTasks();
+    }
+
+    /* =====================
+       OPERATE — FORMS
+    ===================== */
+    document.getElementById("operateAptForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const item = {
+        id: "apt-" + Date.now(),
+        title: document.getElementById("operateAptTitle").value.trim(),
+        parentName: document.getElementById("operateAptParent").value.trim(),
+        date: document.getElementById("operateAptDate").value,
+        isCritical: document.getElementById("operateAptCritical").checked,
+        status: "upcoming",
+        createdAt: new Date().toISOString()
+      };
+      if (!item.title || !item.parentName || !item.date) return;
+      state.appointments.push(item);
+      saveState();
+      e.target.reset();
+    });
+
+    document.getElementById("operateBudgetForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const target = Number(document.getElementById("operateBudgetTarget").value);
+      const current = Number(document.getElementById("operateBudgetCurrent").value);
+      if (Number.isNaN(target) || Number.isNaN(current) || target <= 0) return;
+      state.budgets.push({
+        id: "budget-" + Date.now(),
+        member: document.getElementById("operateBudgetMember").value.trim() || "Member",
+        goalName: document.getElementById("operateBudgetGoal").value.trim() || "Goal",
+        targetAmount: target,
+        currentAmount: current,
+        lastUpdated: new Date().toISOString()
+      });
+      saveState();
+      e.target.reset();
+    });
+
+    document.getElementById("operateTaskForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      state.tasks.push({
+        id: "task-" + Date.now(),
+        taskName: document.getElementById("operateTaskName").value.trim(),
+        assignedTo: document.getElementById("operateTaskAssignee").value.trim(),
+        dueDate: document.getElementById("operateTaskDue").value,
+        isCritical: document.getElementById("operateTaskCritical").checked,
+        status: "pending",
+        createdAt: new Date().toISOString()
+      });
+      saveState();
+      e.target.reset();
+    });
+
+    /* =====================
+       OPERATE — DIPLOMAT DEMO MODE
+    ===================== */
+    function sanitize(prompt) {
+      return prompt.replace(/\s+/g, " ").trim();
+    }
+
+    function draftDiplomat(prompt) {
+      const clean = sanitize(prompt).toLowerCase();
+      const hasSibling = clean.includes("brother") || clean.includes("sister") || clean.includes("family");
+      const hasEvening = clean.includes("evening") || clean.includes("night") || clean.includes("shift");
+
+      const opening = hasSibling
+        ? "Subject: Need to reset the care schedule with you"
+        : "Subject: Resetting expectations on care coordination";
+
+      const body = [
+        `Hi ${hasSibling ? "there" : "team"},`,
+        "",
+        "I need to stop operating in reactive mode and reset the expectations around care coordination.",
+        "",
+        hasEvening
+          ? "I cannot continue covering evenings by default. That role needs to be assigned, scheduled, and owned by someone else starting this week."
+          : "The current arrangement is not sustainable. We need a clearer division of responsibility and a written schedule that everyone agrees to in advance.",
+        "",
+        "Here is what I need by [date/time]:",
+        "1. Confirm who is taking ownership of the next two weeks.",
+        "2. Identify what support you need from me that I can actually provide.",
+        "3. Let me know now if you cannot commit — that information is useful too.",
+        "",
+        "I am not asking for permission. I am asking for coordination.",
+        "",
+        "Please respond by [time]."
+      ].join("\n");
+
+      return `${opening}\n\n${body}`;
+    }
+
+    document.getElementById("operateDraftBtn").addEventListener("click", async () => {
+      const rawPrompt = document.getElementById("operatePrompt").value.trim();
+      if (!rawPrompt) {
+        els.operateDraftStatus.textContent = "Enter a request";
+        return;
+      }
+
+      els.operateDraftStatus.textContent = "Drafting…";
+      const draft = await new Promise(resolve => setTimeout(() => resolve(draftDiplomat(rawPrompt)), 500));
+      els.operateOutputText.textContent = draft;
+      els.operateOutput.classList.remove("hidden");
+      els.operateDraftStatus.textContent = "Draft ready";
+    });
+
+    document.getElementById("operateCopyBtn")?.addEventListener("click", () => {
+      const text = els.operateOutputText.textContent;
+      navigator.clipboard?.writeText(text)
+        .then(() => { els.operateDraftStatus.textContent = "Copied"; })
+        .catch(() => { els.operateDraftStatus.textContent = "Copy failed"; });
+    });
+
+    /* =====================
+       TAB SWITCHING
+    ===================== */
+    document.querySelectorAll("[data-goto]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.goto;
+        document.querySelectorAll(".tab-btn").forEach(tab => {
+          tab.classList.toggle("active", tab.dataset.tab === target);
+        });
+        document.querySelectorAll(".board").forEach(board => {
+          board.classList.toggle("active", board.id === target);
+        });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
+
+    document.querySelectorAll(".tab-btn").forEach(tab => {
+      tab.addEventListener("click", () => {
+        const target = tab.dataset.tab;
+        document.querySelectorAll(".tab-btn").forEach(t => t.classList.toggle("active", t === tab));
+        document.querySelectorAll(".board").forEach(board => board.classList.toggle("active", board.id === target));
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
+
+    /* =====================
+       INITIALISE
+    ===================== */
+    document.getElementById("authStatusText").textContent = "LOCAL MODE";
+    document.getElementById("authStatusDot").classList.add("ok");
+
+    [els.planFreedom, els.planTemplates, els.planNewsletters, els.planYouTube, els.planMultiplier].forEach(el => {
+      el.addEventListener("input", updatePlanUI);
+    });
+
+    [els.protectHourly, els.protectHours, els.protectMonthly, els.protectSandwich].forEach(el => {
+      el.addEventListener("input", updateProtectUI);
+    });
+
+    updatePlanUI();
+    updateProtectUI();
+    refreshOperateUI();
+  </script>
+</body>
+</html>

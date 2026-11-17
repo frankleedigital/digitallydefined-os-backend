@@ -1,0 +1,29 @@
+id,name,price_range,persona_fit,lead_magnet,entry_offer,core_offer,upsell,bundle_opps,gumroad_status,readiness
+001,Digital Business OS (Notion system),$97-197 one-time + $19-39/mo optional,Builder/Strategist/Educator,False,False,True,AI Business Partner subscription ($29-99/mo),DBO+Fortress bundle,LIVE listed at $27 (price drift; config says $49 — needs fix),5
+002,Retirement Mastery for Gen X Women (2-part ebook),$47-67 bundle,Educator/Connector,False,True,True,10x ROI Roadmap (AJV audit),Retirement Suite (with Legal kit),NOT LISTED (exists as PDFs only),5
+003,The Ultimate Guide to Rank and Rent Websites,$27-47,Builder,False,True,True,DBO (the full system behind the asset),R&R Bundle (see below),NOT LISTED,5
+004,Building Your Digital Empire — A Gen X Woman's Guide,$27-49,All personas (flagship),False,False,True,R&R Guide / Fortress,Empire Suite,NOT LISTED,5
+005,Digital Fortress Blueprint,$47-97,Builder/Strategist,False,False,True,DBO (protect what you built),Fortress+OS bundle,NOT LISTED,5
+006,Digital Property Starter Kit,$17,Builder/Connector,False,True,False,R&R Guide ($27-47),R&R Entry Bundle,LIVE on Gumroad ($17),5
+007,High-Ticket Affiliate Marketing for Gen X Women + 36-program Affiliate Starter Kit,$27-47 guide; Kit as free magnet or $17 add-on,Creator/Connector,False,True,True,Intent to Income (monetization platform),Affiliate Stack,NOT LISTED,4
+008,50 AI Prompts for Women Building Digital Products That Sell (PDF),$17-27,Creator/Educator,False,True,False,High-Demand Prompt Pack / AI Mentor sub,Prompt Suite,NOT LISTED,5
+009,"High-Demand, Low-Supply Digital Product Prompts",$27-47,Creator,False,False,True,AI Business Partner subscription,Prompt Suite,NOT LISTED,5
+010,Keyword Suite: THE KEYWORD ADVANTAGE + RESEARCH CHEAT SHEET + TRIGGER WORD BANK,$27-37 (suite),Creator/Strategist/Builder,False,True,True,Niche Audit Tool (xlsx),Keyword Ranks,"3 items exist as separate PDFs, NOT BUNDLED yet",4
+011,Local SEO Quick-Start Checklist — Digital Asset Launch,$0 (free lead magnet),Builder,True,False,False,,SEO Toolkit,LISTED as Free Starter on Gumroad ($0),5
+012,niche-viability-audit-tool.xlsx,$0 (free lead magnet),Strategist,True,False,False,,Rank & Rent Guide,Free tier,In Downloads root (not gated); needs email gate,5
+013,Catch-Up OS (tool + 2 marketing frames already designed),$27-47,Builder/Educator,False,True,True,DBO,Speed-to-Launch Bundle,"90% complete; tool exists, polish needed",4
+014,Digital Wealth Snapshot™ (interactive calculator),$0→$29-77 (free snapshot → paid Asset Plan tier),Strategist,True,True,True,DBO (full planning system),Wealth Tier,HTML file exists; free/paid tier gate not wired,4
+015,Intent to Income™ | Beyond Keywords & Search Volume (platform),$47-97,Strategist/Creator,False,False,True,DBO or AI Mentor,Platform Suite,HTML complete; brand check + list,4
+016,Automated Asset Engine v3.0,$37-77,Builder/Strategist,False,False,True,DBO / Wealth Snapshot,Engine Suite,HTML has typo in filename ('waealth'); polish,4
+017,The Digital Landlord Offer — merged: Blueprint + Toolkit + Leasing Economics (was 5 files),$37-67 (merged bundle),Builder,False,True,True,DBO (system behind the asset),Landlord System,"MERGE NEEDED — keep best version, delete dups",4
+018,High-Demand Affiliate Program CSV (36 programs) standalone,$27-47,Connector/Strategist,False,True,True,Intent to Income,Affiliate Stack,Data exists (CSVs); productize + list,4
+019,Digital Deeds — Legal & Protection Kit (deduped),$37-67,Builder/Connector,False,False,True,DBO,Legal Protection Bundle,Two identical copies → merge once; not listed,4
+020,Lead Magnet: The 5 Estate Documents Gen X Women Need (HTML),$0 (free),Connector/Beginner,True,False,False,,Legal Kit,Ready,5
+021,Lead Magnet: The 96-Hour Scam Response Plan (HTML),$0 (free),Connector/Educator,True,False,False,,Protection Suite,Ready,5
+022,Legacy Building for Solo Women,$17-27,Connector/Educator,False,True,False,Retirement Mastery,Legacy Bundle,Complete; not listed,4
+023,Faceless Digital Marketing Strategies for Gen X Women + Keywords research pack,$27-47,Builder/Creator,False,True,True,Intent to Income (monetization),Faceless Suite,Merged with flagship Empire book later; list standalone now,4
+024,How to Succeed as a Digital Marketing Consultant (small guide),$17-27,Educator/Connector,False,True,False,Consultant OS upgrade,Service Bundle,Complete; not listed,4
+025,ai-agent-setup-playbook.pdf,$27-47,Builder/Strategist,False,True,True,Hermes AI Mentor subscription,Agent Pack,Complete; not listed,4
+026,Standard Operating Procedure: digital-asset-flipping-api-sop.md,$27-47 agency deliverable,Builder/Agency,False,False,True,DBO (operating system for teams),SOP Library,Complete markdown SOP; package for agencies,4
+027,PRD Blueprints Pack — 13 system architecture + app PRDs compiled,$47-97 (agency bundle),Strategist/Agency,False,False,True,Custom-build engagement,Blueprint Bundle,All docx exist; compile + intro page needed,4
+028,"Tools Pack — 6 micro-tools (ROI Calculator, Clicks-to-Conversion, Content Engine, Business-plan Architect, Faceless-kit, PLR Rebrander)",$37-47 (pack) OR each $17-27,Builder/Strategist,False,True,True,DBO (full toolkit),Utilities Bundle,Tool HTML files exist; zip + one-pager needed,4

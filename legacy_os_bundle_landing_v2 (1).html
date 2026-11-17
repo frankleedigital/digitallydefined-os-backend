@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigitallyDefined · Legacy OS Bundle</title>
+  <meta name="description" content="The Legacy OS Bundle for Gen X women: one branded system to plan your financial autonomy, protect your caregiving layer, and operate with control.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dd-bg: #FFFCF9;
+      --dd-white: #FFFFFF;
+      --dd-ink: #111111;
+      --dd-text: #111111;
+      --dd-blue: #47B7D4;
+      --dd-orange: #F18B25;
+      --dd-red: #C20F0A;
+      --dd-frame: #111111;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+      text-shadow: none;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--dd-bg);
+      color: var(--dd-text);
+      font-family:"DM Sans", sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, .eyebrow, .section-label, .btn, .price, .card-title, .score-value {
+      font-family:"Inter", sans-serif;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: var(--dd-ink);
+    }
+
+    .page {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    /* TOPBAR */
+    .topbar {
+      border-bottom: 1px solid var(--dd-frame);
+      padding: 18px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      background: var(--dd-ink);
+      color: var(--dd-white);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 14px;
+      font-family:"Inter", sans-serif;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: var(--dd-ink);
+      font-family:"Inter", sans-serif;
+    }
+    .brand-title span { color: var(--dd-orange); font-style: italic; }
+
+    /* HERO */
+    .hero {
+      padding: 64px 0 56px;
+      border-bottom: 1px solid var(--dd-frame);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dd-orange);
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-white);
+      padding: 7px 14px;
+      margin-bottom: 24px;
+      font-family:"Inter", sans-serif;
+    }
+
+    h1 {
+      font-size: clamp(48px, 7vw, 84px);
+      line-height: 0.94;
+      letter-spacing: -0.045em;
+      font-weight: 900;
+      color: var(--dd-ink);
+      margin-bottom: 20px;
+    }
+    h1 span { color: var(--dd-orange); }
+
+    .hero-sub {
+      font-size: 19px;
+      color: var(--dd-text);
+      max-width: 580px;
+      margin: 0 auto 34px;
+      line-height: 1.55;
+      font-family:"DM Sans", sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 38px;
+    }
+
+    .meta-pill {
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-white);
+      padding: 12px 18px;
+      min-width: 150px;
+    }
+
+    .meta-pill .value {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+      font-family:"Inter", sans-serif;
+    }
+
+    .meta-pill .label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+      color: #5F5F5F;
+      font-family:"Inter", sans-serif;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-block;
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-orange);
+      color: var(--dd-white);
+      font-weight: 700;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 20px 44px;
+      text-decoration: none;
+      cursor: pointer;
+      font-family:"Inter", sans-serif;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .btn:hover {
+      background: var(--dd-ink);
+      color: var(--dd-white);
+    }
+
+    .btn--white {
+      background: var(--dd-white);
+      color: var(--dd-ink);
+    }
+    .btn--white:hover {
+      background: var(--dd-ink);
+      color: var(--dd-white);
+    }
+
+    .btn-sub {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+      color: #5F5F5F;
+      font-family:"Inter", sans-serif;
+    }
+
+    /* SECTION */
+    .section {
+      padding: 64px 0;
+      border-bottom: 1px solid var(--dd-frame);
+    }
+
+    .section:last-of-type { border-bottom: none; }
+
+    /* COUNTDOWN */
+    .countdown-wrap {
+      margin: 0 auto 36px;
+      display: flex;
+      justify-content: center;
+    }
+    .countdown {
+      border: 1px solid var(--dd-frame);
+      border-top: 1px solid var(--dd-red);
+      background: var(--dd-white);
+      padding: 18px 22px;
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .countdown-label {
+      display: block;
+      font-family:"Inter", sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--dd-red);
+      margin-bottom: 10px;
+      width: 100%;
+    }
+    .countdown-cell {
+      min-width: 84px;
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-bg);
+      padding: 14px 12px;
+    }
+    .countdown-cell .cd-value {
+      font-family:"Inter", sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+    .countdown-cell .cd-label {
+      font-family:"Inter", sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #5F5F5F;
+    }
+
+    /* STICKY CTA BAR */
+    .sticky-cta {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 20px;
+      z-index: 50;
+      width: min(92%, 560px);
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-white);
+      padding: 14px 18px 60px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      text-align: left;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .sticky-cta.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    .sticky-cta .label {
+      font-family:"Inter", sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--dd-ink);
+      line-height: 1.3;
+    }
+    .sticky-cta .cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-orange);
+      color: var(--dd-white);
+      font-family:"Inter", sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 12px 18px;
+      text-decoration: none;
+      min-width: 150px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .sticky-cta .cta:hover { background: var(--dd-ink); color: var(--dd-white); }
+
+    /* TRANSFORMATION BLOCK */
+    .transformation {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      text-align: left;
+      margin-bottom: 24px;
+    }
+    .trans-col {
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-white);
+      padding: 24px;
+    }
+    .trans-col--before { border-top: 1px solid var(--dd-red); }
+    .trans-col--after { border-top: 1px solid var(--dd-blue); }
+    .trans-col .trans-label {
+      display: inline-block;
+      font-family:"Inter", sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 6px 12px;
+      margin-bottom: 16px;
+      border: 1px solid var(--dd-frame);
+    }
+    .trans-col--before .trans-label { color: var(--dd-red); background: var(--dd-bg); }
+    .trans-col--after .trans-label { color: var(--dd-blue); background: var(--dd-bg); }
+    .trans-col h3 {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      line-height: 1.15;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+      font-family:"Inter", sans-serif;
+    }
+    .trans-col ul {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+    .trans-col li {
+      font-size: 13px;
+      color: var(--dd-text);
+      line-height: 1.5;
+      padding-left: 14px;
+      position: relative;
+      font-family:"DM Sans", sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+    .trans-col li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 7px;
+      width: 5px;
+      height: 5px;
+      border: 1px solid var(--dd-ink);
+    }
+    .trans-col--before li::before { background: var(--dd-red); }
+    .trans-col--after li::before { background: var(--dd-blue); }
+
+    .urgency-line {
+      border: 1px solid var(--dd-frame);
+      border-left: 1px solid var(--dd-red);
+      background: var(--dd-white);
+      padding: 16px 20px;
+      text-align: left;
+      margin-bottom: 30px;
+    }
+    .urgency-line .urgency-label {
+      font-family:"Inter", sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--dd-red);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .urgency-line p {
+      font-size: 14px;
+      color: var(--dd-ink);
+      font-family:"DM Sans", sans-serif;
+      font-weight: 500;
+      letter-spacing: normal;
+      line-height: 1.5;
+    }
+
+    /* LAUNCH-READY CHECKOUT */
+    .checkout-ready {
+      border: 1px solid var(--dd-frame);
+      border-top: 1px solid var(--dd-orange);
+      background: var(--dd-white);
+      padding: 28px;
+      text-align: left;
+      margin-bottom: 30px;
+    }
+    .checkout-ready .checkout-label {
+      font-family:"Inter", sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--dd-orange);
+      margin-bottom: 10px;
+      display: block;
+    }
+    .checkout-ready h3 {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+      font-family:"Inter", sans-serif;
+    }
+    .checkout-ready p {
+      font-size: 14px;
+      color: var(--dd-text);
+      margin-bottom: 18px;
+      line-height: 1.55;
+      font-family:"DM Sans", sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+    .checkout-url {
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-bg);
+      padding: 12px 14px;
+      font-family:"Inter", sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--dd-ink);
+      word-break: break-all;
+      margin-bottom: 16px;
+      display: block;
+      text-align: left;
+    }
+    .checkout-btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .checkout-btn-row .btn { padding: 14px 28px; font-size: 13px; }
+    .checkout-note {
+      font-size: 11px;
+      color: #5F5F5F;
+      margin-top: 10px;
+      font-family:"DM Sans", sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dd-ink);
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-white);
+      padding: 7px 14px;
+      margin-bottom: 18px;
+      font-family:"Inter", sans-serif;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 900;
+      letter-spacing: -0.035em;
+      color: var(--dd-ink);
+      line-height: 1.05;
+      margin-bottom: 14px;
+    }
+
+    .section-sub {
+      font-size: 16px;
+      color: var(--dd-text);
+      max-width: 520px;
+      margin: 0 auto;
+      font-family:"DM Sans", sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+
+    .section-head {
+      margin-bottom: 40px;
+    }
+
+    /* THREE COLUMNS */
+    .cols-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      text-align: left;
+    }
+
+    .col-card {
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-white);
+      padding: 24px;
+      position: relative;
+      min-height: 240px;
+    }
+
+    .col-card .num {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      font-size: 40px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      opacity: 0.06;
+      line-height: 1;
+      font-family:"Inter", sans-serif;
+    }
+
+    .col-card .card-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--dd-orange);
+      font-family:"Inter", sans-serif;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .col-card h3 {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      font-family:"Inter", sans-serif;
+    }
+
+    .col-card p {
+      font-size: 13px;
+      color: var(--dd-text);
+      margin-bottom: 12px;
+      font-family:"DM Sans", sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+
+    .col-card ul {
+      list-style: none;
+      display: grid;
+      gap: 6px;
+    }
+
+    .col-card li {
+      font-size: 12px;
+      color: var(--dd-text);
+      padding-left: 14px;
+      position: relative;
+      font-family:"DM Sans", sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+
+    .col-card li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 6px;
+      width: 5px;
+      height: 5px;
+      background: var(--dd-orange);
+      border: 1px solid var(--dd-ink);
+    }
+
+    .col-card--blue { border-top: 1px solid var(--dd-blue); }
+    .col-card--orange { border-top: 1px solid var(--dd-orange); }
+    .col-card--green { border-top: 1px solid var(--dd-red); }
+
+    /* FLOW */
+    .flow-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      text-align: left;
+      margin-bottom: 30px;
+    }
+
+    .flow-step {
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-white);
+      padding: 22px;
+      position: relative;
+    }
+
+    .flow-step .step-num {
+      width: 34px;
+      height: 34px;
+      background: var(--dd-ink);
+      color: var(--dd-white);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 15px;
+      margin-bottom: 14px;
+      font-family:"Inter", sans-serif;
+    }
+
+    .flow-step h4 {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+      font-family:"Inter", sans-serif;
+    }
+
+    .flow-step p {
+      font-size: 13px;
+      color: var(--dd-text);
+      font-family:"DM Sans", sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+
+    /* OBJECTIONS */
+    .objections {
+      display: grid;
+      gap: 12px;
+      text-align: left;
+    }
+
+    .objection {
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-white);
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .objection .q {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--dd-ink);
+      font-family:"Inter", sans-serif;
+      letter-spacing: -0.01em;
+    }
+
+    .objection .a {
+      font-size: 14px;
+      color: var(--dd-text);
+      line-height: 1.5;
+      font-family:"DM Sans", sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+
+    /* PRICE BOX */
+    .price-box {
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-white);
+      padding: 44px 30px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .price-box .eyebrow {
+      background: var(--dd-bg);
+      color: var(--dd-orange);
+      margin-bottom: 18px;
+    }
+
+    .price-value {
+      font-size: 72px;
+      font-weight: 900;
+      color: var(--dd-orange);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      font-family:"Inter", sans-serif;
+      margin-bottom: 8px;
+    }
+
+    .price-sub {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #5F5F5F;
+      margin-bottom: 28px;
+      font-family:"Inter", sans-serif;
+      font-weight: 700;
+    }
+
+    .price-includes {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .price-includes span {
+      border: 1px solid var(--dd-frame);
+      color: var(--dd-text);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 7px 12px;
+      font-family:"Inter", sans-serif;
+      background: var(--dd-white);
+    }
+
+    .price-note {
+      font-size: 12px;
+      color: #5F5F5F;
+      margin-top: 14px;
+      font-family:"DM Sans", sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+
+    /* SCORES */
+    .scores {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .score {
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-white);
+      padding: 18px;
+      text-align: center;
+    }
+
+    .score-value {
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+      font-family:"Inter", sans-serif;
+    }
+
+    .score-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+      color: #5F5F5F;
+      font-family:"Inter", sans-serif;
+    }
+
+    /* GUARANTEE */
+    .guarantee {
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-white);
+      padding: 28px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .guarantee h3 {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+      font-family:"Inter", sans-serif;
+    }
+
+    .guarantee p {
+      font-size: 14px;
+      color: var(--dd-text);
+      max-width: 480px;
+      margin: 0 auto;
+      font-family:"DM Sans", sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+
+    /* FAQ */
+    .faq {
+      display: grid;
+      gap: 12px;
+      text-align: left;
+    }
+
+    .faq-item {
+      border: 1px solid var(--dd-frame);
+      background: var(--dd-white);
+      padding: 18px 20px;
+    }
+
+    .faq-item .q {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dd-ink);
+      font-family:"Inter", sans-serif;
+      margin-bottom: 8px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      letter-spacing: -0.01em;
+    }
+
+    .faq-item .q::before {
+      content: "Q";
+      flex: 0 0 auto;
+      width: 24px;
+      height: 24px;
+      background: var(--dd-ink);
+      color: var(--dd-white);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .faq-item .a {
+      font-size: 14px;
+      color: var(--dd-text);
+      padding-left: 34px;
+      line-height: 1.55;
+      font-family:"DM Sans", sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+
+    /* FINAL CTA */
+    .final-cta {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--dd-frame);
+    }
+
+    .final-cta h2 {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 900;
+      color: var(--dd-ink);
+      letter-spacing: -0.035em;
+      line-height: 1.05;
+      margin-bottom: 14px;
+      font-family:"Inter", sans-serif;
+    }
+
+    .final-cta h2 span { color: var(--dd-orange); }
+
+    .final-cta p {
+      font-size: 16px;
+      color: var(--dd-text);
+      max-width: 480px;
+      margin: 0 auto 34px;
+      font-family:"DM Sans", sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+
+    /* FOOTER */
+    .footer {
+      padding: 28px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-weight: 700;
+      color: var(--dd-ink);
+      font-family:"Inter", sans-serif;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 760px) {
+      .cols-3, .flow-steps, .scores {
+        grid-template-columns: 1fr;
+      }
+      .objection {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .hero-meta {
+        gap: 10px;
+      }
+      .meta-pill {
+        min-width: 120px;
+        padding: 10px 14px;
+      }
+      .meta-pill .value { font-size: 20px; }
+      .transformation { grid-template-columns: 1fr; }
+      .sticky-cta {
+        width: 100%;
+        left: 0;
+        transform: translateX(0);
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+  </style>
+<style id="dd-brand-standard">
+/* ============================================================================
+   DigitallyDefined — Official Brand Standard v2.0
+   Source of truth for every digital product. See brand/README.md.
+   Inlined into each product's <style id="dd-brand-standard"> by
+   scripts/apply_brand.py — do not hand-edit the copies.
+
+   Spec (from the official brand file):
+     • 3-colour system: #F18B25 primary, #47B7D4 secondary, #C20F0A important
+     • 1px solid #111111 frame on every card, button, badge, input
+     • rounded-none: 0px radius everywhere
+     • flat: no box-shadows, no gradients-as-decoration
+     • Inter 900 italic "DEFINED." logotype beside upright "DIGITALLY"
+     • Inter for headings / UI / buttons, DM Sans for body copy
+     • Outcome-first, non-technical, Gen X voice
+   ========================================================================= */
+
+:root {
+  /* ── 1. Brand roles ─────────────────────────────────────────────────── */
+  --dd-orange: #F18B25 !important;   /* PRIMARY   — CTAs, active state, default accent */
+  --dd-blue:   #47B7D4 !important;   /* SECONDARY — supporting modules, metrics, tech */
+  --dd-red:    #C20F0A !important;   /* IMPORTANT — alerts, security, critical only  */
+
+  /* ── 2. Surfaces ────────────────────────────────────────────────────── */
+  --dd-bg:             #FFFCF9 !important;  /* page */
+  --dd-card:           #FFFFFF !important;  /* card / panel face */
+  --dd-panel:          #FFFAF5 !important;  /* inset well */
+  --dd-dark:           #0F0F0F !important;  /* brutal-dark block */
+  --dd-accent-surface: #FFFFC9 !important;  /* brand banner strip */
+
+  /* Derived washes — tints of the 3 roles, no new hues introduced */
+  --dd-wash-orange: #FFF0DE !important;
+  --dd-wash-blue:   #E6F5F9 !important;
+  --dd-wash-red:    #FBEAEA !important;
+
+  /* ── 3. Ink & line ──────────────────────────────────────────────────── */
+  --dd-ink:   #111111 !important;
+  --dd-muted: #5F5F5F !important;
+  --dd-line:  #111111 !important;
+  --dd-bdr:   #111111 !important;   /* colour only — pair with `1px solid` */
+
+  /* ── 4. Structure: always square, always flat ───────────────────────── */
+  --dd-radius: 0px !important;
+  --dd-shadow: none !important;
+
+  /* ── 5. Type ────────────────────────────────────────────────────────── */
+  --dd-font-head: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+  --dd-font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+
+  /* ── 6. Legacy aliases ──────────────────────────────────────────────────
+     Every variable name used across the catalogue, pointing at the token
+     it should have been. Colour tokens only — structural vars are colours,
+     and every `border:` declaration is rewritten to `1px solid var(...)`
+     so the shorthand can never resolve to an invalid value.              */
+  --bg: var(--dd-bg) !important;
+  --cream-bg: var(--dd-bg) !important;
+  --cream: var(--dd-bg) !important;
+  --card-bg: var(--dd-card) !important;
+  --card: var(--dd-card) !important;
+  --dd-card-bg: var(--dd-card) !important;
+  --pure-white: #FFFFFF !important;
+  --white: #FFFFFF !important;
+  --dd-white: #FFFFFF !important;
+  --panel: var(--dd-panel) !important;
+  --light-gray: var(--dd-panel) !important;
+
+  --text: var(--dd-ink) !important;
+  --dd-text: var(--dd-ink) !important;
+  --ink: var(--dd-ink) !important;
+  --dk: var(--dd-ink) !important;
+  --black: var(--dd-ink) !important;
+  --dark-grey: var(--dd-ink) !important;
+  --medium-grey: var(--dd-muted) !important;
+  --muted: var(--dd-muted) !important;
+
+  --border: var(--dd-line) !important;
+  --dd-border: var(--dd-line) !important;
+  --bdr: var(--dd-line) !important;
+  --line: var(--dd-line) !important;
+  --frame: var(--dd-line) !important;
+  --dd-frame: var(--dd-line) !important;
+  --dd-frame-sm: var(--dd-line) !important;
+  --black-border: var(--dd-line) !important;
+  --border-gray: var(--dd-line) !important;
+
+  --or: var(--dd-orange) !important;
+  --orange: var(--dd-orange) !important;
+  --orange-highlight: var(--dd-orange) !important;
+  --accent: var(--dd-orange) !important;
+  --primary: var(--dd-orange) !important;
+
+  --bl: var(--dd-blue) !important;
+  --aqua: var(--dd-blue) !important;
+  --dd-aqua: var(--dd-blue) !important;
+  --aqua-blue: var(--dd-blue) !important;
+  --secondary: var(--dd-blue) !important;
+  --dd-accent-primary: var(--dd-orange) !important;
+  --dd-accent-secondary: var(--dd-blue) !important;
+
+  --rd: var(--dd-red) !important;
+  --red: var(--dd-red) !important;
+  --deep-red-warning: var(--dd-red) !important;
+  --tertiary: var(--dd-red) !important;
+  --dd-accent-tertiary: var(--dd-red) !important;
+
+  --dark: var(--dd-dark) !important;
+
+  --font-head: var(--dd-font-head) !important;
+  --font-body: var(--dd-font-body) !important;
+  --font-sans: var(--dd-font-body) !important;
+  --font-mono: var(--dd-font-head) !important;
+}
+
+/* ── Flat + square: the two non-negotiable brutalist rules ─────────────── */
+*,
+*::before,
+*::after {
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* ── Type system ───────────────────────────────────────────────────────── */
+body {
+  background-color: var(--dd-bg) !important;
+  color: var(--dd-ink) !important;
+  font-family: var(--dd-font-body) !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+h1, h2, h3, h4, h5, h6, .dd-h {
+  font-family: var(--dd-font-head) !important;
+  color: var(--dd-ink) !important;
+  letter-spacing: -0.025em !important;
+}
+
+h1, h2, h3 { font-weight: 900 !important; }
+h4, h5, h6 { font-weight: 800 !important; }
+
+/* Body copy stays DM Sans — inputs included, so nothing falls back to Arial */
+p, li, td, dd, dt, blockquote, figcaption,
+input, select, textarea, optgroup, option {
+  font-family: var(--dd-font-body);
+}
+
+/* Action controls are Inter, 800 — per spec */
+button,
+.btn,
+.cta,
+.dd-btn,
+input[type="submit"],
+input[type="button"] {
+  font-family: var(--dd-font-head) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Third typefaces retired: Inter covers metric / label duty */
+code, pre, kbd, samp,
+.mono, .font-mono, .dd-badge, .badge, .tag, .eyebrow {
+  font-family: var(--dd-font-head) !important;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em !important;
+}
+
+/* ── 1px frame for every Tailwind border-width utility ─────────────────── */
+.border-2, .border-4, .border-8 { border-width: 1px !important; }
+.border-t-2, .border-t-4 { border-top-width: 1px !important; }
+.border-b-2, .border-b-4 { border-bottom-width: 1px !important; }
+.border-l-2, .border-l-4 { border-left-width: 1px !important; }
+.border-r-2, .border-r-4 { border-right-width: 1px !important; }
+.border-x-2, .border-x-4 { border-left-width: 1px !important; border-right-width: 1px !important; }
+.border-y-2, .border-y-4 { border-top-width: 1px !important; border-bottom-width: 1px !important; }
+
+/* ── Focus state: brand orange, always visible (shadows are gone) ─────── */
+:focus-visible,
+input:focus, select:focus, textarea:focus, button:focus, a:focus {
+  outline: 2px solid var(--dd-orange) !important;
+  outline-offset: 2px !important;
+}
+
+/* ── Official brand bar ───────────────────────────────────────────────── */
+.dd-brandbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  padding: 10px 16px !important;
+  background: var(--dd-card) !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--dd-line) !important;
+  font-family: var(--dd-font-head) !important;
+}
+
+.dd-brandmark {
+  display: inline-block;
+  font-family: var(--dd-font-head) !important;
+  font-weight: 900 !important;
+  font-size: 15px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--dd-ink);
+  text-decoration: none;
+}
+
+.dd-brandmark em {
+  font-style: italic;
+  color: var(--dd-orange);
+}
+
+.dd-brandbar-label {
+  font-family: var(--dd-font-head) !important;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dd-muted);
+  text-align: right;
+}
+
+/* Existing in-page logo slots are upgraded to the official lockup */
+.dd-logo-name,
+.logo-text {
+  font-family: var(--dd-font-head) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  text-transform: uppercase;
+}
+
+.dd-logo-name em,
+.logo-text em {
+  font-style: italic !important;
+  color: var(--dd-orange) !important;
+}
+
+@media print {
+  .dd-brandbar { display: none !important; }
+}
+
+</style>
+</head>
+<body>
+<header class="dd-brandbar" role="banner"><span class="dd-brandmark">DIGITALLY<em>DEFINED.</em></span><span class="dd-brandbar-label">DigitallyDefined · Legacy OS Bundle</span></header>
+
+  <div class="sticky-cta" id="sticky-cta" aria-hidden="true">
+    <div class="label">Legacy OS Bundle<br>$297 · One-time</div>
+    <a class="cta" href="#checkout-placeholder">Checkout</a>
+  </div>
+
+  <div class="page">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="brand-mark">DD</div>
+      <div class="brand-title">DIGITALLY<span>DEFINED.</span></div>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="eyebrow">For Gen X Women Who Are Done Managing Chaos</div>
+      <h1>Stop Running Your Family<br>Without an <span>Operating System.</span></h1>
+      <p class="hero-sub">
+        One branded system that plans your financial autonomy, protects your caregiving layer,
+        and runs the day-to-day so you stop burning out.
+      </p>
+
+      <div class="countdown-wrap">
+        <div class="countdown" id="launch-countdown">
+          <span class="countdown-label">Launch window closes in</span>
+          <div class="countdown-cell">
+            <div class="cd-value" id="cd-days">00</div>
+            <div class="cd-label">Days</div>
+          </div>
+          <div class="countdown-cell">
+            <div class="cd-value" id="cd-hours">00</div>
+            <div class="cd-label">Hours</div>
+          </div>
+          <div class="countdown-cell">
+            <div class="cd-value" id="cd-mins">00</div>
+            <div class="cd-label">Minutes</div>
+          </div>
+          <div class="countdown-cell">
+            <div class="cd-value" id="cd-secs">00</div>
+            <div class="cd-label">Seconds</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-meta">
+        <div class="meta-pill">
+          <div class="value">$297</div>
+          <div class="label">One-time</div>
+        </div>
+        <div class="meta-pill">
+          <div class="value">3</div>
+          <div class="label">Core Tools</div>
+        </div>
+        <div class="meta-pill">
+          <div class="value">Now</div>
+          <div class="label">Instant Access</div>
+        </div>
+      </div>
+
+      <div class="hero-cta">
+        <a class="btn" href="#checkout">Get the Legacy OS Bundle</a>
+        <span class="btn-sub">No subscription · Instant download · No fluff</span>
+      </div>
+    </section>
+
+    <!-- WHAT'S INSIDE -->
+    <section class="section" id="what-sold">
+      <div class="section-head">
+        <div class="section-label">What You're Getting</div>
+        <h2 class="section-title">One System. Three Layers.<br>Zero Chaos.</h2>
+        <p class="section-sub">Not three loose files. One branded operating system with a clear sequence.</p>
+      </div>
+
+      <div class="cols-3">
+        <div class="col-card col-card--blue">
+          <div class="num">01</div>
+          <span class="card-eyebrow">Strategy Layer</span>
+          <h3>Financial Autonomy Planner</h3>
+          <p>Define your Freedom Number. Map your income gap. Choose the digital asset mix that closes the retirement gap.</p>
+          <ul>
+            <li>Monthly target builder</li>
+            <li>Asset mix sliders</li>
+            <li>Exit multiple math</li>
+            <li>L.E.G.A.C.Y. framework</li>
+          </ul>
+        </div>
+
+        <div class="col-card col-card--orange">
+          <div class="num">02</div>
+          <span class="card-eyebrow">Protection Layer</span>
+          <h3>Caregiver's Survival Kit</h3>
+          <p>Turn the caregiving crisis into a financial map. Understand the benefit paths. Stop guessing at Medicaid, VA, and paid leave.</p>
+          <ul>
+            <li>Caregiving exposure model</li>
+            <li>Medicaid / VA / PFL guide</li>
+            <li>Eligibility chain logic</li>
+            <li>Reality-check guardrails</li>
+          </ul>
+        </div>
+
+        <div class="col-card col-card--green">
+          <div class="num">03</div>
+          <span class="card-eyebrow">Operations Layer</span>
+          <h3>Legacy Command Center</h3>
+          <p>Run the day-to-day without losing control. Appointments, delegation, budgets, and firm communication in one place.</p>
+          <ul>
+            <li>Care calendar</li>
+            <li>Task delegation</li>
+            <li>Budget goals</li>
+            <li>Diplomat drafting</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <div class="col-card" style="text-align:center;">
+          <span class="card-eyebrow" style="color: var(--dd-ink);">Plus</span>
+          <h3 style="text-align:center;">Instant Delivery + Setup Guide</h3>
+          <p style="max-width:420px; margin:0 auto;">
+            Download links, 2-minute setup instructions, and your first 3 actions.
+            You are operational before the day is over.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLOW -->
+    <section class="section">
+      <div class="section-head">
+        <div class="section-label">How It Works</div>
+        <h2 class="section-title">Plan → Protect → Operate</h2>
+        <p class="section-sub">One sequence. One system. No guesswork about what to do next.</p>
+      </div>
+
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <h4>Plan the Money</h4>
+          <p>Your Freedom Number, asset mix, and exit math. You know exactly what you need to build.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <h4>Protect the Crisis</h4>
+          <p>Your caregiving exposure, benefit paths, and financial leakage. You know exactly where to stop the bleed.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <h4>Run the Operation</h4>
+          <p>Appointments, delegation, budgets, and communication. You run the system instead of the system running you.</p>
+        </div>
+      </div>
+
+      <div class="transformation">
+        <div class="trans-col trans-col--before">
+          <span class="trans-label">Before</span>
+          <h3>Managing Everything.</h3>
+          <ul>
+            <li>No clear financial target</li>
+            <li>Caregiving expenses with no map</li>
+            <li>Appointments and tasks scattered</li>
+            <li>Constant second-guessing</li>
+          </ul>
+        </div>
+        <div class="trans-col trans-col--after">
+          <span class="trans-label">After</span>
+          <h3>Running a System.</h3>
+          <ul>
+            <li>Freedom Number defined</li>
+            <li>Benefit paths mapped</li>
+            <li>Delegation in one place</li>
+            <li>Confident daily operation</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="urgency-line">
+        <span class="urgency-label">Urgent</span>
+        <p>
+          This launch offer is part of Phase 1 of the Legacy OS rollout.
+          Once the 7-day email sequence and SaaS waitlist go live, the $297 bundle price will move to the subscription tier.
+          Lock in the one-time price now.
+        </p>
+      </div>
+
+      <div class="guarantee">
+        <h3>Built for the Sandwich Generation</h3>
+        <p>
+          If you're carrying parents, kids, work, and a retirement gap all at once,
+          this is the system that keeps you from falling through all four at the same time.
+        </p>
+      </div>
+    </section>
+
+    <!-- OBJECTIONS -->
+    <section class="section">
+      <div class="section-head">
+        <div class="section-label">Honest Answers</div>
+        <h2 class="section-title">What You're Probably Wondering</h2>
+      </div>
+
+      <div class="objections">
+        <div class="objection">
+          <div class="q">"I don't know where to start."</div>
+          <div class="a">You start with the Planner. It gives you the target before you touch the operations layer. One step at a time.</div>
+        </div>
+        <div class="objection">
+          <div class="q">"I can't afford another thing."</div>
+          <div class="a">This is not another app. It's the system that stops financial leakage from caregiving and unclear retirement math. The alternative costs you more every month.</div>
+        </div>
+        <div class="objection">
+          <div class="q">"I'm not technical."</div>
+          <div class="a">The tools are built for non-technical users. No code, no developer, no backend. You open them and use them.</div>
+        </div>
+        <div class="objection">
+          <div class="q">"Is this just another planner?"</div>
+          <div class="a">No. A planner is one tool. The Legacy OS is the full operating layer: strategy, protection, and operations. One system, not scattered files.</div>
+        </div>
+        <div class="objection">
+          <div class="q">"Will this help with caregiving specifically?"</div>
+          <div class="a">Yes. The Survival Kit is built specifically for the sandwich generation and the financial shock of caregiving. It maps the paths most caregivers don't know exist.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHECKOUT -->
+    <section class="section" id="checkout">
+      <div class="section-head">
+        <div class="section-label">Get Access</div>
+        <h2 class="section-title">One Price. One System.<br>Start Today.</h2>
+      </div>
+
+      <div class="scores">
+        <div class="score">
+          <div class="score-value">8/10</div>
+          <div class="score-label">Revenue</div>
+        </div>
+        <div class="score">
+          <div class="score-value">8/10</div>
+          <div class="score-label">Demand</div>
+        </div>
+        <div class="score">
+          <div class="score-value">3/10</div>
+          <div class="score-label">Build Complexity</div>
+        </div>
+        <div class="score">
+          <div class="score-value">10/10</div>
+          <div class="score-label">Speed to Revenue</div>
+        </div>
+      </div>
+
+      <div class="price-box">
+        <div class="eyebrow">The Legacy OS Bundle</div>
+        <div class="price-value">$297</div>
+        <div class="price-sub">One-time · No subscription · Instant access</div>
+
+        <div class="price-includes">
+          <span>Planner</span>
+          <span>Survival Kit</span>
+          <span>Command Center</span>
+          <span>Setup Guide</span>
+          <span>Delivery Page</span>
+        </div>
+
+        <a class="btn" href="#checkout-placeholder">Buy the Bundle</a>
+        <p class="price-note">Launch-ready checkout block below.</p>
+      </div>
+
+      <div class="checkout-ready" id="checkout-placeholder">
+        <span class="checkout-label">Launch-Ready Checkout</span>
+        <h3>Swap in your live checkout link</h3>
+        <p>
+          Replace the placeholder URL with your Gumroad, Stripe, LemonSqueezy, or PaymentLink checkout URL.
+          The button is already wired to launch the checkout flow as soon as you paste the live link.
+        </p>
+        <span class="checkout-url" id="checkout-url">https://YOUR-CHECKOUT-LINK-HERE</span>
+        <div class="checkout-btn-row">
+          <a class="btn" id="checkout-btn" href="https://YOUR-CHECKOUT-LINK-HERE">Start Checkout</a>
+          <span class="checkout-note">One-time purchase · No subscription · Instant delivery</span>
+        </div>
+      </div>
+
+      <div class="guarantee">
+        <h3>What This Is Not</h3>
+        <p>
+          Not legal advice. Not tax advice. Not a medical system.
+          It is a planning, protection, and operations framework
+          that tells you exactly where to get professional help when you need it.
+        </p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section">
+      <div class="section-head">
+        <div class="section-label">FAQ</div>
+        <h2 class="section-title">Before You Buy</h2>
+      </div>
+
+      <div class="faq">
+        <div class="faq-item">
+          <div class="q">Do I need to be good with tech to use this?</div>
+          <div class="a">No. Every tool is designed for non-technical users. You open, you use, you start. No setup headaches.</div>
+        </div>
+        <div class="faq-item">
+          <div class="q">Is this a subscription?</div>
+          <div class="a">No. Phase 1 is a one-time $297 purchase. You keep the tools. You keep the access. No recurring charge.</div>
+        </div>
+        <div class="faq-item">
+          <div class="q">What if I'm not in the sandwich generation?</div>
+          <div class="a">The Planner and Command Center still apply. The Survival Kit is the specific caregiving layer — if that's not your situation yet, the other two still hold value.</div>
+        </div>
+        <div class="faq-item">
+          <div class="q">Can I use this for my own business or just my family?</div>
+          <div class="a">Both. The system was built for Gen X women running a family operation, but the same logic applies to running a digital business alongside it.</div>
+        </div>
+        <div class="faq-item">
+          <div class="q">What's the difference between the Survival Kit and the Command Center?</div>
+          <div class="a">The Kit is the map — it shows you the financial and benefit landscape. The Command Center is the daily operation — it runs the calendar, tasks, and communication.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final-cta" id="final">
+      <h2>You Can Keep Managing It All.<br>Or You Can <span>Build the System.</span></h2>
+      <p>
+        The Legacy OS Bundle is the smallest thing that gives you
+        a real operating layer for your money, your caregiving, and your day-to-day.
+      </p>
+      <a class="btn" href="#checkout">Get the $297 Bundle</a>
+      <div style="margin-top:14px;">
+        <span class="btn-sub">Instant access · No subscription · No fluff</span>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div>© 2026 DigitallyDefined · Build What You Own</div>
+      <div>Sovereign Wealth for Gen X Women</div>
+    </footer>
+
+  </div>
+
+  <script>
+    const sticky = document.getElementById("sticky-cta");
+    const heroCta = document.querySelector(".hero-cta .btn");
+
+    function updateSticky() {
+      const triggerY = heroCta ? heroCta.getBoundingClientRect().bottom : 400;
+      if (triggerY < 0) {
+        sticky.classList.add("visible");
+        sticky.setAttribute("aria-hidden", "false");
+      } else {
+        sticky.classList.remove("visible");
+        sticky.setAttribute("aria-hidden", "true");
+      }
+    }
+
+    window.addEventListener("scroll", updateSticky, { passive: true });
+    window.addEventListener("resize", updateSticky);
+    updateSticky();
+
+    const countdownEnd = new Date("2026-10-19T17:00:00-04:00").getTime();
+    const cdDays = document.getElementById("cd-days");
+    const cdHours = document.getElementById("cd-hours");
+    const cdMins = document.getElementById("cd-mins");
+    const cdSecs = document.getElementById("cd-secs");
+
+    function pad(n) { return n < 10 ? "0" + n : String(n); }
+
+    function tickCountdown() {
+      const now = Date.now();
+      const diff = Math.max(0, countdownEnd - now);
+      cdDays.textContent = pad(Math.floor(diff / 86400000));
+      cdHours.textContent = pad(Math.floor((diff % 86400000) / 3600000));
+      cdMins.textContent = pad(Math.floor((diff % 3600000) / 60000));
+      cdSecs.textContent = pad(Math.floor((diff % 60000) / 1000));
+    }
+
+    tickCountdown();
+    setInterval(tickCountdown, 1000);
+
+    const checkoutUrlInput = document.getElementById("checkout-url");
+    const checkoutBtn = document.getElementById("checkout-btn");
+
+    function normalizeUrl(url) {
+      const trimmed = (url || "").trim();
+      if (!trimmed) return "";
+      if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return trimmed;
+      return "https://" + trimmed;
+    }
+
+    checkoutUrlInput.addEventListener("click", () => {
+      const raw = prompt("Paste your live checkout URL:", checkoutUrlInput.textContent);
+      if (!raw) return;
+      const nextUrl = normalizeUrl(raw);
+      checkoutUrlInput.textContent = nextUrl;
+      checkoutBtn.href = nextUrl;
+    });
+
+    checkoutBtn.addEventListener("click", (event) => {
+      const target = checkoutBtn.getAttribute("href");
+      if (target === "https://YOUR-CHECKOUT-LINK-HERE" || target === "https://" ) {
+        event.preventDefault();
+        checkoutUrlInput.click();
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DigitallyDefined · Legacy OS Integration Workflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --dd-bg:#FFFCF9;
+    --dd-ink:#111111;
+    --dd-text:#2D3748;
+    --dd-line:#111111;
+    --dd-blue:#47B7D4;
+    --dd-orange:#F18B25;
+    --dd-red:#D64545;
+    --dd-green:#2A9D5C;
+    --dd-purple:#8B5CF6;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;border-radius:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--dd-bg);
+    color:var(--dd-text);
+    font-family:"DM Sans",sans-serif;
+    font-size:16px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3,h4,.eyebrow,.step-label,.card-title,.btn{
+    font-family:"Inter",sans-serif;
+  }
+
+  .eyebrow{
+    display:inline-block;
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--dd-orange);
+    border:1px solid var(--dd-ink);
+    background:var(--dd-bg);
+    padding:5px 10px;
+  }
+
+  .page{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* ---------- TOP BAR ---------- */
+  .topbar{
+    background:var(--dd-bg);
+    border-bottom:2px solid var(--dd-ink);
+    padding:16px 0;
+  }
+  .topbar-inner{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .brand-mark{
+    width:34px;height:34px;
+    background:var(--dd-ink);
+    color:var(--dd-bg);
+    display:grid;place-items:center;
+    font-family:"Inter",sans-serif;font-weight:900;font-size:14px;
+  }
+  .brand-name{font-family:"Inter";font-weight:900;font-size:16px;color:var(--dd-ink)}
+  .brand-name span{color:var(--dd-orange);font-style:italic}
+  .brand-sub{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#666}
+  .topbar-tag{
+    font-family:"Inter";font-weight:700;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--dd-ink);
+    border:2px solid var(--dd-ink);padding:6px 12px;background:var(--dd-bg);
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:56px 0 40px;
+    border-bottom:2px solid var(--dd-ink);
+  }
+  .hero-inner{
+    display:grid;
+    grid-template-columns:1.2fr .8fr;
+    gap:40px;
+    align-items:start;
+  }
+  .hero h1{
+    font-size:clamp(32px,4.5vw,52px);
+    line-height:.98;
+    letter-spacing:-.035em;
+    font-weight:900;
+    color:var(--dd-ink);
+    margin-bottom:16px;
+  }
+  .hero h1 span{color:var(--dd-orange)}
+  .hero-sub{
+    font-size:16px;
+    color:#4b5563;
+    max-width:560px;
+    margin-bottom:24px;
+  }
+  .hero-chips{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .chip{
+    border:2px solid var(--dd-ink);
+    background:#fff;
+    padding:8px 14px;
+    font-family:"Inter";
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--dd-ink);
+  }
+  .chip--orange{background:var(--dd-orange);color:#fff}
+  .chip--blue{background:var(--dd-blue);color:#fff}
+  .chip--green{background:var(--dd-green);color:#fff}
+  .chip--purple{background:var(--dd-purple);color:#fff}
+
+  .hero-card{
+    border:2px solid var(--dd-ink);
+    background:#fff;
+    padding:24px;
+  }
+  .hero-card h3{
+    font-size:14px;font-weight:900;color:var(--dd-ink);
+    text-transform:uppercase;letter-spacing:.08em;
+    margin-bottom:16px;
+  }
+  .hero-card-list{display:grid;gap:12px}
+  .hero-card-item{
+    display:grid;
+    grid-template-columns:28px 1fr;
+    gap:10px;
+    align-items:start;
+  }
+  .hero-card-item .dot{
+    width:12px;height:12px;
+    background:var(--dd-orange);
+    border:2px solid var(--dd-ink);
+    margin-top:5px;
+  }
+  .hero-card-item strong{
+    display:block;
+    font-family:"Inter";font-weight:700;font-size:13px;color:var(--dd-ink);
+    margin-bottom:2px;
+  }
+  .hero-card-item span{font-size:12px;color:#555}
+
+  /* ---------- SECTION HEADS ---------- */
+  .section{padding:48px 0}
+  .section-head{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:32px;
+    flex-wrap:wrap;
+    padding-bottom:16px;
+    border-bottom:2px solid var(--dd-ink);
+  }
+  .section-head .lead{max-width:640px}
+  .section-head h2{
+    font-size:clamp(24px,3vw,36px);
+    font-weight:900;
+    letter-spacing:-.02em;
+    color:var(--dd-ink);
+    margin:12px 0 8px;
+  }
+  .section-head p{font-size:14px;color:#4b5563}
+
+  /* ---------- PRODUCT HIERARCHY ---------- */
+  .hierarchy{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:12px;
+  }
+  .hier-card{
+    border:2px solid var(--dd-ink);
+    background:#fff;
+    padding:20px;
+    position:relative;
+    min-height:180px;
+  }
+  .hier-card .num{
+    position:absolute;
+    top:12px;right:14px;
+    font-family:"Inter";font-weight:900;font-size:28px;
+    color:var(--dd-ink);opacity:.08;
+  }
+  .hier-card .label{
+    font-family:"Inter";font-weight:700;font-size:10px;
+    letter-spacing:.14em;text-transform:uppercase;
+    color:var(--dd-orange);
+    margin-bottom:8px;
+  }
+  .hier-card h4{
+    font-size:15px;font-weight:900;color:var(--dd-ink);
+    margin-bottom:6px;letter-spacing:-.01em;
+  }
+  .hier-card p{font-size:12px;color:#4b5563;line-height:1.5}
+
+  .hier-card--plan{border-top:6px solid var(--dd-blue)}
+  .hier-card--protect{border-top:6px solid var(--dd-orange)}
+  .hier-card--operate{border-top:6px solid var(--dd-green)}
+  .hier-card--saaS{border-top:6px solid var(--dd-purple);background:var(--dd-ink);color:var(--dd-bg)}
+  .hier-card--saaS .label{color:var(--dd-orange)}
+  .hier-card--saaS h4{color:var(--dd-bg)}
+  .hier-card--saaS p{color:#9ca3af}
+  .hier-card--saaS .num{color:var(--dd-bg);opacity:.12}
+
+  /* ---------- FLOW DIAGRAM ---------- */
+  .flow-wrap{
+    border:2px solid var(--dd-ink);
+    background:#fff;
+    padding:32px;
+    overflow-x:auto;
+  }
+  .flow-svg{
+    display:block;
+    margin:0 auto;
+    max-width:100%;
+  }
+
+  /* ---------- WIRE TABLE ---------- */
+  .wire-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+    border:2px solid var(--dd-ink);
+  }
+  .wire-table th,.wire-table td{
+    border:2px solid var(--dd-ink);
+    padding:14px 16px;
+    text-align:left;
+    vertical-align:top;
+  }
+  .wire-table th{
+    background:var(--dd-ink);color:var(--dd-bg);
+    font-family:"Inter";font-weight:700;font-size:10px;
+    letter-spacing:.12em;text-transform:uppercase;
+  }
+  .wire-table td strong{color:var(--dd-ink)}
+  .wire-table .tag{
+    display:inline-block;
+    font-family:"Inter";font-weight:700;font-size:9px;
+    letter-spacing:.1em;text-transform:uppercase;
+    padding:3px 8px;border:1px solid var(--dd-ink);
+    margin-right:6px;margin-bottom:4px;
+  }
+  .tag--plan{background:var(--dd-blue);color:#fff}
+  .tag--protect{background:var(--dd-orange);color:#fff}
+  .tag--operate{background:var(--dd-green);color:#fff}
+  .tag--saaS{background:var(--dd-purple);color:#fff}
+  .tag--content{background:var(--dd-ink);color:var(--dd-bg)}
+
+  /* ---------- PHASE ROADMAP ---------- */
+  .roadmap{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+  }
+  .phase{
+    border:2px solid var(--dd-ink);
+    background:#fff;
+    overflow:hidden;
+  }
+  .phase-head{
+    padding:18px 20px;
+    border-bottom:2px solid var(--dd-ink);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .phase-head h3{
+    font-size:18px;font-weight:900;color:var(--dd-ink);letter-spacing:-.01em;
+  }
+  .phase-num{
+    font-family:"Inter";font-weight:900;font-size:28px;color:var(--dd-orange);
+  }
+  .phase-body{padding:20px}
+  .phase-body p{font-size:13px;color:#4b5563;margin-bottom:14px}
+  .phase-list{display:grid;gap:8px}
+  .phase-item{
+    display:grid;
+    grid-template-columns:20px 1fr;
+    gap:8px;
+    font-size:13px;color:var(--dd-text);
+  }
+  .phase-item .bullet{
+    width:8px;height:8px;background:var(--dd-orange);
+    border:1px solid var(--dd-ink);margin-top:5px;
+  }
+
+  .phase--p1{border-top:6px solid var(--dd-blue)}
+  .phase--p2{border-top:6px solid var(--dd-orange)}
+  .phase--p3{border-top:6px solid var(--dd-purple)}
+
+  /* ---------- REVENY FLOW ---------- */
+  .revenue{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  .rev-card{
+    border:2px solid var(--dd-ink);
+    background:#fff;
+    padding:24px;
+  }
+  .rev-card h3{
+    font-size:16px;font-weight:900;color:var(--dd-ink);
+    margin-bottom:8px;
+  }
+  .rev-card p{font-size:13px;color:#4b5563;margin-bottom:16px}
+  .rev-card .flow-line{
+    border-top:2px dashed var(--dd-ink);
+    padding-top:14px;
+    font-size:13px;color:var(--dd-ink);
+    line-height:1.7;
+  }
+  .rev-card .flow-line strong{color:var(--dd-orange)}
+
+  /* ---------- GUARDRAILS ---------- */
+  .guardrails{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+  }
+  .guard{
+    border:2px solid var(--dd-ink);
+    padding:20px;
+    background:#fff;
+  }
+  .guard h4{
+    font-size:14px;font-weight:900;color:var(--dd-ink);
+    text-transform:uppercase;letter-spacing:.04em;
+    margin-bottom:8px;
+  }
+  .guard p{font-size:13px;color:#4b5563}
+  .guard--red{border-left:6px solid var(--dd-red)}
+  .guard--green{border-left:6px solid var(--dd-green)}
+  .guard--blue{border-left:6px solid var(--dd-blue)}
+  .guard--orange{border-left:6px solid var(--dd-orange)}
+
+  /* ---------- FOOTER ---------- */
+  .footer{
+    padding:32px 0;
+    border-top:2px solid var(--dd-ink);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    font-family:"Inter";font-weight:700;font-size:10px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--dd-ink);
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:900px){
+    .hero-inner,.hierarchy,.roadmap,.revenue,.guardrails{
+      grid-template-columns:1fr;
+    }
+    .hierarchy{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:560px){
+    .hierarchy{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="page topbar-inner">
+    <div class="brand">
+      <div class="brand-mark">DD</div>
+      <div>
+        <div class="brand-name">DIGITALLY<span>DEFINED.</span></div>
+        <div class="brand-sub">Legacy OS Integration</div>
+      </div>
+    </div>
+    <div class="topbar-tag">Integration Workflow · 2026</div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <span class="eyebrow">The Ecosystem Map</span>
+        <h1>How Your Tools<br>Connect Into <span>One System.</span></h1>
+        <p class="hero-sub">
+          This is the integration blueprint. It shows exactly how the Planner,
+          Survival Kit, Command Center, and Content Engine wire together into
+          a single Legacy OS — with the SaaS as the premium destination.
+        </p>
+        <div class="hero-chips">
+          <span class="chip chip--blue">01 · Plan</span>
+          <span class="chip chip--orange">02 · Protect</span>
+          <span class="chip chip--green">03 · Operate</span>
+          <span class="chip chip--purple">04 · Scale</span>
+          <span class="chip">05 · Distribute</span>
+        </div>
+      </div>
+      <div class="hero-card">
+        <h3>Reading This Map</h3>
+        <div class="hero-card-list">
+          <div class="hero-card-item">
+            <span class="dot"></span>
+            <div>
+              <strong>Horizontal flow = user journey</strong>
+              <span>Plan → Protect → Operate → Scale. Each stage unlocks the next.</span>
+            </div>
+          </div>
+          <div class="hero-card-item">
+            <span class="dot" style="background:var(--dd-purple)"></span>
+            <div>
+              <strong>Vertical flow = revenue capture</strong>
+              <span>Each layer monetizes a different stage of the user's journey.</span>
+            </div>
+          </div>
+          <div class="hero-card-item">
+            <span class="dot" style="background:var(--dd-green)"></span>
+            <div>
+              <strong>Content Engine = fuel</strong>
+              <span>Feeds every stage. Not a module — the distribution layer.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT HIERARCHY -->
+  <section class="section">
+    <div class="section-head">
+      <div class="lead">
+        <span class="eyebrow">Layer 01</span>
+        <h2>Product Hierarchy</h2>
+        <p>Five distinct components, one coherent system. Each has a job. None can do the others' job alone.</p>
+      </div>
+    </div>
+
+    <div class="hierarchy">
+      <div class="hier-card hier-card--plan">
+        <div class="num">01</div>
+        <div class="label">Strategy Layer</div>
+        <h4>Financial Autonomy Planner</h4>
+        <p>Defines the target. Freedom Number, asset mix, exit multiple. The "why" before the "how."</p>
+      </div>
+      <div class="hier-card hier-card--protect">
+        <div class="num">02</div>
+        <div class="label">Protection Layer</div>
+        <h4>Caregiver's Survival Kit</h4>
+        <p>Maps the caregiving crisis. Benefit paths, exposure math, and the eligibility chain.</p>
+      </div>
+      <div class="hier-card hier-card--operate">
+        <div class="num">03</div>
+        <div class="label">Operations Layer</div>
+        <h4>Legacy Command Center</h4>
+        <p>Daily mission control. Appointments, delegation, budgets, and firm communication.</p>
+      </div>
+      <div class="hier-card hier-card--saaS">
+        <div class="num">04</div>
+        <div class="label">Platform Layer</div>
+        <h4>Legacy OS · SaaS</h4>
+        <p>The account. One login, one dashboard, one recurring relationship. The premium destination.</p>
+      </div>
+      <div class="hier-card">
+        <div class="num">05</div>
+        <div class="label">Distribution Layer</div>
+        <h4>Content Engine</h4>
+        <p>Not a module. The marketing system that fills the funnel at every stage.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTEGRATION FLOW DIAGRAM -->
+  <section class="section">
+    <div class="section-head">
+      <div class="lead">
+        <span class="eyebrow">Layer 02</span>
+        <h2>Integration Flow</h2>
+        <p>This is the wiring. Each arrow is a handoff point where data or intent moves from one layer to the next.</p>
+      </div>
+    </div>
+
+    <div class="flow-wrap">
+      <svg class="flow-svg" viewBox="0 0 1100 520" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background grid (subtle) -->
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#111"/>
+          </marker>
+          <marker id="arrowhead-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#F18B25"/>
+          </marker>
+        </defs>
+
+        <!-- LAYER BOXES -->
+        <!-- 01 PLAN -->
+        <rect x="30" y="60" width="180" height="100" fill="#fff" stroke="#111" stroke-width="2"/>
+        <rect x="30" y="60" width="180" height="8" fill="#47B7D4"/>
+        <text x="46" y="100" font-family="Inter" font-weight="900" font-size="13" fill="#111">01 · PLAN</text>
+        <text x="46" y="122" font-family="DM Sans" font-size="11" fill="#4b5563">Freedom Number</text>
+        <text x="46" y="138" font-family="DM Sans" font-size="11" fill="#4b5563">Asset Mix · Exit Math</text>
+
+        <!-- 02 PROTECT -->
+        <rect x="260" y="60" width="180" height="100" fill="#fff" stroke="#111" stroke-width="2"/>
+        <rect x="260" y="60" width="180" height="8" fill="#F18B25"/>
+        <text x="276" y="100" font-family="Inter" font-weight="900" font-size="13" fill="#111">02 · PROTECT</text>
+        <text x="276" y="122" font-family="DM Sans" font-size="11" fill="#4b5563">Caregiving Exposure</text>
+        <text x="276" y="138" font-family="DM Sans" font-size="11" fill="#4b5563">Medicaid · VA · PFL</text>
+
+        <!-- 03 OPERATE -->
+        <rect x="490" y="60" width="180" height="100" fill="#fff" stroke="#111" stroke-width="2"/>
+        <rect x="490" y="60" width="180" height="8" fill="#2A9D5C"/>
+        <text x="506" y="100" font-family="Inter" font-weight="900" font-size="13" fill="#111">03 · OPERATE</text>
+        <text x="506" y="122" font-family="DM Sans" font-size="11" fill="#4b5563">Appointments · Tasks</text>
+        <text x="506" y="138" font-family="DM Sans" font-size="11" fill="#4b5563">Budgets · Diplomacy</text>
+
+        <!-- 04 SaaS -->
+        <rect x="720" y="60" width="180" height="100" fill="#111" stroke="#111" stroke-width="2"/>
+        <rect x="720" y="60" width="180" height="8" fill="#8B5CF6"/>
+        <text x="736" y="100" font-family="Inter" font-weight="900" font-size="13" fill="#fff">04 · SCALE</text>
+        <text x="736" y="122" font-family="DM Sans" font-size="11" fill="#9ca3af">Legacy OS · SaaS</text>
+        <text x="736" y="138" font-family="DM Sans" font-size="11" fill="#9ca3af">Account · Dashboard</text>
+
+        <!-- 05 CONTENT -->
+        <rect x="30" y="320" width="870" height="120" fill="#fff" stroke="#111" stroke-width="2"/>
+        <rect x="30" y="320" width="870" height="8" fill="#111"/>
+        <text x="46" y="358" font-family="Inter" font-weight="900" font-size="14" fill="#111">05 · DISTRIBUTION LAYER</text>
+        <text x="46" y="380" font-family="DM Sans" font-size="12" fill="#4b5563">Content Engine · BYOK · LinkedIn / Facebook / Instagram asset generation</text>
+        <text x="46" y="400" font-family="DM Sans" font-size="12" fill="#4b5563">Feeds: Lead Gen · Email Sequence · Community · Retargeting · Affiliate Disclosure</text>
+
+        <!-- ARROWS: Horizontal flow -->
+        <!-- Plan → Protect -->
+        <line x1="210" y1="110" x2="258" y2="110" stroke="#111" stroke-width="2" marker-end="url(#arrowhead)"/>
+        <text x="218" y="100" font-family="Inter" font-weight="700" font-size="9" fill="#F18B25" letter-spacing=".08em">GAP SIZE</text>
+
+        <!-- Protect → Operate -->
+        <line x1="440" y1="110" x2="488" y2="110" stroke="#111" stroke-width="2" marker-end="url(#arrowhead)"/>
+        <text x="448" y="100" font-family="Inter" font-weight="700" font-size="9" fill="#F18B25" letter-spacing=".08em">DAILY TASKS</text>
+
+        <!-- Operate → SaaS -->
+        <line x1="670" y1="110" x2="718" y2="110" stroke="#111" stroke-width="2" marker-end="url(#arrowhead)"/>
+        <text x="678" y="100" font-family="Inter" font-weight="700" font-size="9" fill="#8B5CF6" letter-spacing=".08em">ACCOUNT</text>
+
+        <!-- SaaS loopback -->
+        <path d="M 860 160 L 860 200 L 100 200 L 100 160" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrowhead-orange)"/>
+        <text x="460" y="195" font-family="Inter" font-weight="700" font-size="9" fill="#8B5CF6" letter-spacing=".08em">RECURRING LOGIN · UPSELL PATH</text>
+
+        <!-- Content → Plan -->
+        <line x1="120" y1="320" x2="120" y2="162" stroke="#111" stroke-width="2" marker-end="url(#arrowhead)"/>
+        <text x="128" y="250" font-family="Inter" font-weight="700" font-size="9" fill="#111" letter-spacing=".08em">LEADS</text>
+
+        <!-- Content → Protect -->
+        <line x1="350" y1="320" x2="350" y2="162" stroke="#111" stroke-width="2" marker-end="url(#arrowhead)"/>
+        <text x="358" y="250" font-family="Inter" font-weight="700" font-size="9" fill="#111" letter-spacing=".08em">CONTENT</text>
+
+        <!-- Content → Operate -->
+        <line x1="580" y1="320" x2="580" y2="162" stroke="#111" stroke-width="2" marker-end="url(#arrowhead)"/>
+        <text x="588" y="250" font-family="Inter" font-weight="700" font-size="9" fill="#111" letter-spacing=".08em">RETARGETING</text>
+
+        <!-- Content → SaaS -->
+        <line x1="810" y1="320" x2="810" y2="162" stroke="#111" stroke-width="2" marker-end="url(#arrowhead)"/>
+        <text x="818" y="250" font-family="Inter" font-weight="700" font-size="9" fill="#111" letter-spacing=".08em">COMMUNITY</text>
+
+        <!-- REVENUE BOXES -->
+        <!-- Plan revenue -->
+        <rect x="30" y="220" width="180" height="56" fill="#F18B25" stroke="#111" stroke-width="2"/>
+        <text x="46" y="244" font-family="Inter" font-weight="900" font-size="10" fill="#fff" letter-spacing=".08em">ONE-TIME SALE</text>
+        <text x="46" y="262" font-family="DM Sans" font-size="10" fill="#fff">$47–97 Planner License</text>
+
+        <!-- Protect revenue -->
+        <rect x="260" y="220" width="180" height="56" fill="#F18B25" stroke="#111" stroke-width="2"/>
+        <text x="276" y="244" font-family="Inter" font-weight="900" font-size="10" fill="#fff" letter-spacing=".08em">ONE-TIME SALE</text>
+        <text x="276" y="262" font-family="DM Sans" font-size="10" fill="#fff">$97–197 Kit + Guide</text>
+
+        <!-- Operate revenue -->
+        <rect x="490" y="220" width="180" height="56" fill="#F18B25" stroke="#111" stroke-width="2"/>
+        <text x="506" y="244" font-family="Inter" font-weight="900" font-size="10" fill="#fff" letter-spacing=".08em">ONE-TIME SALE</text>
+        <text x="506" y="262" font-family="DM Sans" font-size="10" fill="#fff">$147–297 Command Center</text>
+
+        <!-- SaaS revenue -->
+        <rect x="720" y="220" width="180" height="56" fill="#8B5CF6" stroke="#111" stroke-width="2"/>
+        <text x="736" y="244" font-family="Inter" font-weight="900" font-size="10" fill="#fff" letter-spacing=".08em">RECURRING SaaS</text>
+        <text x="736" y="262" font-family="DM Sans" font-size="10" fill="#fff">$29–79/mo + Affiliate</text>
+
+        <!-- Labels -->
+        <text x="30" y="48" font-family="Inter" font-weight="700" font-size="9" fill="#666" letter-spacing=".12em">USER JOURNEY · LEFT → RIGHT</text>
+        <text x="720" y="48" font-family="Inter" font-weight="700" font-size="9" fill="#8B5CF6" letter-spacing=".12em">REVENUE CAPTURE · BOTTOM BOXES</text>
+
+      </svg>
+    </div>
+  </section>
+
+  <!-- WIRED CONNECTIONS TABLE -->
+  <section class="section">
+    <div class="section-head">
+      <div class="lead">
+        <span class="eyebrow">Layer 03</span>
+        <h2>Wired Connections</h2>
+        <p>Every handoff, specified. No ambiguity. This is what makes it a system instead of a folder of files.</p>
+      </div>
+    </div>
+
+    <table class="wire-table">
+      <thead>
+        <tr>
+          <th>From</th>
+          <th>To</th>
+          <th>What Moves</th>
+          <th>When</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag--plan">Plan</span><strong>Planner</strong></td>
+          <td><span class="tag tag--protect">Protect</span><strong>Survival Kit</strong></td>
+          <td>The <strong>gap size</strong> — the difference between the Freedom Number and current income. If the gap is large, the caregiving context becomes the emotional hook.</td>
+          <td>After the user completes the planner. CTA: "Your gap is $X/mo. If caregiving is part of the picture, here's how to stop the leak."</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag--protect">Protect</span><strong>Survival Kit</strong></td>
+          <td><span class="tag tag--operate">Operate</span><strong>Command Center</strong></td>
+          <td>The <strong>daily task list</strong> — appointments, medication schedules, delegation items. The kit identifies what needs tracking; the center does the tracking.</td>
+          <td>After the user completes the benefit path. CTA: "You have 14 open logistics items. Move them into one dashboard."</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag--operate">Operate</span><strong>Command Center</strong></td>
+          <td><span class="tag tag--saaS">Scale</span><strong>Legacy OS SaaS</strong></td>
+          <td>The <strong>account</strong> — all data from the one-time tools migrates into the recurring SaaS. The user gets one login instead of three files.</td>
+          <td>When the user is ready for multi-user access, encrypted storage, SMS alerts. CTA: "Your family network needs more than one browser."</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag--saaS">Scale</span><strong>Legacy OS SaaS</strong></td>
+          <td><span class="tag tag--plan">Plan</span><strong>Planner (Re-engagement)</strong></td>
+          <td>The <strong>recurring login</strong>. Every SaaS session exposes the user to updated planner math, new asset categories, and expanded benefit matrices.</td>
+          <td>Continuous. The SaaS is not a one-time sale — it's the account that keeps the whole system alive.</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag--content">Content</span><strong>Content Engine</strong></td>
+          <td><span class="tag tag--plan">Plan</span><span class="tag tag--protect">Protect</span><span class="tag tag--operate">Operate</span><span class="tag tag--saaS">Scale</span></td>
+          <td><strong>Leads, retargeting, and community engagement</strong>. The engine generates platform-specific assets that drive traffic to each layer at the right moment in the journey.</td>
+          <td>Always. The content layer runs in parallel. It is not a stage — it's the fuel for every stage.</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag--saaS">Scale</span><strong>Legacy OS SaaS</strong></td>
+          <td><span class="tag tag--content">Content</span><strong>Content Engine (Affiliate)</strong></td>
+          <td><strong>Commission disclosures and vetted partner links</strong>. When a SaaS user completes a safety audit or legal milestone, the engine generates a disclosed affiliate recommendation — not a pushy ad.</td>
+          <td>Phase 3 only. After trust is established. Never in the first 90 days of a subscription.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- PHASED BUILD -->
+  <section class="section">
+    <div class="section-head">
+      <div class="lead">
+        <span class="eyebrow">Layer 04</span>
+        <h2>Phased Build Sequence</h2>
+        <p>The system does not ship all at once. Each phase is a sellable unit. The next phase is the upsell.</p>
+      </div>
+    </div>
+
+    <div class="roadmap">
+      <div class="phase phase--p1">
+        <div class="phase-head">
+          <h3>Phase 1</h3>
+          <div class="phase-num">MVP</div>
+        </div>
+        <div class="phase-body">
+          <p>
+            <strong>What ships:</strong>
+            The combined Legacy OS page (what you already built). Three tabs: Plan, Protect, Operate. No backend. No SaaS account yet.
+          </p>
+          <div class="phase-list">
+            <div class="phase-item"><span class="bullet"></span><span>Financial Autonomy Planner (interactive sliders)</span></div>
+            <div class="phase-item"><span class="bullet"></span><span>Caregiver's Survival Kit (benefit paths + exposure math)</span></div>
+            <div class="phase-item"><span class="bullet"></span><span>Legacy Command Center (localStorage-based, no Firebase)</span></div>
+            <div class="phase-item"><span class="bullet"></span><span>One-time purchase model: $47–297 depending on bundle</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase phase--p2">
+        <div class="phase-head">
+          <h3>Phase 2</h3>
+          <div class="phase-num">SaaS</div>
+        </div>
+        <div class="phase-body">
+          <p>
+            <strong>What ships:</strong>
+            The Legacy OS becomes a real SaaS. One account, one login, one dashboard. All three modules live inside the account.
+          </p>
+          <div class="phase-list">
+            <div class="phase-item"><span class="bullet"></span><span>Multi-user "Family Network" access (premium unlock)</span></div>
+            <div class="phase-item"><span class="bullet"></span><span>Encrypted document vault (premium unlock)</span></div>
+            <div class="phase-item"><span class="bullet"></span><span>One-Click Emergency PDF Export (premium unlock)</span></div>
+            <div class="phase-item"><span class="bullet"></span><span>SMS notifications for critical tasks (premium unlock)</span></div>
+            <div class="phase-item"><span class="bullet"></span><span>Recurring revenue: $29–79/mo</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase phase--p3">
+        <div class="phase-head">
+          <h3>Phase 3</h3>
+          <div class="phase-num">Growth</div>
+        </div>
+        <div class="phase-body">
+          <p>
+            <strong>What ships:</strong>
+            The affiliate layer activates. State-specific benefits matrix goes live. The Content Engine feeds the SaaS funnel at scale.
+          </p>
+          <div class="phase-list">
+            <div class="phase-item"><span class="bullet"></span><span>Home & Safety Audit module with vetted affiliate partners</span></div>
+            <div class="phase-item"><span class="bullet"></span><span>Legal & Legacy Lifecycle tracker with outside integrations</span></div>
+            <div class="phase-item"><span class="bullet"></span><span>State-specific Medicaid / PFL / SFC benefit matrices</span></div>
+            <div class="phase-item"><span class="bullet"></span><span>Content Engine → SaaS lead generation loop</span></div>
+            <div class="phase-item"><span class="bullet"></span><span>Affiliate revenue: 10–30% commission on partner products</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVENUE FLOW -->
+  <section class="section">
+    <div class="section-head">
+      <div class="lead">
+        <span class="eyebrow">Layer 05</span>
+        <h2>Revenue Capture Flow</h2>
+        <p>Where each dollar comes from, and when it arrives in the user's journey.</p>
+      </div>
+    </div>
+
+    <div class="revenue">
+      <div class="rev-card">
+        <h3>One-Time Sales (Phase 1)</h3>
+        <p>Front-loaded. The user buys the system. The content engine drives the sale. No subscription yet.</p>
+        <div class="flow-line">
+          <strong>Planner:</strong> $47–97<br>
+          <strong>Survival Kit:</strong> $97–197<br>
+          <strong>Command Center:</strong> $147–297<br>
+          <strong>Full Stack Bundle:</strong> $297–497
+        </div>
+      </div>
+      <div class="rev-card">
+        <h3>Recurring SaaS (Phase 2)</h3>
+        <p>Back-end. The user upgrades from one-time files to a live account. The platform becomes the operating system.</p>
+        <div class="flow-line">
+          <strong>Free Tier:</strong> Single caregiver, one recipient, in-app notifications only<br>
+          <strong>Premium Tier:</strong> Multi-user Family Network, encrypted vault, PDF export, SMS alerts<br>
+          <strong>Pricing:</strong> $29/mo (single) · $79/mo (family)
+        </div>
+      </div>
+      <div class="rev-card">
+        <h3>Affiliate Layer (Phase 3)</h3>
+        <p>Trust-gated. No affiliate links until the user has been a subscriber for 90 days. Then the engine recommends — it does not push.</p>
+        <div class="flow-line">
+          <strong>Safety Audit:</strong> Vetted mobility / medical alert partners (10–20% commission)<br>
+          <strong>Legal Module:</strong> Trust & Will / Rocket Lawyer integrations (15–30% commission)<br>
+          <strong>Aide Referral:</strong> Care.com / local home-care networks (performance-based)<br>
+          <strong>Disclosure:</strong> Always visible. "We may earn a commission from vetted partners."
+        </div>
+      </div>
+      <div class="rev-card">
+        <h3>Content Engine (All Phases)</h3>
+        <p>Runs in parallel. The engine doesn't sell the product — it fills the funnel that sells the product. It's the distribution layer.</p>
+        <div class="flow-line">
+          <strong>LinkedIn assets:</strong> Positioning content → planner leads<br>
+          <strong>Facebook assets:</strong> Community content → survival kit leads<br>
+          <strong>Instagram assets:</strong> Lifestyle content → command center leads<br>
+          <strong>BYOK mode:</strong> User-generated content from their own API keys → viral loop
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUARDRAILS -->
+  <section class="section">
+    <div class="section-head">
+      <div class="lead">
+        <span class="eyebrow">Layer 06</span>
+        <h2>Guardrails</h2>
+        <p>What this system is not. These boundaries protect the brand's authority and the user's trust.</p>
+      </div>
+    </div>
+
+    <div class="guardrails">
+      <div class="guard guard--red">
+        <h4>Not Legal Advice</h4>
+        <p>The Legal & Legacy module tracks milestones and connects to outside legal platforms. It does not draft, file, or interpret legal documents. Every user sees this disclaimer before reaching the module.</p>
+      </div>
+      <div class="guard guard--orange">
+        <h4>Not Medicaid Asset-Transfer Counsel</h4>
+        <p>The benefits guide explains eligibility logic and application paths. It does not advise on asset transfers, the 5-year look-back rule, or penalty periods. Those conversations go to a state-specific elder-law attorney.</p>
+      </div>
+      <div class="guard guard--blue">
+        <h4>Affiliates Are Trust-Gated</h4>
+        <p>No external merchant links in the first 90 days of a subscription. After that, recommendations appear as "vetted partner options" with visible commission disclosure. The premium tier is explicitly described as "less intrusive" than the free tier.</p>
+      </div>
+      <div class="guard guard--green">
+        <h4>Single Caregiver First</h4>
+        <p>The MVP is one caregiver, one care recipient, one shared calendar. Multi-user access is a Phase 2 premium feature. This keeps the build shippable and the first-user experience clean.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>© DigitallyDefined · Legacy OS Integration Blueprint · 2026</div>
+    <div>Plan · Protect · Operate · Scale · Distribute</div>
+  </footer>
+
+</div>
+
+</body>
+</html>

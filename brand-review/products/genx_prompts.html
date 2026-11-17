@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>50 AI Prompts for Women Building Digital Products That Sell | DigitallyDefined</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFCF9;--text:#2D3748;--frame:#000;
+  --aqua:#47B7D4;--orange:#F18B25;--red:#D64545;
+  --muted:#6B7280;--line:#E5E7EB;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,h5{font-family:'Inter',sans-serif;font-weight:800;letter-spacing:-.02em;line-height:1.15}
+a{color:inherit;text-decoration:none}
+
+/* ===== MANDATORY DD LAYOUT CLASSES ===== */
+.dd-page{max-width:1200px;margin:0 auto;padding:40px 24px 60px}
+.dd-section{margin-bottom:56px}
+.dd-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+.dd-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.dd-card{background:#fff;border:1px solid var(--frame);border-radius:0;padding:28px}
+.dd-input-group{display:flex;flex-direction:column;gap:6px}
+.dd-label{font-family:'Inter',sans-serif;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--text)}
+.dd-input{font-family:'DM Sans',sans-serif;font-size:15px;padding:13px 16px;border:1px solid var(--frame);border-radius:0;background:#fff;color:var(--text);outline:none;transition:box-shadow .1s}
+.dd-input:focus{box-shadow:4px 4px 0 var(--frame)}
+.dd-btn{font-family:'Inter',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.06em;padding:13px 20px;border:1px solid var(--frame);border-radius:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .1s,box-shadow .1s;background:#fff;color:var(--text);line-height:1}
+.dd-btn:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--frame)}
+.dd-btn:active{transform:translate(0);box-shadow:none}
+.dd-btn--primary{background:var(--aqua);color:#fff;border-color:var(--aqua)}
+.dd-btn--secondary{background:var(--orange);color:#fff;border-color:var(--orange)}
+.dd-btn--dark{background:var(--frame);color:#fff}
+.dd-btn--sm{padding:9px 14px;font-size:11px}
+.dd-btn--lg{padding:16px 28px;font-size:15px}
+.dd-btn--ghost{background:transparent}
+
+/* ===== TOPBAR ===== */
+.dd-topbar{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border:1px solid var(--frame);background:#fff;margin-bottom:28px}
+.dd-logo{font-family:'Inter',sans-serif;font-weight:900;font-size:17px}
+.dd-logo span{color:var(--aqua)}
+.dd-topnav{display:flex;gap:20px;font-family:'Inter',sans-serif;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.dd-topnav a:hover{color:var(--aqua)}
+
+/* ===== HERO ===== */
+.dd-hero{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;align-items:stretch}
+.dd-hero-main{padding:44px;border:1px solid var(--frame);background:#fff}
+.dd-eyebrow{display:inline-block;font-family:'Inter',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.12em;padding:5px 12px;border:1px solid var(--frame);background:var(--orange);color:#fff;margin-bottom:18px}
+.dd-hero h1{font-size:clamp(32px,4.5vw,54px);margin-bottom:16px}
+.dd-hero h1 em{font-style:normal;color:var(--aqua);position:relative}
+.dd-hero h1 em::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:8px;background:var(--orange);opacity:.22;z-index:-1}
+.dd-hero .lede{font-size:17px;margin-bottom:24px;max-width:540px;color:var(--text)}
+.dd-hero-cta{display:flex;gap:10px;flex-wrap:wrap}
+.dd-hero-side{display:flex;flex-direction:column;gap:20px}
+.dd-stat{padding:22px;border:1px solid var(--frame);background:#fff;flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.dd-stat-num{font-family:'Inter',sans-serif;font-weight:900;font-size:52px;line-height:1;letter-spacing:-.03em}
+.dd-stat-num.aqua{color:var(--aqua)}
+.dd-stat-num.orange{color:var(--orange)}
+.dd-stat-num.red{color:var(--red)}
+.dd-stat-label{font-family:'Inter',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:8px}
+
+/* ===== HOW TO USE ===== */
+.dd-how-head{margin-bottom:20px}
+.dd-how-head h2{font-size:26px;margin-bottom:6px}
+.dd-how-head p{color:var(--muted);font-size:15px}
+.dd-how-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.dd-how-card{padding:22px 18px;border:1px solid var(--frame);background:#fff;display:flex;flex-direction:column;gap:10px}
+.dd-how-num{font-family:'Inter',sans-serif;font-weight:900;font-size:28px;line-height:1}
+.dd-how-num.c1{color:var(--aqua)}
+.dd-how-num.c2{color:var(--orange)}
+.dd-how-num.c3{color:var(--red)}
+.dd-how-num.c4{color:var(--frame)}
+.dd-how-num.c5{color:var(--aqua)}
+.dd-how-card h4{font-size:14px}
+.dd-how-card p{font-size:13px;color:var(--muted);line-height:1.5}
+
+/* ===== TOOLBAR ===== */
+.dd-toolbar{display:flex;gap:16px;align-items:end;flex-wrap:wrap;padding:20px;border:1px solid var(--frame);background:#fff;margin-bottom:20px}
+.dd-toolbar .dd-input-group{flex:1;min-width:220px}
+.dd-filters{display:flex;gap:6px;flex-wrap:wrap}
+.dd-filter{font-family:'Inter',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding:9px 12px;border:1px solid var(--frame);background:#fff;color:var(--text);cursor:pointer;border-radius:0;transition:all .1s}
+.dd-filter:hover{background:var(--bg)}
+.dd-filter.active{background:var(--frame);color:#fff}
+
+/* ===== SECTION HEADERS ===== */
+.dd-sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--frame)}
+.dd-sec-head h2{font-size:24px;display:flex;align-items:center;gap:12px}
+.dd-tag{font-family:'Inter',sans-serif;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.1em;padding:4px 10px;border:1px solid var(--frame);color:#fff}
+.dd-tag.aqua{background:var(--aqua);border-color:var(--aqua)}
+.dd-tag.orange{background:var(--orange);border-color:var(--orange)}
+.dd-tag.red{background:var(--red);border-color:var(--red)}
+.dd-tag.dark{background:var(--frame)}
+.dd-sec-head .meta{font-size:13px;color:var(--muted);font-weight:500}
+
+/* ===== PROMPT CARDS ===== */
+.dd-prompts{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.dd-prompt{background:#fff;border:1px solid var(--frame);padding:22px;display:flex;flex-direction:column;gap:12px;position:relative;transition:transform .1s,box-shadow .1s}
+.dd-prompt:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--frame)}
+.dd-prompt-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.dd-prompt-badge{font-family:'Inter',sans-serif;font-weight:900;font-size:12px;padding:3px 9px;border:1px solid var(--frame);letter-spacing:.04em;flex-shrink:0}
+.dd-prompt-badge.s1{background:var(--aqua);color:#fff;border-color:var(--aqua)}
+.dd-prompt-badge.s2{background:var(--orange);color:#fff;border-color:var(--orange)}
+.dd-prompt-badge.s3{background:var(--red);color:#fff;border-color:var(--red)}
+.dd-prompt-badge.s4{background:var(--frame);color:#fff}
+.dd-prompt-badge.s5{background:#fff;color:var(--frame)}
+.dd-prompt-title{font-family:'Inter',sans-serif;font-weight:800;font-size:16px;line-height:1.25;flex:1}
+.dd-prompt-body{font-size:14px;line-height:1.65;color:var(--text);white-space:pre-wrap;word-wrap:break-word}
+.dd-prompt-body.collapsed{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.dd-prompt-toggle{font-family:'Inter',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.06em;background:none;border:none;color:var(--aqua);cursor:pointer;padding:2px 0;align-self:flex-start}
+.dd-prompt-toggle:hover{color:var(--orange)}
+.dd-prompt-actions{display:flex;gap:8px;margin-top:auto;padding-top:12px;border-top:1px dashed var(--line)}
+.dd-prompt-actions .dd-btn{flex:1}
+.dd-copied-toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--frame);color:#fff;font-family:'Inter',sans-serif;font-weight:700;font-size:13px;padding:12px 24px;z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none}
+.dd-copied-toast.show{opacity:1}
+
+/* ===== MODAL ===== */
+.dd-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10000;display:none;align-items:center;justify-content:center;padding:24px}
+.dd-modal-overlay.open{display:flex}
+.dd-modal{background:var(--bg);border:1px solid var(--frame);width:100%;max-width:680px;max-height:90vh;display:flex;flex-direction:column}
+.dd-modal-head{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--frame);background:#fff}
+.dd-modal-head h3{font-size:18px}
+.dd-modal-close{background:none;border:1px solid var(--frame);width:36px;height:36px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:700}
+.dd-modal-close:hover{background:var(--frame);color:#fff}
+.dd-modal-body{padding:24px;overflow-y:auto;flex:1}
+.dd-modal-body p{font-size:14px;color:var(--muted);margin-bottom:14px}
+.dd-modal-body textarea{width:100%;min-height:260px;font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;padding:16px;border:1px solid var(--frame);background:#fff;resize:vertical;outline:none;color:var(--text)}
+.dd-modal-body textarea:focus{box-shadow:4px 4px 0 var(--frame)}
+.dd-modal-foot{display:flex;gap:10px;padding:16px 24px;border-top:1px solid var(--frame);background:#fff}
+
+/* ===== CTA ===== */
+.dd-cta{padding:52px 36px;border:1px solid var(--frame);background:var(--frame);color:#fff;text-align:center}
+.dd-cta h2{font-size:clamp(28px,4vw,40px);color:#fff;margin-bottom:12px}
+.dd-cta p{font-size:17px;color:#D1D5DB;margin-bottom:28px;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.6}
+.dd-cta .dd-btn--primary{background:var(--aqua);border-color:var(--aqua);color:#fff}
+.dd-cta .dd-btn--primary:hover{background:var(--orange);border-color:var(--orange)}
+.dd-cta-features{display:flex;justify-content:center;gap:28px;margin-bottom:28px;flex-wrap:wrap}
+.dd-cta-feat{font-family:'Inter',sans-serif;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#9CA3AF;display:flex;align-items:center;gap:6px}
+.dd-cta-feat svg{width:16px;height:16px;stroke:var(--aqua)}
+
+/* ===== FOOTER ===== */
+.dd-footer{margin-top:40px;padding:20px;border:1px solid var(--frame);background:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:13px;color:var(--muted)}
+.dd-footer strong{color:var(--text);font-family:'Inter',sans-serif;font-weight:700}
+
+/* ===== EMPTY ===== */
+.dd-empty{padding:52px 20px;border:1px dashed var(--frame);text-align:center;background:#fff;color:var(--muted)}
+.dd-empty h3{font-size:18px;color:var(--text);margin-bottom:6px}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:960px){
+  .dd-hero{grid-template-columns:1fr}
+  .dd-how-grid{grid-template-columns:repeat(3,1fr)}
+  .dd-prompts{grid-template-columns:1fr}
+  .dd-topnav{display:none}
+}
+@media(max-width:640px){
+  .dd-page{padding:20px 14px 40px}
+  .dd-hero-main{padding:28px}
+  .dd-how-grid{grid-template-columns:1fr 1fr}
+  .dd-toolbar{flex-direction:column}
+  .dd-filters{width:100%}
+  .dd-filter{flex:1;text-align:center;font-size:10px;padding:8px 6px}
+  .dd-cta-features{flex-direction:column;align-items:center;gap:12px}
+}
+@media(max-width:420px){
+  .dd-how-grid{grid-template-columns:1fr}
+}
+</style>
+
+<!-- DigitallyDefined Canonical Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- DigitallyDefined Brand Standards (Strict 0px Soft-Brutalism) -->
+<style id="dd-brand-standard">
+  :root {
+    --bg: #FFFCF9 !important;
+    --dd-bg: #FFFCF9 !important;
+    --card: #FFFFFF !important;
+    --dd-card: #FFFFFF !important;
+    --panel: #FFFAF5 !important;
+    --dd-panel: #FFFAF5 !important;
+    --text: #111111 !important;
+    --dd-text: #111111 !important;
+    --ink: #111111 !important;
+    --muted: #5F5F5F !important;
+    --dd-muted: #5F5F5F !important;
+    --border: 1px solid #111111 !important;
+    --dd-border: 1px solid #111111 !important;
+    --line: #111111 !important;
+    --or: #F18B25 !important;
+    --orange: #F18B25 !important;
+    --dd-orange: #F18B25 !important;
+    --bl: #47B7D4 !important;
+    --aqua: #47B7D4 !important;
+    --dd-aqua: #47B7D4 !important;
+    --rd: #8B1A0A !important;
+    --red: #8B1A0A !important;
+    --dd-red: #8B1A0A !important;
+    --dd-frame: #111111 !important;
+  }
+
+  /* Strict Brand Reset: zero border radius on all elements */
+  *, *::before, *::after {
+    border-radius: 0px !important;
+  }
+
+  body {
+    background-color: #FFFCF9 !important;
+    color: #111111 !important;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    -webkit-font-smoothing: antialiased !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    color: #111111 !important;
+    letter-spacing: -0.025em !important;
+  }
+
+  .mono, code, pre, .dd-badge, .badge, .tag {
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+
+  input:focus, select:focus, textarea:focus, button:focus {
+    outline: 2px solid #F18B25 !important;
+    outline-offset: 1px !important;
+  }
+</style>
+</head>
+<body>
+
+<div class="dd-page">
+
+  <!-- TOPBAR -->
+  <div class="dd-topbar">
+    <div class="dd-logo">Digitally<span>Defined</span>.</div>
+    <nav class="dd-topnav">
+      <a href="#how">How to Use</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#community">Community</a>
+    </nav>
+    <a href="#community" class="dd-btn dd-btn--primary dd-btn--sm">Join the Circle →</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="dd-section dd-hero">
+    <div class="dd-hero-main">
+      <span class="dd-eyebrow">The Prompt Vault · v1.0</span>
+      <h1>50 AI Prompts for Women Building <em>Digital Products</em> That Sell.</h1>
+      <p class="lede">Engineered with rich context, explicit instructions, and step-by-step reasoning baked in. Drop them into any AI model. Replace the [brackets]. Ship faster.</p>
+      <div class="dd-hero-cta">
+        <a href="#prompts" class="dd-btn dd-btn--primary">Browse All 50 ↓</a>
+        <a href="#how" class="dd-btn dd-btn--ghost">How to Use Them</a>
+      </div>
+    </div>
+    <div class="dd-hero-side">
+      <div class="dd-stat"><div class="dd-stat-num aqua">50</div><div class="dd-stat-label">Battle-Tested Prompts</div></div>
+      <div class="dd-stat"><div class="dd-stat-num orange">5</div><div class="dd-stat-label">Business Phases</div></div>
+      <div class="dd-stat"><div class="dd-stat-num red">∞</div><div class="dd-stat-label">Products You Can Build</div></div>
+    </div>
+  </section>
+
+  <!-- HOW TO USE -->
+  <section class="dd-section" id="how">
+    <div class="dd-how-head">
+      <h2>How to Use This Vault.</h2>
+      <p>Five rules. No shortcuts. The output is only as sharp as the input.</p>
+    </div>
+    <div class="dd-how-grid">
+      <div class="dd-how-card">
+        <div class="dd-how-num c1">01</div>
+        <h4>Add Your Specifics</h4>
+        <p>Replace every [bracket] with real detail. Vague in = vague out. The more you fill, the sharper the output.</p>
+      </div>
+      <div class="dd-how-card">
+        <div class="dd-how-num c2">02</div>
+        <h4>Add Examples</h4>
+        <p>Paste a sample of your writing so the model mirrors your voice, not generic marketing-speak.</p>
+      </div>
+      <div class="dd-how-card">
+        <div class="dd-how-num c3">03</div>
+        <h4>Push Back</h4>
+        <p>If the first answer is generic, say "go deeper" or "give me the non-obvious version." Demand rigor.</p>
+      </div>
+      <div class="dd-how-card">
+        <div class="dd-how-num c4">04</div>
+        <h4>Chain Prompts</h4>
+        <p>Use the output of one prompt as the input to the next. These are designed to stack and compound.</p>
+      </div>
+      <div class="dd-how-card">
+        <div class="dd-how-num c5">05</div>
+        <h4>Force Reasoning</h4>
+        <p>Add "think step-by-step" to any prompt where you want analytical depth, not fast fluff.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLBAR -->
+  <section id="prompts" style="margin-bottom:20px">
+    <div class="dd-toolbar">
+      <div class="dd-input-group">
+        <label class="dd-label" for="search">Search the Vault</label>
+        <input class="dd-input" id="search" type="text" placeholder="Try: 'niche', 'sales page', 'funnel', 'pricing'…"/>
+      </div>
+      <div class="dd-filters" id="filters">
+        <button class="dd-filter active" data-filter="all">All <span style="opacity:.55">50</span></button>
+        <button class="dd-filter" data-filter="1">01 Niche <span style="opacity:.55">8</span></button>
+        <button class="dd-filter" data-filter="2">02 Design <span style="opacity:.55">10</span></button>
+        <button class="dd-filter" data-filter="3">03 Copy <span style="opacity:.55">10</span></button>
+        <button class="dd-filter" data-filter="4">04 Sell <span style="opacity:.55">10</span></button>
+        <button class="dd-filter" data-filter="5">05 Scale <span style="opacity:.55">12</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMPTS CONTAINER -->
+  <div id="promptContainer"></div>
+
+  <!-- CTA: COMMUNITY -->
+  <section class="dd-section dd-cta" id="community">
+    <h2>Stop Manifesting. Start Shipping.</h2>
+    <p>Join the DigitallyDefined Inner Circle — where Gen X women turn three decades of hard-won experience into digital assets that print while they sleep, travel, or ignore their inbox.</p>
+    <div class="dd-cta-features">
+      <div class="dd-cta-feat">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+        Weekly Strategy Calls
+      </div>
+      <div class="dd-cta-feat">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+        Done-With-You Templates
+      </div>
+      <div class="dd-cta-feat">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+        Private Community Access
+      </div>
+      <div class="dd-cta-feat">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+        AI Prompt Vault Updates
+      </div>
+    </div>
+    <a href="https://digitallydefined.online" target="_blank" class="dd-btn dd-btn--primary dd-btn--lg">Claim Your Seat in the Inner Circle →</a>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="dd-footer">
+    <div><strong>DigitallyDefined.online</strong> · The Gen X Guide to Digital Sovereignty</div>
+    <div>© 2026 · Built with soft-brutalist intent.</div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="dd-copied-toast" id="toast">✓ Copied to clipboard</div>
+
+<!-- CUSTOMIZE MODAL -->
+<div class="dd-modal-overlay" id="modal">
+  <div class="dd-modal">
+    <div class="dd-modal-head">
+      <h3 id="modalTitle">Customize Prompt</h3>
+      <button class="dd-modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="dd-modal-body">
+      <p>Replace the <strong>[bracketed]</strong> placeholders with your specifics, then copy the finished prompt.</p>
+      <textarea id="modalTextarea"></textarea>
+    </div>
+    <div class="dd-modal-foot">
+      <button class="dd-btn dd-btn--primary" id="modalCopy">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>
+        Copy Customized Prompt
+      </button>
+      <button class="dd-btn dd-btn--ghost" id="modalCancel">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const P=[
+{id:1,s:1,t:"The Niche Viability Audit",x:`"I'm considering building a digital product in [niche]. Before I invest time, I need you to think step-by-step and analyze: (1) Who is the buyer with the most urgent pain? (2) What are they already spending money on to solve this problem? (3) What's missing from existing solutions? (4) What format would they most likely pay for — course, template, tool, or community? Give me a blunt assessment of whether this niche has real commercial potential, and flag any red flags."`},
+{id:2,s:1,t:"The Monetization Gap Finder",x:`"Act as a market research analyst. I'm in the [niche] space and I want to find the gap between what's available and what buyers actually want. Search for the top 5 products sold in this niche on Etsy, Gumroad, and Teachable. Identify: what problems they solve, what complaints buyers leave in reviews, and what adjacent problems nobody has productized yet. Output: a ranked list of 3 untapped product opportunities."`},
+{id:3,s:1,t:"The Buyer Avatar Builder",x:`"I'm building a digital product for [broad audience, e.g., 'women in their 40s leaving corporate jobs']. Help me build a precise buyer avatar. Think step-by-step: What is she trying to achieve in the next 90 days? What has she already tried that didn't work? What language does she use when she's frustrated? What would make her click 'buy now' without hesitation? Write this as a first-person narrative in her voice, 300 words."`},
+{id:4,s:1,t:"The Price Anchoring Test",x:`"I have a digital product idea: [describe product]. I want to find the right price. Walk me through 3 different pricing scenarios — $27, $97, and $297 — and for each one: what buyer it attracts, what the product must deliver to justify the price, and what risk I take at that price point. Then recommend which price I should launch at and why."`},
+{id:5,s:1,t:"The Competitor Teardown",x:`"Analyze [competitor product or URL] as if you're a product strategist doing due diligence before an acquisition. Evaluate: what it does well, what it does poorly, what promises it makes that it may not fully deliver, and what a smarter, leaner version would look like. Be blunt. I'm trying to build something better, not feel good about existing options."`},
+{id:6,s:1,t:"The Proof-of-Demand Validator",x:`"Before I build [product idea], I want to validate demand without building anything. Give me a step-by-step 2-week validation plan I can execute alone, with no ad budget. Include: where to post, what to say, what 'signal' counts as real demand vs. polite interest, and what a no-build MVP looks like for this product type."`},
+{id:7,s:1,t:"The Niche Narrower",x:`"I want to sell [broad product type, e.g., 'productivity templates']. This is too vague to stand out. Give me 10 hyper-specific sub-niches within this category — each with a specific buyer, a specific pain, and a specific product angle. Then recommend the 2 most likely to convert based on buyer urgency and low competition."`},
+{id:8,s:1,t:"The 'Should I Pivot?' Stress Test",x:`"I've been building [product/business] for [timeframe] and I'm getting [results, e.g., 'low sales but high engagement']. I'm considering pivoting to [new direction]. Act as a skeptical business advisor. Walk me through what the data likely signals, what I might be misreading, what pivoting would cost me in lost momentum, and under what conditions the pivot is the right call vs. the wrong one."`},
+{id:9,s:2,t:"The Outcome-First Product Designer",x:`"I'm building a [product type] for [buyer]. Don't help me design the content yet. First, help me define the exact outcome the buyer will achieve by the end of this product — in one sentence, in her words. Then work backwards and tell me what must be true for her to reach that outcome. Only then outline the product structure."`},
+{id:10,s:2,t:"The Scope Cutter",x:`"Here is my current product outline: [paste outline]. It's too big. I'll never finish it. Apply the 80/20 rule ruthlessly: identify the 20% of content that delivers 80% of the promised transformation. Cut everything else. Tell me what to remove and why, without apologizing for it."`},
+{id:11,s:2,t:"The Template Architect",x:`"I want to create a done-for-you [type] template pack for [buyer]. Walk me through how to structure each template so it: (1) solves a specific, recurring problem, (2) requires minimal customization to be useful, (3) looks professional without requiring design skills to edit, and (4) is something buyers will use repeatedly — not just once. Then outline what 5 templates should be in this pack."`},
+{id:12,s:2,t:"The Course Outline Builder (CoT Version)",x:`"Think step-by-step. I want to build a course that teaches [skill or outcome] to [audience]. Start by defining the before/after transformation. Then map the learner journey from zero to outcome. Then build a module-by-module outline where each module ends with a tangible deliverable the learner has created. Each module should be completable in under 60 minutes. Output the full structure."`},
+{id:13,s:2,t:"The Workbook Designer",x:`"Design a workbook to accompany [course/product]. The buyer is [describe her]. Each section should: ask a question she hasn't thought to ask herself, give her a framework to answer it, and produce a usable output she keeps after the course. Create 5 sample workbook pages in this format."`},
+{id:14,s:2,t:"The 'Is This Too Basic?' Calibrator",x:`"I worry my [product] is too basic for my audience. Here's the content: [paste or describe]. Evaluate it honestly: Is this too beginner? Is it priced appropriately for the depth? What would need to change to justify a higher price point? What's the one thing I could add that would make buyers feel they got far more than they paid for?"`},
+{id:15,s:2,t:"The Signature Framework Naming Session",x:`"I teach [methodology or process]. I need a memorable, ownable name for my framework that: sounds professional but not corporate, is easy to remember, hints at the transformation, and could anchor an entire product line. Give me 10 framework name options with a one-line description for each."`},
+{id:16,s:2,t:"The FAQ Pre-Builder",x:`"My product is [describe]. Before I write the sales page, generate the 15 most likely objections and questions a skeptical buyer will have — especially around price, time commitment, results, and whether it's right for her specific situation. Then give me a direct, confident answer to each one."`},
+{id:17,s:2,t:"The 'What's the Quick Win?' Engineer",x:`"In my product [describe], I need to engineer a quick win — something the buyer can accomplish in the first 20 minutes that makes her feel immediate progress and confirms she made the right purchase. What should that quick win be, and how do I structure the product opening to deliver it?"`},
+{id:18,s:2,t:"The Productized Service Converter",x:`"I currently offer [service] as a 1:1 offering. Help me convert it into a scalable digital product. Walk me through: what parts of my process can be templatized, what the buyer can self-direct vs. what actually requires me, what format the product should take, and how I price it relative to my 1:1 rate without cannibalizing my existing clients."`},
+{id:19,s:3,t:"The Sales Page Builder (Full Structure)",x:`"Write a sales page for [product]. Buyer: [describe]. Her biggest fear: [X]. Her dream outcome: [Y]. The format: headline → problem agitation → solution → what's inside → who it's for/not for → proof/social proof placeholder → FAQ → price and offer → CTA. Write in a direct, confident, second-person voice. No corporate language. No excessive exclamation marks."`},
+{id:20,s:3,t:"The Headline Factory",x:`"My product is [describe] and my buyer is [describe]. Write 20 headline options for the sales page. Mix formats: outcome-focused, curiosity-driven, objection-busting, and direct. Flag your top 3 and explain why they'd convert."`},
+{id:21,s:3,t:"The Email Launch Sequence",x:`"Write a 5-email launch sequence for [product] going to a warm list of [audience]. Email 1: open a pattern interrupt and tease the product. Email 2: tell the origin story of why I built this. Email 3: address the #1 objection. Email 4: social proof and urgency. Email 5: last call. Each email is under 300 words. Direct, human voice — not a marketing robot."`},
+{id:22,s:3,t:"The One-Liner Pitch",x:`"I need a one-sentence pitch for [product] that I can use in my bio, a cold DM, or a podcast intro. It must: name the buyer, name the problem, name the outcome, and make someone want to know more. Give me 10 versions, ranging from straightforward to bold. No buzzwords."`},
+{id:23,s:3,t:"The Instagram Caption Converter",x:`"Take this sales page section: [paste text]. Rewrite it as 3 Instagram caption options — each under 200 words — that feel like a personal story, not an ad. Include a soft CTA at the end of each. Maintain the core message but drop the formal structure."`},
+{id:24,s:3,t:"The Objection-Busting Paragraph",x:`"My buyers frequently say: '[common objection, e.g., I don't have time for another course].' Write a single paragraph that directly addresses this objection in a way that's empathetic but doesn't back down from the sale. No fluff, no over-apologizing. Make her feel heard, then redirect her toward action."`},
+{id:25,s:3,t:"The Testimonial Extraction Prompt",x:`"I need powerful testimonials but my clients give vague feedback like 'it was great!' Give me a 5-question survey I can send to past clients that will extract specific, story-driven testimonials I can use in sales copy. Questions should draw out: before/after, specific results, and what almost stopped them from buying."`},
+{id:26,s:3,t:"The Cold DM Script",x:`"Write a cold DM script to reach out to [target buyer] on [platform] about [product]. It must: not lead with the product, open with something specific to them, establish relevance in 2 sentences, offer value before asking anything, and end with a low-friction question — not a hard pitch. Under 100 words."`},
+{id:27,s:3,t:"The 'About Me' Page Rewrite",x:`"Here's my current About page: [paste]. Rewrite it so it's less about my credentials and more about what I can do for the buyer. Lead with her problem, not my bio. Weave in my story as proof of authority, not the focus. Keep it under 250 words."`},
+{id:28,s:3,t:"The Content-to-Sales Bridge",x:`"I publish content about [topics] but it never leads to product sales. Here's a recent post that got good engagement: [paste]. Rewrite it so it naturally leads into my product [describe] without feeling like a bait-and-switch. Show me the exact transition sentence and the CTA."`},
+{id:29,s:4,t:"The Launch Strategy Planner",x:`"I'm launching [product] in [timeframe] to an audience of [size and platform]. Walk me through a complete launch plan: pre-launch content calendar, warm-up strategy, launch week daily actions, and post-launch follow-up. I don't have a big team — make this executable by one person working 2 hours a day."`},
+{id:30,s:4,t:"The Evergreen Funnel Architect",x:`"Design a simple evergreen funnel for [product] that runs without me. Include: lead magnet concept, opt-in page structure, welcome email sequence (3 emails), and sales conversion email. The funnel should feel human, not automated-robot. Keep the whole sequence under 1,500 words total."`},
+{id:31,s:4,t:"The Lead Magnet Generator",x:`"I sell [product] to [audience]. Generate 10 lead magnet ideas that: solve a small, specific problem, take under 20 minutes to consume, naturally lead into buying my paid product, and are fast for me to create. Rank them by conversion potential and ease of creation."`},
+{id:32,s:4,t:"The Bundle Builder",x:`"I have these existing digital products: [list]. Help me design a bundle that: is priced at a meaningful discount to create urgency, tells a coherent story of transformation, and attracts a buyer who hasn't purchased any of my products yet. Name the bundle, write the positioning, and give me a price recommendation."`},
+{id:33,s:4,t:"The Platform Selection Advisor",x:`"I'm deciding where to sell [product] — Gumroad, Teachable, Kajabi, Podia, or Etsy. My priorities are: [list, e.g., low fees, ease of setup, affiliate options]. Walk me through which platform best fits my situation given I'm at [stage — early, scaling, established] with a monthly revenue target of [X]. Give me a direct recommendation, not a feature comparison table."`},
+{id:34,s:4,t:"The Affiliate Program Designer",x:`"I want to launch an affiliate program for [products priced at $X]. Design the program: commission rate, cookie window, what affiliates get access to (swipe copy, graphics, etc.), how I recruit the right affiliates vs. wrong ones, and how I prevent abuse. Keep it simple enough to manage solo."`},
+{id:35,s:4,t:"The Black Friday / Seasonal Offer Builder",x:`"Design a Black Friday offer for [existing product]. I don't want to just discount it — I want to add value so it feels special, not desperate. Give me 3 offer stack options at different price points, with the specific bonuses, the urgency mechanism, and the 3-email sequence to sell it."`},
+{id:36,s:4,t:"The Upsell Path Designer",x:`"My entry product is [describe, $X]. Design a logical upsell path: what's the natural next purchase for someone who completed this product, what format it should take, how it's priced, and how I present it post-purchase without feeling pushy. Include the exact upsell offer page structure."`},
+{id:37,s:4,t:"The Referral Loop Builder",x:`"Design a referral system for [product] that incentivizes buyers to share without a formal affiliate program. Include: what I offer as incentive, where I introduce the referral task in the buyer journey, and the exact language I use to make sharing feel natural — not transactional."`},
+{id:38,s:4,t:"The 'Dead List' Revival Sequence",x:`"My email list hasn't been heard from me in [timeframe]. Write a 3-email re-engagement sequence that: acknowledges the silence without groveling, delivers immediate value in email 1, introduces a new offer in email 3, and cleans the list by asking disengaged subscribers to opt out. Honest, direct, no desperation."`},
+{id:39,s:5,t:"The Content Pillar Builder",x:`"I sell [product] to [audience]. Design a content strategy built on 3 core pillars that: each address a different stage of buyer awareness, lead toward my product naturally, and give me a repeatable framework for content ideas every week. For each pillar, give me 5 starter content ideas."`},
+{id:40,s:5,t:"The SEO Opportunity Finder",x:`"My product solves [problem] for [audience]. Identify 10 long-tail keyword phrases my buyer is likely searching for that have low competition but high purchase intent. For each one, suggest a content angle I could write that naturally positions my product as the solution."`},
+{id:41,s:5,t:"The Repurposing Machine",x:`"Here is a piece of content I created: [paste]. Repurpose it into: (1) a Twitter/X thread, (2) a LinkedIn post, (3) a 60-second video script, (4) an email to my list, and (5) a Pinterest pin description. Keep the core idea intact, adapt the format and tone for each platform."`},
+{id:42,s:5,t:"The Systems Audit",x:`"I'm doing everything manually in my business: [list tasks]. I want to systematize so I'm only working on high-leverage tasks. Analyze my list, identify what can be templated, automated, or delegated, and give me a priority order for which to systematize first based on time saved vs. complexity."`},
+{id:43,s:5,t:"The 'Raise Your Prices' Case Builder",x:`"I currently sell [product] at [X]. I want to raise it to [Y]. Make the case for why I should, what I need to add or change to justify the new price, how I communicate the change to existing buyers, and what I say on the sales page to buyers who push back on price."`},
+{id:44,s:5,t:"The Revenue Diversification Planner",x:`"My current revenue comes entirely from [one source]. This is a risk. Based on my existing skills in [areas] and my audience's interests in [topics], map out 3 additional revenue streams I could add in the next 6 months without starting from scratch. For each one, estimate time to revenue and difficulty to build."`},
+{id:45,s:5,t:"The Analytics Interpreter",x:`"Here are my current product metrics: [traffic/conversion/revenue numbers]. Think step-by-step: what's working, what's broken, what's the single highest-leverage thing I should fix first, and what's a metric that looks fine but might be hiding a problem? Give me a ranked action list."`},
+{id:46,s:5,t:"The Annual Offer Calendar",x:`"Help me build a 12-month product launch and promotion calendar. I have these products: [list]. My audience is [describe]. Map out: when to launch new products, when to run promotions, when to focus on list growth vs. conversion, and when to rest. Account for buyer buying cycles and seasonal behavior."`},
+{id:47,s:5,t:"The 'Fire Bad Customers' Policy Builder",x:`"I'm attracting buyers who [describe problem buyers — refund-seekers, high-maintenance, wrong fit]. Help me: rewrite my sales copy to pre-qualify buyers, design a clear refund policy that protects me without scaring good buyers, and create a firm but professional response template for difficult customer situations."`},
+{id:48,s:5,t:"The Testimonial-to-Case Study Converter",x:`"Here is a testimonial from a buyer: [paste]. Turn this into a full case study of 300 words that: tells her story before she found my product, describes what she did with my product, quantifies the result (or makes it vivid if no number), and ends with a quote I can pull for the sales page."`},
+{id:49,s:5,t:"The 'What Do I Build Next?' Decision Framework",x:`"I've successfully sold [product]. I'm deciding what to build next. Here are my options: [list 2–3 ideas]. Evaluate each one against: how much of my existing audience wants it, how fast I can build it, how it fits into a logical product suite, and which one builds the most long-term business value vs. short-term cash. Give me a direct recommendation."`},
+{id:50,s:5,t:"The Exit or Scale Decision",x:`"I have a digital product business generating [$X/month] from [products]. I'm deciding whether to: (a) scale it aggressively, (b) maintain it as passive income, or (c) sell it. Walk me through the decision framework. What questions should I be asking? What does the data need to show to justify each path? And if I were to sell — what would make this business most attractive to a buyer and what's a realistic valuation?"`}
+];
+
+const SEC={
+  1:{n:"Find Your Profitable Niche",tag:"Phase 01",tc:"aqua"},
+  2:{n:"Design the Product",tag:"Phase 02",tc:"orange"},
+  3:{n:"Write Copy That Converts",tag:"Phase 03",tc:"red"},
+  4:{n:"Sell & Distribute",tag:"Phase 04",tc:"dark"},
+  5:{n:"Grow & Systematize",tag:"Phase 05",tc:"orange"}
+};
+
+// ===== STATE =====
+let filter="all", query="";
+
+// ===== TOAST =====
+const toast=document.getElementById("toast");
+let toastTimer;
+function showToast(msg){
+  toast.textContent=msg||"✓ Copied to clipboard";
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toast.classList.remove("show"),2000);
+}
+
+// ===== CLIPBOARD =====
+async function copyText(text){
+  try{await navigator.clipboard.writeText(text);return true}
+  catch(e){
+    const ta=document.createElement("textarea");
+    ta.value=text;ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();
+    const ok=document.execCommand("copy");
+    document.body.removeChild(ta);return ok;
+  }
+}
+
+// ===== MODAL =====
+const modal=document.getElementById("modal");
+const modalTA=document.getElementById("modalTextarea");
+const modalTitle=document.getElementById("modalTitle");
+
+function openModal(title,text){
+  modalTitle.textContent=title;
+  modalTA.value=text;
+  modal.classList.add("open");
+  document.body.style.overflow="hidden";
+  setTimeout(()=>modalTA.focus(),100);
+}
+function closeModal(){
+  modal.classList.remove("open");
+  document.body.style.overflow="";
+}
+document.getElementById("modalClose").addEventListener("click",closeModal);
+document.getElementById("modalCancel").addEventListener("click",closeModal);
+modal.addEventListener("click",e=>{if(e.target===modal)closeModal()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+document.getElementById("modalCopy").addEventListener("click",async()=>{
+  const ok=await copyText(modalTA.value);
+  if(ok){showToast("✓ Customized prompt copied!");closeModal()}
+  else showToast("Copy failed — select text manually");
+});
+
+// ===== RENDER =====
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+
+function render(){
+  const c=document.getElementById("promptContainer");
+  c.innerHTML="";
+  const f=P.filter(p=>{
+    const mf=filter==="all"||String(p.s)===filter;
+    const q2=query.toLowerCase().trim();
+    const ms=!q2||p.t.toLowerCase().includes(q2)||p.x.toLowerCase().includes(q2);
+    return mf&&ms;
+  });
+  if(!f.length){c.innerHTML=`<div class="dd-empty"><h3>No prompts match.</h3><p>Try a different search or filter.</p></div>`;return}
+  const g={};f.forEach(p=>{(g[p.s]=g[p.s]||[]).push(p)});
+  Object.keys(g).sort((a,b)=>a-b).forEach(s=>{
+    const sec=SEC[s],ps=g[s];
+    const d=document.createElement("section");d.className="dd-section";
+    d.innerHTML=`
+      <div class="dd-sec-head">
+        <h2><span class="dd-tag ${sec.tc}">${sec.tag}</span> ${sec.n}</h2>
+        <span class="meta">${ps.length} prompt${ps.length>1?"s":""}</span>
+      </div>
+      <div class="dd-prompts">${ps.map(p=>`
+        <article class="dd-card dd-prompt" data-id="${p.id}">
+          <div class="dd-prompt-top">
+            <span class="dd-prompt-badge s${s}">#${String(p.id).padStart(2,"0")}</span>
+            <h3 class="dd-prompt-title">${esc(p.t)}</h3>
+          </div>
+          <div class="dd-prompt-body collapsed" data-full="${encodeURIComponent(p.x)}">${esc(p.x)}</div>
+          <button class="dd-prompt-toggle" data-act="expand">Read full prompt ↓</button>
+          <div class="dd-prompt-actions">
+            <button class="dd-btn dd-btn--sm dd-btn--primary" data-act="copy">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>
+              Copy
+            </button>
+            <button class="dd-btn dd-btn--sm" data-act="customize">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+              Customize
+            </button>
+          </div>
+        </article>`).join("")}</div>`;
+    c.appendChild(d);
+  });
+  bindCards();
+}
+
+function bindCards(){
+  document.querySelectorAll(".dd-prompt").forEach(card=>{
+    const body=card.querySelector(".dd-prompt-body");
+    const tog=card.querySelector("[data-act='expand']");
+    const cpBtn=card.querySelector("[data-act='copy']");
+    const cuBtn=card.querySelector("[data-act='customize']");
+    const full=decodeURIComponent(body.dataset.full);
+
+    tog.addEventListener("click",()=>{
+      const col=body.classList.toggle("collapsed");
+      tog.textContent=col?"Read full prompt ↓":"Collapse ↑";
+    });
+
+    cpBtn.addEventListener("click",async()=>{
+      const ok=await copyText(full);
+      if(ok){
+        showToast("✓ Prompt copied to clipboard!");
+        const orig=cpBtn.innerHTML;
+        cpBtn.innerHTML="✓ Copied";
+        setTimeout(()=>cpBtn.innerHTML=orig,1600);
+      }else showToast("Copy failed");
+    });
+
+    cuBtn.addEventListener("click",()=>openModal("Customize: "+card.querySelector(".dd-prompt-title").textContent,full));
+  });
+}
+
+// ===== FILTERS =====
+document.getElementById("filters").addEventListener("click",e=>{
+  const b=e.target.closest(".dd-filter");if(!b)return;
+  document.querySelectorAll(".dd-filter").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");filter=b.dataset.filter;render();
+});
+
+// ===== SEARCH =====
+let st;
+document.getElementById("search").addEventListener("input",e=>{
+  clearTimeout(st);st=setTimeout(()=>{query=e.target.value;render()},120);
+});
+
+// ===== INIT =====
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affiliate Market Flip Calculator — DigitallyDefined</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-radius: 0px !important;
+}
+
+:root {
+  --bg: #FFFCF9;
+  --card: #FFFFFF;
+  --panel: #FFFAF5;
+  --text: #111111;
+  --ink: #111111;
+  --muted: #5F5F5F;
+  --or: #F18B25;
+  --bl: #47B7D4;
+  --rd: #8B1A0A;
+  --gr: #15803D;
+  --yl: #D97706;
+  --dk: #111111;
+  --bdr: 1px solid #111111;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100dvh;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  background-color: #FFFCF9;
+  color: #111111;
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #111111;
+  letter-spacing: -0.025em;
+}
+
+.mono, code, pre, .dd-badge, .badge, .tag, .src-pill, .tier-badge, .opt, .vo, .roi-lbl {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: var(--bdr);
+  padding-bottom: 1.5rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dd-privacy {
+  margin-top: 0.5rem;
+  width: 100%;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9CA3AF;
+  text-align: center;
+}
+
+.dd-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dd-logo-name {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  border: var(--bdr);
+  background: #FFFCF9;
+  padding: 0.5rem 0.75rem;
+}
+
+.dd-logo-name em {
+  color: var(--or);
+  font-style: italic;
+}
+
+.dd-logo-sub {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #6B7280;
+  margin-top: 2px;
+}
+
+.dd-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: var(--bdr);
+  background: #FFFFFF;
+  padding: 0.35rem 0.75rem;
+}
+
+/* Hero & Orientation */
+.hero {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.hero h1 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.25rem, 6vw, 4rem);
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--dk);
+}
+
+.hero h1 span {
+  color: var(--or);
+}
+
+.hero-sub {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--bl);
+  margin-top: 0.75rem;
+}
+
+.hero-privacy {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9CA3AF;
+  margin-top: 0.5rem;
+}
+
+.orient {
+  border-left: 2px solid var(--or);
+  padding: 0.75rem 1.25rem;
+  background: #FFFFFF;
+  margin-bottom: 2rem;
+}
+
+.orient p {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--dk);
+  line-height: 1.6;
+  max-width: 720px;
+}
+
+/* Modes */
+.modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 760px) {
+  .modes {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mode {
+  display: flex;
+  flex-direction: column;
+  border: var(--bdr);
+  background: #FFFFFF;
+  padding: 1.25rem;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.mode:hover {
+  transform: translateY(-2px);
+}
+
+.mode.active {
+  background: var(--dk);
+  color: #FFFFFF;
+}
+
+.mode.active .mode-num {
+  color: var(--or);
+}
+
+.mode.active .mode-title {
+  color: #FFFFFF;
+}
+
+.mode.active .mode-desc {
+  color: #D1D5DB;
+}
+
+.mode-num {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--or);
+}
+
+.mode-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  margin-top: 0.35rem;
+}
+
+.mode-desc {
+  font-size: 0.85rem;
+  color: #4B5563;
+  margin-top: 0.4rem;
+  line-height: 1.5;
+}
+
+/* Main Grid */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 920px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.blueprint-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: var(--bdr);
+}
+
+.blueprint-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.blueprint-header h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.blueprint-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+@media (max-width: 920px) {
+  .blueprint-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.blueprint-grid .list-card {
+  margin-bottom: 0;
+  height: 100%;
+}
+
+.card, .list-card {
+  background: #FFFFFF;
+  border: var(--bdr);
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.grid > .card:last-child,
+.rc > .verdict:last-child {
+  margin-bottom: 0;
+}
+
+.ch {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: var(--bdr);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.ch h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--dk);
+}
+
+.section-divider {
+  margin-top: 2rem;
+}
+
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .input-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+.ig {
+  margin-bottom: 1.35rem;
+}
+
+.ig:last-child {
+  margin-bottom: 0;
+}
+
+.il {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dk);
+  margin-bottom: 0.45rem;
+}
+
+.il .opt {
+  color: #9CA3AF;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.6rem;
+}
+
+.il .vo {
+  color: var(--or);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: var(--bdr);
+  background: #FFFFFF;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--dk);
+  outline: none;
+}
+
+input:focus, select:focus, button:focus {
+  outline: 2px solid #F18B25 !important;
+  outline-offset: 1px !important;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 10px;
+  border: var(--bdr);
+  background: #F3F4F6;
+  cursor: pointer;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #111111;
+  background: var(--or);
+  cursor: pointer;
+}
+
+.autofill {
+  margin-top: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--bl);
+}
+
+.autofill.ok {
+  color: #15803d;
+}
+
+/* Goldmine Banner */
+.goldmine-banner {
+  background: var(--dk);
+  color: #FFFFFF;
+  border: var(--bdr);
+  border-left: 6px solid var(--or);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.goldmine-banner.hidden {
+  display: none;
+}
+
+.gm-badge {
+  background: var(--or);
+  color: var(--dk);
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.gm-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+/* Hero Score Card */
+.rev {
+  background: #FFFFFF;
+  border: var(--bdr);
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.rev.score-red {
+  border-top: 5px solid var(--rd);
+  background: #FFF9F8;
+}
+.rev.score-red .amt,
+.rev.score-red .tier-badge {
+  color: var(--rd);
+}
+
+.rev.score-yellow {
+  border-top: 5px solid var(--yl);
+  background: #FFFDF5;
+}
+.rev.score-yellow .amt,
+.rev.score-yellow .tier-badge {
+  color: #B45309;
+}
+
+.rev.score-blue {
+  border-top: 5px solid var(--bl);
+  background: #F6FCFE;
+}
+.rev.score-blue .amt,
+.rev.score-blue .tier-badge {
+  color: #0E7490;
+}
+
+.rev.score-green {
+  border-top: 5px solid var(--gr);
+  background: #F6FEF9;
+}
+.rev.score-green .amt,
+.rev.score-green .tier-badge {
+  color: var(--gr);
+}
+
+.rev-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.lbl {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dk);
+}
+
+.src-pill {
+  font-size: 0.6rem;
+  padding: 0.15rem 0.45rem;
+  border: var(--bdr);
+  background: #FFFFFF;
+  color: var(--dk);
+  text-transform: uppercase;
+}
+
+.src-pill.llm {
+  background: #FFFAF5;
+  color: var(--or);
+}
+
+.tier-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.6rem;
+  border: var(--bdr);
+  background: #FFFFFF;
+  text-transform: uppercase;
+}
+
+.amt {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.75rem, 5vw, 3.75rem);
+  line-height: 1;
+  margin: 0.85rem 0;
+  letter-spacing: -0.03em;
+}
+
+.amt span {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #6B7280;
+}
+
+.sub {
+  font-size: 0.8rem;
+  color: #4B5563;
+}
+
+/* Visual Scorecard */
+.score-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.sb-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.sb-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sb-track {
+  width: 100%;
+  height: 10px;
+  background: #F3F4F6;
+  border: var(--bdr);
+}
+
+.sb-fill {
+  height: 100%;
+  transition: width 0.2s ease;
+}
+
+/* Metric Cards */
+.dg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .dg {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mc {
+  background: #FFFFFF;
+  border: var(--bdr);
+  border-top: 3px solid var(--bl);
+  padding: 1.25rem;
+}
+
+.mc.oc {
+  border-top-color: var(--or);
+}
+
+.mt {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6B7280;
+}
+
+.ma {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 1.6rem;
+  margin: 0.4rem 0 0.25rem;
+  color: var(--dk);
+}
+
+.ma span {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.ms {
+  font-size: 0.75rem;
+  color: #4B5563;
+}
+
+/* 3-Scenario Content ROI */
+.roi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .roi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.roi-box {
+  border: var(--bdr);
+  padding: 1rem 0.85rem;
+  background: #FFFAF5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.roi-box.featured {
+  background: var(--dk);
+  color: #FFFFFF;
+}
+
+.roi-box.featured .roi-lbl {
+  color: var(--or);
+}
+
+.roi-box.featured .roi-val {
+  color: #FFFFFF;
+}
+
+.roi-box.featured .roi-sub {
+  color: #D1D5DB;
+}
+
+.roi-lbl {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #5F5F5F;
+}
+
+.roi-val {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0.4rem 0;
+  color: var(--dk);
+}
+
+.roi-sub {
+  font-size: 0.7rem;
+  color: #4B5563;
+}
+
+/* Market Viability Verdict Box */
+.verdict {
+  border: var(--bdr);
+  border-left: 4px solid var(--dk);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  background: #FFFFFF;
+}
+
+.verdict.excellent { border-left-color: var(--gr); }
+.verdict.good { border-left-color: var(--bl); }
+.verdict.average { border-left-color: var(--or); }
+.verdict.avoid { border-left-color: var(--rd); }
+
+.vt {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+}
+
+.vb {
+  font-size: 0.88rem;
+  color: #374151;
+  line-height: 1.6;
+}
+
+/* Lists, Pills & Keyword Matrix */
+.list-card h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: var(--bdr);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.list-card ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.list-card li {
+  font-size: 0.88rem;
+  padding-left: 1.15rem;
+  position: relative;
+  color: #1F2937;
+  line-height: 1.5;
+}
+
+.list-card li::before {
+  content: "▪";
+  position: absolute;
+  left: 0;
+  color: var(--or);
+  font-weight: 900;
+}
+
+.rec-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.rec-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.3rem 0.6rem;
+  border: var(--bdr);
+  background: #FFFAF5;
+  color: var(--dk);
+}
+
+.rec-pill.asset {
+  background: var(--bl);
+  color: var(--dk);
+}
+
+.kw-tiers {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.kw-group {
+  border-left: 2px solid var(--bl);
+  padding-left: 0.85rem;
+}
+
+.kw-group-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6B7280;
+  margin-bottom: 0.35rem;
+}
+
+.kw-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.kw-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  background: #FFFAF5;
+  border: var(--bdr);
+  padding: 0.25rem 0.55rem;
+  color: var(--dk);
+}
+
+/* CTA & Footer */
+.cta {
+  margin-top: 2.5rem;
+  border: var(--bdr);
+  background: var(--dk);
+  color: #FFFFFF;
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.cta h2 {
+  color: #FFFFFF !important;
+  font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.cta h2 span {
+  color: var(--or);
+}
+
+.cta p {
+  max-width: 640px;
+  margin: 0 auto 1.5rem;
+  color: #D1D5DB;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.85rem 1.5rem;
+  background: var(--or);
+  color: var(--dk);
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  border: 1px solid var(--or);
+  margin: 0.35rem;
+}
+
+.btn.gh {
+  background: transparent;
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+}
+
+footer {
+  text-align: center;
+  padding: 1.75rem 1rem;
+  border-top: var(--bdr);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6B7280;
+}
+
+footer a {
+  color: var(--dk);
+  text-decoration: underline;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="dd-logo">
+      <div>
+        <div class="dd-logo-name">Digitally<em>Defined</em></div>
+        <div class="dd-logo-sub">Digital Real Estate Group</div>
+      </div>
+    </div>
+    <span class="dd-badge">Free Tool</span>
+    <p class="dd-privacy">Your inputs stay on this device. Nothing is stored or sent.</p>
+  </nav>
+
+  <div class="hero">
+    <h1>Affiliate Market <span>Flip</span> Calculator</h1>
+    <p class="hero-sub">Niche Mode &nbsp;&bull;&nbsp; Product Mode &nbsp;&bull;&nbsp; Opportunity Scoring Engine</p>
+    <p class="hero-privacy">Works offline &bull; No login required</p>
+  </div>
+
+  <div class="orient">
+    <p><strong>Pick a mode.</strong> Enter a niche/keyword and SEO demand metrics or pick an affiliate product to auto-fill commission, EPC, price, and network. Use both together to merge the datasets. You get back an Affiliate Opportunity Score, Goldmine detection, 3-tier traffic &amp; revenue projections, keyword expansion ideas, and a 7-day launch plan.</p>
+  </div>
+
+  <div class="modes" role="tablist" aria-label="Calculator Mode">
+    <button type="button" class="mode active" id="modeA" role="tab" aria-selected="true" onclick="setMode('A')">
+      <span class="mode-num">Mode A</span>
+      <span class="mode-title">Niche &rarr; Keyword &rarr; Opportunity Score</span>
+      <span class="mode-desc">Start from a topic or keyword. Validate search demand, intent, and monetization potential before writing.</span>
+    </button>
+    <button type="button" class="mode" id="modeB" role="tab" aria-selected="false" onclick="setMode('B')">
+      <span class="mode-num">Mode B</span>
+      <span class="mode-title">Product &rarr; Auto-Fill &rarr; Opportunity Score</span>
+      <span class="mode-desc">Start from a known affiliate product. We auto-fill price, commission, EPC, and network instantly.</span>
+    </button>
+  </div>
+
+  <div class="grid">
+    <!-- INPUT PANEL -->
+    <div class="card">
+      <div class="ch">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F18B25" stroke-width="2.5" stroke-linecap="square"><rect x="2" y="3" width="20" height="14"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <h2>Your Inputs &amp; Offer Data</h2>
+      </div>
+
+      <div class="ig">
+        <label class="il" for="product"><span>Affiliate Product or Program</span><span class="opt" id="productReqTag">optional</span></label>
+        <input type="text" id="product" list="productList" placeholder="e.g. Canva Pro, Systeme.io, Semrush" autocomplete="off">
+        <datalist id="productList"></datalist>
+        <div class="autofill" id="autoMsg" aria-live="polite"></div>
+      </div>
+
+      <div class="ig">
+        <label class="il" for="niche"><span>Niche / Target Keyword</span><span class="opt" id="nicheReqTag">required</span></label>
+        <input type="text" id="niche" placeholder="e.g. best email software for coaches" value="best email software for coaches">
+      </div>
+
+      <div class="input-row">
+        <div class="ig">
+          <label class="il" for="price"><span>Product Price ($)</span><span class="opt" id="priceTag">auto</span></label>
+          <input type="number" id="price" placeholder="29.00" min="0" step="0.01">
+        </div>
+        <div class="ig">
+          <label class="il" for="commission"><span>Commission (%)</span><span class="opt" id="commTag">auto</span></label>
+          <input type="number" id="commission" placeholder="30" min="0" max="100" step="0.1">
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="ig">
+          <label class="il" for="epc"><span>EPC (Earnings/Click $)</span><span class="opt" id="epcTag">auto</span></label>
+          <input type="number" id="epc" placeholder="0.60" min="0" step="0.01">
+        </div>
+        <div class="ig">
+          <label class="il" for="programType"><span>Affiliate Program Type</span><span class="opt" id="recTag">auto</span></label>
+          <select id="programType">
+            <option value="auto">Auto-detect</option>
+            <option value="recurring_monthly">Recurring Monthly</option>
+            <option value="recurring_annual">Recurring Annual</option>
+            <option value="one_time">One Time</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="ig">
+        <label class="il" for="network"><span>Affiliate Network</span><span class="opt" id="netTag">auto</span></label>
+        <select id="network">
+          <option value="">Auto-detect</option>
+          <option value="Impact">Impact</option>
+          <option value="PartnerStack">PartnerStack</option>
+          <option value="ShareASale">ShareASale</option>
+          <option value="CJ Affiliate">CJ Affiliate</option>
+          <option value="Amazon">Amazon</option>
+          <option value="Direct">Direct</option>
+        </select>
+      </div>
+
+      <div class="ch section-divider">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#47B7D4" stroke-width="2.5" stroke-linecap="square"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <h2>SEO &amp; Market Intelligence</h2>
+      </div>
+
+      <div class="input-row">
+        <div class="ig">
+          <label class="il" for="searchVolume"><span>Monthly Search Vol</span><span class="opt">SEO</span></label>
+          <input type="number" id="searchVolume" value="1500" min="0" step="50">
+        </div>
+        <div class="ig">
+          <label class="il" for="cpc"><span>Average CPC ($)</span><span class="opt">Ads</span></label>
+          <input type="number" id="cpc" value="5.25" min="0" step="0.05">
+        </div>
+      </div>
+
+      <div class="ig">
+        <label class="il" for="keywordDifficulty"><span>Keyword Difficulty (%)</span><span class="vo" id="kdOut">32%</span></label>
+        <input type="range" id="keywordDifficulty" min="0" max="100" step="1" value="32">
+      </div>
+
+      <div class="input-row">
+        <div class="ig">
+          <label class="il" for="buyerIntent"><span>Buyer Intent</span></label>
+          <select id="buyerIntent">
+            <option value="Commercial" selected>Commercial</option>
+            <option value="Transactional">Transactional</option>
+            <option value="Informational">Informational</option>
+          </select>
+        </div>
+        <div class="ig">
+          <label class="il" for="competitionLevel"><span>Competition Level</span></label>
+          <select id="competitionLevel">
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="ig">
+          <label class="il" for="rankingPosition"><span>Est. Ranking Pos.</span></label>
+          <select id="rankingPosition">
+            <option value="1" selected>#1 (30% CTR)</option>
+            <option value="2">#2 (18% CTR)</option>
+            <option value="3">#3 (12% CTR)</option>
+            <option value="4-10">#4-10 (3% CTR)</option>
+          </select>
+        </div>
+        <div class="ig">
+          <label class="il" for="organicCtr"><span>Organic CTR Est. (%)</span></label>
+          <input type="number" id="organicCtr" value="30" min="1" max="100" step="1">
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS PANEL -->
+    <div class="rc" aria-live="polite">
+      <!-- GOLDMINE DETECTION BANNER -->
+      <div class="goldmine-banner hidden" id="goldmineBanner" role="alert">
+        <span class="gm-badge">🔥 AFFILIATE GOLDMINE</span>
+        <span class="gm-text">High probability affiliate opportunity detected.</span>
+      </div>
+
+      <!-- MAIN SCORE CARD -->
+      <div class="rev score-red" id="scoreHeroCard">
+        <div class="rev-top">
+          <p class="lbl">Affiliate Opportunity Score &nbsp;<span class="src-pill" id="srcPill">manual</span></p>
+          <span class="tier-badge" id="tierBadge">POOR OPPORTUNITY</span>
+        </div>
+        <div class="amt"><span id="opportunityScore">0</span><span> / 100</span></div>
+        <p class="sub">Target: <strong id="productLabel">—</strong> &nbsp;&bull;&nbsp; Type: <strong id="programLabel">—</strong></p>
+      </div>
+
+      <!-- VISUAL SCORECARD -->
+      <div class="card">
+        <div class="ch">
+          <h2>Visual Scorecard Breakdown</h2>
+        </div>
+        <div class="score-bars" id="visualScorecard"></div>
+      </div>
+
+      <!-- TRAFFIC & VIABILITY METRICS -->
+      <div class="dg">
+        <div class="mc">
+          <div class="mh"><span class="mt">Projected Organic Traffic</span></div>
+          <div class="ma" id="projectedTraffic">0<span>/mo</span></div>
+          <div class="ms" id="trafficFormulaNote">1,500 vol &times; 30% CTR</div>
+        </div>
+        <div class="mc oc">
+          <div class="mh"><span class="mt">Market Viability</span></div>
+          <div class="ma" id="marketViability">AVERAGE</div>
+          <div class="ms" id="estRoiNote">Est. ROI Multiple: 0.0&times;</div>
+        </div>
+      </div>
+
+      <!-- CONTENT ROI PROJECTIONS -->
+      <div class="card">
+        <div class="ch">
+          <h2>Monthly Content ROI Projections</h2>
+        </div>
+        <div class="roi-grid">
+          <div class="roi-box">
+            <span class="roi-lbl">Low Case</span>
+            <strong class="roi-val" id="revLow">$0</strong>
+            <span class="roi-sub">Conservative 0.6&times;</span>
+          </div>
+          <div class="roi-box featured">
+            <span class="roi-lbl">Expected Revenue</span>
+            <strong class="roi-val" id="revExpected">$0</strong>
+            <span class="roi-sub">Blended EPC &amp; CR</span>
+          </div>
+          <div class="roi-box">
+            <span class="roi-lbl">Aggressive</span>
+            <strong class="roi-val" id="revAggressive">$0</strong>
+            <span class="roi-sub">Optimized 1.55&times;</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MARKET VIABILITY REPORT -->
+      <div class="verdict average" id="viabilityBox">
+        <p class="vt">Market Viability Report: <span id="viabilityHeader">Average</span></p>
+        <p class="vb" id="viabilityReasoning">Enter a product or niche to evaluate market viability.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULL-WIDTH BALANCED STRATEGY & EXECUTION BLUEPRINT -->
+  <section class="blueprint-section" aria-label="Content and Execution Blueprint">
+    <div class="blueprint-header">
+      <h2>Content &amp; Execution Blueprint</h2>
+      <span class="dd-badge">Auto-Generated Strategy</span>
+    </div>
+
+    <div class="blueprint-grid">
+      <!-- CONTENT RECOMMENDATIONS -->
+      <div class="list-card">
+        <h3>Strategic Content &amp; Asset Recommendations</h3>
+        <div class="rec-pills" id="contentRecPills"></div>
+        <ul id="contentRecList"></ul>
+      </div>
+
+      <!-- KEYWORD OPPORTUNITY SECTION -->
+      <div class="list-card">
+        <h3>Keyword Opportunity Matrix</h3>
+        <div class="kw-tiers" id="keywordMatrix"></div>
+      </div>
+
+      <!-- PRODUCT-SPECIFIC PAGE OUTLINE -->
+      <div class="list-card">
+        <h3>Product-Specific Page Outline</h3>
+        <ul id="outline"></ul>
+      </div>
+
+      <!-- 7-DAY ACTION PLAN -->
+      <div class="list-card">
+        <h3>7-Day Action Plan</h3>
+        <ul id="action"></ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta">
+    <h2>You Have the Score. <span>Now Get the Full Model.</span></h2>
+    <p>The free calculator gives you the signal. The full Affiliate Market Flip system adds AI-estimated EPC for unknown products, saved history, keyword research, a done-for-you landing page outline, and a Notion + Gumroad-ready export pack — all tuned for Gen X women building faceless income.</p>
+    <a href="https://francescaonline.gumroad.com/l/digital-business-os" class="btn" target="_blank" rel="noopener noreferrer">Get Full Access on Gumroad</a>
+    <a href="https://facebook.com/groups/digitallydefind" class="btn gh" target="_blank" rel="noopener noreferrer">Join the Community</a>
+  </div>
+</div>
+
+<footer>&copy; 2026 <a href="https://digitallydefined.store" target="_blank" rel="noopener noreferrer">DigitallyDefined</a> &mdash; Digital Real Estate Group &mdash; All Rights Reserved</footer>
+
+<script>
+const PRODUCTS = [
+  { product: "Canva Pro", category: "Design", price: 12.99, commission_rate: 0.25, epc: 0.45, network: "Impact", programType: "recurring_monthly" },
+  { product: "Systeme.io", category: "Marketing", price: 27.00, commission_rate: 0.50, epc: 0.80, network: "Impact", programType: "recurring_monthly" },
+  { product: "ClickFunnels", category: "Marketing", price: 147.00, commission_rate: 0.30, epc: 1.20, network: "Impact", programType: "recurring_monthly" },
+  { product: "ConvertKit", category: "Email Marketing", price: 29.00, commission_rate: 0.30, epc: 0.60, network: "Impact", programType: "recurring_monthly" },
+  { product: "Shopify", category: "E-commerce", price: 39.00, commission_rate: 0.58, epc: 0.75, network: "Impact", programType: "recurring_monthly" },
+  { product: "Bluehost", category: "Web Hosting", price: 2.95, commission_rate: 0.65, epc: 1.10, network: "Impact", programType: "one_time" },
+  { product: "Fiverr", category: "Freelance Services", price: 10.00, commission_rate: 0.15, epc: 0.35, network: "Impact", programType: "one_time" },
+  { product: "Semrush", category: "SEO", price: 119.95, commission_rate: 0.40, epc: 1.50, network: "Impact", programType: "recurring_monthly" },
+  { product: "GetResponse", category: "Email Marketing", price: 19.00, commission_rate: 0.33, epc: 0.55, network: "Impact", programType: "recurring_monthly" },
+  { product: "Elementor Pro", category: "WordPress", price: 49.00, commission_rate: 0.50, epc: 0.90, network: "ShareASale", programType: "recurring_annual" },
+  { product: "WP Engine", category: "Web Hosting", price: 30.00, commission_rate: 0.50, epc: 2.00, network: "ShareASale", programType: "one_time" },
+  { product: "AWeber", category: "Email Marketing", price: 20.00, commission_rate: 0.30, epc: 0.50, network: "ShareASale", programType: "recurring_monthly" },
+  { product: "Grammarly", category: "Writing Tools", price: 12.00, commission_rate: 0.20, epc: 0.40, network: "CJ Affiliate", programType: "one_time" },
+  { product: "NordVPN", category: "Cybersecurity", price: 12.95, commission_rate: 0.40, epc: 0.65, network: "CJ Affiliate", programType: "one_time" },
+  { product: "Skillshare", category: "Online Education", price: 13.99, commission_rate: 0.10, epc: 0.25, network: "ShareASale", programType: "one_time" },
+  { product: "Teachable", category: "Online Education", price: 39.00, commission_rate: 0.30, epc: 0.70, network: "Impact", programType: "recurring_monthly" },
+  { product: "Amazon Associates", category: "General Retail", price: 25.00, commission_rate: 0.04, epc: 0.15, network: "Amazon", programType: "one_time" },
+  { product: "Notion", category: "Productivity", price: 8.00, commission_rate: 0.50, epc: 0.55, network: "PartnerStack", programType: "recurring_monthly" },
+  { product: "Tailwind", category: "Social Media", price: 15.00, commission_rate: 0.15, epc: 0.35, network: "ShareASale", programType: "one_time" }
+];
+
+const RANKING_CTR_MAP = {
+  "1": 30,
+  "2": 18,
+  "3": 12,
+  "4-10": 3
+};
+
+const $ = (id) => document.getElementById(id);
+let mode = "A";
+let resolvedSource = "manual";
+
+(function initCatalog() {
+  const dl = $("productList");
+  PRODUCTS.forEach((p) => {
+    const o = document.createElement("option");
+    o.value = p.product;
+    dl.appendChild(o);
+  });
+})();
+
+function setMode(m) {
+  mode = m;
+  $("modeA").classList.toggle("active", m === "A");
+  $("modeB").classList.toggle("active", m === "B");
+  $("modeA").setAttribute("aria-selected", m === "A");
+  $("modeB").setAttribute("aria-selected", m === "B");
+  recalc();
+}
+
+function updateRequirementTags() {
+  const hasProduct = $("product").value.trim().length > 0;
+  const hasNiche = $("niche").value.trim().length > 0;
+  if (hasProduct && !hasNiche) {
+    $("nicheReqTag").textContent = "optional";
+    $("productReqTag").textContent = "provided";
+  } else if (hasNiche && !hasProduct) {
+    $("nicheReqTag").textContent = "provided";
+    $("productReqTag").textContent = "optional";
+  } else {
+    $("nicheReqTag").textContent = hasNiche ? "provided" : (mode === "B" ? "optional" : "required");
+    $("productReqTag").textContent = hasProduct ? "provided" : "optional";
+  }
+}
+
+function lookupProduct(name) {
+  const n = name.toLowerCase().trim();
+  return PRODUCTS.find((p) => p.product.toLowerCase() === n) || null;
+}
+
+function estimateDefaults(seed) {
+  const cats = ["Software", "Design", "Marketing", "Finance", "Productivity"];
+  const mod = (seed || "asset").length % 5;
+  return {
+    price: 29.00,
+    commission_rate: 0.25,
+    epc: 0.50,
+    network: "ShareASale",
+    programType: "one_time",
+    category: cats[mod]
+  };
+}
+
+function onProductInput() {
+  const name = $("product").value.trim();
+  const found = lookupProduct(name);
+  const autoMsg = $("autoMsg");
+
+  if (found) {
+    $("price").value = found.price;
+    $("commission").value = (found.commission_rate * 100).toFixed(1);
+    $("epc").value = found.epc;
+    if (!$("network").value) $("network").value = found.network;
+    if ($("programType").value === "auto") $("programType").value = found.programType;
+
+    ["price", "comm", "epc", "net", "rec"].forEach((t) => {
+      const el = $(t + "Tag");
+      if (el) el.textContent = "auto-filled";
+    });
+    autoMsg.textContent = "Auto-filled from catalog: " + found.category + " • " + found.network;
+    autoMsg.classList.add("ok");
+    resolvedSource = "catalog";
+    if (!$("niche").value.trim()) {
+      $("niche").value = ("best " + found.category + " tools").toLowerCase();
+    }
+  } else if (name) {
+    autoMsg.textContent = "Unknown product — estimates will be generated (LLM).";
+    autoMsg.classList.remove("ok");
+    resolvedSource = "llm";
+    ["price", "comm", "epc", "net", "rec"].forEach((t) => {
+      const el = $(t + "Tag");
+      if (el) el.textContent = "estimated";
+    });
+  } else {
+    autoMsg.textContent = "";
+    resolvedSource = "manual";
+  }
+  recalc();
+}
+
+function onRankingChange() {
+  const pos = $("rankingPosition").value;
+  if (RANKING_CTR_MAP[pos] !== undefined) {
+    $("organicCtr").value = RANKING_CTR_MAP[pos];
+  }
+  recalc();
+}
+
+function fmt(v) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0
+  }).format(Math.max(0, v || 0));
+}
+
+function fmtNum(v) {
+  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(Math.max(0, v || 0));
+}
+
+function clamp(v, min, max) {
+  return Math.max(min, Math.min(max, v));
+}
+
+function recalc() {
+  updateRequirementTags();
+
+  const product = $("product").value.trim();
+  const niche = $("niche").value.trim();
+  const found = product ? lookupProduct(product) : null;
+  const est = estimateDefaults(product || niche || "asset");
+
+  const price = !isNaN(parseFloat($("price").value)) ? parseFloat($("price").value) : (found ? found.price : est.price);
+  const commissionPct = !isNaN(parseFloat($("commission").value)) ? parseFloat($("commission").value) : (found ? found.commission_rate * 100 : est.commission_rate * 100);
+  const epc = !isNaN(parseFloat($("epc").value)) ? parseFloat($("epc").value) : (found ? found.epc : est.epc);
+  const network = $("network").value || (found ? found.network : est.network);
+  const programType = $("programType").value === "auto" ? (found ? found.programType : est.programType) : $("programType").value;
+  const category = found ? found.category : est.category;
+
+  const searchVolume = Math.max(0, parseFloat($("searchVolume").value) || 0);
+  const cpc = Math.max(0, parseFloat($("cpc").value) || 0);
+  const kd = clamp(parseFloat($("keywordDifficulty").value) || 0, 0, 100);
+  $("kdOut").textContent = kd + "%";
+
+  const buyerIntent = $("buyerIntent").value;
+  const competitionLevel = $("competitionLevel").value;
+  const rankingPos = $("rankingPosition").value;
+  const organicCtr = clamp(parseFloat($("organicCtr").value) || 0, 0, 100);
+
+  // Weighted Opportunity Scoring Engine (0 - 100)
+  const searchVolScore = clamp((Math.log10(searchVolume + 1) / 4) * 20, 0, 20);
+  const cpcScore = clamp((cpc / 8) * 15, 0, 15);
+  const epcScore = clamp((epc / 1.5) * 20, 0, 20);
+  const commissionScore = clamp((commissionPct / 50) * 15, 0, 15);
+
+  const recurringBonus = {
+    recurring_monthly: 15,
+    recurring_annual: 10,
+    one_time: 2
+  }[programType] || 0;
+
+  const buyerIntentScore = {
+    Transactional: 15,
+    Commercial: 12,
+    Informational: 4
+  }[buyerIntent] || 4;
+
+  const competitionPenalty = { Low: 0, Medium: 7, High: 15 }[competitionLevel] || 0;
+  const kdPenalty = (kd / 100) * 20;
+
+  const rawScore = searchVolScore + cpcScore + epcScore + commissionScore + recurringBonus + buyerIntentScore - competitionPenalty - kdPenalty;
+  const opportunityScore = Math.round(clamp(rawScore, 0, 100));
+
+  // Color-coded classification
+  let scoreClass = "score-red";
+  let tierLabel = "POOR OPPORTUNITY";
+  if (opportunityScore >= 85) {
+    scoreClass = "score-green";
+    tierLabel = "AFFILIATE GOLDMINE";
+  } else if (opportunityScore >= 70) {
+    scoreClass = "score-blue";
+    tierLabel = "STRONG OPPORTUNITY";
+  } else if (opportunityScore >= 40) {
+    scoreClass = "score-yellow";
+    tierLabel = "MODERATE OPPORTUNITY";
+  }
+
+  // Affiliate Goldmine Detection
+  const isGoldmine =
+    searchVolume > 1000 &&
+    cpc > 3 &&
+    commissionPct > 25 &&
+    kd < 40 &&
+    (buyerIntent === "Commercial" || buyerIntent === "Transactional");
+
+  $("goldmineBanner").classList.toggle("hidden", !isGoldmine);
+
+  // Traffic & Content ROI Projections
+  const projectedTraffic = Math.round(searchVolume * (organicCtr / 100));
+  const intentConvMap = { Transactional: 0.032, Commercial: 0.022, Informational: 0.008 };
+  const baseConversion = intentConvMap[buyerIntent] || 0.015;
+  const payoutPerSale = price * (commissionPct / 100);
+
+  const epcRev = projectedTraffic * epc;
+  const convRev = projectedTraffic * baseConversion * payoutPerSale;
+  const expectedRevenue = (epcRev + convRev) / 2;
+  const lowRevenue = expectedRevenue * 0.6;
+  const aggressiveRevenue = expectedRevenue * 1.55;
+
+  const estCost = Math.max(45 + projectedTraffic * 0.03, 1);
+  const roi = expectedRevenue / estCost;
+
+  // Market Viability Report
+  let viabilityLabel = "Avoid";
+  let viabilityClass = "avoid";
+  if (opportunityScore >= 80) {
+    viabilityLabel = "Excellent";
+    viabilityClass = "excellent";
+  } else if (opportunityScore >= 65) {
+    viabilityLabel = "Good";
+    viabilityClass = "good";
+  } else if (opportunityScore >= 45) {
+    viabilityLabel = "Average";
+    viabilityClass = "average";
+  }
+
+  const reasons = [
+    searchVolume >= 1000 ? "Strong search demand" : "Limited monthly search demand",
+    (buyerIntent === "Commercial" || buyerIntent === "Transactional")
+      ? `high ${buyerIntent.toLowerCase()} buyer intent`
+      : "informational intent requiring top-of-funnel nurturing",
+    programType.startsWith("recurring")
+      ? "recurring commission structure"
+      : (commissionPct >= 30 ? "strong upfront commission margin" : "modest one-time payout margin"),
+    (kd < 40 && competitionLevel !== "High")
+      ? "manageable competition"
+      : `elevated SERP difficulty (${kd}% KD / ${competitionLevel} competition)`
+  ];
+
+  const verdictEnding = (viabilityLabel === "Excellent" || viabilityLabel === "Good")
+    ? "create a favorable content investment opportunity."
+    : (viabilityLabel === "Average"
+        ? "suggest focusing on long-tail angles before scaling content."
+        : "indicate high ranking friction—consider a narrower sub-niche or higher-paying offer.");
+
+  // Update Hero & Metrics
+  $("scoreHeroCard").className = "rev " + scoreClass;
+  $("tierBadge").textContent = tierLabel;
+  $("opportunityScore").textContent = opportunityScore;
+  $("productLabel").textContent = product || niche || "—";
+  $("programLabel").textContent = formatProgramType(programType);
+
+  const sp = $("srcPill");
+  sp.textContent = resolvedSource;
+  sp.className = "src-pill" + (resolvedSource === "llm" ? " llm" : "");
+
+  $("projectedTraffic").innerHTML = fmtNum(projectedTraffic) + "<span>/mo</span>";
+  $("trafficFormulaNote").textContent = `${fmtNum(searchVolume)} vol × ${organicCtr}% CTR (#${rankingPos})`;
+  $("marketViability").textContent = viabilityLabel.toUpperCase();
+  $("estRoiNote").textContent = `Est. ROI Multiple: ${roi.toFixed(1)}×`;
+
+  $("revLow").textContent = fmt(lowRevenue);
+  $("revExpected").textContent = fmt(expectedRevenue);
+  $("revAggressive").textContent = fmt(aggressiveRevenue);
+
+  $("viabilityBox").className = "verdict " + viabilityClass;
+  $("viabilityHeader").textContent = viabilityLabel;
+  $("viabilityReasoning").textContent = `${reasons[0]}, ${reasons[1]}, ${reasons[2]}, and ${reasons[3]} ${verdictEnding}`;
+
+  // Visual Scorecard
+  const compEasePct = Math.max(0, Math.round(((35 - (competitionPenalty + kdPenalty)) / 35) * 100));
+  const scorecardItems = [
+    { label: "Search Volume Score", pct: Math.round((searchVolScore / 20) * 100), color: "#47B7D4" },
+    { label: "Commission Score", pct: Math.round(((commissionScore + epcScore) / 35) * 100), color: "#F18B25" },
+    { label: "Competition Score (Ease)", pct: compEasePct, color: compEasePct >= 60 ? "#15803D" : "#8B1A0A" },
+    { label: "Recurring Revenue Score", pct: Math.round((recurringBonus / 15) * 100), color: "#47B7D4" },
+    { label: "Buyer Intent Score", pct: Math.round((buyerIntentScore / 15) * 100), color: "#F18B25" },
+    { label: "Overall Opportunity Score", pct: opportunityScore, color: "#111111" }
+  ];
+
+  $("visualScorecard").innerHTML = scorecardItems.map((item) => `
+    <div class="sb-row">
+      <div class="sb-meta"><span>${item.label}</span><span>${item.pct} / 100</span></div>
+      <div class="sb-track"><div class="sb-fill" style="width:${item.pct}%;background:${item.color};"></div></div>
+    </div>
+  `).join("");
+
+  // Content Recommendations
+  const formatsByIntent = {
+    Transactional: ["Review", "Pricing Breakdown", "Comparison"],
+    Commercial: ["Comparison", "Alternatives", "Best Tools List"],
+    Informational: ["Tutorial", "Best Tools List", "Beginner Guide"]
+  };
+  const assetsByProgram = programType.startsWith("recurring")
+    ? ["Blog", "Email Funnel", "Lead Magnet", "YouTube"]
+    : ["Blog", "Pinterest", "YouTube"];
+
+  const formats = formatsByIntent[buyerIntent] || formatsByIntent.Commercial;
+  $("contentRecPills").innerHTML = [
+    ...formats.map((f) => `<span class="rec-pill">Format: ${f}</span>`),
+    ...assetsByProgram.map((a) => `<span class="rec-pill asset">Asset: ${a}</span>`)
+  ].join("");
+
+  const subject = product ? product : (niche ? niche.split(" ").slice(0, 3).join(" ") : "this offer");
+  $("contentRecList").innerHTML = [
+    `Prioritize a <strong>${formats[0]}</strong> format tailored to ${buyerIntent.toLowerCase()} searchers.`,
+    `Distribute across <strong>${assetsByProgram.slice(0, 3).join(", ")}</strong> to capture and nurture clicks.`,
+    cpc >= 3
+      ? `High $${cpc.toFixed(2)} CPC confirms strong buyer value—mirror paid ad hooks in your headlines.`
+      : `Lower $${cpc.toFixed(2)} CPC makes organic SEO and Pinterest pins your highest-margin channels.`,
+    programType.startsWith("recurring")
+      ? `Focus on onboarding tutorials to maximize subscriber retention and recurring payouts.`
+      : `Include a bonus checklist or template to boost single-session conversions.`
+  ].map((x) => `<li>${x}</li>`).join("");
+
+  // Keyword Opportunity Section
+  const coreTerm = (product || niche || "ai email tool").toLowerCase();
+  const cleanNiche = (niche || category).toLowerCase();
+  const kwGroups = [
+    {
+      title: "Primary Opportunity",
+      terms: product ? [`${coreTerm} review`, `best ${cleanNiche}`] : [`best ${cleanNiche}`, `${cleanNiche} review`]
+    },
+    {
+      title: "Secondary Opportunity",
+      terms: product
+        ? [`${coreTerm} alternatives`, `${coreTerm} vs competitors`]
+        : [`${cleanNiche} alternatives`, `top ${cleanNiche} tools`]
+    },
+    {
+      title: "Long Tail Expansion Ideas",
+      terms: [
+        `best ${cleanNiche} for coaches`,
+        `best ${cleanNiche} for beginners`,
+        `${coreTerm} pricing & features`,
+        `how to use ${coreTerm} for passive income`
+      ]
+    }
+  ];
+
+  $("keywordMatrix").innerHTML = kwGroups.map((g) => `
+    <div class="kw-group">
+      <div class="kw-group-title">${g.title}</div>
+      <div class="kw-tags">${g.terms.map((t) => `<span class="kw-tag">${t}</span>`).join("")}</div>
+    </div>
+  `).join("");
+
+  // Page Outline
+  $("outline").innerHTML = [
+    `Hero: ${subject} + headline promise`,
+    `Problem–agitate–solution framework`,
+    `${subject} feature breakdown`,
+    `Real results & testimonials`,
+    `Comparison table vs alternatives`,
+    `Pricing + your commission explanation (${commissionPct.toFixed(1)}%)`,
+    `Bonus / value-add section`,
+    `Risk reversal & guarantee`,
+    `FAQ`,
+    `Call-to-action + affiliate sign-up (${network})`
+  ].map((x) => `<li>${x}</li>`).join("");
+
+  // 7-Day Action Plan
+  $("action").innerHTML = [
+    `Day 1: Join ${network} & install tracking links`,
+    `Day 2: Write 2 SEO articles around "${kwGroups[0].terms[0]}"`,
+    `Day 3: Build a comparison table of 5 offers`,
+    `Day 4: Publish a detailed ${subject} review`,
+    `Day 5: Set up a simple email nurture sequence`,
+    `Day 6: Share on Pinterest + relevant Facebook groups`,
+    `Day 7: Review clicks & conversions, optimize angles`
+  ].map((x) => `<li>${x}</li>`).join("");
+}
+
+function formatProgramType(type) {
+  return {
+    recurring_monthly: "Recurring Monthly",
+    recurring_annual: "Recurring Annual",
+    one_time: "One Time"
+  }[type] || "One Time";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  $("product").addEventListener("input", onProductInput);
+  $("rankingPosition").addEventListener("change", onRankingChange);
+
+  [
+    "niche", "price", "commission", "epc", "network", "programType",
+    "searchVolume", "cpc", "keywordDifficulty", "buyerIntent",
+    "competitionLevel", "organicCtr"
+  ].forEach((id) => {
+    const el = $(id);
+    if (el) {
+      el.addEventListener("input", recalc);
+      el.addEventListener("change", recalc);
+    }
+  });
+
+  recalc();
+});
+</script>
+</body>
+</html>

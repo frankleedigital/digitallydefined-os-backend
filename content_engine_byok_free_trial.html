@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigitallyDefined | Content Engine</title>
+    
+    <!-- Fonts: Inter & DM Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,5..100,400;0,5..100,500&family=Inter:wght@700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- DIGITALLYDEFINED GLOBAL STYLES --- */
+        :root {
+            --bg-cream: #FFFCF9;
+            --bg-white: #FFFFFF;
+            --text-ink: #111111;
+            --text-slate: #2D3748;
+            --accent-orange: #F18B25;
+            --accent-blue: #47B7D4;
+            --accent-red: #C20F0A;
+            --border-color: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-slate);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, .dd-label, .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            color: var(--text-ink);
+            letter-spacing: -0.03em;
+        }
+
+        /* --- LAYOUT UTILITIES --- */
+        .dd-page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .dd-section {
+            padding: 60px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .dd-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .dd-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 40px;
+        }
+
+        /* --- COMPONENT: CARD --- */
+        .dd-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 0; /* Sharp edges only */
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .dd-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0px var(--border-color);
+        }
+
+        /* --- COMPONENT: INPUTS --- */
+        .dd-input-group {
+            margin-bottom: 24px;
+        }
+
+        .dd-label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            color: var(--text-ink);
+        }
+
+        .dd-input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-white);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            border-radius: 0;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .dd-input:focus {
+            border-color: var(--accent-orange);
+            background: #FFFAF5;
+        }
+
+        textarea.dd-input {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        input[type="password"].dd-input {
+            letter-spacing: 0.08em;
+            font-family: monospace;
+        }
+
+        /* --- COMPONENT: BUTTONS --- */
+        .dd-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 32px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            font-weight: 800;
+            border-radius: 0;
+            background: transparent;
+            color: var(--text-ink);
+        }
+
+        .dd-btn-primary {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .dd-btn-primary:hover {
+            background: #d67a1e;
+            box-shadow: 3px 3px 0px var(--border-color);
+            transform: translate(-1px, -1px);
+        }
+
+        .dd-btn-primary:disabled {
+            background: #cbd5e0;
+            color: #4b5563;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .dd-btn-secondary {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .dd-btn-outline {
+            background: transparent;
+            color: var(--text-ink);
+        }
+
+        .dd-btn-outline:hover {
+            background: var(--text-ink);
+            color: white;
+        }
+
+        .dd-btn-sm {
+            padding: 8px 12px;
+            font-size: 0.7rem;
+        }
+
+        /* --- SPECIFIC UI ELEMENTS --- */
+        .hero-headline {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero-sub {
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .platform-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: 1px solid var(--border-color);
+            margin-right: 10px;
+        }
+
+        .badge-li { background: #E1E9EE; }
+        .badge-fb { background: #E1F5FE; }
+        .badge-ig { background: #FCE4EC; }
+
+        .result-block {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #ccc;
+        }
+        
+        .result-block:last-child {
+            border-bottom: none;
+        }
+
+        .keyword-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            background: var(--text-ink);
+            color: white;
+            margin-right: 5px;
+            margin-top: 5px;
+        }
+
+        .status-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 20px 0 30px;
+        }
+
+        .status-box {
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            background: var(--bg-white);
+        }
+
+        .status-box strong {
+            display: block;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+        }
+
+        .status-box p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .warning-box {
+            border: 1px solid var(--accent-red);
+            background: #fff5f5;
+            padding: 14px;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+
+        .byok-note {
+            border: 1px dashed var(--border-color);
+            background: var(--bg-cream);
+            padding: 16px;
+            font-size: 0.9rem;
+            margin-top: 18px;
+        }
+
+        .key-toggle-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .key-toggle-row .dd-btn {
+            padding: 8px 10px;
+            font-size: 0.65rem;
+        }
+
+        .trial-card {
+            border: 2px solid var(--text-ink);
+            background: var(--text-ink);
+            color: #fff;
+            padding: 22px;
+            margin-top: 22px;
+        }
+
+        .trial-card h4 {
+            color: var(--accent-blue);
+            margin-bottom: 10px;
+        }
+
+        .trial-card p {
+            color: #d1d5db;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        .trial-meter {
+            margin-top: 14px;
+            height: 10px;
+            background: #2d3748;
+            border: 1px solid #4b5563;
+        }
+
+        .trial-meter-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--accent-orange);
+            transition: width 0.25s ease;
+        }
+
+        .trial-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        .trial-upgrade {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .trial-upgrade .dd-btn {
+            flex: 1;
+            min-width: 180px;
+            background: var(--accent-orange);
+            color: #fff;
+        }
+
+        .trial-upgrade .dd-btn.secondary {
+            background: transparent;
+            color: #fff;
+            border: 1px solid #4b5563;
+        }
+
+        /* --- LOADING STATE --- */
+        .loading-overlay {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            border: 1px solid var(--border-color);
+            background: white;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--text-ink);
+            border-top: 4px solid var(--accent-orange);
+            border-radius: 0; /* Square spinner for soft brutalism */
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- UTILITIES --- */
+        .hidden { display: none; }
+        .mt-4 { margin-top: 2rem; }
+        .text-center { text-align: center; }
+        .w-full { width: 100%; }
+
+        @media (max-width: 768px) {
+            .dd-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PAGE WRAPPER -->
+    <div class="dd-page">
+
+        <!-- HERO SECTION -->
+        <section class="dd-section">
+            <span class="dd-label" style="color: var(--accent-orange);">The Content Engine v1.1 BYOK</span>
+            <h1 class="hero-headline">Stop Trading Hours<br>For Content.</h1>
+            <p class="hero-sub">Transform one source of truth into high-converting social assets for LinkedIn, Facebook, and Instagram. Automate the thinking so you can focus on positioning.</p>
+            
+            <div class="dd-grid-2">
+                <!-- INPUT MODULE -->
+                <div class="dd-card">
+                    <h3 style="margin-bottom: 20px;">01 — Input Source</h3>
+                    
+                    <div class="dd-input-group">
+                        <label class="dd-label">Article or Blog URL</label>
+                        <input type="url" id="inputUrl" class="dd-input" placeholder="https://example.com/blog-post">
+                    </div>
+
+                    <div class="dd-input-group">
+                        <label class="dd-label">YouTube Link (Transcript)</label>
+                        <input type="url" id="inputYoutube" class="dd-input" placeholder="https://youtube.com/watch?v=...">
+                    </div>
+
+                    <div class="dd-input-group">
+                        <label class="dd-label">Raw Text / Notes</label>
+                        <textarea id="inputText" class="dd-input" placeholder="Paste your rough notes, transcript, or ideas here..."></textarea>
+                    </div>
+
+                    <button onclick="generateAssets()" class="dd-btn dd-btn-primary w-full" id="generateButton">
+                        Generate Assets →
+                    </button>
+
+                    <div class="trial-card" id="freeTrialCard">
+                        <h4>Free Trial Limit</h4>
+                        <p id="freeTrialCopy">You have 3 free generations in this browser.</p>
+                        <div class="trial-meter" aria-hidden="true">
+                            <div class="trial-meter-fill" id="freeTrialMeter"></div>
+                        </div>
+                        <div class="trial-meta">
+                            <span id="freeTrialRemaining">3 remaining</span>
+                            <span id="freeTrialLocked">Free trial active</span>
+                        </div>
+                        <div class="trial-upgrade" id="freeTrialUpgrade" style="display:none;">
+                            <button class="dd-btn" onclick="resetTrial()">Reset Trial</button>
+                            <a class="dd-btn secondary" href="https://facebook.com/groups/digitallydefind" target="_blank" rel="noopener noreferrer">Unlock Inner Circle</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INSTRUCTIONS / CONTEXT -->
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <div class="dd-card" style="background: var(--bg-cream); border-style: dashed;">
+                        <h3>The "No-BS" Protocol</h3>
+                        <ul style="list-style: none; margin-top: 15px;">
+                            <li style="margin-bottom: 10px;"><strong>✓ Identity First:</strong> AI adopts your pragmatic Gen X voice.</li>
+                            <li style="margin-bottom: 10px;"><strong>✓ Structure Second:</strong> Output is JSON-ready for clean UI.</li>
+                            <li style="margin-bottom: 10px;"><strong>✓ BYOK:</strong> Connect your own API key to generate live, input-aware assets.</li>
+                            <li style="margin-bottom: 10px;"><strong>✓ Free Trial:</strong> Test 3 times before connecting a key or unlocking the full engine.</li>
+                        </ul>
+                    </div>
+
+                    <!-- NEW: BYOK MODULE -->
+                    <div class="dd-card" style="margin-top: 20px;">
+                        <h3>02 — Bring Your Own Key</h3>
+                        <p style="margin-top: 10px; margin-bottom: 18px;">Paste a provider API key to run a real generation pass. Without a key, the engine falls back to the built-in demo output.</p>
+
+                        <div class="dd-input-group">
+                            <label class="dd-label">Provider</label>
+                            <select id="byokProvider" class="dd-input" onchange="onProviderChange()">
+                                <option value="demo">Demo / No API</option>
+                                <option value="openai">OpenAI</option>
+                                <option value="anthropic">Anthropic</option>
+                                <option value="google">Google Gemini</option>
+                            </select>
+                        </div>
+
+                        <div class="dd-input-group" id="apiKeyGroup">
+                            <label class="dd-label">API Key</label>
+                            <div style="position: relative;">
+                                <input type="password" id="byokKey" class="dd-input" placeholder="Paste your provider key here" autocomplete="off">
+                                <div class="key-toggle-row">
+                                    <button type="button" class="dd-btn dd-btn-outline dd-btn-sm" onclick="toggleKeyVisibility()">Show</button>
+                                    <button type="button" class="dd-btn dd-btn-outline dd-btn-sm" onclick="saveKeyToLocalStorage()">Save Key</button>
+                                    <button type="button" class="dd-btn dd-btn-outline dd-btn-sm" onclick="clearSavedKey()">Clear</button>
+                                </div>
+                            </div>
+                            <div class="byok-note">
+                                Your key is stored only in this browser's localStorage unless you clear it. It is sent directly from your browser to the provider you selected. Do not paste a key you are not comfortable using in this browser.
+                            </div>
+                        </div>
+
+                        <div class="status-strip">
+                            <div class="status-box">
+                                <strong>Mode</strong>
+                                <p id="byokStatusMode">Demo output</p>
+                            </div>
+                            <div class="status-box">
+                                <strong>Key Source</strong>
+                                <p id="byokStatusSource">Not saved</p>
+                            </div>
+                            <div class="status-box">
+                                <strong>Provider</strong>
+                                <p id="byokStatusProvider">Demo</p>
+                            </div>
+                        </div>
+
+                        <div class="warning-box hidden" id="byokErrorBox">
+                            <strong>BYOK error:</strong>
+                            <p id="byokErrorMessage" style="margin-top: 6px;"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LOADING STATE -->
+        <div id="loadingState" class="loading-overlay">
+            <div class="spinner"></div>
+            <h3>Extracting Gold...</h3>
+            <p id="loadingCaption">Refining legacy content into sovereign assets.</p>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <section id="resultsSection" class="dd-section hidden">
+            <span class="dd-label" style="color: var(--accent-blue);">03 — Your Asset Matrix</span>
+            <h2 style="margin-bottom: 30px;">Ready for Deployment</h2>
+
+            <div id="resultsModeNote" class="status-box" style="margin-bottom: 30px; padding: 14px; border: 1px solid var(--border-color); background: var(--bg-white);">
+                <strong>Output Mode</strong>
+                <p id="resultsModeText" style="margin-top: 6px;"></p>
+            </div>
+
+            <div class="dd-grid">
+                
+                <!-- LINKEDIN CARD -->
+                <article class="dd-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                        <span class="platform-badge badge-li">LinkedIn</span>
+                        <button class="dd-btn dd-btn-outline" style="padding: 5px 10px; font-size: 0.7rem;" onclick="copyToClipboard('linkedin')">Copy</button>
+                    </div>
+                    
+                    <div class="result-block">
+                        <span class="dd-label">The Hook</span>
+                        <p id="li-hook" style="font-weight: 700; font-size: 1.1rem; margin-bottom: 10px;"></p>
+                    </div>
+                    
+                    <div class="result-block">
+                        <span class="dd-label">The Body</span>
+                        <p id="li-body" style="font-size: 0.95rem; white-space: pre-line;"></p>
+                    </div>
+
+                    <div>
+                        <span class="dd-label">SEO Signals</span>
+                        <div id="li-keywords"></div>
+                    </div>
+                </article>
+
+                <!-- FACEBOOK CARD -->
+                <article class="dd-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                        <span class="platform-badge badge-fb">Facebook</span>
+                        <button class="dd-btn dd-btn-outline" style="padding: 5px 10px; font-size: 0.7rem;" onclick="copyToClipboard('facebook')">Copy</button>
+                    </div>
+                    
+                    <div class="result-block">
+                        <span class="dd-label">The Hook</span>
+                        <p id="fb-hook" style="font-weight: 700; font-size: 1.1rem; margin-bottom: 10px;"></p>
+                    </div>
+                    
+                    <div class="result-block">
+                        <span class="dd-label">The Body</span>
+                        <p id="fb-body" style="font-size: 0.95rem; white-space: pre-line;"></p>
+                    </div>
+
+                    <div>
+                        <span class="dd-label">SEO Signals</span>
+                        <div id="fb-keywords"></div>
+                    </div>
+                </article>
+
+                <!-- INSTAGRAM CARD -->
+                <article class="dd-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                        <span class="platform-badge badge-ig">Instagram</span>
+                        <button class="dd-btn dd-btn-outline" style="padding: 5px 10px; font-size: 0.7rem;" onclick="copyToClipboard('instagram')">Copy</button>
+                    </div>
+                    
+                    <div class="result-block">
+                        <span class="dd-label">The Hook</span>
+                        <p id="ig-hook" style="font-weight: 700; font-size: 1.1rem; margin-bottom: 10px;"></p>
+                    </div>
+                    
+                    <div class="result-block">
+                        <span class="dd-label">The Caption</span>
+                        <p id="ig-body" style="font-size: 0.95rem; white-space: pre-line;"></p>
+                    </div>
+
+                    <div>
+                        <span class="dd-label">Hashtag Cluster</span>
+                        <div id="ig-keywords"></div>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- FOOTER CTA (UPDATED) -->
+        <section class="dd-section" style="border-bottom: none;">
+            <div class="dd-card" style="background: var(--text-ink); color: white; text-align: center; padding: 60px 20px;">
+                <h2 style="color: white; margin-bottom: 15px;">Own Your Power.</h2>
+                <p style="color: #ccc; max-width: 500px; margin: 0 auto 30px;">
+                    This engine is just the start. Join the Inner Circle community for the full Automation Stack, Legacy Blueprints, and peer support.
+                </p>
+                <a href="https://facebook.com/groups/digitallydefind" target="_blank" rel="noopener noreferrer" class="dd-btn dd-btn-primary">Join Inner Circle →</a>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- LOGIC -->
+    <script>
+        const STORAGE_KEY = "ddContentEngineByok";
+        const TRIAL_KEY = "ddContentEngineFreeTrial";
+        const FREE_TRIAL_LIMIT = 3;
+
+        const providerMeta = {
+            demo: {
+                label: "Demo",
+                status: "Demo output"
+            },
+            openai: {
+                label: "OpenAI",
+                status: "OpenAI connected"
+            },
+            anthropic: {
+                label: "Anthropic",
+                status: "Anthropic connected"
+            },
+            google: {
+                label: "Google Gemini",
+                status: "Gemini connected"
+            }
+        };
+
+        const mockResponses = {
+            linkedin: {
+                hook: "The retirement math doesn't add up for Gen X. Here is the fix.",
+                body: "We were promised pensions. We got inflation.\n\nTraditional saving is a slow death by 2% annual erosion. The only way out is building Digital Real Estate—assets that work while you sleep.\n\nI stopped trading hours for dollars 3 years ago. Here is the exact framework I used to pivot from Human Capital to Digital Capital.\n\n1. Audit your knowledge.\n2. Package it into a faceless asset.\n3. Automate the delivery.\n\nStop saving. Start building.",
+                keywords: ["Digital Sovereignty", "Gen X Wealth", "Passive Income"]
+            },
+            facebook: {
+                hook: "Stop apologizing for wanting financial freedom.",
+                body: "You have 30 years of experience. That is not 'baggage'. That is inventory.\n\nMost women sit on a goldmine of strategic nuance but feel 'tech shame' holding them back. \n\nI built a system that respects your privacy and your time. No dancing on TikTok. No showing your face. Just pure, high-value assets solving bleeding-neck problems.\n\nComment 'BLUEPRINT' if you are ready to stop guessing and start building.",
+                keywords: ["Women in Business", "Faceless Marketing", "Career Pivot"]
+            },
+            instagram: {
+                hook: "POV: You finally fired your boss.",
+                body: "Digital sovereignty isn't about Lambos. It's about options.\n\n✅ No more commute\n✅ No more permission slips\n✅ No more ceiling\n\nI help Gen X women build faceless digital empires using the L.E.G.A.C.Y. framework. \n\nLink in bio to calculate your Freedom Number.",
+                keywords: ["#digitalsovereignty", "#genxwomen", "#facelessmarketing", "#freedomnumber"]
+            }
+        };
+
+        function getSavedKey(provider) {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                if (parsed.provider === provider && parsed.key) return parsed.key;
+                return null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function getTrialState() {
+            try {
+                const raw = localStorage.getItem(TRIAL_KEY);
+                if (!raw) {
+                    return { remaining: FREE_TRIAL_LIMIT, unlocked: false };
+                }
+                const parsed = JSON.parse(raw);
+                const remaining = Number.isFinite(parsed.remaining) ? parsed.remaining : FREE_TRIAL_LIMIT;
+                return {
+                    remaining: Math.max(0, Math.min(FREE_TRIAL_LIMIT, remaining)),
+                    unlocked: Boolean(parsed.unlocked)
+                };
+            } catch (e) {
+                return { remaining: FREE_TRIAL_LIMIT, unlocked: false };
+            }
+        }
+
+        function saveTrialState(state) {
+            localStorage.setItem(TRIAL_KEY, JSON.stringify({
+                remaining: state.remaining,
+                unlocked: state.unlocked,
+                updatedAt: new Date().toISOString()
+            }));
+        }
+
+        function updateFreeTrialUI() {
+            const trial = getTrialState();
+            const generateButton = document.getElementById('generateButton');
+            const remainingText = trial.remaining;
+            const hasRemaining = remainingText > 0;
+            const hasKey = document.getElementById('byokKey').value.trim().length > 0;
+
+            const meter = document.getElementById('freeTrialMeter');
+            const copy = document.getElementById('freeTrialCopy');
+            const remaining = document.getElementById('freeTrialRemaining');
+            const locked = document.getElementById('freeTrialLocked');
+            const upgradeRow = document.getElementById('freeTrialUpgrade');
+
+            const used = FREE_TRIAL_LIMIT - remainingText;
+            meter.style.width = `${(used / FREE_TRIAL_LIMIT) * 100}%`;
+
+            if (trial.unlocked) {
+                copy.textContent = "Free trial unlocked. You can keep generating in this browser.";
+                remaining.textContent = "Unlimited";
+                locked.textContent = "Unlocked";
+                generateButton.disabled = false;
+                generateButton.textContent = "Generate Assets →";
+                upgradeRow.style.display = "none";
+            } else if (hasRemaining) {
+                copy.textContent = `You have ${remainingText} free generation${remainingText === 1 ? "" : "s"} left in this browser.`;
+                remaining.textContent = `${remainingText} remaining`;
+                locked.textContent = "Free trial active";
+                generateButton.disabled = false;
+                generateButton.textContent = "Generate Assets →";
+                upgradeRow.style.display = "flex";
+            } else {
+                copy.textContent = "Free trial used up. Connect an API key or unlock the engine to keep generating.";
+                remaining.textContent = "0 remaining";
+                locked.textContent = "Free trial complete";
+                generateButton.disabled = !hasKey;
+                generateButton.textContent = hasKey ? "Generate Assets →" : "Add API Key to Continue";
+                upgradeRow.style.display = "flex";
+            }
+        }
+
+        function consumeFreeTrial() {
+            const trial = getTrialState();
+            if (trial.unlocked || trial.remaining <= 0) return false;
+            trial.remaining -= 1;
+            saveTrialState(trial);
+            return true;
+        }
+
+        function canGenerate() {
+            const trial = getTrialState();
+            const hasKey = document.getElementById('byokKey').value.trim().length > 0;
+            const hasRemaining = trial.remaining > 0;
+            if (trial.unlocked) return true;
+            if (hasKey) return true;
+            return hasRemaining;
+        }
+
+        function saveKeyToLocalStorage() {
+            const provider = document.getElementById('byokProvider').value;
+            const key = document.getElementById('byokKey').value.trim();
+            if (provider === 'demo') {
+                updateByokStatus();
+                updateFreeTrialUI();
+                return;
+            }
+            if (!key) {
+                showByokError("Enter an API key before saving.");
+                return;
+            }
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ provider, key, savedAt: new Date().toISOString() }));
+            updateByokStatus();
+            document.getElementById('byokStatusSource').textContent = "Saved in browser";
+            updateFreeTrialUI();
+        }
+
+        function clearSavedKey() {
+            localStorage.removeItem(STORAGE_KEY);
+            document.getElementById('byokKey').value = "";
+            updateByokStatus();
+            document.getElementById('byokStatusSource').textContent = "Not saved";
+            updateFreeTrialUI();
+        }
+
+        function toggleKeyVisibility() {
+            const keyInput = document.getElementById('byokKey');
+            keyInput.type = keyInput.type === 'password' ? 'text' : 'password';
+        }
+
+        function onProviderChange() {
+            const provider = document.getElementById('byokProvider').value;
+            const saved = getSavedKey(provider);
+            document.getElementById('byokKey').value = saved ? "" : "";
+            updateByokStatus();
+            updateFreeTrialUI();
+        }
+
+        function updateByokStatus() {
+            const provider = document.getElementById('byokProvider').value;
+            const key = document.getElementById('byokKey').value.trim();
+            const hasKey = Boolean(key);
+            const source = hasKey ? "In memory" : (getSavedKey(provider) ? "Saved in browser" : "Not saved");
+            const mode = (provider === 'demo' || !key) ? "Demo output" : `${providerMeta[provider].label} connected`;
+
+            document.getElementById('byokStatusMode').textContent = mode;
+            document.getElementById('byokStatusSource').textContent = source;
+            document.getElementById('byokStatusProvider').textContent = providerMeta[provider].label;
+
+            if (provider !== 'demo' && !key) {
+                showByokError("No key loaded for this provider. Paste a key or choose Demo / No API.");
+            } else {
+                document.getElementById('byokErrorBox').classList.add('hidden');
+            }
+            updateFreeTrialUI();
+        }
+
+        function showByokError(message) {
+            const box = document.getElementById('byokErrorBox');
+            document.getElementById('byokErrorMessage').textContent = message;
+            box.classList.remove('hidden');
+        }
+
+        function normalizeAssistantText(text) {
+            if (!text) return "";
+            return text.replace(/```json/gi, "").replace(/```/g, "").trim();
+        }
+
+        function parseJsonLoose(raw) {
+            const cleaned = normalizeAssistantText(raw);
+            const start = cleaned.indexOf('{');
+            const end = cleaned.lastIndexOf('}');
+            if (start === -1 || end === -1) throw new Error("Provider returned no JSON object.");
+            return JSON.parse(cleaned.slice(start, end + 1));
+        }
+
+        function collectInputContext() {
+            const url = document.getElementById('inputUrl').value.trim();
+            const youtube = document.getElementById('inputYoutube').value.trim();
+            const text = document.getElementById('inputText').value.trim();
+            const source = [
+                url ? `Article URL: ${url}` : "",
+                youtube ? `YouTube URL: ${youtube}` : "",
+                text ? `Raw text or notes:\n${text}` : ""
+            ].filter(Boolean).join("\n\n");
+            return source;
+        }
+
+        function buildPrompt(context) {
+            return [
+                "You are a senior digital marketing strategist for Gen X women building faceless digital real estate.",
+                "Using only the source context below, create three ready-to-post assets: LinkedIn, Facebook, and Instagram.",
+                "The voice should be direct, pragmatic, privacy-first, and commercially clear.",
+                "Return strict JSON only with this shape:",
+                "{",
+                '  "linkedin": { "hook": "string", "body": "string", "keywords": ["string"] },',
+                '  "facebook": { "hook": "string", "body": "string", "keywords": ["string"] },',
+                '  "instagram": { "hook": "string", "body": "string", "keywords": ["string"] }',
+                "}",
+                "Rules:",
+                "- LinkedIn body: 90-160 words, professional but human.",
+                "- Facebook body: 80-140 words, warmer and community-oriented.",
+                "- Instagram body: 45-90 words, caption style, strong hook.",
+                "- Include 3-5 keywords per asset.",
+                "- Do not invent facts not present in the source context.",
+                "- If the source context is too thin, create one strong asset from the available ideas and keep the other two concise and clearly derived from the same idea.",
+                "",
+                "Source context:",
+                context
+            ].join("\n");
+        }
+
+        async function callOpenAI(prompt, apiKey) {
+            const res = await fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: "gpt-4o-mini",
+                    temperature: 0.4,
+                    response_format: { type: "json_object" },
+                    messages: [
+                        { role: "system", content: "Return strict JSON only." },
+                        { role: "user", content: prompt }
+                    ]
+                })
+            });
+            const json = await res.json();
+            if (!res.ok) throw new Error(json?.error?.message || "OpenAI request failed.");
+            const content = json?.choices?.[0]?.message?.content || "";
+            return parseJsonLoose(content);
+        }
+
+        async function callAnthropic(prompt, apiKey) {
+            const res = await fetch("https://api.anthropic.com/v1/messages", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-api-key": apiKey,
+                    "anthropic-version": "2023-06-01",
+                    "anthropic-dangerous-direct-browser-access": "true"
+                },
+                body: JSON.stringify({
+                    model: "claude-3-5-sonnet-20241022",
+                    max_tokens: 1024,
+                    system: "Return strict JSON only.",
+                    messages: [
+                        { role: "user", content: prompt }
+                    ]
+                })
+            });
+            const json = await res.json();
+            if (!res.ok) throw new Error(json?.error?.message || "Anthropic request failed.");
+            const content = (json?.content?.[0]?.text || "").trim();
+            return parseJsonLoose(content);
+        }
+
+        async function callGoogle(prompt, apiKey) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+            const res = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ role: "user", parts: [{ text: prompt }] }],
+                    generationConfig: { temperature: 0.4 },
+                    systemInstruction: { parts: [{ text: "Return strict JSON only." }] }
+                })
+            });
+            const json = await res.json();
+            if (!res.ok) throw new Error(json?.error?.message || "Gemini request failed.");
+            const text = json?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+            return parseJsonLoose(text);
+        }
+
+        async function generateWithByok(context) {
+            const provider = document.getElementById('byokProvider').value;
+            const key = document.getElementById('byokKey').value.trim();
+            const prompt = buildPrompt(context);
+
+            if (provider === 'demo' || !key) {
+                document.getElementById('loadingCaption').textContent = "Running demo generation because no BYOK key is active.";
+                await new Promise(resolve => setTimeout(resolve, 1200));
+                return {
+                    ...mockResponses,
+                    demo: true
+                };
+            }
+
+            document.getElementById('loadingCaption').textContent = `Calling ${providerMeta[provider].label} with your key...`;
+
+            if (provider === 'openai') {
+                const result = await callOpenAI(prompt, key);
+                return normalizeAssetOutput(result, false);
+            }
+            if (provider === 'anthropic') {
+                const result = await callAnthropic(prompt, key);
+                return normalizeAssetOutput(result, false);
+            }
+            if (provider === 'google') {
+                const result = await callGoogle(prompt, key);
+                return normalizeAssetOutput(result, false);
+            }
+
+            throw new Error("Unsupported provider.");
+        }
+
+        function normalizeAssetOutput(result, fallbackToDemo) {
+            const platforms = ["linkedin", "facebook", "instagram"];
+            const normalized = { demo: false };
+            for (const p of platforms) {
+                const item = result?.[p];
+                if (!item || !item.hook || !item.body) {
+                    normalized[p] = fallbackToDemo ? mockResponses[p] : mockResponses[p];
+                    normalized.demo = true;
+                } else {
+                    normalized[p] = {
+                        hook: String(item.hook).trim(),
+                        body: String(item.body).trim(),
+                        keywords: Array.isArray(item.keywords) ? item.keywords.map(k => String(k).trim()).filter(Boolean) : []
+                    };
+                }
+            }
+            return normalized;
+        }
+
+        async function generateAssets() {
+            const context = collectInputContext();
+            if (!context) {
+                alert("Please provide a URL, YouTube link, or Raw Text.");
+                return;
+            }
+
+            if (!canGenerate()) {
+                document.getElementById('byokErrorBox').classList.remove('hidden');
+                document.getElementById('byokErrorMessage').textContent = "Your free trial limit has been reached. Add a provider API key or unlock the engine to continue.";
+                document.getElementById('freeTrialCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            const trialBefore = getTrialState();
+            const usedTrialCredit = !trialBefore.unlocked && trialBefore.remaining > 0 && document.getElementById('byokKey').value.trim().length === 0;
+
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('byokErrorBox').classList.add('hidden');
+            document.getElementById('loadingState').style.display = 'block';
+
+            try {
+                const result = await generateWithByok(context);
+                if (usedTrialCredit) {
+                    consumeFreeTrial();
+                }
+                renderResults(result);
+                document.getElementById('resultsModeText').textContent = result.demo
+                    ? "Demo output shown. Add your own API key above to generate input-aware results."
+                    : "Live BYOK output generated from your source content.";
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('resultsSection').classList.remove('hidden');
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                document.getElementById('loadingState').style.display = 'none';
+                showByokError(error.message || "Generation failed. Check your API key, provider, or network access.");
+                document.getElementById('resultsSection').classList.remove('hidden');
+                renderResults({ ...mockResponses, demo: true });
+                document.getElementById('resultsModeText').textContent = "Live generation failed, so the demo fallback is shown. Review the BYOK error message above.";
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+            }
+
+            updateFreeTrialUI();
+        }
+
+        function resetTrial() {
+            const trial = getTrialState();
+            trial.remaining = FREE_TRIAL_LIMIT;
+            trial.unlocked = false;
+            saveTrialState(trial);
+            updateFreeTrialUI();
+        }
+
+        function renderResults(data) {
+            // LinkedIn
+            document.getElementById('li-hook').innerText = data.linkedin.hook;
+            document.getElementById('li-body').innerText = data.linkedin.body;
+            renderKeywords('li-keywords', data.linkedin.keywords, false);
+
+            // Facebook
+            document.getElementById('fb-hook').innerText = data.facebook.hook;
+            document.getElementById('fb-body').innerText = data.facebook.body;
+            renderKeywords('fb-keywords', data.facebook.keywords, false);
+
+            // Instagram
+            document.getElementById('ig-hook').innerText = data.instagram.hook;
+            document.getElementById('ig-body').innerText = data.instagram.body;
+            renderKeywords('ig-keywords', data.instagram.keywords, true);
+        }
+
+        function renderKeywords(elementId, keywords, isHash = false) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = '';
+            if (!keywords || keywords.length === 0) {
+                container.innerHTML = '<span class="keyword-tag">No keywords returned</span>';
+                return;
+            }
+            keywords.forEach(word => {
+                const span = document.createElement('span');
+                span.className = 'keyword-tag';
+                span.innerText = isHash && !word.startsWith('#') ? `#${word.replace(/^#+/, '')}` : word;
+                container.appendChild(span);
+            });
+        }
+
+        function copyToClipboard(platform) {
+            let text = "";
+            if (platform === 'linkedin') {
+                text = document.getElementById('li-hook').innerText + "\n\n" + document.getElementById('li-body').innerText;
+            } else if (platform === 'facebook') {
+                text = document.getElementById('fb-hook').innerText + "\n\n" + document.getElementById('fb-body').innerText;
+            } else if (platform === 'instagram') {
+                text = document.getElementById('ig-hook').innerText + "\n\n" + document.getElementById('ig-body').innerText;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Asset copied to clipboard. Go post it.");
+            }).catch(() => {
+                alert("Copy failed. Select the text manually.");
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const provider = document.getElementById('byokProvider');
+            provider.value = 'demo';
+            updateByokStatus();
+            updateFreeTrialUI();
+
+            document.getElementById('byokKey').addEventListener('input', () => {
+                updateByokStatus();
+                updateFreeTrialUI();
+            });
+            document.getElementById('byokProvider').addEventListener('change', onProviderChange);
+        });
+    </script>
+</body>
+</html>

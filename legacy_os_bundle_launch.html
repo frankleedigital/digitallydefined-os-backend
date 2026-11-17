@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigitallyDefined · Legacy OS Bundle</title>
+  <meta name="description" content="The Legacy OS Bundle for Gen X women: planner, caregiver survival kit, and command center in one branded system.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dd-bg: #FFFCF9;
+      --dd-ink: #111111;
+      --dd-text: #2D3748;
+      --dd-line: #111111;
+      --dd-blue: #47B7D4;
+      --dd-orange: #F18B25;
+      --dd-red: #D64545;
+      --dd-green: #2A9D5C;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--dd-bg);
+      color: var(--dd-text);
+      font-family: "DM Sans", sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, .eyebrow, .section-label, .btn, .price, .card-title {
+      font-family: "Inter", sans-serif;
+    }
+
+    .page { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+
+    .topbar {
+      border-bottom: 2px solid var(--dd-ink);
+      padding: 18px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      background: var(--dd-ink);
+      color: var(--dd-bg);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 15px;
+      font-family: "Inter", sans-serif;
+    }
+
+    .brand-title {
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--dd-ink);
+      letter-spacing: -0.02em;
+      font-family: "Inter", sans-serif;
+    }
+
+    .brand-title span { color: var(--dd-orange); font-style: italic; }
+    .brand-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 0.18em; color: #555; margin-top: 4px; }
+
+    .top-note {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      color: var(--dd-ink);
+      border: 2px solid var(--dd-ink);
+      padding: 8px 12px;
+      background: #fff;
+      font-family: "Inter", sans-serif;
+    }
+
+    .hero {
+      padding: 56px 0 48px;
+      border-bottom: 2px solid var(--dd-ink);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dd-orange);
+      border: 1px solid var(--dd-ink);
+      background: #fff;
+      padding: 6px 10px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: 0.96;
+      letter-spacing: -0.045em;
+      font-weight: 900;
+      color: var(--dd-ink);
+      margin-bottom: 18px;
+    }
+
+    h1 span { color: var(--dd-orange); }
+
+    .hero-copy {
+      font-size: 18px;
+      color: #4b5563;
+      max-width: 560px;
+      margin-bottom: 28px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .badge {
+      font-family: "Inter", sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 2px solid var(--dd-ink);
+      padding: 8px 12px;
+      background: #fff;
+      color: var(--dd-ink);
+    }
+
+    .badge--orange { background: var(--dd-orange); color: #fff; }
+    .badge--blue { background: var(--dd-blue); color: #fff; }
+    .badge--green { background: var(--dd-green); color: #fff; }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .meta-card {
+      border: 2px solid var(--dd-ink);
+      background: #fff;
+      padding: 18px;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .meta-card .value {
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 900;
+      color: var(--dd-ink);
+      letter-spacing: -0.02em;
+    }
+
+    .meta-card .label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+      color: #555;
+    }
+
+    .meta-card .sub {
+      font-size: 12px;
+      color: #555;
+    }
+
+    .section {
+      padding: 64px 0;
+      border-bottom: 2px solid var(--dd-ink);
+    }
+
+    .section:last-of-type { border-bottom: none; }
+
+    .section-label {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dd-ink);
+      border: 2px solid var(--dd-ink);
+      background: #fff;
+      padding: 6px 10px;
+      margin-bottom: 16px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+      font-weight: 900;
+      color: var(--dd-ink);
+      max-width: 720px;
+    }
+
+    .section-head p {
+      max-width: 460px;
+      color: #4b5563;
+      font-size: 15px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      border: 2px solid var(--dd-ink);
+      background: #fff;
+      padding: 26px;
+      position: relative;
+    }
+
+    .card--dark {
+      background: var(--dd-ink);
+      color: #fff;
+    }
+
+    .card--dark h3, .card--dark .card-title { color: #fff; }
+    .card--dark p { color: #d1d5db; }
+    .card--dark .card-sub { color: #9ca3af; }
+
+    .card-num {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      font-size: 44px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      opacity: 0.06;
+      line-height: 1;
+    }
+
+    .card--dark .card-num { color: #fff; opacity: 0.08; }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .card-sub {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 14px;
+    }
+
+    .card p { font-size: 14px; color: #4b5563; }
+
+    .card ul {
+      list-style: none;
+      margin-top: 14px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .card li {
+      font-size: 13px;
+      color: var(--dd-text);
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .card li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 7px;
+      width: 6px;
+      height: 6px;
+      background: var(--dd-orange);
+      border: 1px solid var(--dd-ink);
+    }
+
+    .card--dark li::before { background: var(--dd-orange); border-color: #fff; }
+
+    .card--blue { border-top: 6px solid var(--dd-blue); }
+    .card--orange { border-top: 6px solid var(--dd-orange); }
+    .card--green { border-top: 6px solid var(--dd-green); }
+    .card--red { border-top: 6px solid var(--dd-red); }
+
+    .divider {
+      border: 0;
+      border-top: 2px solid var(--dd-ink);
+      margin: 32px 0;
+    }
+
+    .flow-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 2px solid var(--dd-ink);
+    }
+
+    .flow-table th, .flow-table td {
+      border: 2px solid var(--dd-ink);
+      padding: 16px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    .flow-table th {
+      background: var(--dd-ink);
+      color: #fff;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+    }
+
+    .flow-table tr:nth-child(even) td { background: #fffaf3; }
+    .flow-table strong { color: var(--dd-ink); }
+
+    .stack-wrap {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .price-card {
+      border: 2px solid var(--dd-ink);
+      background: var(--dd-ink);
+      color: #fff;
+      padding: 30px;
+      position: sticky;
+      top: 20px;
+    }
+
+    .price-card .eyebrow {
+      background: transparent;
+      color: var(--dd-orange);
+      border-color: #4b5563;
+    }
+
+    .price-card h3 {
+      font-size: 26px;
+      color: #fff;
+      margin: 12px 0 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .price-card p {
+      color: #d1d5db;
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .price {
+      font-size: 58px;
+      font-weight: 900;
+      color: var(--dd-orange);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin-bottom: 6px;
+    }
+
+    .price-sub {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #9ca3af;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      border: 2px solid var(--dd-ink);
+      background: var(--dd-orange);
+      color: #fff;
+      font-weight: 900;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 18px;
+      text-decoration: none;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .btn--secondary {
+      background: #fff;
+      color: var(--dd-ink);
+      border-color: var(--dd-ink);
+    }
+
+    .btn--ghost {
+      background: transparent;
+      color: #fff;
+      border-color: #4b5563;
+    }
+
+    .price-card .note {
+      border: 2px solid #4b5563;
+      background: #1f2937;
+      padding: 14px;
+      font-size: 13px;
+      color: #d1d5db;
+      margin-top: 16px;
+    }
+
+    .offer-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .offer-item {
+      border: 2px solid var(--dd-ink);
+      background: #fff;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .offer-item .index {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      background: var(--dd-ink);
+      color: #fff;
+      font-weight: 900;
+      font-size: 18px;
+    }
+
+    .offer-item strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      margin-bottom: 4px;
+    }
+
+    .offer-item span {
+      font-size: 13px;
+      color: #555;
+    }
+
+    .offer-item .value {
+      font-family: "Inter", sans-serif;
+      font-weight: 900;
+      font-size: 16px;
+      color: var(--dd-orange);
+      white-space: nowrap;
+    }
+
+    .objection-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 2px solid var(--dd-ink);
+      margin-top: 8px;
+    }
+
+    .objection-table th, .objection-table td {
+      border: 2px solid var(--dd-ink);
+      padding: 16px;
+      font-size: 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .objection-table th {
+      background: var(--dd-ink);
+      color: #fff;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+    }
+
+    .objection-table td:first-child {
+      background: #fff;
+      font-weight: 700;
+      width: 32%;
+    }
+
+    .objection-table td:last-child {
+      background: #fff;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .score-card {
+      border: 2px solid var(--dd-ink);
+      background: #fff;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .score-card .value {
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      line-height: 1;
+      letter-spacing: -0.04em;
+      margin-bottom: 8px;
+    }
+
+    .score-card .label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #555;
+      font-weight: 700;
+    }
+
+    .score-card .decision {
+      display: inline-block;
+      margin-top: 10px;
+      background: var(--dd-green);
+      color: #fff;
+      border: 2px solid var(--dd-ink);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 6px 10px;
+      font-family: "Inter", sans-serif;
+    }
+
+    .cta-band {
+      border: 2px solid var(--dd-ink);
+      background: var(--dd-ink);
+      color: #fff;
+      padding: 32px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .cta-band h3 {
+      font-size: 28px;
+      color: #fff;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .cta-band p {
+      color: #d1d5db;
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .checkout-box {
+      border: 2px solid #4b5563;
+      background: #1f2937;
+      padding: 24px;
+    }
+
+    .checkout-box .field-label {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #9ca3af;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-family: "Inter", sans-serif;
+    }
+
+    .checkout-box input, .checkout-box select, .checkout-box textarea {
+      width: 100%;
+      border: 2px solid #4b5563;
+      background: #111827;
+      color: #fff;
+      font-family: "DM Sans", sans-serif;
+      font-size: 14px;
+      padding: 12px;
+      margin-bottom: 14px;
+      outline: none;
+    }
+
+    .checkout-box input:focus, .checkout-box select:focus, .checkout-box textarea:focus {
+      border-color: var(--dd-orange);
+    }
+
+    .checkout-box .small-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .checkout-note {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+
+    .copy-block {
+      border: 2px solid var(--dd-ink);
+      background: #fff;
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+
+    .copy-block h3 {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .copy-block p {
+      font-size: 14px;
+      color: var(--dd-text);
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+
+    .tag {
+      display: inline-block;
+      border: 1px solid var(--dd-ink);
+      background: #fff;
+      color: var(--dd-ink);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 5px 8px;
+      font-family: "Inter", sans-serif;
+      margin-bottom: 10px;
+    }
+
+    .tag--orange { background: var(--dd-orange); color: #fff; }
+    .tag--blue { background: var(--dd-blue); color: #fff; }
+    .tag--green { background: var(--dd-green); color: #fff; }
+
+    .delivery-checklist {
+      border: 2px solid var(--dd-ink);
+      background: #fff;
+      padding: 24px;
+    }
+
+    .delivery-checklist h3 {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--dd-ink);
+      margin-bottom: 16px;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 10px;
+    }
+
+    .check {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 12px;
+      align-items: start;
+      font-size: 14px;
+    }
+
+    .check .box {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--dd-ink);
+      background: #fff;
+      margin-top: 2px;
+    }
+
+    .footer {
+      padding: 30px 0;
+      border-top: 2px solid var(--dd-ink);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-weight: 700;
+      color: var(--dd-ink);
+      font-family: "Inter", sans-serif;
+    }
+
+    .reveal {
+      display: none;
+    }
+
+    .reveal.active {
+      display: block;
+      animation: fadeUp 0.2s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hidden { display: none; }
+
+    @media (max-width: 1000px) {
+      .hero, .stack-wrap, .cta-band, .grid-2, .grid-3, .score-grid {
+        grid-template-columns: 1fr;
+      }
+      .price-card {
+        position: static;
+      }
+      .hero-meta { grid-template-columns: 1fr; }
+      .offer-item {
+        grid-template-columns: 44px 1fr;
+      }
+      .offer-item .value {
+        grid-column: 2;
+      }
+      .checkout-box .small-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">DD</div>
+        <div>
+          <div class="brand-title">DIGITALLY<span>DEFINED.</span></div>
+          <div class="brand-sub">Legacy OS · Phase 1</div>
+        </div>
+      </div>
+      <div class="top-note">Launch Order · Week 1 · $297 Bundle</div>
+    </div>
+
+    <!-- HERO / OFFER -->
+    <section class="hero" id="top">
+      <div>
+        <div class="eyebrow">Phase 1 · Build Now · Fastest Route To Revenue</div>
+        <h1>The <span>Legacy OS</span> Bundle.</h1>
+        <p class="hero-copy">
+          One branded system that helps Gen X women stop managing caregiving, retirement, and legacy planning from chaos.
+          Plan the money. Protect the crisis. Run the operation.
+        </p>
+        <div class="hero-badges">
+          <span class="badge badge--orange">One-time $297</span>
+          <span class="badge badge--blue">Planner</span>
+          <span class="badge badge--blue">Survival Kit</span>
+          <span class="badge badge--blue">Command Center</span>
+          <span class="badge badge--green">Download + Access</span>
+        </div>
+        <a class="btn" href="#checkout">Get the Legacy OS Bundle</a>
+        <a class="btn btn--secondary" href="#what-sold">What’s Inside</a>
+      </div>
+
+      <div class="hero-meta">
+        <div class="meta-card">
+          <div>
+            <div class="value">$297</div>
+            <div class="label">One-time offer</div>
+          </div>
+          <div class="sub">No subscription required for Phase 1</div>
+        </div>
+        <div class="meta-card">
+          <div>
+            <div class="value">3</div>
+            <div class="label">Core tools</div>
+          </div>
+          <div class="sub">Planner · Kit · Command Center</div>
+        </div>
+        <div class="meta-card">
+          <div>
+            <div class="value">1</div>
+            <div class="label">Branded system</div>
+          </div>
+          <div class="sub">Built to work as one unit</div>
+        </div>
+        <div class="meta-card">
+          <div>
+            <div class="value">Now</div>
+            <div class="label">Launch window</div>
+          </div>
+          <div class="sub">Smallest thing that can sell this week</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCORES -->
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Strategic Score</span>
+          <h2>Why this is the fastest thing to launch</h2>
+        </div>
+        <p>No SaaS. No backend. No multi-user. No compliance-heavy vault. Just a premium digital system.</p>
+      </div>
+
+      <div class="score-grid">
+        <div class="score-card">
+          <div class="value">8/10</div>
+          <div class="label">Revenue Score</div>
+          <span class="decision">High</span>
+        </div>
+        <div class="score-card">
+          <div class="value">8/10</div>
+          <div class="label">Demand Score</div>
+          <span class="decision">Strong</span>
+        </div>
+        <div class="score-card">
+          <div class="value">3/10</div>
+          <div class="label">Build Difficulty</div>
+          <span class="decision">Low</span>
+        </div>
+        <div class="score-card">
+          <div class="value">10/10</div>
+          <div class="label">Speed To Revenue</div>
+          <span class="decision">Immediate</span>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="card card--dark">
+        <div class="card-num">!</div>
+        <span class="card-title" style="color:#fff">Decision</span>
+        <p style="color:#d1d5db; font-size:15px; margin-bottom:10px;">
+          <strong style="color:#fff">BUILD NOW.</strong> This is the smallest, fastest, most sellable thing we can launch this week.
+        </p>
+        <p style="color:#9ca3af; font-size:13px;">
+          It lets you test willingness to pay before building the SaaS, membership, or affiliate layer.
+        </p>
+      </div>
+    </section>
+
+    <!-- WHAT’S INSIDE -->
+    <section class="section" id="what-sold">
+      <div class="section-head">
+        <div>
+          <span class="section-label">The Offer Stack</span>
+          <h2>What you’re buying</h2>
+        </div>
+        <p>This is not three loose files. It is one branded system with a clear job.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card card--blue">
+          <div class="card-num">01</div>
+          <span class="card-title">Financial Autonomy Planner</span>
+          <div class="card-sub">The strategy layer</div>
+          <p>Calculate your Freedom Number, map your income gap, and choose the digital asset mix that actually closes the retirement gap.</p>
+          <ul>
+            <li>Monthly target builder</li>
+            <li>Asset mix sliders</li>
+            <li>Exit multiple math</li>
+            <li>L.E.G.A.C.Y. framework</li>
+          </ul>
+        </div>
+
+        <div class="card card--orange">
+          <div class="card-num">02</div>
+          <span class="card-title">Caregiver’s Survival Kit</span>
+          <div class="card-sub">The protection layer</div>
+          <p>Turn the caregiving crisis into a financial map. See the burn, understand the benefit paths, and stop guessing at Medicaid, VA, and paid leave.</p>
+          <ul>
+            <li>Caregiving exposure model</li>
+            <li>Medicaid / VA / PFL overview</li>
+            <li>Eligibility chain logic</li>
+            <li>Reality-check guardrails</li>
+          </ul>
+        </div>
+
+        <div class="card card--green">
+          <div class="card-num">03</div>
+          <span class="card-title">Legacy Command Center</span>
+          <div class="card-sub">The operations layer</div>
+          <p>Run the day-to-day without losing control. Appointments, delegation, budget goals, and firm caregiver communication in one place.</p>
+          <ul>
+            <li>Care calendar</li>
+            <li>Task delegation</li>
+            <li>Budget goals</li>
+            <li>Diplomat drafting</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card card--dark" style="margin-top:20px">
+        <div class="card-num">+</div>
+        <span class="card-title" style="color:#fff">Plus: The Digital Delivery Page</span>
+        <p style="color:#d1d5db">
+          Download links, setup guide, and access to the branded system so you can start using the tools immediately.
+        </p>
+      </div>
+    </section>
+
+    <!-- CLOSER COPY -->
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="section-label">The Problem</span>
+          <h2>You’re not just planning retirement. You’re running a family operation.</h2>
+        </div>
+        <p>Most tools only handle one layer. The Legacy OS handles the whole system.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card card--red">
+          <div class="card-num">P</div>
+          <span class="card-title">Pain</span>
+          <p>You’re juggling parents, kids, work, and a retirement gap that keeps growing. Every month without a system costs you money, time, and leverage.</p>
+        </div>
+        <div class="card card--blue">
+          <div class="card-num">O</div>
+          <span class="card-title">Desired Outcome</span>
+          <p>One clean system that tells you what to build, how to survive the caregiving layer, and how to operate without burning out.</p>
+        </div>
+        <div class="card card--orange">
+          <div class="card-num">T</div>
+          <span class="card-title">Transformation</span>
+          <p>From scattered spreadsheets, anxious planning, and reactive caregiving to a measurable legacy operating system.</p>
+        </div>
+        <div class="card card--green">
+          <div class="card-num">M</div>
+          <span class="card-title">Unique Mechanism</span>
+          <p>Plan → Protect → Operate. One sequence, one brand, one offer. No fluff. No theory. Just the system.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- OBJECTIONS -->
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Objection Handling</span>
+          <h2>Why this works even if you’re new to digital products</h2>
+        </div>
+      </div>
+
+      <table class="objection-table">
+        <tr>
+          <th>Objection</th>
+          <th>Reframe</th>
+        </tr>
+        <tr>
+          <td>“I don’t know where to start.”</td>
+          <td>You start with the Planner. It gives you the target before you touch the operations layer.</td>
+        </tr>
+        <tr>
+          <td>“I can’t afford another thing.”</td>
+          <td>This is not another app. It’s the system that stops financial leakage from caregiving and unclear retirement math.</td>
+        </tr>
+        <tr>
+          <td>“I’m not technical.”</td>
+          <td>The tools are built for non-technical users. You do not need code, a developer, or a backend to start.</td>
+        </tr>
+        <tr>
+          <td>“Will this help with caregiving?”</td>
+          <td>Yes. The Survival Kit is built specifically for the sandwich generation and the financial shock of caregiving.</td>
+        </tr>
+        <tr>
+          <td>“Is this just another planner?”</td>
+          <td>No. A planner is one tool. The Legacy OS is the full operating layer: strategy, protection, and operations.</td>
+        </tr>
+      </table>
+    </section>
+
+    <!-- WEEK 1 CHECKLIST -->
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Week 1 Build List</span>
+          <h2>What to build this week</h2>
+        </div>
+        <p>Keep it tight. No overengineering.</p>
+      </div>
+
+      <div class="delivery-checklist">
+        <h3>The only 5 things that matter</h3>
+        <div class="checklist">
+          <div class="check"><div class="box"></div><span>One simple landing page for the bundle — this page is your base.</span></div>
+          <div class="check"><div class="box"></div><span>One checkout block — even a simple payment link or form to start.</span></div>
+          <div class="check"><div class="box"></div><span>One email to your list — direct, emotional, and clear.</span></div>
+          <div class="check"><div class="box"></div><span>One Facebook post to your group or community — short, personal, and direct.</span></div>
+          <div class="check"><div class="box"></div><span>One delivery page — “download both tools + access” and instant use.</span></div>
+        </div>
+        <p style="margin-top:18px; font-size:13px; color:#555;">
+          That is the full Phase 1. If you do those five things, you are sellable.
+        </p>
+      </div>
+    </section>
+
+    <!-- CHECKOUT -->
+    <section class="section" id="checkout">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Checkout</span>
+          <h2>Get access to the bundle</h2>
+        </div>
+        <p>Simple checkout. No multi-tier decision tree. No SaaS right now.</p>
+      </div>
+
+      <div class="cta-band">
+        <div>
+          <span class="tag tag--orange">Final CTA</span>
+          <h3>Ready to stop managing everything from chaos?</h3>
+          <p>
+            Get the full Legacy OS Bundle: Planner, Survival Kit, and Command Center — in one branded system.
+            One-time purchase. Instant download. No subscription.
+          </p>
+          <a class="btn" href="#checkout-form">Buy the $297 Bundle</a>
+          <a class="btn btn--ghost" href="#copy-email">See the email copy</a>
+        </div>
+
+        <div class="checkout-box" id="checkout-form">
+          <span class="field-label">Full name</span>
+          <input type="text" placeholder="First Last">
+          <span class="field-label">Email</span>
+          <input type="email" placeholder="you@email.com">
+          <div class="small-row">
+            <div>
+              <span class="field-label">Phone</span>
+              <input type="text" placeholder="(optional)">
+            </div>
+            <div>
+              <span class="field-label">Coupon</span>
+              <input type="text" placeholder="(optional)">
+            </div>
+          </div>
+          <span class="field-label">Order</span>
+          <textarea rows="3" readonly>Legacy OS Bundle — $297 one-time</textarea>
+          <button class="btn" type="button" onclick="simulateCheckout()">Complete Order</button>
+          <p class="checkout-note">
+            Demo checkout only. Replace with Gumroad, Stripe, PayPal, or your preferred payment link before launch.
+          </p>
+        </div>
+      </div>
+
+      <div class="reveal" id="checkout-success" style="margin-top:20px">
+        <div class="card card--dark">
+          <div class="card-num">✓</div>
+          <span class="card-title" style="color:#fff">Order confirmed</span>
+          <p style="color:#d1d5db">
+            You are all set. Your delivery page will appear here in a live launch. This is the Phase 1 success state.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- DELIVERY PAGE -->
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Delivery Page</span>
+          <h2>What happens after they buy</h2>
+        </div>
+        <p>Instant access. Clear next step. No confusion.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card card--green">
+          <div class="card-num">D</div>
+          <span class="card-title">Download Both Tools</span>
+          <p>Planner and Survival Kit are delivered as immediately usable assets. No waiting.</p>
+          <ul>
+            <li>Instant download links</li>
+            <li>Quick-start instructions</li>
+            <li>Branded starter sheets</li>
+          </ul>
+        </div>
+        <div class="card card--blue">
+          <div class="card-num">A</div>
+          <span class="card-title">Access the Command Center</span>
+          <p>The operational layer is delivered as a working access point, not just a file.</p>
+          <ul>
+            <li>Access link</li>
+            <li>2-minute setup guide</li>
+            <li>First 3 actions to take</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- EMAIL + FB COPY -->
+    <section class="section" id="copy-email">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Launch Copy</span>
+          <h2>The email and the Facebook post</h2>
+        </div>
+        <p>Short. Direct. High intent.</p>
+      </div>
+
+      <div class="copy-block">
+        <span class="tag tag--blue">Email to your list</span>
+        <h3>Subject: You’re not behind. You’re just running without an OS.</h3>
+        <p>
+          Francesca here.
+        </p>
+        <p>
+          If you’re a Gen X woman carrying parents, kids, work, and a retirement gap all at once, you don’t need another planner.
+        </p>
+        <p>
+          You need one system that handles the whole mess.
+        </p>
+        <p>
+          That’s exactly what the Legacy OS Bundle is:
+          <br>• Planner for the money
+          <br>• Survival Kit for the caregiving layer
+          <br>• Command Center for the day-to-day
+        </p>
+        <p>
+          It’s a one-time $297 purchase. No subscription. No fluff.
+        </p>
+        <p>
+          <a href="#checkout" style="color:var(--dd-orange); font-weight:700;">Get the bundle here →</a>
+        </p>
+      </div>
+
+      <div class="copy-block">
+        <span class="tag tag--orange">Facebook post</span>
+        <h3>Short, personal, direct</h3>
+        <p>
+          Real talk:
+        </p>
+        <p>
+          If you’re managing your parents’ care, your own kids, your work, and a retirement plan that doesn’t quite add up — you are not “organized.”
+        </p>
+        <p>
+          You’re just running a family operation with no operating system.
+        </p>
+        <p>
+          I built the Legacy OS Bundle to fix that:
+          <br>1. Plan the money
+          <br>2. Protect the caregiving layer
+          <br>3. Run the day-to-day
+        </p>
+        <p>
+          One-time $297. No subscription.
+        </p>
+        <p>
+          <a href="#checkout" style="color:var(--dd-orange); font-weight:700;">Get access here →</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div>© 2026 DigitallyDefined · Build What You Own</div>
+      <div>Phase 1 · Week 1 · Legacy OS Bundle</div>
+    </footer>
+  </div>
+
+  <script>
+    function simulateCheckout() {
+      const success = document.getElementById('checkout-success');
+      success.classList.add('reveal');
+      success.classList.add('active');
+      success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  </script>
+</body>
+</html>

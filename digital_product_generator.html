@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIGITALLYDEFINED | AI Digital Product Manufacturing System</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Inter:ital,wght@0,700;0,800;0,900;1,700;1,800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bone: '#FFFCF9',
+                        ink: '#2D3748',
+                        'dd-orange': '#F18B25',
+                        'dd-blue': '#47B7D4',
+                        'dd-red': '#C20F0A',
+                        black: '#000000',
+                    },
+                    fontFamily: {
+                        heading: ['Inter', 'sans-serif'],
+                        body: ['DM Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #FFFCF9; 
+            color: #2D3748; 
+            font-family: 'DM Sans', sans-serif;
+        }
+        * { border-radius: 0 !important; }
+        h1, h2, h3, h4, h5, h6, .font-heading {
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+        }
+        .brutal-border { border: 1px solid #000000; }
+        .brutal-input { background-color: #FFFFFF; border: 1px solid #000000; }
+        .brutal-input:focus { outline: none; border: 1px solid #000000; }
+        .idea-card { transition: border-color 0.15s ease, background-color 0.15s ease; }
+        .idea-card:hover { border-color: #F18B25; }
+        .loader-bar { width: 0%; height: 6px; background-color: #F18B25; transition: width 0.4s ease; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #FFFCF9; border-left: 1px solid #000; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #F18B25; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased bg-bone text-ink">
+
+    <header class="w-full py-5 px-6 border-b border-black bg-bone z-20 sticky top-0">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center">
+                <span class="text-2xl sm:text-3xl font-heading font-black tracking-tight">
+                    <span class="text-black font-extrabold">DIGITALLY</span><span class="text-dd-orange font-black italic">DEFINED.</span>
+                </span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="hidden md:inline-block text-xs font-bold uppercase tracking-widest text-ink/70 border-r border-black pr-4">
+                    LEVERAGE OVER BURNOUT
+                </span>
+                <a href="#" class="text-xs sm:text-sm font-heading font-bold text-ink border border-black px-4 py-2 hover:bg-dd-orange hover:text-white transition-colors">
+                    OWN YOUR POWER
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-6 md:p-8 space-y-8">
+        
+        <section class="text-center max-w-4xl mx-auto space-y-3 pt-2">
+            <div class="inline-block bg-black text-white text-xs font-heading font-bold px-3 py-1 uppercase tracking-widest">
+                AI DIGITAL PRODUCT MANUFACTURING SYSTEM
+            </div>
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-heading text-black font-extrabold leading-none text-center">
+                STOP PLANNING.<br>START MANUFACTURING.
+            </h1>
+            <p class="text-base sm:text-lg text-ink font-body max-w-2xl mx-auto">
+                No more educational outlines or placeholders. Input your expertise to scan market demand, select a validated concept, and manufacture <strong>complete, ready-to-sell digital product packages</strong> for Gumroad, Etsy, and DigitallyDefined.
+            </p>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <section class="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
+                <div class="bg-bone border border-black p-4 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="text-[11px] font-heading font-bold text-black uppercase tracking-wider">Gemini API Key</label>
+                        <span id="api-key-status" class="text-[10px] font-bold text-dd-red">NOT SET</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="password" id="api-key-input" placeholder="AIzaSy..." 
+                               class="w-full bg-white border border-black px-3 py-2 text-ink brutal-input text-xs font-mono">
+                        <button id="save-key-btn" type="button" class="bg-black text-white text-xs font-heading font-bold px-3 py-2 border border-black hover:bg-dd-orange transition-colors">
+                            SAVE
+                        </button>
+                    </div>
+                    <p class="text-[10px] text-ink/70 font-body">Stored locally in your browser. Never exposed.</p>
+                </div>
+
+                <div class="bg-white border border-black p-6">
+                    <div class="border-b border-black pb-3 mb-6 flex justify-between items-center">
+                        <h2 class="text-lg font-heading text-black font-extrabold flex items-center gap-2">
+                            <span>Step 1: Parameters</span>
+                        </h2>
+                        <span class="bg-dd-orange text-white text-xs font-heading font-bold px-2 py-0.5">REQ</span>
+                    </div>
+                    
+                    <form id="architect-form" class="space-y-5">
+                        <div>
+                            <label class="block text-xs font-heading font-bold text-black uppercase mb-1">
+                                Zone of Genius (Your Niche / Skills)
+                            </label>
+                            <input type="text" id="expertise" placeholder="e.g. Notion operations systems for agencies" required
+                                   class="w-full bg-white border border-black px-4 py-3 text-ink brutal-input text-sm font-body">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-heading font-bold text-black uppercase mb-1">
+                                Target Audience
+                            </label>
+                            <input type="text" id="target-audience" placeholder="e.g. Overworked female founders &amp; agency owners" required
+                                   class="w-full bg-white border border-black px-4 py-3 text-ink brutal-input text-sm font-body">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-heading font-bold text-black uppercase mb-1">
+                                Preferred Product Type
+                            </label>
+                            <select id="asset-type-filter" class="w-full bg-white border border-black px-4 py-3 text-ink brutal-input text-sm font-body cursor-pointer">
+                                <option value="AI Recommends Best Format">AI Recommends Best Format</option>
+                                <option value="Complete Ebook / Guide">Complete Ebook / Guide</option>
+                                <option value="Notion Operating System">Notion Operating System Package</option>
+                                <option value="Prompt Library &amp; Toolkit">Prompt Library &amp; Toolkit</option>
+                                <option value="SOP Vault &amp; Playbook">SOP Vault &amp; Playbook</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" id="generate-ideas-btn" 
+                                class="w-full bg-dd-orange text-white font-heading font-extrabold text-base py-4 border border-black hover:bg-black transition-all flex items-center justify-center gap-2">
+                            <span>SCAN MARKET &amp; GENERATE 5 OPPORTUNITIES</span>
+                            <span class="text-xl">→</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-bone border border-black p-5 text-sm space-y-2">
+                    <p class="font-heading font-bold text-black text-xs uppercase tracking-wider text-dd-orange">THE DEFINED STANDARD</p>
+                    <p class="font-body text-ink font-medium italic">
+                        "Zero placeholders. Zero outlines. Fully manufactured, sellable digital assets ready for instant deployment."
+                    </p>
+                </div>
+            </section>
+
+            <section class="lg:col-span-8 w-full space-y-6">
+                
+                <div id="empty-state" class="border border-black bg-white p-10 text-center space-y-4">
+                    <div class="w-16 h-16 bg-dd-orange/10 border border-black text-dd-orange flex items-center justify-center mx-auto text-2xl font-heading font-bold">
+                        01
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-black">AWAITING PARAMETERS</h3>
+                    <p class="font-body text-ink max-w-md mx-auto text-sm">
+                        Enter your expertise and audience. The system will analyze market demand and generate 5 validated product opportunities.
+                    </p>
+                </div>
+
+                <div id="loading-state" class="hidden flex-col items-center justify-center py-16 border border-black bg-white text-center p-8">
+                    <div class="inline-block bg-dd-orange text-white text-xs font-heading font-bold px-3 py-1 uppercase mb-4">
+                        MANUFACTURING ENGINE ACTIVE
+                    </div>
+                    <h3 id="loading-title" class="font-heading text-2xl font-black text-black mb-2 animate-pulse">
+                        ANALYZING MARKET DEMAND...
+                    </h3>
+                    <p id="loading-sub" class="text-sm font-body text-ink/80 mb-6 max-w-md">
+                        Executing multi-stage JSON schema generation pipeline.
+                    </p>
+                    <div class="w-full max-w-md border border-black h-3 bg-bone relative overflow-hidden">
+                        <div id="loader-progress" class="loader-bar"></div>
+                    </div>
+                </div>
+
+                <div id="error-box" class="hidden border border-black bg-dd-red/10 border-l-8 border-l-dd-red p-6 text-black">
+                    <h4 class="font-heading font-bold text-dd-red text-lg mb-1">SYSTEM ALERT</h4>
+                    <p id="error-message" class="text-sm font-body text-ink"></p>
+                </div>
+
+                <div id="ideas-state" class="hidden space-y-6">
+                    <div class="border border-black bg-white p-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-black pb-4 mb-4">
+                            <div>
+                                <span class="text-xs font-heading font-bold text-dd-orange uppercase tracking-widest">Stage 1 &amp; 2: Market Opportunities</span>
+                                <h2 class="text-2xl sm:text-3xl font-heading font-black text-black">5 VALIDATED PRODUCT OPPORTUNITIES</h2>
+                            </div>
+                            <span class="text-xs font-heading font-bold border border-black bg-bone px-3 py-1.5 uppercase">
+                                MARKET-VALIDATED
+                            </span>
+                        </div>
+                        <p id="market-summary" class="text-sm font-body text-ink bg-bone p-4 border border-black border-l-4 border-l-dd-blue"></p>
+                        <p class="text-xs font-heading font-bold text-black uppercase mt-4">
+                            👉 SELECT ONE OPPORTUNITY TO MANUFACTURE THE COMPLETE PRODUCT PACKAGE:
+                        </p>
+                    </div>
+
+                    <div id="ideas-container" class="space-y-4"></div>
+                </div>
+
+                <div id="architecture-state" class="hidden space-y-6">
+                    
+                    <div class="flex flex-wrap items-center justify-between gap-4 bg-black text-white p-4 border border-black">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 bg-dd-orange inline-block"></span>
+                            <span class="font-heading font-bold text-sm tracking-wider">COMPLETE PRODUCT PACKAGE MANUFACTURED</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <button id="back-to-ideas-btn" class="text-xs font-heading font-bold bg-white text-black px-3 py-2 border border-white hover:bg-dd-orange hover:text-white transition-colors">
+                                ← SELECT ANOTHER OPPORTUNITY
+                            </button>
+                            <button id="copy-package-btn" class="text-xs font-heading font-bold bg-dd-orange text-white px-4 py-2 border border-white hover:bg-white hover:text-black transition-colors">
+                                COPY FULL PACKAGE
+                            </button>
+                            <button id="download-package-md-btn" class="text-xs font-heading font-bold bg-white text-black px-4 py-2 border border-white hover:bg-dd-orange hover:text-white transition-colors">
+                                DOWNLOAD .MD PACKAGE
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="border border-black bg-white p-6 sm:p-8 space-y-6">
+                        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 border-b border-black pb-6">
+                            <div class="space-y-2">
+                                <span class="text-xs font-heading font-bold text-dd-orange uppercase tracking-widest bg-bone px-2 py-1 border border-black">
+                                    MANUFACTURED DIGITAL ASSET
+                                </span>
+                                <h2 id="res-title" class="text-3xl sm:text-4xl font-heading font-black text-black leading-tight"></h2>
+                                <p id="res-subtitle" class="text-lg font-body text-ink font-medium italic"></p>
+                            </div>
+                            <div class="bg-bone border border-black p-4 text-center min-w-[180px] shrink-0">
+                                <span class="block text-[11px] font-heading font-bold text-ink uppercase">PRICING</span>
+                                <span id="res-price" class="text-2xl font-heading font-black text-dd-orange"></span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-body">
+                            <div class="border border-black p-4 bg-bone">
+                                <h4 class="font-heading font-bold text-xs text-black uppercase mb-1">POSITIONING</h4>
+                                <p id="res-positioning" class="text-ink/90"></p>
+                            </div>
+                            <div class="border border-black p-4 bg-bone">
+                                <h4 class="font-heading font-bold text-xs text-black uppercase mb-1">TARGET AUDIENCE FIT</h4>
+                                <p id="res-audience" class="text-ink/90 font-medium text-dd-blue"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-black bg-white p-6">
+                        <h3 class="font-heading font-bold text-lg text-black mb-3 border-b border-black pb-2 flex items-center justify-between">
+                            <span>SALES PAGE COPY &amp; HOOK</span>
+                            <span class="text-xs text-dd-orange font-normal">GUMROAD / ETSY READY</span>
+                        </h3>
+                        <div class="bg-bone border border-black p-5 space-y-3">
+                            <h4 id="res-sales-headline" class="font-heading text-xl sm:text-2xl font-black text-black leading-snug"></h4>
+                            <p id="res-sales-subheadline" class="font-body text-ink text-base"></p>
+                        </div>
+                    </div>
+
+                    <div class="border border-black bg-white p-6 sm:p-8">
+                        <h3 class="font-heading text-2xl font-black text-black mb-6 border-b border-black pb-3 flex items-center justify-between">
+                            <span>CORE PRODUCT ASSETS</span>
+                            <span class="text-xs font-body font-normal text-ink">FULLY WRITTEN DELIVERABLES</span>
+                        </h3>
+                        <div id="res-product-assets" class="space-y-6"></div>
+                    </div>
+
+                    <div class="border border-black bg-white p-6 sm:p-8">
+                        <h3 class="font-heading text-2xl font-black text-black mb-6 border-b border-black pb-3 flex items-center justify-between">
+                            <span>BONUS ASSETS &amp; LAUNCH SEQUENCE</span>
+                            <span class="text-xs font-body font-normal text-ink">CONVERSION ACCELERATORS</span>
+                        </h3>
+                        <div id="res-bonus-assets" class="space-y-6"></div>
+                    </div>
+
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <footer class="w-full py-6 px-6 border-t border-black bg-bone text-center text-xs font-body text-ink/80 mt-12">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p><strong>DIGITALLYDEFINED</strong> © 2026. OWN YOUR POWER. NO MORE EXCUSES.</p>
+            <p class="font-heading text-[10px] uppercase tracking-widest text-dd-orange">MANUFACTURING SYSTEM COMPLIANT</p>
+        </div>
+    </footer>
+
+    <script>
+        let generatedOpportunities = [];
+        let currentParameters = {};
+        let selectedOpportunity = null;
+        let manufacturedPackage = null;
+
+        const form = document.getElementById('architect-form');
+        const emptyState = document.getElementById('empty-state');
+        const loadingState = document.getElementById('loading-state');
+        const errorBox = document.getElementById('error-box');
+        const errorMessage = document.getElementById('error-message');
+        const ideasState = document.getElementById('ideas-state');
+        const architectureState = document.getElementById('architecture-state');
+        const loaderProgress = document.getElementById('loader-progress');
+
+        const apiKeyInput = document.getElementById('api-key-input');
+        const saveKeyBtn = document.getElementById('save-key-btn');
+        const apiKeyStatus = document.getElementById('api-key-status');
+
+        let savedApiKey = localStorage.getItem('dd_gemini_api_key') || '';
+        if (savedApiKey) {
+            apiKeyInput.value = savedApiKey;
+            apiKeyStatus.textContent = "CONNECTED ✓";
+            apiKeyStatus.className = "text-[10px] font-bold text-green-600";
+        }
+
+        saveKeyBtn.addEventListener('click', () => {
+            const key = apiKeyInput.value.trim();
+            if (key) {
+                localStorage.setItem('dd_gemini_api_key', key);
+                savedApiKey = key;
+                apiKeyStatus.textContent = "CONNECTED ✓";
+                apiKeyStatus.className = "text-[10px] font-bold text-green-600";
+                alert("API Key saved securely.");
+            } else {
+                localStorage.removeItem('dd_gemini_api_key');
+                savedApiKey = '';
+                apiKeyStatus.textContent = "NOT SET";
+                apiKeyStatus.className = "text-[10px] font-bold text-dd-red";
+            }
+        });
+
+        function getApiKey() {
+            if (!savedApiKey) savedApiKey = apiKeyInput.value.trim();
+            return savedApiKey;
+        }
+
+        function showError(msg) {
+            errorMessage.textContent = msg;
+            errorBox.classList.remove('hidden');
+            loadingState.classList.add('hidden');
+            loadingState.classList.remove('flex');
+        }
+
+        function hideError() { errorBox.classList.add('hidden'); }
+
+        function animateLoader(startPercent, endPercent, durationMs) {
+            let start = null;
+            function step(timestamp) {
+                if (!start) start = timestamp;
+                const progress = Math.min((timestamp - start) / durationMs, 1);
+                loaderProgress.style.width = (startPercent + progress * (endPercent - startPercent)) + '%';
+                if (progress < 1) window.requestAnimationFrame(step);
+            }
+            window.requestAnimationFrame(step);
+        }
+
+        async function callGeminiAPI(payload, retries = 1) {
+            const apiKey = getApiKey();
+            if (!apiKey) throw new Error("Missing Gemini API Key.");
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
+            
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) throw new Error(`API returned HTTP ${response.status}`);
+            const result = await response.json();
+            const candidate = result.candidates?.[0];
+            
+            if (candidate && candidate.content?.parts?.[0]?.text) {
+                const rawText = candidate.content.parts[0].text;
+                try {
+                    return JSON.parse(rawText);
+                } catch (jsonErr) {
+                    if (retries > 0) return await repairJSON(rawText, payload);
+                    throw new Error("Failed to parse valid JSON response.");
+                }
+            }
+            throw new Error("Invalid response format from model.");
+        }
+
+        async function repairJSON(malformedText, originalPayload) {
+            const apiKey = getApiKey();
+            const repairPayload = {
+                contents: [
+                    { role: "user", parts: [{ text: originalPayload.contents[0].parts[0].text }] },
+                    { role: "model", parts: [{ text: malformedText }] },
+                    { role: "user", parts: [{ text: "Fix JSON formatting and return valid JSON matching schema with no markdown wrapping." }] }
+                ],
+                generationConfig: originalPayload.generationConfig
+            };
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(repairPayload)
+            });
+            const result = await response.json();
+            return JSON.parse(result.candidates[0].content.parts[0].text);
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError();
+
+            const expertise = document.getElementById('expertise').value.trim();
+            const targetAudience = document.getElementById('target-audience').value.trim();
+            const assetTypeFilter = document.getElementById('asset-type-filter').value;
+
+            if (!expertise || !targetAudience || !getApiKey()) {
+                showError("Please fill out all fields and ensure your API key is saved.");
+                return;
+            }
+
+            currentParameters = { expertise, targetAudience, assetTypeFilter };
+
+            emptyState.classList.add('hidden');
+            architectureState.classList.add('hidden');
+            ideasState.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            loadingState.classList.add('flex');
+            
+            document.getElementById('loading-title').textContent = "ANALYZING MARKET DEMAND...";
+            document.getElementById('loading-sub').textContent = "Scanning market opportunities, competitor pricing, and audience fit...";
+            animateLoader(10, 85, 3000);
+
+            const systemPrompt = `You are the Lead Digital Product Architect for DIGITALLYDEFINED. Analyze market demand and generate 5 validated digital product opportunities formatted strictly as JSON.`;
+            const userQuery = `Zone of Genius: "${expertise}" | Target Audience: "${targetAudience}" | Preferred Format: "${assetTypeFilter}"`;
+
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            marketTrendSummary: { type: "STRING" },
+                            opportunities: {
+                                type: "ARRAY",
+                                items: {
+                                    type: "OBJECT",
+                                    properties: {
+                                        id: { type: "STRING" },
+                                        title: { type: "STRING" },
+                                        productType: { type: "STRING" },
+                                        marketDemand: { type: "STRING" },
+                                        competitionAnalysis: { type: "STRING" },
+                                        monetizationPotential: { type: "STRING" },
+                                        audienceFit: { type: "STRING" },
+                                        trendAnalysis: { type: "STRING" }
+                                    },
+                                    required: ["id", "title", "productType", "marketDemand", "competitionAnalysis", "monetizationPotential", "audienceFit", "trendAnalysis"]
+                                }
+                            }
+                        },
+                        required: ["marketTrendSummary", "opportunities"]
+                    }
+                }
+            };
+
+            try {
+                const data = await callGeminiAPI(payload);
+                generatedOpportunities = data.opportunities || [];
+                document.getElementById('market-summary').innerHTML = `<strong>MARKET ANALYSIS:</strong> ${data.marketTrendSummary}`;
+                renderOpportunitiesGrid(generatedOpportunities);
+                animateLoader(85, 100, 300);
+                setTimeout(() => {
+                    loadingState.classList.add('hidden');
+                    ideasState.classList.remove('hidden');
+                }, 300);
+            } catch (err) {
+                showError(err.message || "Error analyzing market opportunities.");
+            }
+        });
+
+        function renderOpportunitiesGrid(opportunities) {
+            const container = document.getElementById('ideas-container');
+            container.innerHTML = '';
+            opportunities.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "idea-card border border-black bg-white p-6 cursor-pointer hover:border-dd-orange space-y-3";
+                card.innerHTML = `
+                    <div class="flex justify-between items-center border-b border-black pb-2">
+                        <span class="bg-black text-white font-heading font-bold text-xs px-2 py-0.5">OPPORTUNITY 0${index + 1}</span>
+                        <span class="text-xs font-heading font-bold text-dd-blue border border-black px-2 py-0.5 uppercase bg-bone">${item.productType}</span>
+                    </div>
+                    <h3 class="font-heading font-black text-xl text-black">${item.title}</h3>
+                    <div class="grid grid-cols-2 gap-2 text-xs font-body bg-bone p-3 border border-black">
+                        <div><strong>Market Demand:</strong> ${item.marketDemand}</div>
+                        <div><strong>Monetization:</strong> ${item.monetizationPotential}</div>
+                    </div>
+                    <div class="flex justify-end pt-2">
+                        <button class="bg-dd-orange text-white text-xs font-heading font-bold px-4 py-2 border border-black hover:bg-black transition-colors">
+                            MANUFACTURE THIS PRODUCT PACKAGE →
+                        </button>
+                    </div>
+                `;
+                card.addEventListener('click', () => manufactureProduct(item));
+                container.appendChild(card);
+            });
+        }
+
+        async function manufactureProduct(opportunity) {
+            selectedOpportunity = opportunity;
+            ideasState.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            loadingState.classList.add('flex');
+            
+            document.getElementById('loading-title').textContent = "MANUFACTURING COMPLETE PRODUCT PACKAGE...";
+            document.getElementById('loading-sub',).textContent = `Writing complete deliverables, sales copy, and bonuses for: "${opportunity.title}"`;
+            animateLoader(10, 90, 6000);
+
+            const systemPrompt = `You are the Lead Digital Product Manufacturer for DIGITALLYDEFINED. Do not output outlines, placeholders, or summaries. Manufacture the complete, fully written digital product package ready for Gumroad and Etsy. Output strictly JSON matching the schema.`;
+            const userQuery = `Manufacture complete product package for Opportunity: "${opportunity.title}" (${opportunity.productType}). Target Audience: "${currentParameters.targetAudience}".`;
+
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            productTitle: { type: "STRING" },
+                            subtitle: { type: "STRING" },
+                            positioning: { type: "STRING" },
+                            pricing: { type: "STRING" },
+                            deliverables: { type: "ARRAY", items: { type: "STRING" } },
+                            salesHeadline: { type: "STRING" },
+                            salesSubheadline: { type: "STRING" },
+                            productAssets: {
+                                type: "ARRAY",
+                                items: {
+                                    type: "OBJECT",
+                                    properties: {
+                                        assetTitle: { type: "STRING" },
+                                        assetType: { type: "STRING" },
+                                        fullContent: { type: "STRING" }
+                                    },
+                                    required: ["assetTitle", "assetType", "fullContent"]
+                                }
+                            },
+                            bonusAssets: {
+                                type: "ARRAY",
+                                items: {
+                                    type: "OBJECT",
+                                    properties: {
+                                        bonusTitle: { type: "STRING" },
+                                        fullContent: { type: "STRING" }
+                                    },
+                                    required: ["bonusTitle", "fullContent"]
+                                }
+                            },
+                            launchChecklist: { type: "ARRAY", items: { type: "STRING" } }
+                        },
+                        required: ["productTitle", "subtitle", "positioning", "pricing", "deliverables", "salesHeadline", "salesSubheadline", "productAssets", "bonusAssets", "launchChecklist"]
+                    }
+                }
+            };
+
+            try {
+                const pkg = await callGeminiAPI(payload);
+                manufacturedPackage = pkg;
+                renderManufacturedPackage(pkg);
+                animateLoader(90, 100, 300);
+                setTimeout(() => {
+                    loadingState.classList.add('hidden');
+                    architectureState.classList.remove('hidden');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 300);
+            } catch (err) {
+                showError(err.message || "Error manufacturing product package.");
+            }
+        }
+
+        function renderManufacturedPackage(pkg) {
+            document.getElementById('res-title').textContent = pkg.productTitle;
+            document.getElementById('res-subtitle').textContent = pkg.subtitle;
+            document.getElementById('res-price').textContent = pkg.pricing;
+            document.getElementById('res-positioning').textContent = pkg.positioning;
+            document.getElementById('res-audience').textContent = currentParameters.targetAudience;
+            document.getElementById('res-sales-headline').textContent = `"${pkg.salesHeadline}"`;
+            document.getElementById('res-sales-subheadline').textContent = pkg.salesSubheadline;
+
+            const assetsContainer = document.getElementById('res-product-assets');
+            assetsContainer.innerHTML = pkg.productAssets.map(a => `
+                <div class="border border-black p-5 bg-bone space-y-3">
+                    <div class="flex justify-between items-center border-b border-black pb-2">
+                        <span class="text-xs font-heading font-black text-dd-orange uppercase">${a.assetType}</span>
+                        <h4 class="font-heading font-bold text-lg text-black">${a.assetTitle}</h4>
+                    </div>
+                    <div class="text-sm font-body text-ink whitespace-pre-wrap bg-white p-4 border border-black">${a.fullContent}</div>
+                </div>
+            `).join('');
+
+            const bonusContainer = document.getElementById('res-bonus-assets');
+            bonusContainer.innerHTML = `
+                <div class="space-y-4">
+                    <h4 class="font-heading font-bold text-black uppercase text-sm">Bonuses</h4>
+                    ${pkg.bonusAssets.map(b => `
+                        <div class="border border-black p-4 bg-bone">
+                            <h5 class="font-heading font-bold text-dd-blue mb-1">${b.bonusTitle}</h5>
+                            <div class="text-sm font-body text-ink whitespace-pre-wrap bg-white p-3 border border-black">${b.fullContent}</div>
+                        </div>
+                    `).join('')}
+                    <h4 class="font-heading font-bold text-black uppercase text-sm pt-4">Rapid Launch Checklist</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        ${pkg.launchChecklist.map((c, i) => `<div class="bg-bone p-3 border border-black text-xs font-body">0${i+1}. ${c}</div>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        document.getElementById('back-to-ideas-btn').addEventListener('click', () => {
+            architectureState.classList.add('hidden');
+            ideasState.classList.remove('hidden');
+        });
+
+        document.getElementById('copy-package-btn').addEventListener('click', () => {
+            if (!manufacturedPackage) return;
+            let text = `DIGITALLYDEFINED MANUFACTURED PACKAGE\nTitle: ${manufacturedPackage.productTitle}\nPrice: ${manufacturedPackage.pricing}\n\n`;
+            manufacturedPackage.productAssets.forEach(a => { text += `[ASSET: ${a.assetTitle}]\n${a.fullContent}\n\n`; });
+            navigator.clipboard.writeText(text).then(() => alert("Package copied to clipboard!"));
+        });
+
+        document.getElementById('download-package-md-btn').addEventListener('click', () => {
+            if (!manufacturedPackage) return;
+            let md = `# ${manufacturedPackage.productTitle}\n> ${manufacturedPackage.subtitle}\n\n**Price:** ${manufacturedPackage.pricing}\n\n`;
+            manufacturedPackage.productAssets.forEach(a => { md += `## ${a.assetTitle}\n${a.fullContent}\n\n`; });
+            const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${manufacturedPackage.productTitle.toLowerCase().replace(/[^a-z0-9]/g, '-')}-package.md`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>
