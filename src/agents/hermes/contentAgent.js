@@ -5,9 +5,9 @@
 // Handled via aiRouter.generate() with full failover chain.
 // Never direct provider calls.
 //==============================================================================
-import { aiRouter } from '../services/aiRouter.js';
-import { parseJsonReply } from '../services/ai.js';
-import logger from '../utils/logger.js';
+import { aiRouter } from '../../services/aiRouter.js';
+import { parseJsonReply } from '../../services/ai.js';
+import logger from '../../utils/logger.js';
 
 /** System prompt for ContentAgent. */
 const CONTENT_SYSTEM_PROMPT =
