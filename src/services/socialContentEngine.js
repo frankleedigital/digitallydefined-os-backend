@@ -11,7 +11,7 @@ const POST_THEMES = [
     slot: 'morning',
     focus: 'Mindset & Reality Check (Digital Superpower Quiz)',
     promptInstruction: 'Write a bold, punchy, high-energy post about why Gen X women should stop getting overwhelmed by "guru" online advice and focus on their natural strengths. Hook the reader immediately with "Let\'s get real." Strong CTA: Take the free Digital Superpower Quiz to find your exact digital asset roadmap.',
-    link: 'https://dashboard.digitallydefined.agency/quiz',
+    link: 'https://digitallydefined.store/quiz',
     cta: 'Take the free Digital Superpower Quiz right now to uncover your roadmap:',
     hashtags: ['#GenXWomen', '#DigitalSuperpower', '#DigitallyDefined', '#OwnYourPower', '#SystemsOverScrolling']
   },
@@ -19,7 +19,7 @@ const POST_THEMES = [
     slot: 'midday',
     focus: 'Financial Clarity & The Math (Freedom Number Calculator)',
     promptInstruction: 'Write a pragmatic, clear, no-fluff post breaking down why most people never leave their 9-to-5 because they do not know their exact "Freedom Number". Explain the difference between vague revenue goals and actual monthly freedom math. Strong CTA: Run your numbers through the Financial Freedom Calculator.',
-    link: 'https://dashboard.digitallydefined.agency/financial-hub',
+    link: 'https://digitallydefined.store/financial-hub',
     cta: 'Calculate your exact monthly Freedom Number in under 3 minutes:',
     hashtags: ['#FreedomNumber', '#FinancialClarity', '#GenXMoney', '#DigitalAssets', '#DigitallyDefined']
   },
@@ -27,7 +27,7 @@ const POST_THEMES = [
     slot: 'evening',
     focus: 'Execution & Asset Building (Automated Asset Engine)',
     promptInstruction: 'Write an empowering, direct post about moving from "learning" to "building". Emphasize why 2026 is the year of faceless digital income assets and automated systems rather than constant social media hustling. Hook with "No more excuses. Own your power." Strong CTA: Explore the Automated Asset Engine.',
-    link: 'https://dashboard.digitallydefined.agency/store',
+    link: 'https://digitallydefined.store/store',
     cta: 'Start building your automated digital asset ecosystem today:',
     hashtags: ['#AutomatedAssetEngine', '#FacelessBusiness', '#DigitalRealEstate', '#GenXEntrepreneurs', '#DigitallyDefined']
   }
