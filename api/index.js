@@ -1967,7 +1967,7 @@ export default async function handler(req, res) {
         const { handleAgentsList } = await import('../src/agents/hub.js');
         return res.status(200).json(handleAgentsList());
       } catch (err) {
-        logger.error('agents.list failed', { error: err.message });
+        console.error('[agents.list] failed:', err.message);
         return res.status(500).json({ success: false, error: err.message });
       }
     }
@@ -1981,7 +1981,7 @@ export default async function handler(req, res) {
         const out = await handleAgentsRun(req.body || {});
         return res.status(200).json(out);
       } catch (err) {
-        logger.error('agents.run failed', { error: err.message });
+        console.error('[agents.run] failed:', err.message);
         return res.status(500).json({ success: false, error: err.message });
       }
     }
@@ -1995,7 +1995,7 @@ export default async function handler(req, res) {
         const out = await handleAgentsOrchestrate(req.body || {});
         return res.status(200).json(out);
       } catch (err) {
-        logger.error('agents.orchestrate failed', { error: err.message });
+        console.error('[agents.orchestrate] failed:', err.message);
         return res.status(500).json({ success: false, error: err.message });
       }
     }
