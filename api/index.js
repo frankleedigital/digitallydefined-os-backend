@@ -4,7 +4,6 @@
 
 import { antigravityHandle } from '../lib/antigravity.js';
 import { recommendForAudit, tagsFromFindings } from '../lib/affiliate.js';
-import { handleAgentsList, handleAgentsRun, handleAgentsOrchestrate } from '../src/agents/hub.js';
 import { createSign, createPrivateKey } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
@@ -1964,23 +1963,41 @@ export default async function handler(req, res) {
       if (!checkDashboardApiKey(req)) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-      return res.status(200).json(handleAgentsList());
+      try {
+        const { handleAgentsList } = await import('../src/agents/hub.js');
+        return res.status(200).json(handleAgentsList());
+      } catch (err) {
+        logger.error('agents.list failed', { error: err.message });
+        return res.status(500).json({ success: false, error: err.message });
+      }
     }
 
     if (action === 'agents.run') {
       if (!checkDashboardApiKey(req)) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-      const out = await handleAgentsRun(req.body || {});
-      return res.status(200).json(out);
+      try {
+        const { handleAgentsRun } = await import('../src/agents/hub.js');
+        const out = await handleAgentsRun(req.body || {});
+        return res.status(200).json(out);
+      } catch (err) {
+        logger.error('agents.run failed', { error: err.message });
+        return res.status(500).json({ success: false, error: err.message });
+      }
     }
 
     if (action === 'agents.orchestrate') {
       if (!checkDashboardApiKey(req)) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-      const out = await handleAgentsOrchestrate(req.body || {});
-      return res.status(200).json(out);
+      try {
+        const { handleAgentsOrchestrate } = await import('../src/agents/hub.js');
+        const out = await handleAgentsOrchestrate(req.body || {});
+        return res.status(200).json(out);
+      } catch (err) {
+        logger.error('agents.orchestrate failed', { error: err.message });
+        return res.status(500).json({ success: false, error: err.message });
+      }
     }
 
     if (action === 'gumroad.products') {
