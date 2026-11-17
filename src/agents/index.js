@@ -9,6 +9,7 @@ import { generateSocialContent } from './social.js';
 import { identifyTrends } from './trends.js';
 import { analyzeCompetition } from './competition.js';
 import { analyzeAudience } from './audience.js';
+import { identifyOpportunities } from './opportunities.js';
 import { processQuiz } from './quiz.js';
 
 // Hermes specialist agents (Phase 2)
@@ -66,6 +67,12 @@ export const agentRegistry = {
     description: 'Generate audience insights and personas for a niche',
     handler: analyzeAudience,
     inputSchema: 'audienceRequestSchema',
+  },
+  opportunities: {
+    name: 'Opportunities Agent',
+    description: 'Identify market gaps, quick wins, and product opportunities for a niche',
+    handler: identifyOpportunities,
+    inputSchema: 'opportunitiesRequestSchema',
   },
   quiz: {
     name: 'Quiz Agent',

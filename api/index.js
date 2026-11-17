@@ -4,6 +4,7 @@
 
 import { antigravityHandle } from '../lib/antigravity.js';
 import { recommendForAudit, tagsFromFindings } from '../lib/affiliate.js';
+import { handleAgentsList, handleAgentsRun, handleAgentsOrchestrate } from '../src/agents/hub.js';
 import { createSign, createPrivateKey } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
@@ -64,6 +65,9 @@ const ALLOWED_ACTIONS = new Set([
   // and is also exposed as the dedicated /api/business-partner function.
   'business.partner',
   'intelligence',
+  'agents.list',
+  'agents.run',
+  'agents.orchestrate',
   'gumroad.products',
   'automation.sync',
   'automation.list',
@@ -1954,6 +1958,29 @@ export default async function handler(req, res) {
           },
         },
       });
+    }
+
+    if (action === 'agents.list') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      return res.status(200).json(handleAgentsList());
+    }
+
+    if (action === 'agents.run') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      const out = await handleAgentsRun(req.body || {});
+      return res.status(200).json(out);
+    }
+
+    if (action === 'agents.orchestrate') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      const out = await handleAgentsOrchestrate(req.body || {});
+      return res.status(200).json(out);
     }
 
     if (action === 'gumroad.products') {
