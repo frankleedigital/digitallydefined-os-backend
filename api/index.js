@@ -67,6 +67,8 @@ const ALLOWED_ACTIONS = new Set([
   'agents.list',
   'agents.run',
   'agents.orchestrate',
+  'slack.test',
+  'slack.report',
   'gumroad.products',
   'automation.sync',
   'automation.list',
@@ -2000,6 +2002,42 @@ export default async function handler(req, res) {
       }
     }
 
+    if (action === 'slack.test') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { postSlack } = await import('../lib/slack.js');
+        const resp = await postSlack(`*DigitallyDefined OS* — Slack connectivity test.\nTriggered from the dashboard at ${new Date().toLocaleString()}. If you can read this, alerts are live.`);
+        return res.status(200).json({ success: !!resp?.ok, posted: !!resp?.ok, slack: resp });
+      } catch (err) {
+        console.error('[slack.test] failed:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+
+    if (action === 'slack.report') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { postSlack } = await import('../lib/slack.js');
+        const context = await buildBriefContext().catch(() => ({}));
+        const lines = [
+          `*DigitallyDefined — Daily Report (${new Date().toLocaleDateString()})*`,
+          `*Revenue:* ${context.revenue ?? '—'}   *Top Asset:* ${context.topAsset ?? '—'}`,
+          `*Community:* ${context.communityCount ?? 0}   *Email subs:* ${context.emailSubscribers ?? 0}`,
+        ];
+        if (context.emailOpenRate != null) lines.push(`*Email open rate:* ${context.emailOpenRate}`);
+        lines.push('_(auto-generated from the live OS dashboard)_');
+        const resp = await postSlack(lines.join('\n'));
+        return res.status(200).json({ success: !!resp?.ok, posted: !!resp?.ok });
+      } catch (err) {
+        console.error('[slack.report] failed:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+
     if (action === 'gumroad.products') {
       if (!checkDashboardApiKey(req)) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -2106,12 +2144,22 @@ export default async function handler(req, res) {
       const brief = await fetchAIBrief(context);
       const saved = await saveMorningBrief(brief).catch(() => ({ saved: false, reason: 'save-failed' }));
       const mail = await emailMorningBrief(brief).catch(() => ({ emailed: false, reason: 'email-failed' }));
+      // Auto-post the morning brief to Slack (fire-and-forget; never blocks the job).
+      const { postSlack } = await import('../lib/slack.js');
+      const briefLines = [
+        `*DigitallyDefined — Morning Brief (${brief.brief_date || new Date().toLocaleDateString()})*`,
+        ...Array.isArray(brief.working) ? brief.working.map((w) => `Working: ${w}`) : [],
+        ...Array.isArray(brief.slipping) ? brief.slipping.map((w) => `Slipping: ${w}`) : [],
+        ...Array.isArray(brief.nextActions) ? brief.nextActions.map((w) => `Next: ${w}`) : [],
+      ].filter(Boolean);
+      const slack = await postSlack(briefLines.join('\n')).catch(() => ({ ok: false }));
       return res.status(200).json({
         status: 'ok',
         generatedAt: new Date().toISOString(),
         brief,
         saved,
         emailed: mail,
+        slackSlackPosted: !!slack?.ok,
       });
     }
 
