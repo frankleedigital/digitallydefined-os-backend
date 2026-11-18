@@ -391,3 +391,35 @@ All run on **`aiRouter` (gemini-3.5-flash-lite)** + structured Supabase snapshot
 3. Retirement gap + 12-mo trajectory are visible in the dashboard within 5s of login.
 4. One "Adopt opportunity" click creates a tracked project.
 5. `fastapi/` + OmniRoute proxies removed; no duplicate Notion tabs; Vercel build stays 100% green.
+
+
+---
+
+## PHASE B STATUS — Financial Resilience (COMPLETE 2026-11-17)
+
+The "WHY" now has a home in the OS.
+
+### Delivered
+- **4 new agents** in `digitallydefined-os-backend/src/agents/`:
+  - `retirementGap.js` — `calculateRetirementGap` (monthly/annual gap, nest egg, years-to-close, strategic actions)
+  - `wealthCalculator.js` — `calculateWealth` (12/24/36-mo net-worth trajectory, asset growth rate, accelerators)
+  - `assetPlan.js` — `generateAssetPlan` (which digital assets close the gap, MRR projection, priority order)
+  - `legacyOSAgent.js` — `evaluateLegacyOS` (Plan·Protect·Operate 3-pillar readiness, sovereign status)
+- All 4 registered in `agentRegistry` and the hub's **Financial Resilience** category (no longer "Coming in Phase B").
+- Each has a **deterministic fallback** (works even if the AI gateway is down — OS-first principle).
+- **WEALTH CENTER** dashboard tab (`WealthCenter.jsx`, id `wealth`, DollarSign icon): Legacy OS pillar cards + Retirement Gap agent + Wealth Trajectory agent with input forms, run buttons, and structured result cards. "Open Agent Hub" CTA to reach all 4.
+
+### Live verification
+- `agents.list` now returns **18 launchable agents** across all 5 categories (was 14).
+- Financial Resilience: [Retirement Gap, Wealth Calculator, Asset Plan, Legacy OS].
+
+### Updated gap list
+| Item | Status |
+| :--- | :--- |
+| Financial Resilience agents | ✅ DONE (4 agents) |
+| Wealth Center dashboard | ✅ DONE (B2) |
+| Asset Plan agent | ✅ DONE (bonus — was Phase C) |
+| Domain Analyzer / Asset Acquisition agents (DRE) | ⏳ still Phase C |
+| Assets object tab | ⏳ Phase C |
+| Opportunities Center / Content Center tabs | ⏳ Phase C |
+| Projects tracking | ⏳ Phase D |
