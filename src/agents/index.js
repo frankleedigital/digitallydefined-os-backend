@@ -6,6 +6,7 @@ import { analyzeNiche } from './niche.js';
 import { generateRoadmap } from './roadmap.js';
 import { generateScorecard } from './scorecard.js';
 import { generateProduct } from './product.js';
+import { generateVisualAsset } from './visualAssetGenerator.js';
 import { generateSocialContent } from './social.js';
 import { identifyTrends } from './trends.js';
 import { analyzeCompetition } from './competition.js';
@@ -52,10 +53,15 @@ export const agentRegistry = {
     inputSchema: 'scorecardRequestSchema',
   },
   product: {
-    name: 'Product Agent',
+    name: 'Product Generator',
     description: 'Generate product concepts, features, and launch strategies',
     handler: generateProduct,
     inputSchema: 'productRequestSchema',
+  },
+  visualAsset: {
+    name: 'Visual Asset & SVG Generator',
+    description: 'Generate production-ready SVG cover graphics, badges, banners, and social cards in Flat Soft Brutalism',
+    handler: generateVisualAsset,
   },
   social: {
     name: 'Social Agent',

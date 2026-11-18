@@ -32,6 +32,7 @@ export const AGENT_CATEGORIES = {
     color: '#47B7D4',
     agents: {
       product: 'Product Generator',
+      visualAsset: 'Visual Asset & SVG Generator',
       productAgent: 'Offer Architect',
       roadmap: 'Authority Blueprint',
     },
@@ -101,7 +102,14 @@ export const AGENT_INPUT_SPECS = {
   competition: { fields: [{ name: 'niche', label: 'Niche / topic', type: 'text', required: true }] },
   audience: { fields: [{ name: 'niche', label: 'Niche / topic', type: 'text', required: true }] },
   scorecard: { fields: [{ name: 'niche', label: 'Business / niche', type: 'text', required: true }] },
-  product: { fields: [{ name: 'niche', label: 'Niche / topic', type: 'text', required: true }] },
+  product: { fields: [{ name: 'niche', label: 'Niche / topic / guide text', type: 'text', required: true }] },
+  visualAsset: {
+    fields: [
+      { name: 'title', label: 'Asset Title / Header', type: 'text', required: true },
+      { name: 'subtitle', label: 'Subtitle / Tagline (No-BS Voice)', type: 'text', required: false },
+      { name: 'assetType', label: 'Asset Type', type: 'select', options: ['product-cover', 'badge', 'social-card', 'banner'], required: false },
+    ],
+  },
   roadmap: { fields: [{ name: 'niche', label: 'Niche / topic', type: 'text', required: true }] },
   social: {
     fields: [
