@@ -74,10 +74,10 @@ export const AGENT_CATEGORIES = {
   },
   governance: {
     label: 'Brand & Governance',
-    tagline: 'Ensure brand fidelity across all assets',
+    tagline: 'Active brand enforcement and implementation system',
     color: '#2A9D5C',
     agents: {
-      brandSupervisor: 'Brand Supervisor AI',
+      brandSupervisor: 'Brand Enforcement AI',
     },
   },
 };
@@ -153,8 +153,8 @@ export const AGENT_INPUT_SPECS = {
   },
   brandSupervisor: {
     fields: [
-      { name: 'content', label: 'Content / Copy / Product Pitch / URL Spec', type: 'text', required: true },
-      { name: 'contentType', label: 'Content Type', type: 'select', options: ['copy', 'product', 'landing-page', 'social', 'image-spec'], required: false },
+      { name: 'content', label: 'Content, Code, or Component Spec to Enforce *', type: 'text', required: true },
+      { name: 'contentType', label: 'Asset Type', type: 'select', options: ['copy', 'ui-component', 'product', 'landing-page', 'social'], required: false },
     ],
   },
   productAgent: { fields: [{ name: 'message', label: 'What should the agent do?', type: 'text', required: true }] },

@@ -126,10 +126,10 @@ export const agentRegistry = {
 
   // Brand & Governance agent
   brandSupervisor: {
-    name: 'Brand Supervisor AI',
-    description:
-      'Audit copy, product specs, social posts, and landing pages against DigitallyDefined Brand Guidelines (No-BS Big Bestie voice, Flat Soft Brutalism, 6 Pillars)',
-    handler: evaluateBrandCompliance,
+    name: 'Brand Enforcement AI',
+    description: 'Active Brand Enforcement System. Automatically identifies violations, refactors copy, strips non-compliant styling, and generates 100% compliant production-ready assets.',
+    category: 'governance',
+    execute: evaluateBrandCompliance,
   },
 
   // Phase 2: Hermes specialist agents
