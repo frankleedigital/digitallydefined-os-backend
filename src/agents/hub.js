@@ -72,6 +72,14 @@ export const AGENT_CATEGORIES = {
       affiliateFlipper: 'Affiliate Flipper AI',
     },
   },
+  governance: {
+    label: 'Brand & Governance',
+    tagline: 'Ensure brand fidelity across all assets',
+    color: '#2A9D5C',
+    agents: {
+      brandSupervisor: 'Brand Supervisor AI',
+    },
+  },
 };
 
 // What each launchable agent needs as input. Drives the Agent Hub forms.
@@ -141,6 +149,12 @@ export const AGENT_INPUT_SPECS = {
       { name: 'commission', label: 'Commission (%)', type: 'text', required: false },
       { name: 'cookie', label: 'Cookie duration (days)', type: 'text', required: false },
       { name: 'recurring', label: 'Commission type', type: 'select', options: ['one-time', 'recurring'], required: false },
+    ],
+  },
+  brandSupervisor: {
+    fields: [
+      { name: 'content', label: 'Content / Copy / Product Pitch / URL Spec', type: 'text', required: true },
+      { name: 'contentType', label: 'Content Type', type: 'select', options: ['copy', 'product', 'landing-page', 'social', 'image-spec'], required: false },
     ],
   },
   productAgent: { fields: [{ name: 'message', label: 'What should the agent do?', type: 'text', required: true }] },

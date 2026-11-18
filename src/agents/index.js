@@ -22,6 +22,9 @@ import { evaluateLegacyOS } from './legacyOSAgent.js';
 // Revenue & Affiliate agent
 import { analyzeAffiliateFlip } from './affiliateFlipper.js';
 
+// Brand & Governance agent
+import { evaluateBrandCompliance } from './brandSupervisor.js';
+
 // Hermes specialist agents (Phase 2)
 import { businessAgentHandler } from '../agents/hermes/businessAgent.js';
 import { contentAgentHandler } from '../agents/hermes/contentAgent.js';
@@ -119,6 +122,14 @@ export const agentRegistry = {
     description:
       'Analyze TRAFFIC → PRODUCT MATCH to find undervalued, monetizable traffic and flip it into high-paying (often recurring) affiliate commissions',
     handler: analyzeAffiliateFlip,
+  },
+
+  // Brand & Governance agent
+  brandSupervisor: {
+    name: 'Brand Supervisor AI',
+    description:
+      'Audit copy, product specs, social posts, and landing pages against DigitallyDefined Brand Guidelines (No-BS Big Bestie voice, Flat Soft Brutalism, 6 Pillars)',
+    handler: evaluateBrandCompliance,
   },
 
   // Phase 2: Hermes specialist agents
