@@ -68,6 +68,8 @@ const ALLOWED_ACTIONS = new Set([
   'agents.run',
   'agents.orchestrate',
   'agents.mission',
+  'agents.review',
+  'agents.queue',
   'slack.test',
   'slack.report',
   'gumroad.products',
@@ -1984,6 +1986,32 @@ export default async function handler(req, res) {
         return res.status(200).json({ success: true, data: missionState.getState() });
       } catch (err) {
         console.error('[agents.mission] failed:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+
+    if (action === 'agents.review') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { ExecutiveReviewCoordinator } = await import('../src/agents/hermes/managementLayer.js');
+        return res.status(200).json({ success: true, data: ExecutiveReviewCoordinator.generateReview() });
+      } catch (err) {
+        console.error('[agents.review] failed:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+
+    if (action === 'agents.queue') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { WorkQueue } = await import('../src/agents/hermes/managementLayer.js');
+        return res.status(200).json({ success: true, data: WorkQueue.getAllQueued() });
+      } catch (err) {
+        console.error('[agents.queue] failed:', err.message);
         return res.status(500).json({ success: false, error: err.message });
       }
     }
