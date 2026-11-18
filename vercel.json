@@ -33,6 +33,10 @@
       "destination": "/api/index.js"
     },
     {
+      "source": "/api/cron-daily-report",
+      "destination": "/api/index.js"
+    },
+    {
       "source": "/api/cron-social",
       "destination": "/api/cron-social.js"
     }
@@ -64,6 +68,10 @@
     {
       "path": "/api/cron-morning",
       "schedule": "30 12 * * *"
+    },
+    {
+      "path": "/api/cron-daily-report?action=slack.report",
+      "schedule": "0 11 * * *"
     }
   ]
 }
