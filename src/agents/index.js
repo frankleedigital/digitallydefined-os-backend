@@ -12,6 +12,12 @@ import { analyzeAudience } from './audience.js';
 import { identifyOpportunities } from './opportunities.js';
 import { processQuiz } from './quiz.js';
 
+// Financial Resilience agents (Phase B)
+import { calculateRetirementGap } from './retirementGap.js';
+import { calculateWealth } from './wealthCalculator.js';
+import { generateAssetPlan } from './assetPlan.js';
+import { evaluateLegacyOS } from './legacyOSAgent.js';
+
 // Hermes specialist agents (Phase 2)
 import { businessAgentHandler } from '../agents/hermes/businessAgent.js';
 import { contentAgentHandler } from '../agents/hermes/contentAgent.js';
@@ -79,6 +85,28 @@ export const agentRegistry = {
     description: 'Process quiz answers and generate a superpower profile',
     handler: processQuiz,
     inputSchema: 'quizRequestSchema',
+  },
+
+  // Phase B: Financial Resilience agents
+  retirementGap: {
+    name: 'Retirement Gap Agent',
+    description: 'Calculate retirement income gap, years to close, and required monthly asset yield',
+    handler: calculateRetirementGap,
+  },
+  wealthCalculator: {
+    name: 'Wealth Calculator Agent',
+    description: 'Project net-worth trajectory and digital asset appreciation over 12/24/36 months',
+    handler: calculateWealth,
+  },
+  assetPlan: {
+    name: 'Asset Plan Agent',
+    description: 'Recommend which digital assets to build or acquire to close the retirement gap',
+    handler: generateAssetPlan,
+  },
+  legacyOS: {
+    name: 'Legacy OS Agent',
+    description: 'Evaluate Plan, Protect, Operate 3-pillar readiness for sovereign financial independence',
+    handler: evaluateLegacyOS,
   },
 
   // Phase 2: Hermes specialist agents

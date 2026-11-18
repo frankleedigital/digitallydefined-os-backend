@@ -57,8 +57,12 @@ export const AGENT_CATEGORIES = {
     label: 'Financial Resilience',
     tagline: 'Close the retirement gap and build a legacy',
     color: '#C20F0A',
-    // Phase B: Retirement Gap, Wealth Calculator, Asset Plan, Legacy OS
-    agents: {},
+    agents: {
+      retirementGap: 'Retirement Gap',
+      wealthCalculator: 'Wealth Calculator',
+      assetPlan: 'Asset Plan',
+      legacyOS: 'Legacy OS',
+    },
   },
 };
 
@@ -87,6 +91,36 @@ export const AGENT_INPUT_SPECS = {
     fields: [
       { name: 'niche', label: 'Topic / product', type: 'text', required: true },
       { name: 'platform', label: 'Platform', type: 'text', required: false },
+    ],
+  },
+  retirementGap: {
+    fields: [
+      { name: 'currentIncome', label: 'Current monthly income ($)', type: 'text', required: true },
+      { name: 'targetRetirementIncome', label: 'Target retirement income ($/mo)', type: 'text', required: true },
+      { name: 'currentAssets', label: 'Current liquid assets ($)', type: 'text', required: false },
+      { name: 'monthlySavings', label: 'Monthly savings ($)', type: 'text', required: false },
+    ],
+  },
+  wealthCalculator: {
+    fields: [
+      { name: 'netWorth', label: 'Current net worth ($)', type: 'text', required: true },
+      { name: 'monthlyIncome', label: 'Monthly income ($)', type: 'text', required: true },
+      { name: 'monthlyExpense', label: 'Monthly expenses ($)', type: 'text', required: true },
+      { name: 'digitalAssetValue', label: 'Digital asset portfolio value ($)', type: 'text', required: false },
+      { name: 'digitalMRR', label: 'Digital asset monthly recurring revenue ($)', type: 'text', required: false },
+    ],
+  },
+  assetPlan: {
+    fields: [
+      { name: 'monthlyGap', label: 'Monthly retirement gap ($)', type: 'text', required: true },
+      { name: 'persona', label: 'Digital superpower persona', type: 'select', options: ['builder', 'strategist', 'creator', 'educator'], required: false },
+    ],
+  },
+  legacyOS: {
+    fields: [
+      { name: 'planScore', label: 'Plan pillar score (0-100)', type: 'text', required: false },
+      { name: 'protectScore', label: 'Protect pillar score (0-100)', type: 'text', required: false },
+      { name: 'operateScore', label: 'Operate score (0-100)', type: 'text', required: false },
     ],
   },
   productAgent: { fields: [{ name: 'message', label: 'What should the agent do?', type: 'text', required: true }] },
