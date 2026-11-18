@@ -19,6 +19,9 @@ import { calculateWealth } from './wealthCalculator.js';
 import { generateAssetPlan } from './assetPlan.js';
 import { evaluateLegacyOS } from './legacyOSAgent.js';
 
+// Revenue & Affiliate agent
+import { analyzeAffiliateFlip } from './affiliateFlipper.js';
+
 // Hermes specialist agents (Phase 2)
 import { businessAgentHandler } from '../agents/hermes/businessAgent.js';
 import { contentAgentHandler } from '../agents/hermes/contentAgent.js';
@@ -108,6 +111,14 @@ export const agentRegistry = {
     name: 'Legacy OS Agent',
     description: 'Evaluate Plan, Protect, Operate 3-pillar readiness for sovereign financial independence',
     handler: evaluateLegacyOS,
+  },
+
+  // Revenue & Affiliate agent
+  affiliateFlipper: {
+    name: 'Affiliate Flipper AI',
+    description:
+      'Analyze TRAFFIC → PRODUCT MATCH to find undervalued, monetizable traffic and flip it into high-paying (often recurring) affiliate commissions',
+    handler: analyzeAffiliateFlip,
   },
 
   // Phase 2: Hermes specialist agents

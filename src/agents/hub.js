@@ -64,6 +64,14 @@ export const AGENT_CATEGORIES = {
       legacyOS: 'Legacy OS',
     },
   },
+  revenue: {
+    label: 'Revenue & Affiliate',
+    tagline: 'Flip traffic into high-paying affiliate income',
+    color: '#D4A017',
+    agents: {
+      affiliateFlipper: 'Affiliate Flipper AI',
+    },
+  },
 };
 
 // What each launchable agent needs as input. Drives the Agent Hub forms.
@@ -121,6 +129,18 @@ export const AGENT_INPUT_SPECS = {
       { name: 'planScore', label: 'Plan pillar score (0-100)', type: 'text', required: false },
       { name: 'protectScore', label: 'Protect pillar score (0-100)', type: 'text', required: false },
       { name: 'operateScore', label: 'Operate score (0-100)', type: 'text', required: false },
+    ],
+  },
+  affiliateFlipper: {
+    fields: [
+      { name: 'keyword', label: 'Keyword', type: 'text', required: true },
+      { name: 'niche', label: 'Niche', type: 'text', required: false },
+      { name: 'productName', label: 'Product name', type: 'text', required: false },
+      { name: 'productUrl', label: 'Product URL', type: 'text', required: false },
+      { name: 'affiliateUrl', label: 'Affiliate program URL', type: 'text', required: false },
+      { name: 'commission', label: 'Commission (%)', type: 'text', required: false },
+      { name: 'cookie', label: 'Cookie duration (days)', type: 'text', required: false },
+      { name: 'recurring', label: 'Commission type', type: 'select', options: ['one-time', 'recurring'], required: false },
     ],
   },
   productAgent: { fields: [{ name: 'message', label: 'What should the agent do?', type: 'text', required: true }] },
