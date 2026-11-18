@@ -26,7 +26,12 @@ export async function generateAssetPlan(params = {}) {
     `Current assets: ${currentAssets.length ? JSON.stringify(currentAssets) : 'none yet'}. ` +
     `Persona type: ${persona}. Focus on faceless digital products, Notion suites, digital real estate, and automated systems.`;
 
-  const result = await aiRouter.generate(null, userPrompt, { mode, systemPrompt, jsonMode: true });
+  let result;
+  try {
+    result = await aiRouter.generate(null, userPrompt, { mode, systemPrompt, jsonMode: true });
+  } catch (err) {
+    result = { error: err.message };
+  }
   if (result.error) {
     const plan = [
       { name: 'LegacyOS Bundle', type: 'flagship', estimatedMRR: 1500, effortLevel: 'Medium', timeToRevenue: '30 days', description: '$297 Plan-Protect-Operate suite' },

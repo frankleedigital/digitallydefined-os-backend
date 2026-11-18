@@ -30,7 +30,12 @@ export async function calculateRetirementGap(params = {}) {
 
   const userPrompt = `Calculate retirement gap for current income $${currentIncome}/mo, target retirement income $${targetRetirementIncome}/mo, current assets $${currentAssets}, monthly savings $${monthlySavings}/mo.`;
 
-  const result = await aiRouter.generate(null, userPrompt, { mode, systemPrompt, jsonMode: true });
+  let result;
+  try {
+    result = await aiRouter.generate(null, userPrompt, { mode, systemPrompt, jsonMode: true });
+  } catch (err) {
+    result = { error: err.message };
+  }
   if (result.error) {
     // Fallback if AI gateway times out
     return {

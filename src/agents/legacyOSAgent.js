@@ -27,7 +27,12 @@ export async function evaluateLegacyOS(params = {}) {
 
   const userPrompt = `Evaluate LegacyOS readiness: Plan score ${planScore}/100, Protect score ${protectScore}/100, Operate score ${operateScore}/100.`;
 
-  const result = await aiRouter.generate(null, userPrompt, { mode, systemPrompt, jsonMode: true });
+  let result;
+  try {
+    result = await aiRouter.generate(null, userPrompt, { mode, systemPrompt, jsonMode: true });
+  } catch (err) {
+    result = { error: err.message };
+  }
   if (result.error) {
     return {
       planScore,

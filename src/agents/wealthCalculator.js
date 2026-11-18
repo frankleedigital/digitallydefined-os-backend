@@ -31,7 +31,12 @@ export async function calculateWealth(params = {}) {
 
   const userPrompt = `Wealth trajectory analysis: net worth $${netWorth.toLocaleString()}, monthly income $${monthlyIncome.toLocaleString()}, expenses $${monthlyExpense.toLocaleString()}, digital asset portfolio $${digitalAssetValue.toLocaleString()} (MRR: $${digitalMRR}).`;
 
-  const result = await aiRouter.generate(null, userPrompt, { mode, systemPrompt, jsonMode: true });
+  let result;
+  try {
+    result = await aiRouter.generate(null, userPrompt, { mode, systemPrompt, jsonMode: true });
+  } catch (err) {
+    result = { error: err.message };
+  }
   if (result.error) {
     return {
       currentNetWorth: netWorth,
