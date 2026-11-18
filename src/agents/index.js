@@ -1,6 +1,7 @@
 // src/agents/index.js - Agent Registry
 // Purpose: Central registry of all AI agents.
 
+import logger from '../utils/logger.js';
 import { analyzeNiche } from './niche.js';
 import { generateRoadmap } from './roadmap.js';
 import { generateScorecard } from './scorecard.js';
