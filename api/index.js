@@ -67,6 +67,7 @@ const ALLOWED_ACTIONS = new Set([
   'agents.list',
   'agents.run',
   'agents.orchestrate',
+  'agents.mission',
   'slack.test',
   'slack.report',
   'gumroad.products',
@@ -1970,6 +1971,19 @@ export default async function handler(req, res) {
         return res.status(200).json(handleAgentsList());
       } catch (err) {
         console.error('[agents.list] failed:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+
+    if (action === 'agents.mission') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { default: missionState } = await import('../src/agents/hermes/missionState.js');
+        return res.status(200).json({ success: true, data: missionState.getState() });
+      } catch (err) {
+        console.error('[agents.mission] failed:', err.message);
         return res.status(500).json({ success: false, error: err.message });
       }
     }
