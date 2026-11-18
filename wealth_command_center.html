@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DigitallyDefined — Sovereign Wealth for Gen X Women</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- ★ SUPABASE JS SDK — Required for backend integration ★ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-700-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-900-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/dm-sans@latest/latin-400-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/dm-sans@latest/latin-500-normal.css">
+<script>
+tailwind.config={theme:{extend:{fontFamily:{sans:['DM Sans','Inter','system-ui','sans-serif'],heading:['Inter','system-ui','sans-serif']}}}}
+</script>
+<style>
+*{font-family:'DM Sans','Inter',system-ui,sans-serif;box-sizing:border-box;margin:0;padding:0;border-radius:0 !important}
+.font-heading,h1,h2,h3,h4,h5,h6,.font-black{font-family:'Inter',system-ui,sans-serif}
+:root,[data-theme="light"]{
+  --bg:#FFFCF9;--bg-2:#FFFFFF;--bg-3:#F7F3EE;--bg-4:#F0EBE3;
+  --text:#2D3748;--text-2:#4A5568;--text-3:#718096;--text-4:#A0AEC0;--text-inv:#FFFFFF;
+  --frame:#000000;--frame-2:#2D3748;--frame-3:#E2E8F0;
+  --accent:#47B7D4;--accent-2:#F18B25;--accent-3:#D64545;
+  --success:#10b981;--danger:#ef4444;
+  --shadow:4px 4px 0 var(--frame);--shadow-sm:2px 2px 0 var(--frame);
+  --btn-bg:var(--frame);--btn-text:var(--bg);
+  --toast-bg:var(--frame);--toast-text:var(--bg);
+  --nav-active:var(--bg-3);
+}
+[data-theme="dark"]{
+  --bg:#0B0D14;--bg-2:#12151F;--bg-3:#1A1E2B;--bg-4:#222738;
+  --text:#F7FAFC;--text-2:#CBD5E0;--text-3:#8896AB;--text-4:#5A6578;--text-inv:#0B0D14;
+  --frame:#F7FAFC;--frame-2:#2D3548;--frame-3:#1F2435;
+  --accent:#47B7D4;--accent-2:#F18B25;--accent-3:#D64545;
+  --success:#34D399;--danger:#F87171;
+  --shadow:4px 4px 0 rgba(71,183,212,0.4);--shadow-sm:2px 2px 0 rgba(71,183,212,0.3);
+  --btn-bg:var(--accent);--btn-text:var(--text-inv);
+  --toast-bg:var(--accent);--toast-text:var(--text-inv);
+  --nav-active:rgba(71,183,212,0.1);
+}
+html,body{background:var(--bg);color:var(--text);transition:background .25s,color .25s}
+.bg-1{background:var(--bg)}.bg-2{background:var(--bg-2)}.bg-3{background:var(--bg-3)}.bg-4{background:var(--bg-4)}
+.t-1{color:var(--text)}.t-2{color:var(--text-2)}.t-3{color:var(--text-3)}.t-4{color:var(--text-4)}
+.accent{color:var(--accent)}.accent-2{color:var(--accent-2)}.accent-3{color:var(--accent-3)}.success{color:var(--success)}.danger{color:var(--danger)}
+.dd-card{background:var(--bg-2);border:1px solid var(--frame-3);transition:all .2s}
+.dd-card-b{background:var(--bg-2);border:2px solid var(--frame);box-shadow:var(--shadow);transition:all .15s}
+.dd-card-b:hover{box-shadow:6px 6px 0 var(--frame);transform:translate(-1px,-1px)}
+.dd-btn{background:var(--btn-bg);color:var(--btn-text);border:2px solid var(--frame);padding:10px 20px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;font-size:12px;cursor:pointer;box-shadow:var(--shadow-sm);font-family:'Inter',sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
+.dd-btn:hover{transform:translate(-1px,-1px);box-shadow:var(--shadow)}
+.dd-btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--frame)}
+.dd-btn:disabled{opacity:.5;cursor:not-allowed}
+.dd-btn-sec{background:transparent;color:var(--text);box-shadow:var(--shadow-sm)}
+.dd-btn-accent{background:var(--accent);color:var(--text-inv);border-color:var(--accent)}
+.dd-btn-danger{background:var(--accent-3);color:#fff;border-color:var(--accent-3)}
+.dd-btn-success{background:var(--success);color:#fff;border-color:var(--success)}
+.dd-input{background:var(--bg-2);border:1px solid var(--frame-3);color:var(--text);padding:10px 14px;font-size:14px;width:100%;transition:border-color .2s}
+.dd-input:focus{outline:none;border-color:var(--accent)}
+.dd-input::placeholder{color:var(--text-4)}
+.dd-select{background:var(--bg-2);border:1px solid var(--frame-3);color:var(--text);padding:10px 14px;font-size:14px}
+.nav-item{transition:all .15s;border-left:3px solid transparent}
+.nav-item:hover{background:var(--bg-4)}
+.nav-item.active{background:var(--nav-active);color:var(--accent);border-left-color:var(--accent);font-weight:700}
+.page{display:none}.page.active{display:block;animation:fadeIn .25s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.theme-toggle{width:42px;height:42px;border:2px solid var(--frame);background:var(--bg-2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+.theme-toggle:hover{background:var(--bg-4);border-color:var(--accent)}
+.theme-option{padding:16px;border:2px solid var(--frame);background:var(--bg-2);cursor:pointer;transition:all .15s;text-align:left;position:relative}
+.theme-option:hover{background:var(--bg-4)}
+.theme-option.selected{border-color:var(--accent);box-shadow:var(--shadow);transform:translate(-1px,-1px)}
+.theme-option.selected::after{content:'✓';position:absolute;top:8px;right:8px;width:24px;height:24px;background:var(--accent);color:var(--text-inv);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg-3)}
+::-webkit-scrollbar-thumb{background:var(--frame-2)}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:.4}}
+.live-dot{animation:livePulse 1.5s infinite}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.skeleton{background:linear-gradient(90deg,var(--frame-3) 25%,var(--bg-4) 50%,var(--frame-3) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1s linear infinite}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}
+.sidebar-overlay.active{display:block}
+@media(max-width:1023px){.sidebar{transform:translateX(-100%);transition:transform .3s}.sidebar.open{transform:translateX(0)}.main-content{margin-left:0!important}}
+.bottom-nav{display:none}
+@media(max-width:767px){.bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:80;background:var(--bg-2);border-top:2px solid var(--frame);padding:6px 0;padding-bottom:calc(6px + env(safe-area-inset-bottom))}.main-content{padding-bottom:80px!important}}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.active{display:flex}
+.dropdown-menu{display:none;position:absolute;top:100%;right:0;margin-top:.5rem;z-index:60;max-height:80vh;overflow-y:auto}
+.dropdown-menu.active{display:block}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--toast-bg);color:var(--toast-text);padding:12px 24px;font-weight:700;z-index:300;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis;letter-spacing:.02em;font-size:13px;border:2px solid var(--frame)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toggle-sw{position:relative;width:44px;height:24px;background:var(--frame-3);cursor:pointer;transition:background .3s;flex-shrink:0}
+.toggle-sw.active{background:var(--accent)}
+.toggle-sw::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;background:var(--frame);transition:transform .3s}
+[data-theme="dark"] .toggle-sw::after{background:var(--text)}
+.toggle-sw.active::after{transform:translateX(20px)}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height .3s}
+.faq-item.open .faq-answer{max-height:500px}
+.faq-item.open .faq-chevron{transform:rotate(180deg)}
+.faq-chevron{transition:transform .3s}
+input[type="range"]{-webkit-appearance:none;background:transparent;width:100%}
+input[type="range"]::-webkit-slider-track{height:4px;background:var(--frame-3)}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--accent);margin-top:-7px;cursor:pointer}
+body{overflow-x:hidden}
+.crypto-up{color:var(--success)}.crypto-down{color:var(--danger)}
+.tab-btn{transition:all .15s;border-bottom:2px solid transparent}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:900}
+.saved-btn.saved{color:var(--accent-2)}
+.progress-bar{height:8px;background:var(--frame-3);overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width 1s}
+.stat-number{font-family:'Inter',sans-serif;font-weight:900;letter-spacing:-.02em}
+.section-label{font-family:'Inter',sans-serif;font-weight:900;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-3);padding:4px 8px;background:var(--bg-3);border:1px solid var(--frame-3);display:inline-block}
+.hero-gradient{background:linear-gradient(135deg,var(--bg-2) 0%,var(--bg-3) 100%);border:2px solid var(--frame);position:relative;overflow:hidden}
+.theme-flash{position:fixed;inset:0;z-index:9999;pointer-events:none;background:var(--accent);opacity:0;transition:opacity .2s}
+.theme-flash.active{opacity:.15}
+/* ★ AUTH STATUS INDICATOR ★ */
+.auth-status{display:flex;align-items:center;gap:6px;padding:4px 10px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;border:2px solid var(--frame-3)}
+.auth-status.connected{border-color:var(--success);color:var(--success)}
+.auth-status.disconnected{border-color:var(--accent-2);color:var(--accent-2)}
+.sync-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;background:var(--success);color:#fff}
+</style>
+</head>
+<body data-theme="light">
+<div class="theme-flash" id="theme-flash"></div>
+<div class="flex min-h-screen">
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar w-64 flex flex-col fixed h-full z-[100]" id="sidebar" style="background:var(--bg-2);border-right:2px solid var(--frame)">
+<div class="p-5" style="border-bottom:2px solid var(--frame)">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 flex items-center justify-center flex-shrink-0" style="border:2px solid var(--frame);background:var(--bg)">
+<svg class="w-6 h-6" style="color:var(--accent)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+</div>
+<div>
+<h1 class="text-lg font-black tracking-tight t-1">DIGITALLY<br>DEFINED</h1>
+<p class="text-[10px] font-bold uppercase tracking-widest t-3">Wealth Command</p>
+</div>
+</div>
+<button class="lg:hidden p-2" style="background:var(--bg-4)" onclick="closeSidebar()"><svg class="w-5 h-5 t-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+</div>
+<!-- ★ AUTH STATUS BADGE ★ -->
+<div class="mt-3 auth-status disconnected" id="auth-status-badge">
+<span class="w-2 h-2" style="background:currentColor"></span>
+<span id="auth-status-text">Not Signed In</span>
+</div>
+</div>
+<nav class="flex-1 p-3 space-y-1 overflow-y-auto">
+<a href="#" class="nav-item active flex items-center gap-3 px-4 py-3 text-sm font-semibold t-2" data-page="dashboard" onclick="nav(event,'dashboard')"><svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Freedom Dashboard</a>
+<a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-sm font-semibold t-3" data-page="portfolio" onclick="nav(event,'portfolio')"><svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>Portfolio & Yield</a>
+<a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-sm font-semibold t-3" data-page="digital" onclick="nav(event,'digital')"><svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>Digital Assets</a>
+<a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-sm font-semibold t-3" data-page="scenarios" onclick="nav(event,'scenarios')"><svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>Life Scenarios</a>
+<a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-sm font-semibold t-3" data-page="news" onclick="nav(event,'news')"><svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>Curated News</a>
+<a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-sm font-semibold t-3" data-page="watchlist" onclick="nav(event,'watchlist')"><svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>Watchlist</a>
+<div class="pt-4 mt-4" style="border-top:2px solid var(--frame)">
+<a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-sm font-semibold t-3" data-page="settings" onclick="nav(event,'settings')"><svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Settings</a>
+<a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-sm font-semibold t-3" data-page="help" onclick="nav(event,'help')"><svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Help & Support</a>
+</div>
+</nav>
+<div class="p-3" style="border-top:2px solid var(--frame)">
+<div class="p-3" style="background:var(--bg-3);border:2px solid var(--frame)">
+<div class="flex items-center gap-2 mb-1"><svg class="w-4 h-4" style="color:var(--accent)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg><span class="text-xs font-black uppercase tracking-wider t-1">Private Mode</span></div>
+<p class="text-xs t-3">Your data is yours alone. No sharing. Ever.</p>
+</div>
+</div>
+</aside>
+
+<!-- MAIN -->
+<main class="main-content flex-1 lg:ml-64 min-w-0">
+<!-- TOP BAR -->
+<header class="sticky top-0 z-40 px-4 sm:px-6 lg:px-8 py-3" style="background:var(--bg);border-bottom:2px solid var(--frame)">
+<div class="flex items-center justify-between gap-3">
+<div class="flex items-center gap-3 min-w-0">
+<button class="lg:hidden p-2" style="background:var(--bg-4)" onclick="openSidebar()"><svg class="w-5 h-5 t-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+<div class="min-w-0"><h2 class="text-base sm:text-xl font-black tracking-tight t-1" id="pg-title">Good morning, Michelle</h2><p class="text-xs sm:text-sm font-semibold uppercase tracking-wider t-3" id="pg-sub">Wealth snapshot · updated 2 min ago</p></div>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<div class="hidden md:block relative">
+<input type="text" id="gsearch" placeholder="Search stocks, crypto, ETFs..." class="dd-input w-48 lg:w-60" style="padding-left:36px" oninput="doSearch(this.value)" onkeydown="if(event.key==='Enter')goSearch()" onfocus="doSearch(this.value)">
+<svg class="w-4 h-4 absolute left-3 top-3 t-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+<div id="search-dd" class="dropdown-menu w-96 max-h-96" style="background:var(--bg-2);border:2px solid var(--frame)"></div>
+</div>
+<button class="md:hidden p-2" style="background:var(--bg-4);border:2px solid var(--frame)" onclick="mobileSearch()"><svg class="w-5 h-5 t-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></button>
+<button class="theme-toggle" id="theme-toggle-btn" onclick="handleThemeToggle()" title="Toggle theme">
+<svg id="icon-sun" style="display:none;color:var(--accent-2)" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+<svg id="icon-moon" style="display:block;color:var(--text)" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+<svg id="icon-auto" style="display:none;color:var(--accent)" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+</button>
+<div class="relative">
+<button class="relative p-2" style="background:var(--bg-4);border:2px solid var(--frame)" onclick="togDrop('notif-dd')"><svg class="w-5 h-5 t-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg><span class="absolute -top-1 -right-1 w-4 h-4 text-[10px] flex items-center justify-center font-black" style="background:var(--accent-3);color:#fff" id="notif-badge">3</span></button>
+<div id="notif-dd" class="dropdown-menu w-80" style="background:var(--bg-2);border:2px solid var(--frame)">
+<div class="p-3 flex justify-between" style="border-bottom:2px solid var(--frame)"><span class="text-sm font-black uppercase tracking-wider t-1">Notifications</span><button class="text-xs font-bold accent" onclick="clearNotifs()">Mark all read</button></div>
+<div id="notif-list" class="max-h-72 overflow-y-auto">
+<div class="p-3 cursor-pointer" style="background:var(--bg-4);border-bottom:1px solid var(--frame-3)" onclick="handleNotif('portfolio')"><p class="text-sm font-semibold t-1">SCHD Dividend Received</p><p class="text-xs t-3">$78.40 deposited · 2h ago</p></div>
+<div class="p-3 cursor-pointer" style="background:var(--bg-4);border-bottom:1px solid var(--frame-3)" onclick="handleNotif('digital')"><p class="text-sm font-semibold t-1">MRR Milestone: $1,850</p><p class="text-xs t-3">Digital income grew 12% · 5h ago</p></div>
+<div class="p-3 cursor-pointer" style="background:var(--bg-4)" onclick="handleNotif('watchlist')"><p class="text-sm font-semibold t-1">🪙 BTC crossed $95,000</p><p class="text-xs t-3">Live from CoinGecko · just now</p></div>
+</div>
+</div>
+</div>
+<!-- ★ USER AVATAR — Shows sign-in state ★ -->
+<div class="relative">
+<button id="user-avatar-btn" class="w-9 h-9 flex items-center justify-center text-sm font-black" style="background:var(--accent);color:var(--text-inv);border:2px solid var(--frame)" onclick="handleAvatarClick()">M</button>
+<!-- Signed OUT dropdown -->
+<div id="prof-dd-signedout" class="dropdown-menu w-64" style="background:var(--bg-2);border:2px solid var(--frame)">
+<div class="p-4" style="border-bottom:2px solid var(--frame)">
+<p class="text-sm font-black t-1 mb-1">Welcome to DigitallyDefined</p>
+<p class="text-xs t-3">Sign in to sync your data across devices</p>
+</div>
+<div class="p-2">
+<button class="w-full text-left px-3 py-2 text-sm font-bold t-1" style="background:var(--bg-4)" onclick="openAuthModal('signin');closeDrops()">🔑 SIGN IN</button>
+<button class="w-full text-left px-3 py-2 text-sm font-bold accent" style="background:var(--bg-4)" onclick="openAuthModal('signup');closeDrops()">✨ CREATE ACCOUNT</button>
+</div>
+<div class="p-2" style="border-top:2px solid var(--frame)">
+<button class="w-full text-left px-3 py-2 text-sm font-semibold t-1" style="background:var(--bg-4)" onclick="navTo('help');closeDrops()">❓ Help & Support</button>
+</div>
+</div>
+<!-- Signed IN dropdown -->
+<div id="prof-dd-signedin" class="dropdown-menu w-64" style="background:var(--bg-2);border:2px solid var(--frame)">
+<div class="p-3" style="border-bottom:2px solid var(--frame)">
+<p class="text-sm font-black t-1" id="user-display-name">Michelle Torres</p>
+<p class="text-xs t-3" id="user-display-email">michelle@email.com</p>
+<div class="mt-2 flex items-center gap-2">
+<span class="sync-badge">● SYNCED</span>
+<span class="text-[10px] t-3 font-bold uppercase" id="user-tier">Free Tier</span>
+</div>
+</div>
+<div class="p-1">
+<button class="w-full text-left px-3 py-2 text-sm font-semibold t-1" style="background:var(--bg-4)" onclick="navTo('settings');closeDrops()">⚙️ Settings</button>
+<button class="w-full text-left px-3 py-2 text-sm font-semibold t-1" style="background:var(--bg-4)" onclick="exportUserData();closeDrops()">📥 Export My Data</button>
+<button class="w-full text-left px-3 py-2 text-sm font-semibold t-1" style="background:var(--bg-4)" onclick="navTo('help');closeDrops()">❓ Help & Support</button>
+</div>
+<div class="p-1" style="border-top:2px solid var(--frame)">
+<button class="w-full text-left px-3 py-2 text-sm font-bold" style="color:var(--accent-3);background:var(--bg-4)" onclick="confirmSignOut()">🚪 Sign Out</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+
+<!-- ============ PAGE: DASHBOARD ============ -->
+<div id="p-dashboard" class="page active p-4 sm:p-6 lg:p-8 space-y-6">
+<div class="hero-gradient p-5 sm:p-8">
+<div class="flex flex-col lg:flex-row gap-6 items-start lg:items-center">
+<div class="flex-1 w-full">
+<span class="section-label mb-3" style="background:var(--accent);color:var(--text-inv);border-color:var(--frame)">● YOUR FREEDOM NUMBER · LIVE</span>
+<p class="text-xs sm:text-sm font-semibold uppercase tracking-wider mt-3 t-2">Monthly passive income to replace your salary</p>
+<div class="flex items-baseline gap-2 mb-4 mt-2"><span class="stat-number text-4xl sm:text-6xl t-1">$8,500</span><span class="text-sm font-bold uppercase tracking-wider t-3">/month</span></div>
+<div class="grid grid-cols-3 gap-3 mt-4">
+<div class="p-3" style="border:2px solid var(--frame);background:var(--bg-2)"><p class="text-[10px] font-black uppercase tracking-wider t-3">Traditional</p><p class="text-sm sm:text-lg font-black stat-number t-1">$3,200</p></div>
+<div class="p-3" style="border:2px solid var(--frame);background:var(--bg-2)"><p class="text-[10px] font-black uppercase tracking-wider t-3">Digital</p><p class="text-sm sm:text-lg font-black stat-number accent">$1,850</p></div>
+<div class="p-3" style="border:2px solid var(--frame);background:var(--bg-2)"><p class="text-[10px] font-black uppercase tracking-wider t-3">Gap</p><p class="text-sm sm:text-lg font-black stat-number accent-3">$3,450</p></div>
+</div>
+<div class="mt-4"><div class="flex justify-between text-xs mb-2"><span class="font-bold uppercase tracking-wider t-3">Freedom Progress</span><span class="font-black accent">59% THERE</span></div><div class="progress-bar"><div class="progress-fill" style="width:59%"></div></div></div>
+</div>
+<div class="flex flex-col items-center self-center">
+<div class="relative w-36 h-36 sm:w-44 sm:h-44" style="border:2px solid var(--frame);background:var(--bg-2)">
+<svg class="w-full h-full -rotate-90" viewBox="0 0 160 160"><circle cx="80" cy="80" r="70" fill="none" stroke="var(--frame-3)" stroke-width="8"/><circle cx="80" cy="80" r="70" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linecap="square" stroke-dasharray="440" stroke-dashoffset="180"/></svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center"><span class="stat-number text-3xl t-1">7.2</span><span class="text-xs font-bold uppercase tracking-wider t-3">years to</span><span class="text-sm font-black accent">FREEDOM</span></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- CRYPTO LIVE -->
+<div class="dd-card p-5">
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
+<div class="flex items-center gap-3 flex-wrap">
+<div class="flex items-center gap-2"><span class="w-2 h-2" style="background:var(--success)"></span><h3 class="font-black uppercase tracking-wider text-sm t-1">Crypto Markets</h3></div>
+<span class="section-label" style="background:var(--success);color:#fff;border-color:var(--frame)">● LIVE · COINGECKO</span>
+</div>
+<div class="flex items-center gap-3">
+<p class="text-[10px] t-3 font-bold uppercase tracking-wider" id="crypto-last-update">Updating...</p>
+<button class="text-xs font-bold t-1 bg-4 px-3 py-1.5" style="border:2px solid var(--frame)" onclick="loadCryptoMarkets()"><span id="crypto-refresh-icon">↻</span> REFRESH</button>
+</div>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4" id="crypto-stats">
+<div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Total Market Cap</p><p class="text-lg font-black stat-number t-1" id="stat-total-mcap"><span class="skeleton inline-block w-24 h-5"></span></p></div>
+<div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">24h Volume</p><p class="text-lg font-black stat-number t-1" id="stat-24h-vol"><span class="skeleton inline-block w-24 h-5"></span></p></div>
+<div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">BTC Dominance</p><p class="text-lg font-black stat-number t-1" id="stat-btc-dom"><span class="skeleton inline-block w-20 h-5"></span></p></div>
+<div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Active Cryptos</p><p class="text-lg font-black stat-number t-1" id="stat-active"><span class="skeleton inline-block w-16 h-5"></span></p></div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3" id="crypto-top5">
+<div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><div class="skeleton h-4 w-20 mb-2"></div><div class="skeleton h-6 w-24 mb-2"></div><div class="skeleton h-3 w-16"></div></div>
+<div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><div class="skeleton h-4 w-20 mb-2"></div><div class="skeleton h-6 w-24 mb-2"></div><div class="skeleton h-3 w-16"></div></div>
+<div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><div class="skeleton h-4 w-20 mb-2"></div><div class="skeleton h-6 w-24 mb-2"></div><div class="skeleton h-3 w-16"></div></div>
+<div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><div class="skeleton h-4 w-20 mb-2"></div><div class="skeleton h-6 w-24 mb-2"></div><div class="skeleton h-3 w-16"></div></div>
+<div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><div class="skeleton h-4 w-20 mb-2"></div><div class="skeleton h-6 w-24 mb-2"></div><div class="skeleton h-3 w-16"></div></div>
+</div>
+</div>
+
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+<div class="dd-card-b p-4 cursor-pointer" onclick="navTo('portfolio')"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Net Worth</p><p class="text-lg sm:text-2xl font-black stat-number t-1">$847,320</p><p class="text-[10px] font-bold success">↑ +12.4% YTD</p></div>
+<div class="dd-card-b p-4 cursor-pointer" onclick="navTo('portfolio')"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Cash Flow</p><p class="text-lg sm:text-2xl font-black stat-number t-1">$5,050</p><p class="text-[10px] font-bold success">↑ +$420/mo</p></div>
+<div class="dd-card-b p-4 cursor-pointer" onclick="navTo('scenarios')"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Emergency</p><p class="text-lg sm:text-2xl font-black stat-number t-1">$52,000</p><p class="text-[10px] font-bold success">✓ 6.1 MONTHS</p></div>
+<div class="dd-card-b p-4 cursor-pointer" onclick="navTo('digital')"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Digital MRR</p><p class="text-lg sm:text-2xl font-black stat-number accent">$1,850</p><p class="text-[10px] font-bold accent">↑ +23% QOQ</p></div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+<div class="dd-card p-5">
+<div class="flex justify-between mb-4"><div><span class="section-label mb-2">01 · TRADITIONAL</span><h3 class="font-black text-lg t-1 mt-2">Portfolio & Yield</h3></div><button class="text-xs font-black uppercase tracking-wider accent" onclick="navTo('portfolio')">View All →</button></div>
+<div class="space-y-2">
+<div class="flex justify-between p-3 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="assetModal('SCHD','Schwab US Dividend','ETF · Dividend Growth','3.8%','$11,844','$450/yr','Quarterly')"><div class="flex items-center gap-2"><span class="w-8 h-8 flex items-center justify-center text-xs font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent)">SCHD</span><div><p class="text-sm font-bold t-1">Schwab US Dividend</p><p class="text-[10px] t-3 font-semibold">420 shares</p></div></div><div class="text-right"><p class="text-sm font-black success">$312/mo</p><p class="text-[10px] t-3 font-bold">3.8%</p></div></div>
+<div class="flex justify-between p-3 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="assetModal('JEPI','JPM Equity Premium','ETF · Covered Call','7.5%','$15,680','$1,176/yr','Monthly')"><div class="flex items-center gap-2"><span class="w-8 h-8 flex items-center justify-center text-xs font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent)">JEPI</span><div><p class="text-sm font-bold t-1">JPM Equity Premium</p><p class="text-[10px] t-3 font-semibold">280 shares</p></div></div><div class="text-right"><p class="text-sm font-black success">$252/mo</p><p class="text-[10px] t-3 font-bold">7.5%</p></div></div>
+<div class="flex justify-between p-3 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="assetModal('BND','Vanguard Total Bond','ETF · Bonds','4.5%','$39,760','$1,789/yr','Monthly')"><div class="flex items-center gap-2"><span class="w-8 h-8 flex items-center justify-center text-xs font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent-2)">BND</span><div><p class="text-sm font-bold t-1">Vanguard Total Bond</p><p class="text-[10px] t-3 font-semibold">560 shares</p></div></div><div class="text-right"><p class="text-sm font-black success">$148/mo</p><p class="text-[10px] t-3 font-bold">4.5%</p></div></div>
+</div>
+<div class="mt-3 pt-3 flex justify-between" style="border-top:2px solid var(--frame)"><div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Monthly Yield</p><p class="text-lg font-black stat-number success">$790</p></div><button class="dd-btn dd-btn-sec text-xs" onclick="exportCSV()">EXPORT CSV</button></div>
+</div>
+<div class="dd-card p-5">
+<div class="flex justify-between mb-4"><div><span class="section-label mb-2" style="background:var(--accent-2);color:#fff">02 · DIGITAL</span><h3 class="font-black text-lg t-1 mt-2">Digital Real Estate</h3></div><button class="text-xs font-black uppercase tracking-wider accent" onclick="navTo('digital')">View All →</button></div>
+<div class="space-y-2">
+<div class="p-3 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="digitalModal('Freedom Letters','Newsletter','2,847','42% open','$820','+12%','Sponsor: $320/mo · Paid: $500/mo')"><div class="flex justify-between"><div class="flex items-center gap-2"><span class="text-lg">📧</span><div><p class="text-sm font-bold t-1">Freedom Letters</p><p class="text-[10px] t-3 font-semibold">2,847 subs</p></div></div><div class="text-right"><p class="text-sm font-black accent">$820/mo</p><p class="text-[10px] font-bold success">+12%</p></div></div></div>
+<div class="p-3 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="digitalModal('Retirement Ready','Online Course','156 students','4.8★','$680','+8%','$197 price · 3.4 enrollments/wk')"><div class="flex justify-between"><div class="flex items-center gap-2"><span class="text-lg">🎓</span><div><p class="text-sm font-bold t-1">Retirement Ready</p><p class="text-[10px] t-3 font-semibold">156 students</p></div></div><div class="text-right"><p class="text-sm font-black accent">$680/mo</p><p class="text-[10px] font-bold success">+8%</p></div></div></div>
+<div class="p-3 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="digitalModal('Template Vault','Digital Downloads','12 products','$27 avg','$350','+31%','Budget trackers, planners, logs')"><div class="flex justify-between"><div class="flex items-center gap-2"><span class="text-lg">📊</span><div><p class="text-sm font-bold t-1">Template Vault</p><p class="text-[10px] t-3 font-semibold">12 products</p></div></div><div class="text-right"><p class="text-sm font-black accent">$350/mo</p><p class="text-[10px] font-bold success">+31%</p></div></div></div>
+</div>
+<div class="mt-3 pt-3 flex justify-between" style="border-top:2px solid var(--frame)"><div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Total MRR</p><p class="text-lg font-black stat-number accent">$1,850</p></div><div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Margin</p><p class="text-lg font-black stat-number success">94%</p></div></div>
+</div>
+</div>
+
+<div class="dd-card-b p-6 text-center" style="background:var(--bg-3)">
+<span class="section-label mb-3">THE PUNCH</span>
+<h3 class="font-display text-2xl sm:text-3xl font-bold mt-3 mb-2 t-1">Stocks preserve wealth.<br>Digital assets build it.</h3>
+<p class="text-sm max-w-2xl mx-auto mb-4 t-2">Close that $3,450/month gap with automated digital income. No more excuses. Own your power.</p>
+<div class="flex flex-col sm:flex-row justify-center gap-3">
+<button class="dd-btn" onclick="navTo('digital')">BUILD YOUR NEXT DIGITAL ASSET →</button>
+<button class="dd-btn dd-btn-sec" onclick="exportCSV()">DOWNLOAD TAX REPORT</button>
+</div>
+</div>
+</div>
+
+<!-- ============ PAGE: PORTFOLIO ============ -->
+<div id="p-portfolio" class="page p-4 sm:p-6 lg:p-8 space-y-6">
+<div class="flex flex-col sm:flex-row justify-between gap-3">
+<div><span class="section-label">PORTFOLIO</span><h3 class="text-xl sm:text-2xl font-black t-1 mt-2">Portfolio & Yield</h3><p class="text-xs t-3 font-semibold uppercase tracking-wider">All accounts consolidated</p></div>
+<div class="flex gap-2"><button class="dd-btn dd-btn-sec text-xs" onclick="exportCSV()">📥 EXPORT CSV</button><button class="dd-btn text-xs" onclick="linkAccountModal()">+ LINK ACCOUNT</button></div>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+<div class="dd-card-b p-4 cursor-pointer" onclick="assetModal('401k','Target Date 2040','Retirement · Employer Match','2.4%','$241,136','$5,787/yr','Auto')"><p class="text-[10px] t-3 font-black uppercase tracking-wider">401(k)</p><p class="text-xl font-black stat-number t-1">$241,136</p><p class="text-[10px] font-bold success">+14.2% YTD</p></div>
+<div class="dd-card-b p-4 cursor-pointer" onclick="assetModal('Trad IRA','Schwab Traditional IRA','IRA · Schwab','4.8%','$187,450','$8,920/yr','Quarterly')"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Trad IRA</p><p class="text-xl font-black stat-number t-1">$187,450</p><p class="text-[10px] font-bold success">+11.8% YTD</p></div>
+<div class="dd-card-b p-4 cursor-pointer" onclick="assetModal('Roth IRA','Fidelity Roth IRA','Roth · Fidelity','4.1%','$94,280','$3,840/yr','Quarterly')"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Roth IRA</p><p class="text-xl font-black stat-number t-1">$94,280</p><p class="text-[10px] font-bold success">+16.1% YTD</p></div>
+<div class="dd-card-b p-4 cursor-pointer" onclick="assetModal('Taxable','Vanguard Brokerage','Taxable · Vanguard','3.8%','$324,454','$12,480/yr','Quarterly')"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Taxable</p><p class="text-xl font-black stat-number t-1">$324,454</p><p class="text-[10px] font-bold success">+10.3% YTD</p></div>
+</div>
+<div class="dd-card p-5">
+<h3 class="font-black text-lg t-1 mb-4">Annual Yield by Account</h3>
+<div class="space-y-4">
+<div><div class="flex justify-between mb-1"><span class="text-sm font-bold t-1">Taxable Brokerage</span><span class="text-sm font-black success">$12,480/yr</span></div><div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div></div>
+<div><div class="flex justify-between mb-1"><span class="text-sm font-bold t-1">Traditional IRA</span><span class="text-sm font-black success">$8,920/yr</span></div><div class="progress-bar"><div class="progress-fill" style="width:60%;background:linear-gradient(90deg,#8b5cf6,#a78bfa)"></div></div></div>
+<div><div class="flex justify-between mb-1"><span class="text-sm font-bold t-1">401(k)</span><span class="text-sm font-black success">$5,760/yr</span></div><div class="progress-bar"><div class="progress-fill" style="width:39%;background:linear-gradient(90deg,#3b82f6,#60a5fa)"></div></div></div>
+<div><div class="flex justify-between mb-1"><span class="text-sm font-bold t-1">Roth IRA</span><span class="text-sm font-black success">$3,840/yr</span></div><div class="progress-bar"><div class="progress-fill" style="width:26%"></div></div></div>
+</div>
+<div class="mt-4 pt-4 grid grid-cols-3 gap-4" style="border-top:2px solid var(--frame)"><div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Annual</p><p class="text-xl font-black stat-number success">$31,000</p></div><div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Monthly</p><p class="text-xl font-black stat-number success">$2,583</p></div><div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Yield</p><p class="text-xl font-black stat-number t-1">3.7%</p></div></div>
+</div>
+<div class="dd-card p-5">
+<div class="flex justify-between items-center mb-4 flex-wrap gap-2"><h3 class="font-black text-lg t-1">All Holdings</h3>
+<div class="flex gap-2" id="holdings-sort-btns">
+<button class="dd-btn text-xs" data-sort="yield" onclick="sortHoldings(this,'yield')">BY YIELD</button>
+<button class="dd-btn dd-btn-sec text-xs" data-sort="value" onclick="sortHoldings(this,'value')">BY VALUE</button>
+<button class="dd-btn dd-btn-sec text-xs" data-sort="name" onclick="sortHoldings(this,'name')">BY NAME</button>
+</div>
+</div>
+<div class="overflow-x-auto"><table class="w-full text-xs sm:text-sm min-w-[600px]"><thead><tr class="text-[10px] t-3 font-black uppercase tracking-wider" style="border-bottom:2px solid var(--frame)"><th class="text-left pb-2">Asset</th><th class="text-left pb-2 hidden sm:table-cell">Account</th><th class="text-right pb-2">Value</th><th class="text-right pb-2">Yield</th><th class="text-right pb-2">Annual</th><th class="text-center pb-2 hidden sm:table-cell">Status</th></tr></thead>
+<tbody id="holdings-body">
+<tr class="cursor-pointer bg-4" data-yield="7.5" data-value="15680" data-name="JPM Equity Premium" style="border-bottom:1px solid var(--frame-3)" onclick="assetModal('JEPI','JPM Equity Premium','ETF · Covered Call','7.5%','$15,680','$1,176/yr','Monthly')"><td class="py-3"><div class="flex items-center gap-2"><span class="w-7 h-7 flex items-center justify-center text-[10px] font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent)">JEPI</span><div class="min-w-0"><p class="text-xs sm:text-sm font-bold t-1 truncate">JPM Equity Premium</p><p class="text-[10px] t-3 sm:hidden">Taxable · 280 sh</p></div></div></td><td class="t-3 hidden sm:table-cell">Taxable</td><td class="text-right font-bold t-1">$15,680</td><td class="text-right font-black success">7.5%</td><td class="text-right font-bold success">$1,176</td><td class="text-center hidden sm:table-cell"><span class="px-2 py-0.5 text-[10px] font-black uppercase" style="background:var(--success);color:#fff">High Yield</span></td></tr>
+<tr class="cursor-pointer bg-4" data-yield="5.5" data-value="20230" data-name="Realty Income" style="border-bottom:1px solid var(--frame-3)" onclick="assetModal('O','Realty Income','REIT · Monthly','5.5%','$20,230','$1,113/yr','Monthly')"><td class="py-3"><div class="flex items-center gap-2"><span class="w-7 h-7 flex items-center justify-center text-[10px] font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent-2)">O</span><div class="min-w-0"><p class="text-xs sm:text-sm font-bold t-1 truncate">Realty Income</p><p class="text-[10px] t-3 sm:hidden">Taxable · 350 sh</p></div></div></td><td class="t-3 hidden sm:table-cell">Taxable</td><td class="text-right font-bold t-1">$20,230</td><td class="text-right font-black success">5.5%</td><td class="text-right font-bold success">$1,113</td><td class="text-center hidden sm:table-cell"><span class="px-2 py-0.5 text-[10px] font-black uppercase" style="background:var(--success);color:#fff">Monthly</span></td></tr>
+<tr class="cursor-pointer bg-4" data-yield="4.5" data-value="39760" data-name="Vanguard Total Bond" style="border-bottom:1px solid var(--frame-3)" onclick="assetModal('BND','Vanguard Total Bond','ETF · Bonds','4.5%','$39,760','$1,789/yr','Monthly')"><td class="py-3"><div class="flex items-center gap-2"><span class="w-7 h-7 flex items-center justify-center text-[10px] font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent-2)">BND</span><div class="min-w-0"><p class="text-xs sm:text-sm font-bold t-1 truncate">Vanguard Total Bond</p><p class="text-[10px] t-3 sm:hidden">IRA · 560 sh</p></div></div></td><td class="t-3 hidden sm:table-cell">IRA</td><td class="text-right font-bold t-1">$39,760</td><td class="text-right font-black success">4.5%</td><td class="text-right font-bold success">$1,789</td><td class="text-center hidden sm:table-cell"><span class="px-2 py-0.5 text-[10px] font-black uppercase" style="background:var(--success);color:#fff">Stable</span></td></tr>
+<tr class="cursor-pointer bg-4" data-yield="3.8" data-value="11844" data-name="Schwab US Dividend" style="border-bottom:1px solid var(--frame-3)" onclick="assetModal('SCHD','Schwab US Dividend','ETF · Dividend','3.8%','$11,844','$450/yr','Quarterly')"><td class="py-3"><div class="flex items-center gap-2"><span class="w-7 h-7 flex items-center justify-center text-[10px] font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent)">SCHD</span><div class="min-w-0"><p class="text-xs sm:text-sm font-bold t-1 truncate">Schwab US Dividend</p><p class="text-[10px] t-3 sm:hidden">Taxable · 420 sh</p></div></div></td><td class="t-3 hidden sm:table-cell">Taxable</td><td class="text-right font-bold t-1">$11,844</td><td class="text-right font-black success">3.8%</td><td class="text-right font-bold success">$450</td><td class="text-center hidden sm:table-cell"><span class="px-2 py-0.5 text-[10px] font-black uppercase" style="background:var(--accent);color:#fff">Growth</span></td></tr>
+<tr class="cursor-pointer bg-4" data-yield="1.3" data-value="87300" data-name="Vanguard S&P 500" onclick="assetModal('VOO','Vanguard S&P 500','ETF · Index','1.3%','$87,300','$1,135/yr','Quarterly')"><td class="py-3"><div class="flex items-center gap-2"><span class="w-7 h-7 flex items-center justify-center text-[10px] font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent)">VOO</span><div class="min-w-0"><p class="text-xs sm:text-sm font-bold t-1 truncate">Vanguard S&P 500</p><p class="text-[10px] t-3 sm:hidden">Roth · 180 sh</p></div></div></td><td class="t-3 hidden sm:table-cell">Roth</td><td class="text-right font-bold t-1">$87,300</td><td class="text-right font-black t-3">1.3%</td><td class="text-right font-bold t-2">$1,135</td><td class="text-center hidden sm:table-cell"><span class="px-2 py-0.5 text-[10px] font-black uppercase" style="background:#8b5cf6;color:#fff">Growth</span></td></tr>
+</tbody></table></div>
+</div>
+<div class="dd-card p-5">
+<h3 class="font-black text-lg t-1 mb-4">Dividend Calendar</h3>
+<div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2">
+<div class="p-2 text-center" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-bold">Jan</p><p class="text-xs font-black success">$2,140</p></div>
+<div class="p-2 text-center" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-bold">Feb</p><p class="text-xs font-black success">$1,890</p></div>
+<div class="p-2 text-center" style="border:2px solid var(--accent);background:var(--bg-3)"><p class="text-[10px] font-black accent">Mar ★</p><p class="text-xs font-black accent">$2,580</p></div>
+<div class="p-2 text-center" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-bold">Apr</p><p class="text-xs font-black success">$1,920</p></div>
+<div class="p-2 text-center" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-bold">May</p><p class="text-xs font-black success">$1,850</p></div>
+<div class="p-2 text-center" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-bold">Jun</p><p class="text-xs font-black success">$2,680</p></div>
+</div>
+</div>
+</div>
+
+<!-- ============ PAGE: DIGITAL ============ -->
+<div id="p-digital" class="page p-4 sm:p-6 lg:p-8 space-y-6">
+<div class="flex flex-col sm:flex-row justify-between gap-3">
+<div><span class="section-label" style="background:var(--accent-2);color:#fff">DIGITAL ASSETS</span><h3 class="text-xl sm:text-2xl font-black t-1 mt-2">Digital Real Estate</h3><p class="text-xs t-3 font-semibold uppercase tracking-wider">Assets that pay you while you sleep</p></div>
+<button class="dd-btn" onclick="newAssetModal()">+ LAUNCH NEW ASSET</button>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+<div class="dd-card-b p-4"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Total MRR</p><p class="text-xl font-black stat-number accent">$1,850</p><p class="text-[10px] font-bold success">+23% QOQ</p></div>
+<div class="dd-card-b p-4"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Annual Run Rate</p><p class="text-xl font-black stat-number t-1">$22,200</p><p class="text-[10px] font-bold success">+31% YOY</p></div>
+<div class="dd-card-b p-4"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Profit Margin</p><p class="text-xl font-black stat-number success">94%</p><p class="text-[10px] t-3 font-bold">$118/mo costs</p></div>
+<div class="dd-card-b p-4"><p class="text-[10px] t-3 font-black uppercase tracking-wider">To $5K MRR</p><p class="text-xl font-black stat-number t-1">~14 MO</p><p class="text-[10px] font-bold accent">AT CURRENT RATE</p></div>
+</div>
+<div class="dd-card p-5">
+<h3 class="font-black text-lg t-1 mb-4">MRR Growth</h3>
+<div class="space-y-3">
+<div><div class="flex justify-between mb-1"><span class="text-sm font-bold t-1">Freedom Letters</span><span class="text-sm font-black accent">$820/mo</span></div><div class="progress-bar"><div class="progress-fill" style="width:44%"></div></div><p class="text-[10px] t-3 mt-1">2,847 subscribers · 42% open rate</p></div>
+<div><div class="flex justify-between mb-1"><span class="text-sm font-bold t-1">Retirement Ready</span><span class="text-sm font-black accent">$680/mo</span></div><div class="progress-bar"><div class="progress-fill" style="width:36%"></div></div><p class="text-[10px] t-3 mt-1">156 students · 4.8★ rating</p></div>
+<div><div class="flex justify-between mb-1"><span class="text-sm font-bold t-1">Template Vault</span><span class="text-sm font-black accent">$350/mo</span></div><div class="progress-bar"><div class="progress-fill" style="width:19%"></div></div><p class="text-[10px] t-3 mt-1">12 products · $27 avg price</p></div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+<div class="dd-card-b p-5 cursor-pointer" onclick="digitalModal('Freedom Letters','Newsletter','2,847','42% open','$820','+12%','Sponsor: $320/mo · Paid: $500/mo')"><div class="flex justify-between mb-3"><div class="flex items-center gap-2"><span class="text-2xl">📧</span><div><p class="font-black t-1">Freedom Letters</p><p class="text-[10px] t-3 font-bold uppercase tracking-wider">Newsletter</p></div></div><span class="px-2 py-0.5 text-[10px] font-black uppercase" style="background:var(--success);color:#fff">ACTIVE</span></div><div class="grid grid-cols-2 gap-3"><div><p class="text-[10px] t-3 font-black uppercase tracking-wider">MRR</p><p class="text-lg font-black stat-number accent">$820</p></div><div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Subs</p><p class="text-lg font-black stat-number t-1">2,847</p></div></div></div>
+<div class="dd-card p-5 cursor-pointer" onclick="digitalModal('Retirement Ready','Course','156','4.8★','$680','+8%','$197 price · 3.4/wk')"><div class="flex justify-between mb-3"><div class="flex items-center gap-2"><span class="text-2xl">🎓</span><div><p class="font-black t-1">Retirement Ready</p><p class="text-[10px] t-3 font-bold uppercase tracking-wider">Course</p></div></div><span class="px-2 py-0.5 text-[10px] font-black uppercase" style="background:var(--success);color:#fff">ACTIVE</span></div><div class="grid grid-cols-2 gap-3"><div><p class="text-[10px] t-3 font-black uppercase tracking-wider">MRR</p><p class="text-lg font-black stat-number accent">$680</p></div><div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Students</p><p class="text-lg font-black stat-number t-1">156</p></div></div></div>
+<div class="dd-card p-5 cursor-pointer" onclick="digitalModal('Template Vault','Downloads','12','$27 avg','$350','+31%','Trackers, planners, logs')"><div class="flex justify-between mb-3"><div class="flex items-center gap-2"><span class="text-2xl">📊</span><div><p class="font-black t-1">Template Vault</p><p class="text-[10px] t-3 font-bold uppercase tracking-wider">Downloads</p></div></div><span class="px-2 py-0.5 text-[10px] font-black uppercase" style="background:var(--success);color:#fff">ACTIVE</span></div><div class="grid grid-cols-2 gap-3"><div><p class="text-[10px] t-3 font-black uppercase tracking-wider">MRR</p><p class="text-lg font-black stat-number accent">$350</p></div><div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Products</p><p class="text-lg font-black stat-number t-1">12</p></div></div></div>
+</div>
+<div class="dd-card p-5">
+<h3 class="font-black text-lg t-1 mb-4">Next Asset Opportunities</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="p-4 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="launchAssetFlow('email-course')"><div class="flex justify-between"><div class="flex items-center gap-2"><span class="text-xl">📧</span><div><p class="text-sm font-black t-1">Niche Email Course</p><p class="text-xs t-3 font-semibold">5-day automated · $47</p></div></div><span class="text-xs font-black accent">+$400/mo</span></div></div>
+<div class="p-4 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="launchAssetFlow('podcast')"><div class="flex justify-between"><div class="flex items-center gap-2"><span class="text-xl">🎙️</span><div><p class="text-sm font-black t-1">Podcast Sponsorship</p><p class="text-xs t-3 font-semibold">Leverage newsletter</p></div></div><span class="text-xs font-black accent">+$250/mo</span></div></div>
+<div class="p-4 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="launchAssetFlow('tracker')"><div class="flex justify-between"><div class="flex items-center gap-2"><span class="text-xl">📊</span><div><p class="text-sm font-black t-1">Investment Tracker</p><p class="text-xs t-3 font-semibold">Premium Notion template</p></div></div><span class="text-xs font-black accent">+$200/mo</span></div></div>
+<div class="p-4 cursor-pointer" style="border:2px solid var(--accent);background:var(--bg-3);box-shadow:var(--shadow)" onclick="launchAssetFlow('membership')"><div class="flex justify-between"><div class="flex items-center gap-2"><span class="text-xl">🏆</span><div><p class="text-sm font-black t-1">Membership Community</p><p class="text-xs t-3 font-semibold">$29/mo curated</p></div></div><span class="text-xs font-black accent">+$870/mo</span></div></div>
+</div>
+</div>
+</div>
+
+<!-- ============ PAGE: SCENARIOS ============ -->
+<div id="p-scenarios" class="page p-4 sm:p-6 lg:p-8 space-y-6">
+<div><span class="section-label">SCENARIOS</span><h3 class="text-xl sm:text-2xl font-black t-1 mt-2">Life Scenario Planner</h3><p class="text-xs t-3 font-semibold uppercase tracking-wider">Stress-test your retirement against real life</p></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="scenario-cards">
+<div class="dd-card-b p-5 cursor-pointer sc-card" data-sc="baseline" onclick="pickScenario(this)"><div class="flex items-center gap-2 mb-3"><span class="text-xl">📊</span><p class="font-black t-1">Baseline Plan</p></div><div class="flex justify-between text-xs"><span class="t-3 font-bold uppercase tracking-wider">Retirement</span><span class="font-black success">Age 60</span></div><div class="mt-2 progress-bar"><div class="h-full" style="width:100%;background:var(--success)"></div></div></div>
+<div class="dd-card-b p-5 cursor-pointer sc-card" data-sc="parent" onclick="pickScenario(this)"><div class="flex items-center gap-2 mb-3"><span class="text-xl">🏥</span><p class="font-black t-1">Mom Needs Care</p></div><div class="flex justify-between text-xs"><span class="t-3 font-bold uppercase tracking-wider">Retirement</span><span class="font-black" style="color:var(--accent-2)">Age 61.5</span></div><div class="mt-2 progress-bar"><div class="h-full" style="width:65%;background:var(--accent-2)"></div></div></div>
+<div class="dd-card-b p-5 cursor-pointer sc-card" data-sc="gradschool" onclick="pickScenario(this)"><div class="flex items-center gap-2 mb-3"><span class="text-xl">🎓</span><p class="font-black t-1">Kid's Grad School</p></div><div class="flex justify-between text-xs"><span class="t-3 font-bold uppercase tracking-wider">Retirement</span><span class="font-black" style="color:var(--accent-2)">Age 60.7</span></div><div class="mt-2 progress-bar"><div class="h-full" style="width:78%;background:var(--accent-2)"></div></div></div>
+<div class="dd-card-b p-5 cursor-pointer sc-card" data-sc="layoff" onclick="pickScenario(this)"><div class="flex items-center gap-2 mb-3"><span class="text-xl">💼</span><p class="font-black t-1">6-Month Layoff</p></div><div class="flex justify-between text-xs"><span class="t-3 font-bold uppercase tracking-wider">Retirement</span><span class="font-black" style="color:var(--accent-2)">Age 60.5</span></div><div class="mt-2 progress-bar"><div class="h-full" style="width:70%;background:var(--accent-2)"></div></div></div>
+<div class="dd-card-b p-5 cursor-pointer sc-card" data-sc="health" onclick="pickScenario(this)"><div class="flex items-center gap-2 mb-3"><span class="text-xl">💊</span><p class="font-black t-1">Health Event</p></div><div class="flex justify-between text-xs"><span class="t-3 font-bold uppercase tracking-wider">Retirement</span><span class="font-black accent-3">Age 61</span></div><div class="mt-2 progress-bar"><div class="h-full" style="width:55%;background:var(--accent-3)"></div></div></div>
+<div class="dd-card-b p-5 cursor-pointer sc-card" data-sc="combined" onclick="pickScenario(this)"><div class="flex items-center gap-2 mb-3"><span class="text-xl">⚡</span><p class="font-black t-1">Combined Stress</p></div><div class="flex justify-between text-xs"><span class="t-3 font-bold uppercase tracking-wider">Retirement</span><span class="font-black accent-3">Age 62.8</span></div><div class="mt-2 progress-bar"><div class="h-full" style="width:35%;background:var(--accent-3)"></div></div></div>
+</div>
+<div class="dd-card p-5" id="scenario-detail">
+<h4 class="font-black text-lg t-1 mb-3" id="sc-title">📊 Baseline Plan</h4>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<div class="space-y-3">
+<div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Retirement</p><p class="text-xl font-black stat-number" id="sc-age" style="color:var(--success)">Age 60</p><p class="text-xs t-3 font-bold" id="sc-delay">On track</p></div>
+<div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Impact</p><p class="font-black t-1" id="sc-impact">$0 additional monthly</p></div>
+<div class="p-3" style="border:2px solid var(--accent);background:var(--bg-3)"><p class="text-[10px] font-black uppercase tracking-wider accent">Strategy</p><p class="text-sm t-2" id="sc-strategy">Continue current savings rate. Digital MRR growth closes gaps within 18 months.</p></div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3"><div class="w-10 h-10 flex items-center justify-center text-xs font-black" style="border:2px solid var(--success);color:var(--success);background:var(--bg-3)">NOW</div><div><p class="text-sm font-black t-1">Age 47 — Today</p><p class="text-xs t-3 font-bold">$847K net worth</p></div></div>
+<div class="flex items-center gap-3"><div class="w-10 h-10 flex items-center justify-center text-xs font-black" style="border:2px solid var(--accent);color:var(--accent);background:var(--bg-3)">55</div><div><p class="text-sm font-black t-1">Digital MRR hits $5K</p><p class="text-xs t-3 font-bold" id="sc-t55">$60K/yr digital income</p></div></div>
+<div class="flex items-center gap-3"><div class="w-10 h-10 flex items-center justify-center text-xs font-black" style="border:2px solid var(--success);color:var(--success);background:var(--bg-3)">60</div><div><p class="text-sm font-black success" id="sc-freedom">🎉 FREEDOM — Age 60</p></div></div>
+</div>
+</div>
+</div>
+<div class="dd-card p-5">
+<h3 class="font-black text-lg t-1 mb-1">Custom Scenario Builder</h3>
+<p class="text-xs t-3 font-semibold uppercase tracking-wider mb-4">Drag sliders to model "what if" scenarios</p>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+<div><label class="text-xs t-2 font-black uppercase tracking-wider mb-2 block">Monthly Expense +</label><input type="range" min="0" max="5000" value="0" step="100" id="sl-exp" oninput="calcScenario()"><p class="text-xs text-center mt-1 font-black" id="sl-exp-v">$0/mo</p></div>
+<div><label class="text-xs t-2 font-black uppercase tracking-wider mb-2 block">One-Time Cost</label><input type="range" min="0" max="100000" value="0" step="5000" id="sl-ot" oninput="calcScenario()"><p class="text-xs text-center mt-1 font-black" id="sl-ot-v">$0</p></div>
+<div><label class="text-xs t-2 font-black uppercase tracking-wider mb-2 block">Income Loss (months)</label><input type="range" min="0" max="12" value="0" step="1" id="sl-il" oninput="calcScenario()"><p class="text-xs text-center mt-1 font-black" id="sl-il-v">0 months</p></div>
+</div>
+<div class="mt-4 p-3 grid grid-cols-3 gap-4" style="background:var(--bg-3);border:2px solid var(--frame)">
+<div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Retirement Age</p><p class="text-lg font-black" id="cs-age"><span class="success">60</span></p></div>
+<div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Total Cost</p><p class="text-lg font-black t-1" id="cs-cost">$0</p></div>
+<div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Recovery</p><p class="text-lg font-black accent" id="cs-rec">No delay</p></div>
+</div>
+</div>
+</div>
+
+<!-- ============ PAGE: NEWS ============ -->
+<div id="p-news" class="page p-4 sm:p-6 lg:p-8 space-y-6">
+<div class="flex flex-col sm:flex-row justify-between gap-3">
+<div><span class="section-label">NEWS</span><h3 class="text-xl sm:text-2xl font-black t-1 mt-2">What Matters</h3><p class="text-xs t-3 font-semibold uppercase tracking-wider">Curated news. No noise. Just signal.</p></div>
+<input type="text" placeholder="Search articles..." class="dd-input w-full sm:w-64" id="news-search-input" oninput="filterNews(this.value)">
+</div>
+<div class="flex gap-1 overflow-x-auto" style="border-bottom:2px solid var(--frame)" id="news-tabs">
+<button class="tab-btn active px-4 py-3 text-sm font-black uppercase tracking-wider whitespace-nowrap" onclick="tabNews(this,'all')">All</button>
+<button class="tab-btn px-4 py-3 text-sm font-black uppercase tracking-wider t-3 whitespace-nowrap" onclick="tabNews(this,'dividends')">Dividends</button>
+<button class="tab-btn px-4 py-3 text-sm font-black uppercase tracking-wider t-3 whitespace-nowrap" onclick="tabNews(this,'retirement')">Retirement</button>
+<button class="tab-btn px-4 py-3 text-sm font-black uppercase tracking-wider t-3 whitespace-nowrap" onclick="tabNews(this,'digital')">Digital</button>
+<button class="tab-btn px-4 py-3 text-sm font-black uppercase tracking-wider t-3 whitespace-nowrap" onclick="tabNews(this,'tax')">Tax</button>
+<button class="tab-btn px-4 py-3 text-sm font-black uppercase tracking-wider t-3 whitespace-nowrap" onclick="tabNews(this,'saved')">★ Saved</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" id="news-grid">
+<article class="dd-card p-4 cursor-pointer" data-cat="dividends" data-title="Fed Signals Rate Cut: What It Means for Dividend Stocks" onclick="articleModal(this)"><div class="flex items-center gap-2 mb-2"><span class="w-2 h-2" style="background:var(--accent)"></span><span class="text-[10px] t-3 font-bold uppercase tracking-wider">Reuters · 2h</span><button class="ml-auto saved-btn t-4 text-lg" onclick="event.stopPropagation();togSave(this,'Fed Signals Rate Cut')">☆</button></div><h4 class="text-sm font-black t-1 mb-1">Fed Signals Rate Cut: What It Means for Dividend Stocks</h4><p class="text-xs t-3">How dividend aristocrats typically respond to rate changes...</p><span class="inline-block mt-2 px-2 py-0.5 text-[10px] font-black uppercase" style="background:var(--success);color:#fff">Dividends</span></article>
+<article class="dd-card p-4 cursor-pointer" data-cat="retirement" data-title="5 High-Yield ETFs That Beat Inflation This Quarter" onclick="articleModal(this)"><div class="flex items-center gap-2 mb-2"><span class="w-2 h-2" style="background:var(--success)"></span><span class="text-[10px] t-3 font-bold uppercase tracking-wider">Morningstar · 5h</span><button class="ml-auto saved-btn t-4 text-lg" onclick="event.stopPropagation();togSave(this,'5 High-Yield ETFs')">☆</button></div><h4 class="text-sm font-black t-1 mb-1">5 High-Yield ETFs That Beat Inflation This Quarter</h4><p class="text-xs t-3">We analyzed 200+ dividend ETFs for real returns...</p><span class="inline-block mt-2 px-2 py-0.5 text-[10px] font-black uppercase" style="background:#8b5cf6;color:#fff">Retirement</span></article>
+<article class="dd-card p-4 cursor-pointer" data-cat="digital" data-title="Women Over 40 Building $10K/mo Digital Businesses" onclick="articleModal(this)"><div class="flex items-center gap-2 mb-2"><span class="w-2 h-2" style="background:var(--accent-2)"></span><span class="text-[10px] t-3 font-bold uppercase tracking-wider">Forbes · 8h</span><button class="ml-auto saved-btn t-4 text-lg" onclick="event.stopPropagation();togSave(this,'Women Over 40 Building')">☆</button></div><h4 class="text-sm font-black t-1 mb-1">Women Over 40 Building $10K/mo Digital Businesses</h4><p class="text-xs t-3">The faceless digital economy is booming...</p><span class="inline-block mt-2 px-2 py-0.5 text-[10px] font-black uppercase" style="background:var(--accent);color:#fff">Digital</span></article>
+<article class="dd-card p-4 cursor-pointer" data-cat="tax" data-title="Catch-Up Contributions: $7,500/Year for Your 401(k)" onclick="articleModal(this)"><div class="flex items-center gap-2 mb-2"><span class="w-2 h-2" style="background:var(--accent-2)"></span><span class="text-[10px] t-3 font-bold uppercase tracking-wider">Kiplinger · 12h</span><button class="ml-auto saved-btn t-4 text-lg" onclick="event.stopPropagation();togSave(this,'Catch-Up Contributions')">☆</button></div><h4 class="text-sm font-black t-1 mb-1">Catch-Up Contributions: $7,500/Year for Your 401(k)</h4><p class="text-xs t-3">Once you hit 50, supercharge your contributions...</p><span class="inline-block mt-2 px-2 py-0.5 text-[10px] font-black uppercase" style="background:var(--accent-2);color:#fff">Tax</span></article>
+<article class="dd-card p-4 cursor-pointer" data-cat="retirement" data-title="Roth Conversion Strategies for Sandwich Generation" onclick="articleModal(this)"><div class="flex items-center gap-2 mb-2"><span class="w-2 h-2" style="background:var(--accent)"></span><span class="text-[10px] t-3 font-bold uppercase tracking-wider">Motley Fool · 1d</span><button class="ml-auto saved-btn t-4 text-lg" onclick="event.stopPropagation();togSave(this,'Roth Conversion Strategies')">☆</button></div><h4 class="text-sm font-black t-1 mb-1">Roth Conversion Strategies for Sandwich Generation</h4><p class="text-xs t-3">Save tens of thousands in retirement taxes...</p><span class="inline-block mt-2 px-2 py-0.5 text-[10px] font-black uppercase" style="background:var(--accent);color:#fff">Roth</span></article>
+<article class="dd-card p-4 cursor-pointer" data-cat="digital" data-title="Newsletter Economy Worth $5B — Get Your Slice" onclick="articleModal(this)"><div class="flex items-center gap-2 mb-2"><span class="w-2 h-2" style="background:var(--accent)"></span><span class="text-[10px] t-3 font-bold uppercase tracking-wider">Inc. · 2d</span><button class="ml-auto saved-btn t-4 text-lg" onclick="event.stopPropagation();togSave(this,'Newsletter Economy Worth')">☆</button></div><h4 class="text-sm font-black t-1 mb-1">Newsletter Economy Worth $5B — Get Your Slice</h4><p class="text-xs t-3">Most scalable digital asset for beginners...</p><span class="inline-block mt-2 px-2 py-0.5 text-[10px] font-black uppercase" style="background:var(--accent);color:#fff">Newsletter</span></article>
+</div>
+</div>
+
+<!-- ============ PAGE: WATCHLIST ============ -->
+<div id="p-watchlist" class="page p-4 sm:p-6 lg:p-8 space-y-6">
+<div class="flex flex-col sm:flex-row justify-between gap-3">
+<div><span class="section-label">WATCHLIST</span><h3 class="text-xl sm:text-2xl font-black t-1 mt-2">Watchlist</h3><p class="text-xs t-3 font-semibold uppercase tracking-wider">Stocks, ETFs & live crypto</p></div>
+<div class="flex gap-2"><input type="text" placeholder="Add symbol..." class="dd-input w-28" id="wl-input" onkeydown="if(event.key==='Enter')addWL()"><button class="dd-btn text-xs" onclick="addWL()">+ ADD</button></div>
+</div>
+<div class="flex gap-1" style="border-bottom:2px solid var(--frame)" id="wl-tabs">
+<button class="tab-btn active px-4 py-3 text-sm font-black uppercase tracking-wider whitespace-nowrap" onclick="switchWLTab(this,'stocks')">📈 Stocks & ETFs</button>
+<button class="tab-btn px-4 py-3 text-sm font-black uppercase tracking-wider t-3 whitespace-nowrap" onclick="switchWLTab(this,'crypto')"><span class="flex items-center gap-2"><span class="w-2 h-2" style="background:var(--success)"></span>🪙 Crypto Markets <span class="text-[10px] t-3">(Live)</span></span></button>
+</div>
+<div id="wl-stocks" class="dd-card p-5">
+<div class="overflow-x-auto"><table class="w-full text-xs sm:text-sm min-w-[500px]"><thead><tr class="text-[10px] t-3 font-black uppercase tracking-wider" style="border-bottom:2px solid var(--frame)"><th class="text-left pb-2">Asset</th><th class="text-right pb-2">Price</th><th class="text-right pb-2">Chg</th><th class="text-right pb-2">Yield</th><th class="text-center pb-2">Act</th></tr></thead><tbody id="wl-body">
+<tr class="cursor-pointer bg-4" style="border-bottom:1px solid var(--frame-3)" onclick="assetModal('JEPQ','JPM Nasdaq Premium','ETF · Covered Call','9.1%','$54.18','$4,932/yr','Monthly')"><td class="py-3"><div class="flex items-center gap-2"><button class="t-4 font-black text-xs" onclick="event.stopPropagation();rmWL(this)">✕</button><span class="w-7 h-7 flex items-center justify-center text-[10px] font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent)">JEPQ</span><span class="font-black t-1">JPM Nasdaq</span></div></td><td class="text-right font-bold t-1">$54.18</td><td class="text-right font-bold accent-3">-0.22%</td><td class="text-right"><span class="px-1.5 py-0.5 text-[10px] font-black" style="background:var(--success);color:#fff">9.1%</span></td><td class="text-center"><button class="px-2 py-1 text-[10px] font-black uppercase bg-4" style="border:2px solid var(--frame)" onclick="event.stopPropagation();assetModal('JEPQ','JPM Nasdaq Premium','ETF · Covered Call','9.1%','$54.18','$4,932/yr','Monthly')">Analyze</button></td></tr>
+<tr class="cursor-pointer bg-4" style="border-bottom:1px solid var(--frame-3)" onclick="assetModal('O','Realty Income','REIT · Monthly','5.5%','$57.82','$3,180/yr','Monthly')"><td class="py-3"><div class="flex items-center gap-2"><button class="t-4 font-black text-xs" onclick="event.stopPropagation();rmWL(this)">✕</button><span class="w-7 h-7 flex items-center justify-center text-[10px] font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent-2)">O</span><span class="font-black t-1">Realty Income</span></div></td><td class="text-right font-bold t-1">$57.82</td><td class="text-right font-bold success">+0.34%</td><td class="text-right"><span class="px-1.5 py-0.5 text-[10px] font-black" style="background:var(--success);color:#fff">5.5%</span></td><td class="text-center"><button class="px-2 py-1 text-[10px] font-black uppercase bg-4" style="border:2px solid var(--frame)" onclick="event.stopPropagation();assetModal('O','Realty Income','REIT · Monthly','5.5%','$57.82','$3,180/yr','Monthly')">Analyze</button></td></tr>
+<tr class="cursor-pointer bg-4" style="border-bottom:1px solid var(--frame-3)" onclick="assetModal('VICI','VICI Properties','REIT · Gaming','5.0%','$31.42','$2,500/yr','Quarterly')"><td class="py-3"><div class="flex items-center gap-2"><button class="t-4 font-black text-xs" onclick="event.stopPropagation();rmWL(this)">✕</button><span class="w-7 h-7 flex items-center justify-center text-[10px] font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent-3)">VICI</span><span class="font-black t-1">VICI Properties</span></div></td><td class="text-right font-bold t-1">$31.42</td><td class="text-right font-bold success">+1.12%</td><td class="text-right"><span class="px-1.5 py-0.5 text-[10px] font-black" style="background:var(--success);color:#fff">5.0%</span></td><td class="text-center"><button class="px-2 py-1 text-[10px] font-black uppercase bg-4" style="border:2px solid var(--frame)" onclick="event.stopPropagation();assetModal('VICI','VICI Properties','REIT · Gaming','5.0%','$31.42','$2,500/yr','Quarterly')">Analyze</button></td></tr>
+<tr class="cursor-pointer bg-4" onclick="assetModal('VYM','Vanguard High Div','ETF · Broad','3.2%','$128.45','$3,854/yr','Quarterly')"><td class="py-3"><div class="flex items-center gap-2"><button class="t-4 font-black text-xs" onclick="event.stopPropagation();rmWL(this)">✕</button><span class="w-7 h-7 flex items-center justify-center text-[10px] font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent)">VYM</span><span class="font-black t-1">Vanguard High Div</span></div></td><td class="text-right font-bold t-1">$128.45</td><td class="text-right font-bold success">+0.82%</td><td class="text-right"><span class="px-1.5 py-0.5 text-[10px] font-black" style="background:var(--success);color:#fff">3.2%</span></td><td class="text-center"><button class="px-2 py-1 text-[10px] font-black uppercase bg-4" style="border:2px solid var(--frame)" onclick="event.stopPropagation();assetModal('VYM','Vanguard High Div','ETF · Broad','3.2%','$128.45','$3,854/yr','Quarterly')">Analyze</button></td></tr>
+</tbody></table></div>
+</div>
+<div id="wl-crypto" class="hidden space-y-4">
+<div class="dd-card p-5">
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
+<div class="flex items-center gap-2"><span class="w-2 h-2" style="background:var(--success)"></span><h3 class="font-black uppercase tracking-wider text-sm t-1">Top 20 Cryptocurrencies</h3><span class="section-label" style="background:var(--success);color:#fff;border-color:var(--frame)">● LIVE · COINGECKO</span></div>
+<div class="flex items-center gap-2"><p class="text-[10px] t-3 font-bold uppercase tracking-wider" id="crypto-wl-update">Loading...</p><button class="text-xs font-black uppercase tracking-wider bg-4 px-3 py-1.5" style="border:2px solid var(--frame)" onclick="loadCryptoFull()">↻ REFRESH</button></div>
+</div>
+<div class="overflow-x-auto"><table class="w-full text-xs sm:text-sm min-w-[600px]"><thead><tr class="text-[10px] t-3 font-black uppercase tracking-wider" style="border-bottom:2px solid var(--frame)"><th class="text-left pb-2">#</th><th class="text-left pb-2">Coin</th><th class="text-right pb-2">Price</th><th class="text-right pb-2">1h</th><th class="text-right pb-2">24h</th><th class="text-right pb-2">7d</th><th class="text-right pb-2 hidden sm:table-cell">Market Cap</th><th class="text-right pb-2 hidden md:table-cell">Volume</th></tr></thead><tbody id="crypto-full-body">
+<tr><td colspan="8" class="py-8 text-center"><div class="flex flex-col items-center gap-2"><div class="w-8 h-8 spin" style="border:2px solid var(--accent);border-top-color:transparent"></div><p class="text-xs t-3 font-black uppercase tracking-wider">Fetching live data from CoinGecko...</p></div></td></tr>
+</tbody></table></div>
+</div>
+</div>
+</div>
+
+<!-- ============ PAGE: SETTINGS ============ -->
+<div id="p-settings" class="page p-4 sm:p-6 lg:p-8 space-y-6">
+<div><span class="section-label">SETTINGS</span><h3 class="text-xl sm:text-2xl font-black t-1 mt-2">Settings</h3><p class="text-xs t-3 font-semibold uppercase tracking-wider">Manage your account and preferences</p></div>
+
+<!-- ★ SUPABASE CONNECTION STATUS ★ -->
+<div class="dd-card-b p-5" id="supabase-status-card" style="background:var(--bg-3)">
+<div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+<div>
+<span class="section-label" style="background:var(--accent);color:var(--text-inv);border-color:var(--frame)">BACKEND</span>
+<h3 class="font-black text-lg t-1 mt-2">Supabase Connection</h3>
+</div>
+<div class="auth-status disconnected" id="supabase-connection-status">
+<span class="w-2 h-2" style="background:currentColor"></span>
+<span id="supabase-status-text">Not Configured</span>
+</div>
+</div>
+<p class="text-sm t-2 mb-3">Your data syncs to the cloud when connected. Configure your Supabase credentials below.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+<div><label class="text-xs t-3 font-black uppercase tracking-wider mb-1 block">Supabase URL</label><input type="text" class="dd-input" id="sb-url" placeholder="https://xxxxx.supabase.co"></div>
+<div><label class="text-xs t-3 font-black uppercase tracking-wider mb-1 block">Anon Key</label><input type="password" class="dd-input" id="sb-key" placeholder="eyJhbGciOiJIUzI1..."></div>
+</div>
+<div class="flex gap-2 mt-3 flex-wrap">
+<button class="dd-btn dd-btn-accent" onclick="connectSupabase()">Connect</button>
+<button class="dd-btn dd-btn-sec" onclick="testSupabaseConnection()">Test Connection</button>
+<button class="dd-btn dd-btn-sec" onclick="clearSupabaseConfig()">Clear Config</button>
+</div>
+<p class="text-xs t-3 mt-3">⚠️ Your credentials are stored only in your browser (localStorage). Never share your anon key publicly.</p>
+</div>
+
+<!-- THEME -->
+<div class="dd-card-b p-5" style="background:var(--bg-3)">
+<div class="mb-4">
+<span class="section-label" style="background:var(--accent);color:var(--text-inv);border-color:var(--frame)">APPEARANCE</span>
+<h3 class="font-black text-lg t-1 mt-2">Theme</h3>
+<p class="text-xs font-semibold t-3">Choose how Digitally Defined looks to you</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="theme-options">
+<button class="theme-option" id="opt-light" onclick="setTheme('light')"><div class="flex items-center gap-2 mb-2"><span class="text-xl">☀️</span><p class="font-black uppercase tracking-wider text-sm t-1">Light</p></div><p class="text-xs mb-3 t-3">Cream background · Dark text</p><div class="flex gap-1"><div class="w-8 h-8" style="background:#FFFCF9;border:2px solid #000"></div><div class="w-8 h-8" style="background:#47B7D4"></div><div class="w-8 h-8" style="background:#F18B25"></div><div class="w-8 h-8" style="background:#D64545"></div></div></button>
+<button class="theme-option" id="opt-dark" onclick="setTheme('dark')"><div class="flex items-center gap-2 mb-2"><span class="text-xl">🌙</span><p class="font-black uppercase tracking-wider text-sm t-1">Dark</p></div><p class="text-xs mb-3 t-3">Deep black · Light text</p><div class="flex gap-1"><div class="w-8 h-8" style="background:#0B0D14;border:2px solid #2D3548"></div><div class="w-8 h-8" style="background:#47B7D4"></div><div class="w-8 h-8" style="background:#F18B25"></div><div class="w-8 h-8" style="background:#D64545"></div></div></button>
+<button class="theme-option" id="opt-auto" onclick="setTheme('auto')"><div class="flex items-center gap-2 mb-2"><span class="text-xl">💻</span><p class="font-black uppercase tracking-wider text-sm t-1">Auto</p></div><p class="text-xs mb-3 t-3">Match your operating system</p><div class="flex gap-1"><div class="w-8 h-8" style="background:#FFFCF9;border:2px solid #000"></div><div class="w-8 h-8" style="background:#0B0D14;border:2px solid #2D3548"></div></div></button>
+</div>
+<p class="text-xs font-bold mt-4 t-3">Currently active: <span id="current-theme-label" class="accent">Light</span></p>
+</div>
+
+<div class="dd-card p-5">
+<h3 class="font-black text-lg t-1 mb-4">Profile Information</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div><label class="text-xs t-3 font-black uppercase tracking-wider mb-1 block">Full Name</label><input type="text" value="Michelle Torres" class="dd-input" id="set-name"></div>
+<div><label class="text-xs t-3 font-black uppercase tracking-wider mb-1 block">Email</label><input type="email" value="michelle@email.com" class="dd-input" id="set-email"></div>
+<div><label class="text-xs t-3 font-black uppercase tracking-wider mb-1 block">Phone</label><input type="tel" value="+1 (555) 123-4567" class="dd-input"></div>
+<div><label class="text-xs t-3 font-black uppercase tracking-wider mb-1 block">Timezone</label><select class="dd-select w-full"><option>Eastern (ET)</option><option>Central (CT)</option><option selected>Mountain (MT)</option><option>Pacific (PT)</option></select></div>
+</div>
+<button class="dd-btn mt-4" onclick="saveProfile()">SAVE CHANGES</button>
+</div>
+<div class="dd-card p-5">
+<h3 class="font-black text-lg t-1 mb-4">Notifications</h3>
+<div class="space-y-3">
+<div class="flex justify-between p-3 bg-4" style="border:2px solid var(--frame)"><div><p class="text-sm font-black t-1">Crypto Price Alerts</p><p class="text-xs font-semibold t-3">When BTC/ETH hit target prices</p></div><div class="toggle-sw active" onclick="this.classList.toggle('active');toast(this.classList.contains('active')?'CRYPTO ALERTS ON':'CRYPTO ALERTS OFF')"></div></div>
+<div class="flex justify-between p-3 bg-4" style="border:2px solid var(--frame)"><div><p class="text-sm font-black t-1">Dividend Alerts</p><p class="text-xs font-semibold t-3">When dividends are deposited</p></div><div class="toggle-sw active" onclick="this.classList.toggle('active');toast(this.classList.contains('active')?'DIVIDEND ALERTS ON':'DIVIDEND ALERTS OFF')"></div></div>
+<div class="flex justify-between p-3 bg-4" style="border:2px solid var(--frame)"><div><p class="text-sm font-black t-1">MRR Milestones</p><p class="text-xs font-semibold t-3">Digital income celebrations</p></div><div class="toggle-sw active" onclick="this.classList.toggle('active');toast(this.classList.contains('active')?'MRR ALERTS ON':'MRR ALERTS OFF')"></div></div>
+<div class="flex justify-between p-3 bg-4" style="border:2px solid var(--frame)"><div><p class="text-sm font-black t-1">Weekly News Digest</p><p class="text-xs font-semibold t-3">Market summary every Monday</p></div><div class="toggle-sw" onclick="this.classList.toggle('active');toast(this.classList.contains('active')?'NEWS DIGEST ON':'NEWS DIGEST OFF')"></div></div>
+<div class="flex justify-between p-3 bg-4" style="border:2px solid var(--frame)"><div><p class="text-sm font-black t-1">Email Notifications</p><p class="text-xs font-semibold t-3">Receive alerts via email</p></div><div class="toggle-sw active" onclick="this.classList.toggle('active');toast(this.classList.contains('active')?'EMAIL ON':'EMAIL OFF')"></div></div>
+</div>
+</div>
+<div class="dd-card p-5">
+<h3 class="font-black text-lg t-1 mb-4">Security</h3>
+<div class="space-y-3">
+<div class="flex justify-between p-3 bg-4" style="border:2px solid var(--frame)"><div><p class="text-sm font-black t-1">Two-Factor Auth</p><p class="text-xs font-semibold t-3">Extra account security</p></div><button class="dd-btn dd-btn-success text-xs" onclick="toast('✓ 2FA IS ENABLED')">ENABLED ✓</button></div>
+<div class="flex justify-between p-3 bg-4" style="border:2px solid var(--frame)"><div><p class="text-sm font-black t-1">Change Password</p><p class="text-xs font-semibold t-3">Last changed 45 days ago</p></div><button class="dd-btn dd-btn-sec text-xs" onclick="pwModal()">UPDATE</button></div>
+<div class="flex justify-between p-3 bg-4" style="border:2px solid var(--frame)"><div><p class="text-sm font-black t-1">Active Sessions</p><p class="text-xs font-semibold t-3">3 devices logged in</p></div><button class="dd-btn dd-btn-sec text-xs" onclick="manageSessions()">MANAGE</button></div>
+</div>
+</div>
+<div class="dd-card p-5">
+<h3 class="font-black text-lg t-1 mb-4">Data & Privacy</h3>
+<div class="space-y-3">
+<div class="flex justify-between p-3 bg-4" style="border:2px solid var(--frame)"><div><p class="text-sm font-black t-1">Export All Data</p><p class="text-xs font-semibold t-3">Portfolio, transactions, settings</p></div><button class="dd-btn dd-btn-sec text-xs" onclick="exportUserData()">EXPORT</button></div>
+<div class="flex justify-between p-3 bg-4" style="border:2px solid var(--frame)"><div><p class="text-sm font-black t-1">Export as PDF</p><p class="text-xs font-semibold t-3">Formatted report (Premium)</p></div><button class="dd-btn dd-btn-sec text-xs" onclick="toast('📄 PDF EXPORT — PREMIUM FEATURE')">EXPORT PDF</button></div>
+<div class="flex justify-between p-3 bg-4" style="border:2px solid var(--frame)"><div><p class="text-sm font-black accent-3">Delete Account</p><p class="text-xs font-semibold t-3">Permanently delete all data</p></div><button class="dd-btn dd-btn-danger text-xs" onclick="confirmDeleteAccount()">DELETE</button></div>
+</div>
+</div>
+<div class="dd-card-b p-5" style="background:var(--bg-3)">
+<h3 class="font-black text-lg t-1 mb-1">Your Subscription</h3>
+<p class="text-xs t-3 font-bold uppercase tracking-wider mb-3">Premium · $15/mo · Renews Mar 15, 2026</p>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+<div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Status</p><p class="text-sm font-black success">Active</p></div>
+<div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Next Bill</p><p class="text-sm font-black t-1">Mar 15</p></div>
+<div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Payment</p><p class="text-sm font-black t-1">Visa ••4242</p></div>
+<div><p class="text-[10px] t-3 font-black uppercase tracking-wider">Member Since</p><p class="text-sm font-black t-1">Jan 2025</p></div>
+</div>
+<div class="flex gap-2 flex-wrap"><button class="dd-btn dd-btn-sec text-xs" onclick="toast('🔗 OPENING BILLING PORTAL...')">MANAGE BILLING</button><button class="dd-btn dd-btn-sec text-xs" onclick="toast('⚠️ 30-DAY NOTICE REQUIRED')">CANCEL PLAN</button></div>
+</div>
+</div>
+
+<!-- ============ PAGE: HELP ============ -->
+<div id="p-help" class="page p-4 sm:p-6 lg:p-8 space-y-6">
+<div><span class="section-label">HELP</span><h3 class="text-xl sm:text-2xl font-black t-1 mt-2">Help & Support</h3><p class="text-xs t-3 font-semibold uppercase tracking-wider">Get answers and contact our team</p></div>
+<div class="dd-card-b p-6" style="background:var(--bg-3)">
+<h3 class="font-black text-lg t-1 mb-4">Need Help? We're Here For You</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+<div class="p-4 bg-4" style="border:2px solid var(--frame)"><div class="flex items-center gap-2 mb-1"><svg class="w-4 h-4 accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg><p class="text-sm font-black t-1 uppercase tracking-wider">Email Support</p></div><a href="mailto:francesca@digitallydefined.online" class="text-sm font-bold accent">francesca@digitallydefined.online</a><p class="text-[10px] t-3 font-bold mt-1 uppercase tracking-wider">Response within 24 hours</p></div>
+<div class="p-4 bg-4" style="border:2px solid var(--frame)"><div class="flex items-center gap-2 mb-1"><svg class="w-4 h-4 accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg><p class="text-sm font-black t-1 uppercase tracking-wider">Website</p></div><a href="https://digitallydefined.online" target="_blank" rel="noopener" class="text-sm font-bold accent">digitallydefined.online</a><p class="text-[10px] t-3 font-bold mt-1 uppercase tracking-wider">Visit our main site</p></div>
+</div>
+<div class="flex gap-2 flex-wrap"><button class="dd-btn" onclick="contactModal()">CONTACT SUPPORT</button><button class="dd-btn dd-btn-sec" onclick="openKeyboardShortcuts()">⌨️ KEYBOARD SHORTCUTS</button></div>
+</div>
+<div class="dd-card p-5">
+<h3 class="font-black text-lg t-1 mb-4">Frequently Asked Questions</h3>
+<div class="space-y-2">
+<div class="faq-item bg-4" style="border:2px solid var(--frame)"><div class="p-3 flex justify-between cursor-pointer" onclick="this.parentElement.classList.toggle('open')"><p class="text-sm font-black t-1">Where does the crypto data come from?</p><svg class="w-4 h-4 t-3 faq-chevron flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div><div class="faq-answer px-3 pb-3"><p class="text-xs t-2">All cryptocurrency prices are pulled live from the <strong>CoinGecko API</strong>. Prices update every 60 seconds on the dashboard.</p></div></div>
+<div class="faq-item bg-4" style="border:2px solid var(--frame)"><div class="p-3 flex justify-between cursor-pointer" onclick="this.parentElement.classList.toggle('open')"><p class="text-sm font-black t-1">How do I connect Supabase?</p><svg class="w-4 h-4 t-3 faq-chevron flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div><div class="faq-answer px-3 pb-3"><p class="text-xs t-2">Go to Settings → Backend → enter your Supabase URL and Anon Key, then click "Connect". Your data will sync automatically.</p></div></div>
+<div class="faq-item bg-4" style="border:2px solid var(--frame)"><div class="p-3 flex justify-between cursor-pointer" onclick="this.parentElement.classList.toggle('open')"><p class="text-sm font-black t-1">How do I switch themes?</p><svg class="w-4 h-4 t-3 faq-chevron flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div><div class="faq-answer px-3 pb-3"><p class="text-xs t-2">Click the sun/moon icon in the top-right corner, or go to Settings → Appearance. Choose Light, Dark, or Auto.</p></div></div>
+<div class="faq-item bg-4" style="border:2px solid var(--frame)"><div class="p-3 flex justify-between cursor-pointer" onclick="this.parentElement.classList.toggle('open')"><p class="text-sm font-black t-1">What is the Freedom Number?</p><svg class="w-4 h-4 t-3 faq-chevron flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div><div class="faq-answer px-3 pb-3"><p class="text-xs t-2">Monthly passive income needed to replace your salary. Combines traditional dividends + digital MRR.</p></div></div>
+<div class="faq-item bg-4" style="border:2px solid var(--frame)"><div class="p-3 flex justify-between cursor-pointer" onclick="this.parentElement.classList.toggle('open')"><p class="text-sm font-black t-1">Is my data secure?</p><svg class="w-4 h-4 t-3 faq-chevron flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div><div class="faq-answer px-3 pb-3"><p class="text-xs t-2">AES-256 encryption at rest, TLS 1.3 in transit. Row Level Security ensures you only see your own data. No social features, no sharing, no ads.</p></div></div>
+<div class="faq-item bg-4" style="border:2px solid var(--frame)"><div class="p-3 flex justify-between cursor-pointer" onclick="this.parentElement.classList.toggle('open')"><p class="text-sm font-black t-1">How do Life Scenarios work?</p><svg class="w-4 h-4 t-3 faq-chevron flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div><div class="faq-answer px-3 pb-3"><p class="text-xs t-2">Stress-test retirement against real events: parent care, grad school, layoff, health. Shows impact on retirement date + recovery strategies.</p></div></div>
+</div>
+</div>
+<div class="dd-card p-5">
+<h3 class="font-black text-lg t-1 mb-4">Resources</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="p-3 bg-4 cursor-pointer" style="border:2px solid var(--frame)" onclick="toast('📖 OPENING GETTING STARTED GUIDE...')"><div class="flex items-center gap-2"><span class="text-xl">🚀</span><div><p class="text-sm font-black t-1">Getting Started</p><p class="text-xs t-3 font-semibold">Learn basics in 5 min</p></div></div></div>
+<div class="p-3 bg-4 cursor-pointer" style="border:2px solid var(--frame)" onclick="toast('💰 OPENING DIGITAL ASSETS PLAYBOOK...')"><div class="flex items-center gap-2"><span class="text-xl">💰</span><div><p class="text-sm font-black t-1">Digital Assets Playbook</p><p class="text-xs t-3 font-semibold">Build first $1K MRR</p></div></div></div>
+<div class="p-3 bg-4 cursor-pointer" style="border:2px solid var(--frame)" onclick="toast('📊 OPENING RETIREMENT CALCULATOR...')"><div class="flex items-center gap-2"><span class="text-xl">📊</span><div><p class="text-sm font-black t-1">Retirement Calculator</p><p class="text-xs t-3 font-semibold">Plan your freedom path</p></div></div></div>
+<div class="p-3 bg-4 cursor-pointer" style="border:2px solid var(--frame)" onclick="toast('🎥 OPENING VIDEO TUTORIALS...')"><div class="flex items-center gap-2"><span class="text-xl">🎥</span><div><p class="text-sm font-black t-1">Video Tutorials</p><p class="text-xs t-3 font-semibold">Watch and learn</p></div></div></div>
+</div>
+</div>
+<div class="dd-card p-5">
+<h3 class="font-black text-lg t-1 mb-3">System Status</h3>
+<div class="space-y-2">
+<div class="flex justify-between p-2 bg-3"><div class="flex items-center gap-2"><span class="w-2 h-2" style="background:var(--success)"></span><span class="text-sm font-bold t-1">Market Data API</span></div><span class="text-xs font-black success">OPERATIONAL</span></div>
+<div class="flex justify-between p-2 bg-3"><div class="flex items-center gap-2"><span class="w-2 h-2" id="sb-status-dot" style="background:var(--accent-2)"></span><span class="text-sm font-bold t-1">Supabase Backend</span></div><span class="text-xs font-black" id="sb-status-label" style="color:var(--accent-2)">NOT CONFIGURED</span></div>
+<div class="flex justify-between p-2 bg-3"><div class="flex items-center gap-2"><span class="w-2 h-2" style="background:var(--success)"></span><span class="text-sm font-bold t-1">CoinGecko API</span></div><span class="text-xs font-black success">OPERATIONAL</span></div>
+<div class="flex justify-between p-2 bg-3"><div class="flex items-center gap-2"><span class="w-2 h-2" style="background:var(--success)"></span><span class="text-sm font-bold t-1">News Feed</span></div><span class="text-xs font-black success">OPERATIONAL</span></div>
+</div>
+<p class="text-xs t-3 font-bold mt-3 uppercase tracking-wider">Last updated: 2 minutes ago</p>
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer class="text-center py-6 mx-4 sm:mx-6 lg:mx-8" style="border-top:2px solid var(--frame)">
+<p class="text-[10px] t-3 font-bold uppercase tracking-wider">Digitally Defined · <a href="https://digitallydefined.online" target="_blank" rel="noopener" class="accent">digitallydefined.online</a> · <a href="mailto:francesca@digitallydefined.online" class="accent">francesca@digitallydefined.online</a> · Crypto by <a href="https://www.coingecko.com/" target="_blank" rel="noopener" class="accent">CoinGecko</a> · Not financial advice · <a href="#" onclick="event.preventDefault();navTo('help')" class="accent">Help</a> · <a href="#" onclick="event.preventDefault();navTo('settings')" class="accent">Privacy</a></p>
+</footer>
+</main>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav items-center justify-around" id="bottom-nav">
+<button class="flex flex-col items-center gap-0.5 px-2 py-1" style="color:var(--accent)" data-page="dashboard" onclick="navTo('dashboard')"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span class="text-[9px] font-black uppercase tracking-wider">Home</span></button>
+<button class="flex flex-col items-center gap-0.5 px-2 py-1 t-3" data-page="portfolio" onclick="navTo('portfolio')"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg><span class="text-[9px] font-black uppercase tracking-wider">Portfolio</span></button>
+<button class="flex flex-col items-center gap-0.5 px-2 py-1 t-3" data-page="watchlist" onclick="navTo('watchlist')"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg><span class="text-[9px] font-black uppercase tracking-wider">Watchlist</span></button>
+<button class="flex flex-col items-center gap-0.5 px-2 py-1 t-3" data-page="settings" onclick="navTo('settings')"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span class="text-[9px] font-black uppercase tracking-wider">Settings</span></button>
+</nav>
+
+<!-- ★ AUTH MODAL (Sign In / Sign Up) ★ -->
+<div class="modal-overlay" id="auth-modal" onclick="closeAuthModal()">
+<div class="max-w-md w-full" style="background:var(--bg-2);border:2px solid var(--frame)" onclick="event.stopPropagation()">
+<div id="auth-modal-body"></div>
+</div>
+</div>
+
+<!-- GENERIC MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal()"><div class="max-w-lg w-full max-h-[90vh] overflow-y-auto" style="background:var(--bg-2);border:2px solid var(--frame)" onclick="event.stopPropagation()"><div id="modal-body"></div></div></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ============================================
+     ★ SUPABASE INTEGRATION — DD MODULE ★
+     ============================================ -->
+<script>
+// ============================================
+// DIGITALLYDEFINED — SUPABASE INTEGRATION
+// ============================================
+
+const DD = {
+  supabase: null,
+  user: null,
+  profile: null,
+  connected: false,
+  
+  async init(url, key) {
+    try {
+      this.supabase = window.supabase.createClient(url, key);
+      const { data: { session } } = await this.supabase.auth.getSession();
+      if (session) {
+        this.user = session.user;
+        this.connected = true;
+        await this.loadProfile();
+        this.onAuthChange('SIGNED_IN');
+        updateAuthUI(true);
+      }
+      this.supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          this.user = session.user;
+          this.connected = true;
+          this.loadProfile().then(() => this.onAuthChange('SIGNED_IN'));
+          updateAuthUI(true);
+        } else if (event === 'SIGNED_OUT') {
+          this.user = null;
+          this.profile = null;
+          this.connected = false;
+          this.onAuthChange('SIGNED_OUT');
+          updateAuthUI(false);
+        }
+      });
+      updateSupabaseStatus('connected', 'Connected');
+      return this;
+    } catch (err) {
+      console.error('DD init error:', err);
+      updateSupabaseStatus('disconnected', 'Connection Failed');
+      throw err;
+    }
+  },
+  
+  async signUp(email, password, fullName) {
+    const { data, error } = await this.supabase.auth.signUp({
+      email, password,
+      options: { data: { full_name: fullName } }
+    });
+    if (error) throw error;
+    return data;
+  },
+  
+  async signIn(email, password) {
+    const { data, error } = await this.supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    return data;
+  },
+  
+  async signOut() {
+    const { error } = await this.supabase.auth.signOut();
+    if (error) throw error;
+  },
+  
+  async loadProfile() {
+    const { data, error } = await this.supabase
+      .from('profiles').select('*').eq('id', this.user.id).single();
+    if (error) throw error;
+    this.profile = data;
+    return data;
+  },
+  
+  async updateProfile(updates) {
+    const { data, error } = await this.supabase
+      .from('profiles').update(updates).eq('id', this.user.id).select().single();
+    if (error) throw error;
+    this.profile = data;
+    return data;
+  },
+  
+  isPremium() {
+    return this.profile?.subscription_tier === 'premium' || this.profile?.subscription_tier === 'enterprise';
+  },
+  
+  async getPortfolios() {
+    const { data, error } = await this.supabase
+      .from('portfolios').select('*, holdings(*)').eq('user_id', this.user.id).order('is_default', { ascending: false });
+    if (error) throw error;
+    return data;
+  },
+  
+  async createPortfolio(portfolio) {
+    const { data, error } = await this.supabase
+      .from('portfolios').insert({ ...portfolio, user_id: this.user.id }).select().single();
+    if (error) throw error;
+    return data;
+  },
+  
+  async getHoldings() {
+    const { data, error } = await this.supabase
+      .from('holdings').select('*, portfolios(name, type)').eq('user_id', this.user.id);
+    if (error) throw error;
+    return data;
+  },
+  
+  async addHolding(holding) {
+    const { data, error } = await this.supabase
+      .from('holdings').insert({ ...holding, user_id: this.user.id }).select().single();
+    if (error) throw error;
+    return data;
+  },
+  
+  async getWatchlists() {
+    const { data, error } = await this.supabase
+      .from('watchlists').select('*, watchlist_symbols(*)').eq('user_id', this.user.id).order('is_default', { ascending: false });
+    if (error) throw error;
+    return data;
+  },
+  
+  async createWatchlist(name, description = '') {
+    const { data, error } = await this.supabase
+      .from('watchlists').insert({ user_id: this.user.id, name, description }).select().single();
+    if (error) {
+      if (error.message.includes('3 watchlists')) throw new Error('Free tier limited to 3 watchlists. Upgrade to premium.');
+      throw error;
+    }
+    return data;
+  },
+  
+  async addToWatchlist(watchlistId, symbol, name, assetType = 'stock') {
+    const { data, error } = await this.supabase
+      .from('watchlist_symbols').insert({
+        watchlist_id: watchlistId, user_id: this.user.id,
+        symbol: symbol.toUpperCase(), name, asset_type: assetType
+      }).select().single();
+    if (error) throw error;
+    return data;
+  },
+  
+  async removeFromWatchlist(symbolId) {
+    const { error } = await this.supabase.from('watchlist_symbols').delete().eq('id', symbolId);
+    if (error) throw error;
+  },
+  
+  async getDigitalAssets() {
+    const { data, error } = await this.supabase
+      .from('digital_assets').select('*').eq('user_id', this.user.id).order('monthly_revenue', { ascending: false });
+    if (error) throw error;
+    return data;
+  },
+  
+  async addDigitalAsset(asset) {
+    const { data, error } = await this.supabase
+      .from('digital_assets').insert({ ...asset, user_id: this.user.id }).select().single();
+    if (error) throw error;
+    return data;
+  },
+  
+  async getSavedArticles() {
+    const { data, error } = await this.supabase
+      .from('saved_articles').select('*').eq('user_id', this.user.id).order('saved_at', { ascending: false });
+    if (error) throw error;
+    return data;
+  },
+  
+  async saveArticle(article) {
+    const { data, error } = await this.supabase
+      .from('saved_articles').insert({ ...article, user_id: this.user.id }).select().single();
+    if (error) throw error;
+    return data;
+  },
+  
+  async unsaveArticle(id) {
+    const { error } = await this.supabase.from('saved_articles').delete().eq('id', id);
+    if (error) throw error;
+  },
+  
+  async getPriceAlerts() {
+    const { data, error } = await this.supabase
+      .from('price_alerts').select('*').eq('user_id', this.user.id).eq('is_active', true);
+    if (error) throw error;
+    return data;
+  },
+  
+  async createPriceAlert(symbol, alertType, threshold) {
+    const { data, error } = await this.supabase
+      .from('price_alerts').insert({
+        user_id: this.user.id, symbol: symbol.toUpperCase(),
+        alert_type: alertType, threshold_value: threshold
+      }).select().single();
+    if (error) throw error;
+    return data;
+  },
+  
+  async getCustomScenarios() {
+    const { data, error } = await this.supabase
+      .from('custom_scenarios').select('*').eq('user_id', this.user.id).order('created_at', { ascending: false });
+    if (error) throw error;
+    return data;
+  },
+  
+  async saveCustomScenario(scenario) {
+    const { data, error } = await this.supabase
+      .from('custom_scenarios').insert({ ...scenario, user_id: this.user.id }).select().single();
+    if (error) throw error;
+    return data;
+  },
+  
+  async getNotificationPrefs() {
+    const { data, error } = await this.supabase
+      .from('notification_preferences').select('*').eq('user_id', this.user.id).single();
+    if (error) throw error;
+    return data;
+  },
+  
+  async updateNotificationPrefs(prefs) {
+    const { data, error } = await this.supabase
+      .from('notification_preferences').update(prefs).eq('user_id', this.user.id).select().single();
+    if (error) throw error;
+    return data;
+  },
+  
+  subscribeToHoldings(callback) {
+    return this.supabase.channel('holdings-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'holdings', filter: `user_id=eq.${this.user.id}` }, callback)
+      .subscribe();
+  },
+  
+  subscribeToWatchlist(callback) {
+    return this.supabase.channel('watchlist-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'watchlist_symbols', filter: `user_id=eq.${this.user.id}` }, callback)
+      .subscribe();
+  },
+  
+  async exportAllData() {
+    const [portfolios, holdings, watchlists, digitalAssets, savedArticles, priceAlerts, scenarios] = await Promise.all([
+      this.getPortfolios(), this.getHoldings(), this.getWatchlists(),
+      this.getDigitalAssets(), this.getSavedArticles(), this.getPriceAlerts(), this.getCustomScenarios()
+    ]);
+    return { profile: this.profile, portfolios, holdings, watchlists, digitalAssets, savedArticles, priceAlerts, scenarios, exportedAt: new Date().toISOString() };
+  },
+  
+  onAuthChange(event) {
+    console.log('Auth state changed:', event);
+  }
+};
+
+// ============================================
+// SUPABASE CONNECTION UI
+// ============================================
+function updateSupabaseStatus(state, text) {
+  const badge = document.getElementById('supabase-connection-status');
+  const label = document.getElementById('supabase-status-text');
+  const dot = document.getElementById('sb-status-dot');
+  const sysLabel = document.getElementById('sb-status-label');
+  if (badge) {
+    badge.className = 'auth-status ' + state;
+    label.textContent = text;
+  }
+  if (dot) dot.style.background = state === 'connected' ? 'var(--success)' : state === 'disconnected' ? 'var(--danger)' : 'var(--accent-2)';
+  if (sysLabel) {
+    sysLabel.textContent = text.toUpperCase();
+    sysLabel.style.color = state === 'connected' ? 'var(--success)' : state === 'disconnected' ? 'var(--danger)' : 'var(--accent-2)';
+  }
+}
+
+async function connectSupabase() {
+  const url = document.getElementById('sb-url').value.trim();
+  const key = document.getElementById('sb-key').value.trim();
+  if (!url || !key) { toast('⚠️ PLEASE ENTER BOTH URL AND KEY'); return; }
+  try {
+    localStorage.setItem('dd-supabase-url', url);
+    localStorage.setItem('dd-supabase-key', key);
+    await DD.init(url, key);
+    toast('✓ CONNECTED TO SUPABASE');
+  } catch (err) {
+    toast('✗ CONNECTION FAILED: ' + err.message);
+  }
+}
+
+async function testSupabaseConnection() {
+  if (!DD.supabase) { toast('⚠️ CONNECT TO SUPABASE FIRST'); return; }
+  try {
+    const { error } = await DD.supabase.from('profiles').select('count', { count: 'exact', head: true });
+    if (error) throw error;
+    toast('✓ CONNECTION TEST SUCCESSFUL');
+    updateSupabaseStatus('connected', 'Connected');
+  } catch (err) {
+    toast('✗ TEST FAILED: ' + err.message);
+    updateSupabaseStatus('disconnected', 'Test Failed');
+  }
+}
+
+function clearSupabaseConfig() {
+  if (!confirm('Clear saved Supabase credentials?')) return;
+  localStorage.removeItem('dd-supabase-url');
+  localStorage.removeItem('dd-supabase-key');
+  document.getElementById('sb-url').value = '';
+  document.getElementById('sb-key').value = '';
+  DD.supabase = null;
+  DD.connected = false;
+  updateSupabaseStatus('disconnected', 'Not Configured');
+  toast('✓ CONFIGURATION CLEARED');
+}
+
+// ============================================
+// AUTH UI
+// ============================================
+function updateAuthUI(signedIn) {
+  const badge = document.getElementById('auth-status-badge');
+  const text = document.getElementById('auth-status-text');
+  const avatar = document.getElementById('user-avatar-btn');
+  const signedOutDD = document.getElementById('prof-dd-signedout');
+  const signedInDD = document.getElementById('prof-dd-signedin');
+  
+  if (signedIn && DD.user) {
+    badge.className = 'auth-status connected';
+    text.textContent = 'Signed In';
+    const name = DD.profile?.full_name || DD.user.email.split('@')[0];
+    const initial = name.charAt(0).toUpperCase();
+    avatar.textContent = initial;
+    document.getElementById('user-display-name').textContent = name;
+    document.getElementById('user-display-email').textContent = DD.user.email;
+    document.getElementById('user-tier').textContent = (DD.profile?.subscription_tier || 'free').toUpperCase() + ' TIER';
+    document.getElementById('pg-title').textContent = 'Welcome back, ' + name;
+    signedOutDD.style.display = 'none';
+    signedInDD.style.display = 'block';
+  } else {
+    badge.className = 'auth-status disconnected';
+    text.textContent = 'Not Signed In';
+    avatar.textContent = 'M';
+    signedOutDD.style.display = 'block';
+    signedInDD.style.display = 'none';
+  }
+}
+
+function handleAvatarClick() {
+  if (DD.user) {
+    togDrop('prof-dd-signedin');
+  } else {
+    togDrop('prof-dd-signedout');
+  }
+}
+
+function openAuthModal(mode) {
+  const modal = document.getElementById('auth-modal');
+  const body = document.getElementById('auth-modal-body');
+  
+  if (mode === 'signin') {
+    body.innerHTML = `
+      <div class="p-5 flex justify-between" style="border-bottom:2px solid var(--frame)">
+        <div>
+          <span class="section-label" style="background:var(--accent);color:var(--text-inv)">WELCOME BACK</span>
+          <h3 class="text-xl font-black t-1 mt-2">Sign In</h3>
+        </div>
+        <button class="p-2 bg-4 t-1 font-black" onclick="closeAuthModal()">✕</button>
+      </div>
+      <div class="p-5 space-y-3">
+        <div><label class="text-xs t-3 font-black uppercase tracking-wider mb-1 block">Email</label><input type="email" class="dd-input" id="auth-email" placeholder="you@email.com"></div>
+        <div><label class="text-xs t-3 font-black uppercase tracking-wider mb-1 block">Password</label><input type="password" class="dd-input" id="auth-password" placeholder="Min 12 characters"></div>
+        <button class="dd-btn w-full" id="auth-submit-btn" onclick="handleSignIn()">SIGN IN →</button>
+        <p class="text-xs t-3 text-center">Don't have an account? <button class="font-bold accent" onclick="openAuthModal('signup')">Create one</button></p>
+        <p class="text-xs t-3 text-center"><button class="font-bold t-2" onclick="handlePasswordReset()">Forgot password?</button></p>
+      </div>`;
+  } else {
+    body.innerHTML = `
+      <div class="p-5 flex justify-between" style="border-bottom:2px solid var(--frame)">
+        <div>
+          <span class="section-label" style="background:var(--accent-2);color:#fff">JOIN THE MOVEMENT</span>
+          <h3 class="text-xl font-black t-1 mt-2">Create Account</h3>
+        </div>
+        <button class="p-2 bg-4 t-1 font-black" onclick="closeAuthModal()">✕</button>
+      </div>
+      <div class="p-5 space-y-3">
+        <div><label class="text-xs t-3 font-black uppercase tracking-wider mb-1 block">Full Name</label><input type="text" class="dd-input" id="auth-name" placeholder="Michelle Torres"></div>
+        <div><label class="text-xs t-3 font-black uppercase tracking-wider mb-1 block">Email</label><input type="email" class="dd-input" id="auth-email" placeholder="you@email.com"></div>
+        <div><label class="text-xs t-3 font-black uppercase tracking-wider mb-1 block">Password</label><input type="password" class="dd-input" id="auth-password" placeholder="Min 12 characters"></div>
+        <label class="flex items-start gap-2 cursor-pointer text-xs t-2">
+          <input type="checkbox" id="auth-terms" class="mt-0.5">
+          <span>I agree to the <a href="#" class="accent font-bold">Terms of Service</a> and <a href="#" class="accent font-bold">Privacy Policy</a></span>
+        </label>
+        <button class="dd-btn w-full" id="auth-submit-btn" onclick="handleSignUp()">CREATE ACCOUNT →</button>
+        <p class="text-xs t-3 text-center">Already have an account? <button class="font-bold accent" onclick="openAuthModal('signin')">Sign in</button></p>
+      </div>`;
+  }
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAuthModal() {
+  document.getElementById('auth-modal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+async function handleSignIn() {
+  if (!DD.supabase) { toast('⚠️ CONNECT SUPABASE FIRST (Settings → Backend)'); return; }
+  const email = document.getElementById('auth-email').value;
+  const password = document.getElementById('auth-password').value;
+  const btn = document.getElementById('auth-submit-btn');
+  if (!email || !password) { toast('⚠️ PLEASE FILL ALL FIELDS'); return; }
+  btn.disabled = true;
+  btn.textContent = 'SIGNING IN...';
+  try {
+    await DD.signIn(email, password);
+    closeAuthModal();
+    toast('✓ WELCOME BACK!');
+  } catch (err) {
+    toast('✗ SIGN IN FAILED: ' + err.message);
+    btn.disabled = false;
+    btn.textContent = 'SIGN IN →';
+  }
+}
+
+async function handleSignUp() {
+  if (!DD.supabase) { toast('⚠️ CONNECT SUPABASE FIRST (Settings → Backend)'); return; }
+  const name = document.getElementById('auth-name').value;
+  const email = document.getElementById('auth-email').value;
+  const password = document.getElementById('auth-password').value;
+  const terms = document.getElementById('auth-terms').checked;
+  const btn = document.getElementById('auth-submit-btn');
+  if (!name || !email || !password) { toast('⚠️ PLEASE FILL ALL FIELDS'); return; }
+  if (password.length < 12) { toast('⚠️ PASSWORD MUST BE 12+ CHARACTERS'); return; }
+  if (!terms) { toast('⚠️ PLEASE ACCEPT TERMS'); return; }
+  btn.disabled = true;
+  btn.textContent = 'CREATING ACCOUNT...';
+  try {
+    const result = await DD.signUp(email, password, name);
+    if (result.session) {
+      closeAuthModal();
+      toast('✓ ACCOUNT CREATED — WELCOME!');
+    } else {
+      closeAuthModal();
+      toast('✓ CHECK YOUR EMAIL TO CONFIRM');
+    }
+  } catch (err) {
+    toast('✗ SIGN UP FAILED: ' + err.message);
+    btn.disabled = false;
+    btn.textContent = 'CREATE ACCOUNT →';
+  }
+}
+
+async function handlePasswordReset() {
+  if (!DD.supabase) { toast('⚠️ CONNECT SUPABASE FIRST'); return; }
+  const email = document.getElementById('auth-email').value;
+  if (!email) { toast('⚠️ ENTER YOUR EMAIL FIRST'); return; }
+  try {
+    const { error } = await DD.supabase.auth.resetPasswordForEmail(email);
+    if (error) throw error;
+    toast('✓ RESET LINK SENT TO ' + email);
+  } catch (err) {
+    toast('✗ RESET FAILED: ' + err.message);
+  }
+}
+
+async function confirmSignOut() {
+  closeDrops();
+  if (!confirm('Sign out of DigitallyDefined?')) return;
+  try {
+    await DD.signOut();
+    toast('✓ SIGNED OUT');
+  } catch (err) {
+    toast('✗ SIGN OUT FAILED');
+  }
+}
+
+async function exportUserData() {
+  if (!DD.user) { toast('⚠️ SIGN IN FIRST'); return; }
+  try {
+    const data = await DD.exportAllData();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `digitallydefined-export-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('✓ DATA EXPORTED');
+  } catch (err) {
+    toast('✗ EXPORT FAILED: ' + err.message);
+  }
+}
+
+// Auto-connect on page load
+window.addEventListener('load', async () => {
+  const savedUrl = localStorage.getItem('dd-supabase-url');
+  const savedKey = localStorage.getItem('dd-supabase-key');
+  if (savedUrl && savedKey) {
+    document.getElementById('sb-url').value = savedUrl;
+    document.getElementById('sb-key').value = savedKey;
+    try {
+      await DD.init(savedUrl, savedKey);
+    } catch (err) {
+      console.warn('Auto-connect failed:', err);
+    }
+  }
+});
+</script>
+
+<script>
+// ============================================
+// THEME SYSTEM
+// ============================================
+let currentThemeMode='light';
+function getSystemTheme(){return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+function getEffectiveTheme(mode){return mode==='auto'?getSystemTheme():mode}
+function applyTheme(mode){
+  currentThemeMode=mode;
+  const eff=getEffectiveTheme(mode);
+  document.documentElement.setAttribute('data-theme',eff);
+  document.body.setAttribute('data-theme',eff);
+  const sun=document.getElementById('icon-sun'),moon=document.getElementById('icon-moon'),auto=document.getElementById('icon-auto');
+  sun.style.display='none';moon.style.display='none';auto.style.display='none';
+  if(mode==='light')moon.style.display='block';
+  else if(mode==='dark')sun.style.display='block';
+  else auto.style.display='block';
+  ['light','dark','auto'].forEach(opt=>{
+    const b=document.getElementById('opt-'+opt);
+    if(b){if(opt===mode)b.classList.add('selected');else b.classList.remove('selected')}
+  });
+  const label=document.getElementById('current-theme-label');
+  if(label){
+    const modeName=mode.charAt(0).toUpperCase()+mode.slice(1);
+    label.textContent=mode==='auto'?`Auto (${eff.charAt(0).toUpperCase()+eff.slice(1)})`:modeName;
+  }
+  localStorage.setItem('dd-theme-mode',mode);
+  // ★ Sync theme to Supabase if signed in ★
+  if(DD.user && DD.supabase){
+    DD.updateProfile({theme_mode:mode}).catch(()=>{});
+  }
+}
+function setTheme(mode){
+  const flash=document.getElementById('theme-flash');
+  flash.classList.add('active');
+  setTimeout(()=>flash.classList.remove('active'),200);
+  applyTheme(mode);
+  toast(`✓ THEME SET TO ${mode.toUpperCase()}`);
+}
+function handleThemeToggle(){
+  const next=currentThemeMode==='light'?'dark':currentThemeMode==='dark'?'auto':'light';
+  const flash=document.getElementById('theme-flash');
+  flash.classList.add('active');
+  setTimeout(()=>flash.classList.remove('active'),200);
+  applyTheme(next);
+  toast(`✓ THEME: ${next.toUpperCase()}`);
+}
+function initTheme(){
+  const saved=localStorage.getItem('dd-theme-mode')||'light';
+  applyTheme(saved);
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{
+    if(currentThemeMode==='auto')applyTheme('auto');
+  });
+}
+initTheme();
+
+// ============================================
+// NAVIGATION
+// ============================================
+const pgMeta={
+  dashboard:['Good morning, Michelle','Wealth snapshot · updated 2 min ago'],
+  portfolio:['Portfolio & Yield','All accounts · Sorted by income'],
+  digital:['Digital Real Estate','Income while you sleep'],
+  scenarios:['Life Scenarios','Stress-test your retirement'],
+  news:['Curated News','Signal, not noise'],
+  watchlist:['Watchlist','Stocks, ETFs & live crypto'],
+  settings:['Settings','Manage your account'],
+  help:['Help & Support','Get answers & contact us']
+};
+function navTo(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  const pg=document.getElementById('p-'+p);if(pg)pg.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  const ni=document.querySelector(`.nav-item[data-page="${p}"]`);if(ni)ni.classList.add('active');
+  document.getElementById('pg-title').textContent=pgMeta[p][0];
+  document.getElementById('pg-sub').textContent=pgMeta[p][1];
+  window.scrollTo({top:0,behavior:'smooth'});
+  closeDrops();closeSidebar();
+  document.querySelectorAll('#bottom-nav button').forEach(b=>b.style.color='var(--text-3)');
+  const ab=document.querySelector(`#bottom-nav button[data-page="${p}"]`);
+  if(ab)ab.style.color='var(--accent)';
+  if(p==='watchlist'&&!cryptoFullLoaded)loadCryptoFull();
+}
+function nav(e,p){e.preventDefault();navTo(p)}
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('sidebar-overlay').classList.add('active')}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('active')}
+
+function togDrop(id){
+  closeDrops();
+  const el = document.getElementById(id);
+  if(el) el.classList.toggle('active');
+}
+function closeDrops(){document.querySelectorAll('.dropdown-menu').forEach(d=>d.classList.remove('active'))}
+document.addEventListener('click',e=>{if(!e.target.closest('.relative'))closeDrops()});
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove('show'),2500)}
+
+function openModal(html){document.getElementById('modal-body').innerHTML=html;document.getElementById('modal').classList.add('active');document.body.style.overflow='hidden'}
+function closeModal(){document.getElementById('modal').classList.remove('active');document.body.style.overflow=''}
+
+function assetModal(sym,name,type,yield_,val,annual,freq){
+  const watchlistBtn = DD.user 
+    ? `<button class="dd-btn flex-1" onclick="closeModal();addToWatchlistDirect('${sym}','${name}');toast('${sym} ADDED TO WATCHLIST')">+ WATCHLIST</button>`
+    : `<button class="dd-btn flex-1" onclick="closeModal();openAuthModal('signin')">+ WATCHLIST (SIGN IN)</button>`;
+  openModal(`<div class="p-5 flex justify-between" style="border-bottom:2px solid var(--frame)"><div class="flex items-center gap-3"><div class="w-12 h-12 flex items-center justify-center" style="border:2px solid var(--frame);background:var(--bg-3)"><span class="text-lg font-black accent">${sym}</span></div><div><h3 class="text-lg font-black t-1">${name}</h3><p class="text-xs t-3 font-bold uppercase tracking-wider">${type}</p></div></div><button class="p-2 bg-4 t-1 font-black" onclick="closeModal()">✕</button></div><div class="p-5 space-y-3"><div class="grid grid-cols-2 gap-3"><div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Yield</p><p class="text-xl font-black stat-number success">${yield_}</p></div><div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Value</p><p class="text-xl font-black stat-number t-1">${val}</p></div><div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Annual Income</p><p class="text-xl font-black stat-number success">${annual}</p></div><div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Frequency</p><p class="text-xl font-black stat-number t-1">${freq}</p></div></div><div class="p-3" style="border:2px solid var(--accent);background:var(--bg-3)"><p class="text-[10px] font-black uppercase tracking-wider accent">Insight</p><p class="text-sm t-2">${parseFloat(yield_)>5?'High yield — verify payout sustainability.':'Solid yield with growth potential.'}</p></div><div class="flex gap-2"><button class="dd-btn dd-btn-sec flex-1" onclick="closeModal();toast('${sym} ANALYSIS SAVED')">FULL ANALYSIS →</button>${watchlistBtn}</div></div>`);
+}
+
+function digitalModal(name,type,aud,metric,mrr,growth,notes){
+  openModal(`<div class="p-5 flex justify-between" style="border-bottom:2px solid var(--frame)"><h3 class="text-lg font-black t-1">${name}</h3><button class="p-2 bg-4 t-1 font-black" onclick="closeModal()">✕</button></div><div class="p-5 space-y-3"><div class="flex gap-2 mb-2"><span class="px-2 py-0.5 text-[10px] font-black uppercase" style="background:var(--accent);color:var(--text-inv)">${type}</span><span class="px-2 py-0.5 text-[10px] font-black uppercase" style="background:var(--success);color:#fff">ACTIVE</span></div><div class="grid grid-cols-2 gap-3"><div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">MRR</p><p class="text-xl font-black stat-number accent">${mrr}</p></div><div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Growth</p><p class="text-xl font-black stat-number success">${growth}</p></div><div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Audience</p><p class="text-xl font-black stat-number t-1">${aud}</p></div><div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Metric</p><p class="text-xl font-black stat-number t-1">${metric}</p></div></div><div class="p-3" style="border:2px solid var(--accent);background:var(--bg-3)"><p class="text-[10px] font-black uppercase tracking-wider accent">Notes</p><p class="text-sm t-2">${notes}</p></div><div class="flex gap-2"><button class="dd-btn dd-btn-sec flex-1" onclick="closeModal();toast('OPENING ANALYTICS...')">VIEW ANALYTICS</button><button class="dd-btn flex-1" onclick="closeModal();toast('OPENING CONTENT EDITOR...')">CREATE CONTENT</button></div></div>`);
+}
+
+function articleModal(el){
+  const t=el.querySelector('h4').textContent;
+  const d=el.querySelector('p').textContent;
+  const saveBtn = DD.user 
+    ? `<button class="dd-btn dd-btn-sec flex-1" onclick="closeModal();saveArticleToBackend('${t.replace(/'/g,"\\'")}');toast('ARTICLE SAVED')">SAVE FOR LATER</button>`
+    : `<button class="dd-btn dd-btn-sec flex-1" onclick="closeModal();openAuthModal('signin')">SAVE (SIGN IN)</button>`;
+  openModal(`<div class="p-5 flex justify-between" style="border-bottom:2px solid var(--frame)"><p class="text-xs t-3 font-black uppercase tracking-wider">Article Preview</p><button class="p-2 bg-4 t-1 font-black" onclick="closeModal()">✕</button></div><div class="p-5 space-y-3"><h3 class="text-lg font-display font-bold t-1">${t}</h3><p class="text-sm t-2 leading-relaxed">${d}</p><p class="text-sm t-2 leading-relaxed">This is a preview of the full article. In the live application, this would load the complete content from the original source.</p><div class="p-3" style="border:2px solid var(--accent);background:var(--bg-3)"><p class="text-[10px] font-black uppercase tracking-wider accent">Key Takeaway</p><p class="text-sm t-2">Actionable insight relevant to your portfolio and retirement timeline.</p></div><div class="flex gap-2">${saveBtn}<button class="dd-btn flex-1" onclick="closeModal();toast('OPENING FULL ARTICLE...')">READ FULL</button></div></div>`);
+}
+
+async function saveArticleToBackend(title) {
+  if (!DD.user) return;
+  try {
+    await DD.saveArticle({ title, category: 'news', saved_at: new Date().toISOString() });
+    toast('✓ ARTICLE SAVED TO YOUR ACCOUNT');
+  } catch (err) {
+    toast('✗ SAVE FAILED: ' + err.message);
+  }
+}
+
+function linkAccountModal(){
+  openModal(`<div class="p-5 flex justify-between" style="border-bottom:2px solid var(--frame)"><h3 class="text-lg font-black t-1">LINK BROKERAGE</h3><button class="p-2 bg-4 t-1 font-black" onclick="closeModal()">✕</button></div><div class="p-5 space-y-2"><p class="text-sm t-2 mb-3">Secure, read-only access. We never trade your assets.</p><button class="w-full p-3 text-left bg-4 flex items-center gap-3" style="border:2px solid var(--frame)" onclick="closeModal();toast('CONNECTING TO SCHWAB...')"><div class="w-9 h-9 flex items-center justify-center text-xs font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent)">CS</div><div><p class="text-sm font-black t-1">Charles Schwab</p><p class="text-xs t-3">Brokerage, IRA, Roth</p></div></button><button class="w-full p-3 text-left bg-4 flex items-center gap-3" style="border:2px solid var(--frame)" onclick="closeModal();toast('CONNECTING TO FIDELITY...')"><div class="w-9 h-9 flex items-center justify-center text-xs font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:#8b5cf6">FD</div><div><p class="text-sm font-black t-1">Fidelity</p><p class="text-xs t-3">Brokerage, IRA, 401(k)</p></div></button><button class="w-full p-3 text-left bg-4 flex items-center gap-3" style="border:2px solid var(--frame)" onclick="closeModal();toast('CONNECTING TO VANGUARD...')"><div class="w-9 h-9 flex items-center justify-center text-xs font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent-2)">VG</div><div><p class="text-sm font-black t-1">Vanguard</p><p class="text-xs t-3">Brokerage, IRA, Target Date</p></div></button></div>`);
+}
+
+function newAssetModal(){
+  openModal(`<div class="p-5 flex justify-between" style="border-bottom:2px solid var(--frame)"><h3 class="text-lg font-black t-1">LAUNCH NEW DIGITAL ASSET</h3><button class="p-2 bg-4 t-1 font-black" onclick="closeModal()">✕</button></div><div class="p-5 space-y-2"><p class="text-sm t-2 mb-3">Choose a digital asset type to start building automated income.</p><button class="w-full p-3 text-left bg-4 flex items-center gap-3" style="border:2px solid var(--frame)" onclick="closeModal();launchAssetFlow('newsletter')"><span class="text-xl">📧</span><div><p class="text-sm font-black t-1">Paid Newsletter</p></div></button><button class="w-full p-3 text-left bg-4 flex items-center gap-3" style="border:2px solid var(--frame)" onclick="closeModal();launchAssetFlow('course')"><span class="text-xl">🎓</span><div><p class="text-sm font-black t-1">Online Course</p></div></button><button class="w-full p-3 text-left bg-4 flex items-center gap-3" style="border:2px solid var(--frame)" onclick="closeModal();launchAssetFlow('templates')"><span class="text-xl">📊</span><div><p class="text-sm font-black t-1">Digital Templates</p></div></button><button class="w-full p-3 text-left bg-4 flex items-center gap-3" style="border:2px solid var(--frame)" onclick="closeModal();launchAssetFlow('membership')"><span class="text-xl">🏆</span><div><p class="text-sm font-black t-1">Membership Community</p></div></button></div>`);
+}
+
+function launchAssetFlow(type){
+  const names={'newsletter':'Paid Newsletter','course':'Online Course','templates':'Digital Templates','membership':'Membership Community','email-course':'Niche Email Course','podcast':'Podcast Sponsorship','tracker':'Investment Tracker'};
+  openModal(`<div class="p-5 flex justify-between" style="border-bottom:2px solid var(--frame)"><h3 class="text-lg font-black t-1">LAUNCH: ${(names[type]||type).toUpperCase()}</h3><button class="p-2 bg-4 t-1 font-black" onclick="closeModal()">✕</button></div><div class="p-5 space-y-3"><p class="text-sm t-2">Let's build your ${(names[type]||type).toLowerCase()} step by step.</p><div class="space-y-2"><div class="flex items-center gap-3 p-3 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="toggleCheck(this)"><div class="w-5 h-5 flex items-center justify-center flex-shrink-0" style="border:2px solid var(--frame);background:var(--bg-2)"><svg class="w-3 h-3 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></div><div><p class="text-sm font-bold t-1">Define your niche & audience</p></div></div><div class="flex items-center gap-3 p-3 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="toggleCheck(this)"><div class="w-5 h-5 flex items-center justify-center flex-shrink-0" style="border:2px solid var(--frame);background:var(--bg-2)"><svg class="w-3 h-3 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></div><div><p class="text-sm font-bold t-1">Set up tech stack</p></div></div><div class="flex items-center gap-3 p-3 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="toggleCheck(this)"><div class="w-5 h-5 flex items-center justify-center flex-shrink-0" style="border:2px solid var(--frame);background:var(--bg-2)"><svg class="w-3 h-3 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></div><div><p class="text-sm font-bold t-1">Create first content/product</p></div></div><div class="flex items-center gap-3 p-3 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="toggleCheck(this)"><div class="w-5 h-5 flex items-center justify-center flex-shrink-0" style="border:2px solid var(--frame);background:var(--bg-2)"><svg class="w-3 h-3 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></div><div><p class="text-sm font-bold t-1">Build automation funnel</p></div></div><div class="flex items-center gap-3 p-3 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="toggleCheck(this)"><div class="w-5 h-5 flex items-center justify-center flex-shrink-0" style="border:2px solid var(--frame);background:var(--bg-2)"><svg class="w-3 h-3 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></div><div><p class="text-sm font-bold t-1">Launch & track in dashboard</p></div></div></div><div class="flex gap-2"><button class="dd-btn dd-btn-sec flex-1" onclick="closeModal()">SAVE FOR LATER</button><button class="dd-btn flex-1" onclick="closeModal();toast('✓ ASSET LAUNCH INITIATED')">START BUILDING →</button></div></div>`);
+}
+
+function toggleCheck(el){
+  const box=el.querySelector('.w-5');
+  const svg=el.querySelector('svg');
+  if(svg.classList.contains('hidden')){
+    svg.classList.remove('hidden');
+    box.style.background='var(--accent)';
+    box.style.borderColor='var(--accent)';
+  }else{
+    svg.classList.add('hidden');
+    box.style.background='var(--bg-2)';
+    box.style.borderColor='var(--frame)';
+  }
+}
+
+function pwModal(){
+  openModal(`<div class="p-5 flex justify-between" style="border-bottom:2px solid var(--frame)"><h3 class="text-lg font-black t-1">CHANGE PASSWORD</h3><button class="p-2 bg-4 t-1 font-black" onclick="closeModal()">✕</button></div><div class="p-5 space-y-3"><div><label class="text-xs t-3 font-black uppercase tracking-wider block mb-1">Current Password</label><input type="password" class="dd-input" id="pw-current"></div><div><label class="text-xs t-3 font-black uppercase tracking-wider block mb-1">New Password</label><input type="password" class="dd-input" id="pw-new"></div><div><label class="text-xs t-3 font-black uppercase tracking-wider block mb-1">Confirm New</label><input type="password" class="dd-input" id="pw-confirm"></div><button class="dd-btn w-full" onclick="changePassword()">UPDATE PASSWORD</button></div>`);
+}
+
+function changePassword(){
+  const c=document.getElementById('pw-current').value;
+  const n=document.getElementById('pw-new').value;
+  const cf=document.getElementById('pw-confirm').value;
+  if(!c||!n||!cf){toast('⚠️ PLEASE FILL ALL FIELDS');return}
+  if(n!==cf){toast('⚠️ PASSWORDS DO NOT MATCH');return}
+  if(n.length<12){toast('⚠️ PASSWORD MUST BE 12+ CHARACTERS');return}
+  closeModal();toast('✓ PASSWORD UPDATED SUCCESSFULLY');
+}
+
+function contactModal(){
+  openModal(`<div class="p-5 flex justify-between" style="border-bottom:2px solid var(--frame)"><h3 class="text-lg font-black t-1">CONTACT SUPPORT</h3><button class="p-2 bg-4 t-1 font-black" onclick="closeModal()">✕</button></div><div class="p-5 space-y-3"><div><label class="text-xs t-3 font-black uppercase tracking-wider block mb-1">Subject</label><select class="dd-select w-full"><option>General Question</option><option>Technical Issue</option><option>Billing</option><option>Feature Request</option></select></div><div><label class="text-xs t-3 font-black uppercase tracking-wider block mb-1">Message</label><textarea rows="4" class="dd-input" placeholder="How can we help?" style="resize:none"></textarea></div><p class="text-xs t-3 font-bold">Or email: <a href="mailto:francesca@digitallydefined.online" class="accent">francesca@digitallydefined.online</a></p><button class="dd-btn w-full" onclick="closeModal();toast('✓ MESSAGE SENT')">SEND MESSAGE</button></div>`);
+}
+
+function openKeyboardShortcuts(){
+  openModal(`<div class="p-5 flex justify-between" style="border-bottom:2px solid var(--frame)"><h3 class="text-lg font-black t-1">KEYBOARD SHORTCUTS</h3><button class="p-2 bg-4 t-1 font-black" onclick="closeModal()">✕</button></div><div class="p-5 space-y-2"><div class="flex justify-between p-2 bg-3"><span class="text-sm font-bold t-1">Toggle Theme</span><span class="text-sm font-black accent">T</span></div><div class="flex justify-between p-2 bg-3"><span class="text-sm font-bold t-1">Search</span><span class="text-sm font-black accent">/</span></div><div class="flex justify-between p-2 bg-3"><span class="text-sm font-bold t-1">Export CSV</span><span class="text-sm font-black accent">E</span></div><div class="flex justify-between p-2 bg-3"><span class="text-sm font-bold t-1">Close Modal</span><span class="text-sm font-black accent">ESC</span></div></div>`);
+}
+
+function manageSessions(){
+  openModal(`<div class="p-5 flex justify-between" style="border-bottom:2px solid var(--frame)"><h3 class="text-lg font-black t-1">ACTIVE SESSIONS</h3><button class="p-2 bg-4 t-1 font-black" onclick="closeModal()">✕</button></div><div class="p-5 space-y-2"><div class="p-3 flex justify-between items-center" style="border:2px solid var(--accent);background:var(--bg-3)"><div><p class="text-sm font-black t-1">MacBook Pro · Chrome</p><p class="text-xs t-3">Current session</p></div><span class="text-xs font-black success">ACTIVE</span></div><button class="dd-btn dd-btn-danger w-full mt-3" onclick="toast('✓ ALL OTHER SESSIONS LOGGED OUT');closeModal()">LOG OUT ALL OTHER DEVICES</button></div>`);
+}
+
+function confirmDeleteAccount(){
+  openModal(`<div class="p-5 flex justify-between" style="border-bottom:2px solid var(--accent-3)"><h3 class="text-lg font-black accent-3">DELETE ACCOUNT?</h3><button class="p-2 bg-4 t-1 font-black" onclick="closeModal()">✕</button></div><div class="p-5 space-y-3"><p class="text-sm t-2">This action is <strong>permanent</strong>. All your data will be deleted.</p><p class="text-sm t-2">Type <strong class="t-1">DELETE</strong> below to confirm:</p><input type="text" class="dd-input" id="delete-confirm" placeholder="Type DELETE"><button class="dd-btn dd-btn-danger w-full" onclick="processDelete()">PERMANENTLY DELETE</button></div>`);
+}
+
+function processDelete(){
+  const v=document.getElementById('delete-confirm').value;
+  if(v!=='DELETE'){toast('⚠️ TYPE "DELETE" TO CONFIRM');return}
+  closeModal();toast('⚠️ ACCOUNT DELETION REQUIRES EMAIL CONFIRMATION');
+}
+
+async function saveProfile() {
+  const name = document.getElementById('set-name').value;
+  const email = document.getElementById('set-email').value;
+  if (!name || !email) { toast('⚠️ NAME AND EMAIL REQUIRED'); return; }
+  
+  // ★ Save to Supabase if signed in ★
+  if (DD.user && DD.supabase) {
+    try {
+      await DD.updateProfile({ full_name: name });
+      await DD.supabase.auth.updateUser({ data: { full_name: name } });
+      toast('✓ PROFILE SAVED TO CLOUD');
+      updateAuthUI(true);
+      return;
+    } catch (err) {
+      toast('⚠️ SAVED LOCALLY (CLOUD SYNC FAILED)');
+    }
+  } else {
+    toast('✓ PROFILE UPDATED (SIGN IN TO SYNC)');
+  }
+}
+
+function clearNotifs(){document.getElementById('notif-badge').style.display='none';document.getElementById('notif-list').innerHTML='<div class="p-6 text-center text-sm font-black uppercase tracking-wider t-3">All caught up ✓</div>';toast('ALL NOTIFICATIONS READ')}
+function handleNotif(page){closeDrops();navTo(page)}
+
+const scData={baseline:{t:'📊 Baseline Plan',a:'Age 60',ac:'var(--success)',d:'On track',i:'$0 additional monthly',s:'Continue current savings rate. Digital MRR growth closes gaps within 18 months.',f:'🎉 FREEDOM — Age 60',t55:'$60K/yr digital income'},parent:{t:'🏥 Mom Needs Care',a:'Age 61.5',ac:'var(--accent-2)',d:'Delayed 1.5 years',i:'$3,000/mo additional',s:'Explore LTC insurance. Digital MRR covers $1,850 of $3,000.',f:'FREEDOM — Age 61.5',t55:'Digital MRR covers 62% of costs'},gradschool:{t:'🎓 Kid\'s Grad School',a:'Age 60.7',ac:'var(--accent-2)',d:'Delayed 8 months',i:'$1,667/mo for 24 months',s:'Use 529 first. Launch digital course for remaining $25K.',f:'FREEDOM — Age 60.7',t55:'Course offsets tuition'},layoff:{t:'💼 6-Month Layoff',a:'Age 60.5',ac:'var(--accent-2)',d:'Delayed 6 months',i:'$8,500/mo for 6 months',s:'Emergency fund covers 6.1 months. Digital MRR continues.',f:'FREEDOM — Age 60.5',t55:'Digital MRR at $3,100'},health:{t:'💊 Health Event',a:'Age 61',ac:'var(--accent-3)',d:'Delayed 1 year',i:'$2,500/mo + $15K one-time',s:'HSA maxed covers $15K. Digital income covers monthly gap.',f:'FREEDOM — Age 61',t55:'HSA fully available'},combined:{t:'⚡ Combined Stress',a:'Age 62.8',ac:'var(--accent-3)',d:'Delayed 2.8 years',i:'$4,200/mo combined',s:'Accelerate digital to $5K MRR in 12 months — recovers 1.5 years.',f:'FREEDOM — Age 62.8',t55:'Digital MRR $5K+ offsets stress'}};
+function pickScenario(el){
+  const d=scData[el.dataset.sc];
+  document.getElementById('sc-title').textContent=d.t;
+  document.getElementById('sc-age').textContent=d.a;
+  document.getElementById('sc-age').style.color=d.ac;
+  document.getElementById('sc-delay').textContent=d.d;
+  document.getElementById('sc-impact').textContent=d.i;
+  document.getElementById('sc-strategy').textContent=d.s;
+  document.getElementById('sc-freedom').textContent=d.f;
+  document.getElementById('sc-t55').textContent=d.t55;
+  document.querySelectorAll('.sc-card').forEach(c=>{c.style.borderColor='';c.style.boxShadow=''});
+  el.style.borderColor='var(--accent)';
+  el.style.boxShadow='var(--shadow)';
+  // ★ Save custom scenario to Supabase if signed in ★
+  if (DD.user && DD.supabase) {
+    DD.saveCustomScenario({ name: d.t, retirement_age_impact: parseFloat(d.a.replace('Age ','')) - 60 }).catch(()=>{});
+  }
+}
+function calcScenario(){
+  const e=+document.getElementById('sl-exp').value,o=+document.getElementById('sl-ot').value,i=+document.getElementById('sl-il').value;
+  document.getElementById('sl-exp-v').textContent='$'+e.toLocaleString()+'/mo';
+  document.getElementById('sl-ot-v').textContent='$'+o.toLocaleString();
+  document.getElementById('sl-il-v').textContent=i+' months';
+  const gap=e+(i>0?8500:0),total=o+(gap*12),net=Math.max(0,gap-1850),delay=Math.ceil((total/10000)*2.5),na=60+(delay/12);
+  const ae=document.getElementById('cs-age');
+  if(delay===0)ae.innerHTML='<span class="success">60</span>';
+  else if(delay<=6)ae.innerHTML=`<span style="color:var(--accent-2)">${na.toFixed(1)}</span>`;
+  else ae.innerHTML=`<span class="accent-3">${na.toFixed(1)}</span>`;
+  document.getElementById('cs-cost').textContent='$'+total.toLocaleString();
+  const r=document.getElementById('cs-rec');
+  if(net<=0){r.textContent='Digital covers it!';r.style.color='var(--success)'}
+  else{r.textContent='~'+delay+'mo delay';r.style.color='var(--accent)'}
+}
+
+function tabNews(btn,cat){
+  document.querySelectorAll('#news-tabs .tab-btn').forEach(b=>{b.classList.remove('active');b.classList.add('t-3')});
+  btn.classList.add('active');btn.classList.remove('t-3');
+  document.querySelectorAll('#news-grid article').forEach(c=>{
+    if(cat==='all')c.style.display='';
+    else if(cat==='saved')c.style.display=c.querySelector('.saved-btn').classList.contains('saved')?'':'none';
+    else c.style.display=c.dataset.cat===cat?'':'none';
+  });
+}
+function filterNews(v){const q=v.toLowerCase();document.querySelectorAll('#news-grid article').forEach(c=>{c.style.display=c.textContent.toLowerCase().includes(q)?'':'none'})}
+function togSave(btn, title){
+  btn.classList.toggle('saved');
+  btn.textContent=btn.classList.contains('saved')?'★':'☆';
+  const saved = btn.classList.contains('saved');
+  toast(saved?'ARTICLE SAVED':'ARTICLE UNSAVED');
+  // ★ Persist to Supabase if signed in ★
+  if (DD.user && DD.supabase && saved && title) {
+    DD.saveArticle({ title, category: 'news', saved_at: new Date().toISOString() }).catch(()=>{});
+  }
+}
+
+function addWL(){
+  const inp=document.getElementById('wl-input');const s=inp.value.trim().toUpperCase();if(!s)return;
+  // ★ If signed in, save to Supabase ★
+  if (DD.user && DD.supabase) {
+    DD.getWatchlists().then(watchlists => {
+      if (watchlists && watchlists.length > 0) {
+        DD.addToWatchlist(watchlists[0].id, s, s, 'stock').then(() => {
+          toast(s + ' ADDED TO CLOUD WATCHLIST');
+        }).catch(err => toast('✗ ' + err.message));
+      }
+    }).catch(() => toast('✗ COULD NOT LOAD WATCHLISTS'));
+  }
+  const tr=document.createElement('tr');
+  tr.className='cursor-pointer bg-4';
+  tr.style.borderBottom='1px solid var(--frame-3)';
+  tr.onclick=()=>assetModal(s,s,'Added to watchlist','—','—','—','—');
+  tr.innerHTML=`<td class="py-3"><div class="flex items-center gap-2"><button class="t-4 font-black text-xs" onclick="event.stopPropagation();rmWL(this)">✕</button><span class="w-7 h-7 flex items-center justify-center text-[10px] font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent)">${s}</span><span class="font-black t-1">${s}</span></div></td><td class="text-right t-3">—</td><td class="text-right t-3">—</td><td class="text-right t-3 text-[10px] font-black uppercase tracking-wider">Loading</td><td class="text-center"><button class="px-2 py-1 text-[10px] font-black uppercase bg-4" style="border:2px solid var(--frame)" onclick="event.stopPropagation();assetModal('${s}','${s}','Watchlist','—','—','—','—')">Analyze</button></td>`;
+  document.getElementById('wl-body').appendChild(tr);
+  inp.value='';
+  if (!DD.user) toast(s + ' ADDED LOCALLY (SIGN IN TO SYNC)');
+}
+function addToWatchlistDirect(sym,name){
+  if (DD.user && DD.supabase) {
+    DD.getWatchlists().then(watchlists => {
+      if (watchlists && watchlists.length > 0) {
+        DD.addToWatchlist(watchlists[0].id, sym, name, 'stock').catch(()=>{});
+      }
+    }).catch(()=>{});
+  }
+  const tr=document.createElement('tr');
+  tr.className='cursor-pointer bg-4';
+  tr.style.borderBottom='1px solid var(--frame-3)';
+  tr.onclick=()=>assetModal(sym,name,'Watchlist','—','—','—','—');
+  tr.innerHTML=`<td class="py-3"><div class="flex items-center gap-2"><button class="t-4 font-black text-xs" onclick="event.stopPropagation();rmWL(this)">✕</button><span class="w-7 h-7 flex items-center justify-center text-[10px] font-black" style="border:2px solid var(--frame);background:var(--bg-2);color:var(--accent)">${sym}</span><span class="font-black t-1">${name}</span></div></td><td class="text-right t-3">—</td><td class="text-right t-3">—</td><td class="text-right t-3 text-[10px] font-black uppercase tracking-wider">Loading</td><td class="text-center"><button class="px-2 py-1 text-[10px] font-black uppercase bg-4" style="border:2px solid var(--frame)" onclick="event.stopPropagation();assetModal('${sym}','${name}','Watchlist','—','—','—','—')">Analyze</button></td>`;
+  document.getElementById('wl-body').appendChild(tr);
+}
+function rmWL(btn){btn.closest('tr').remove();toast('REMOVED FROM WATCHLIST')}
+function switchWLTab(btn,tab){
+  document.querySelectorAll('#wl-tabs .tab-btn').forEach(b=>{b.classList.remove('active');b.classList.add('t-3')});
+  btn.classList.add('active');btn.classList.remove('t-3');
+  document.getElementById('wl-stocks').classList.toggle('hidden',tab!=='stocks');
+  document.getElementById('wl-crypto').classList.toggle('hidden',tab!=='crypto');
+  if(tab==='crypto'&&!cryptoFullLoaded)loadCryptoFull();
+}
+
+function sortHoldings(btn,by){
+  document.querySelectorAll('#holdings-sort-btns button').forEach(b=>{b.className='dd-btn dd-btn-sec text-xs'});
+  btn.className='dd-btn text-xs';
+  const tbody=document.getElementById('holdings-body');
+  const rows=Array.from(tbody.querySelectorAll('tr'));
+  rows.sort((a,b)=>{
+    if(by==='yield')return parseFloat(b.dataset.yield)-parseFloat(a.dataset.yield);
+    if(by==='value')return parseFloat(b.dataset.value)-parseFloat(a.dataset.value);
+    if(by==='name')return a.dataset.name.localeCompare(b.dataset.name);
+    return 0;
+  });
+  rows.forEach(r=>tbody.appendChild(r));
+}
+
+function exportCSV(){
+  const csv='Asset,Account,Value,Yield,Annual Income\nJEPI,Taxable,15680,7.5%,1176\nBND,IRA,39760,4.5%,1789\nSCHD,Taxable,11844,3.8%,450\nVOO,Roth,87300,1.3%,1135\nO,Taxable,20230,5.5%,1113\n401k Target Date,401k,241136,2.4%,5787';
+  const b=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='digitally-defined-portfolio.csv';a.click();
+  toast('✓ CSV EXPORTED SUCCESSFULLY');
+}
+
+const stockDB=[{s:'JEPI',n:'JPM Equity Premium Income',t:'ETF',y:'7.5%'},{s:'SCHD',n:'Schwab US Dividend',t:'ETF',y:'3.8%'},{s:'VOO',n:'Vanguard S&P 500',t:'ETF',y:'1.3%'},{s:'BND',n:'Vanguard Total Bond',t:'ETF',y:'4.5%'},{s:'O',n:'Realty Income',t:'REIT',y:'5.5%'},{s:'JEPQ',n:'JPM Nasdaq Premium',t:'ETF',y:'9.1%'},{s:'VICI',n:'VICI Properties',t:'REIT',y:'5.0%'},{s:'VYM',n:'Vanguard High Dividend',t:'ETF',y:'3.2%'},{s:'HDV',n:'iShares Core High Div',t:'ETF',y:'3.6%'},{s:'EPD',n:'Enterprise Products',t:'MLP',y:'7.2%'}];
+function doSearch(v){
+  const dd=document.getElementById('search-dd');
+  if(!v.trim()){dd.classList.remove('active');return}
+  const q=v.toUpperCase();
+  const stockResults=stockDB.filter(x=>x.s.includes(q)||x.n.toUpperCase().includes(q)).slice(0,3);
+  const cryptoResults=(typeof cryptoCache!=='undefined')?cryptoCache.filter(c=>c.symbol.toUpperCase().includes(q)||c.name.toUpperCase().includes(q)).slice(0,4):[];
+  if(!stockResults.length&&!cryptoResults.length){dd.innerHTML='<div class="p-3 text-sm font-bold t-3">No results found</div>';dd.classList.add('active');return}
+  let html='';
+  if(stockResults.length){
+    html+='<div class="p-2 text-[10px] t-3 font-black uppercase tracking-wider" style="border-bottom:2px solid var(--frame)">Stocks & ETFs</div>';
+    html+=stockResults.map(x=>`<div class="p-3 cursor-pointer flex justify-between bg-4" style="border-bottom:1px solid var(--frame-3)" onclick="document.getElementById('search-dd').classList.remove('active');document.getElementById('gsearch').value='';assetModal('${x.s}','${x.n}','${x.t}','${x.y}','—','—','—')"><div class="flex items-center gap-2"><div class="w-7 h-7 flex items-center justify-center" style="border:2px solid var(--frame);background:var(--bg-2)"><span class="text-[10px] font-black accent">${x.s}</span></div><div><p class="text-sm font-black t-1">${x.s}</p><p class="text-[10px] t-3 font-bold">${x.n}</p></div></div><div class="text-right"><span class="text-[10px] t-3 font-bold uppercase tracking-wider">${x.t}</span><p class="text-[10px] font-black success">${x.y}</p></div></div>`).join('');
+  }
+  if(cryptoResults.length){
+    html+='<div class="p-2 text-[10px] t-3 font-black uppercase tracking-wider flex items-center gap-1" style="border-bottom:2px solid var(--frame)"><span class="w-1.5 h-1.5" style="background:var(--success)"></span> Crypto · Live</div>';
+    html+=cryptoResults.map(c=>{
+      const chg=c.price_change_percentage_24h||0;
+      const chgClass=chg>=0?'crypto-up':'crypto-down';
+      const chgSign=chg>=0?'+':'';
+      return `<div class="p-3 cursor-pointer flex justify-between bg-4" style="border-bottom:1px solid var(--frame-3)" onclick="document.getElementById('search-dd').classList.remove('active');document.getElementById('gsearch').value='';cryptoDetailModal('${c.id}')"><div class="flex items-center gap-2"><img src="${c.image}" class="w-7 h-7" onerror="this.style.display='none'"><div><p class="text-sm font-black t-1">${c.symbol.toUpperCase()}</p><p class="text-[10px] t-3 font-bold">${c.name}</p></div></div><div class="text-right"><p class="text-sm font-black t-1">$${formatPrice(c.current_price)}</p><p class="text-[10px] font-bold ${chgClass}">${chgSign}${chg.toFixed(2)}%</p></div></div>`;
+    }).join('');
+  }
+  dd.innerHTML=html;dd.classList.add('active');
+}
+function goSearch(){const v=document.getElementById('gsearch').value;document.getElementById('search-dd').classList.remove('active');if(v)toast('SHOWING RESULTS FOR "'+v+'"')}
+function mobileSearch(){const q=prompt('Search stocks, crypto, ETFs:');if(q){doSearch(q);document.getElementById('gsearch').value=q}}
+
+const COINGECKO_API='https://api.coingecko.com/api/v3';
+let cryptoCache=[];let cryptoFullLoaded=false;let refreshInterval=null;
+function formatBigNum(n){if(n>=1e12)return '$'+(n/1e12).toFixed(2)+'T';if(n>=1e9)return '$'+(n/1e9).toFixed(2)+'B';if(n>=1e6)return '$'+(n/1e6).toFixed(2)+'M';if(n>=1e3)return '$'+(n/1e3).toFixed(2)+'K';return '$'+n.toFixed(2)}
+function formatPrice(p){if(p>=1)return p.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});if(p>=0.01)return p.toFixed(4);return p.toFixed(6)}
+function formatPct(p){if(p===null||p===undefined)return '<span class="t-4">—</span>';const cls=p>=0?'crypto-up':'crypto-down';const sign=p>=0?'+':'';return `<span class="${cls} font-bold">${sign}${p.toFixed(2)}%</span>`}
+
+async function loadCryptoMarkets(){
+  const icon=document.getElementById('crypto-refresh-icon');
+  if(icon)icon.classList.add('spin');
+  try{
+    const [globalRes,coinsRes]=await Promise.all([fetch(`${COINGECKO_API}/global`),fetch(`${COINGECKO_API}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d`)]);
+    if(!globalRes.ok||!coinsRes.ok)throw new Error('API error');
+    const global=await globalRes.json();const coins=await coinsRes.json();
+    cryptoCache=coins;
+    const data=global.data;
+    document.getElementById('stat-total-mcap').textContent=formatBigNum(data.total_market_cap.usd);
+    document.getElementById('stat-24h-vol').textContent=formatBigNum(data.total_volume.usd);
+    document.getElementById('stat-btc-dom').textContent=data.market_cap_percentage.btc.toFixed(1)+'%';
+    document.getElementById('stat-active').textContent=data.active_cryptocurrencies.toLocaleString();
+    const container=document.getElementById('crypto-top5');
+    container.innerHTML=coins.map(c=>{
+      const chg=c.price_change_percentage_24h||0;
+      const chgClass=chg>=0?'crypto-up':'crypto-down';
+      const chgSign=chg>=0?'+':'';
+      return `<div class="p-3 cursor-pointer bg-4" style="border:2px solid var(--frame)" onclick="cryptoDetailModal('${c.id}')"><div class="flex items-center gap-2 mb-2"><img src="${c.image}" class="w-6 h-6" onerror="this.style.display='none'"><div class="min-w-0"><p class="text-xs font-black truncate t-1">${c.symbol.toUpperCase()}</p><p class="text-[10px] t-3 font-bold truncate">${c.name}</p></div></div><p class="text-lg font-black stat-number t-1 mb-1">$${formatPrice(c.current_price)}</p><p class="text-xs font-bold ${chgClass}">${chgSign}${chg.toFixed(2)}% <span class="t-3 uppercase tracking-wider">24h</span></p></div>`;
+    }).join('');
+    const now=new Date();
+    document.getElementById('crypto-last-update').textContent='Updated '+now.toLocaleTimeString();
+  }catch(err){
+    console.error('CoinGecko error:',err);
+    document.getElementById('crypto-top5').innerHTML=`<div class="col-span-5 p-4 text-center" style="border:2px solid var(--accent-3);background:var(--bg-3)"><p class="text-sm font-black accent-3">⚠️ UNABLE TO LOAD CRYPTO DATA</p><p class="text-xs t-3 font-bold mt-1">CoinGecko API may be rate-limited. Try again in a minute.</p><button class="dd-btn dd-btn-sec mt-3 text-xs" onclick="loadCryptoMarkets()">RETRY</button></div>`;
+  }finally{if(icon)icon.classList.remove('spin')}
+}
+
+async function loadCryptoFull(){
+  const tbody=document.getElementById('crypto-full-body');
+  tbody.innerHTML='<tr><td colspan="8" class="py-8 text-center"><div class="flex flex-col items-center gap-2"><div class="w-8 h-8 spin" style="border:2px solid var(--accent);border-top-color:transparent"></div><p class="text-xs t-3 font-black uppercase tracking-wider">Fetching top 20 from CoinGecko...</p></div></td></tr>';
+  try{
+    const res=await fetch(`${COINGECKO_API}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d`);
+    if(!res.ok)throw new Error('API error: '+res.status);
+    const coins=await res.json();cryptoCache=coins;cryptoFullLoaded=true;
+    tbody.innerHTML=coins.map((c,i)=>`<tr class="cursor-pointer bg-4" style="border-bottom:1px solid var(--frame-3)" onclick="cryptoDetailModal('${c.id}')"><td class="py-3 t-3 font-black">${c.market_cap_rank}</td><td class="py-3"><div class="flex items-center gap-2"><img src="${c.image}" class="w-6 h-6" onerror="this.style.display='none'"><div class="min-w-0"><p class="font-black t-1 truncate">${c.name}</p><p class="text-[10px] t-3 font-bold">${c.symbol.toUpperCase()}</p></div></div></td><td class="py-3 text-right font-black t-1">$${formatPrice(c.current_price)}</td><td class="py-3 text-right text-xs">${formatPct(c.price_change_percentage_1h_in_currency)}</td><td class="py-3 text-right text-xs">${formatPct(c.price_change_percentage_24h)}</td><td class="py-3 text-right text-xs">${formatPct(c.price_change_percentage_7d_in_currency)}</td><td class="py-3 text-right text-xs font-bold t-2 hidden sm:table-cell">${formatBigNum(c.market_cap)}</td><td class="py-3 text-right text-xs t-2 hidden md:table-cell">${formatBigNum(c.total_volume)}</td></tr>`).join('');
+    const now=new Date();
+    document.getElementById('crypto-wl-update').textContent='Updated '+now.toLocaleTimeString();
+  }catch(err){
+    console.error('CoinGecko full error:',err);
+    tbody.innerHTML=`<tr><td colspan="8" class="py-8 text-center"><p class="text-sm font-black accent-3">⚠️ UNABLE TO LOAD CRYPTO DATA</p><p class="text-xs t-3 font-bold mt-2 mb-3">CoinGecko API may be rate-limited. Free tier: 10-30 calls/min.</p><button class="dd-btn dd-btn-sec text-xs" onclick="loadCryptoFull()">↻ RETRY</button></td></tr>`;
+  }
+}
+
+async function cryptoDetailModal(coinId){
+  openModal(`<div class="p-5 flex justify-between items-center" style="border-bottom:2px solid var(--frame)"><div class="flex items-center gap-2"><span class="px-2 py-0.5 text-[10px] font-black uppercase flex items-center gap-1" style="background:var(--success);color:#fff"><span class="w-1.5 h-1.5" style="background:#fff"></span>LIVE</span><span class="text-xs t-3 font-bold uppercase tracking-wider">CoinGecko</span></div><button class="p-2 bg-4 t-1 font-black" onclick="closeModal()">✕</button></div><div class="p-5" id="crypto-detail-content"><div class="flex flex-col items-center gap-3 py-8"><div class="w-8 h-8 spin" style="border:2px solid var(--accent);border-top-color:transparent"></div><p class="text-xs t-3 font-black uppercase tracking-wider">Loading coin data...</p></div></div>`);
+  try{
+    const res=await fetch(`${COINGECKO_API}/coins/${coinId}?localization=false&tickers=false&community_data=true&developer_data=false`);
+    if(!res.ok)throw new Error('API error');
+    const coin=await res.json();
+    const price=coin.market_data.current_price.usd;
+    const chg24=coin.market_data.price_change_percentage_24h;
+    const chg7d=coin.market_data.price_change_percentage_7d;
+    const chg30d=coin.market_data.price_change_percentage_30d;
+    const high24=coin.market_data.high_24h.usd;
+    const low24=coin.market_data.low_24h.usd;
+    const ath=coin.market_data.ath.usd;
+    const athChange=coin.market_data.ath_change_percentage.usd;
+    const mcap=coin.market_data.market_cap.usd;
+    const volume=coin.market_data.total_volume.usd;
+    const rank=coin.market_cap_rank;
+    const sentimentUp=coin.sentiment_votes_up_percentage;
+    const sentimentDown=coin.sentiment_votes_down_percentage;
+    const watchlistBtn = DD.user
+      ? `<button class="dd-btn flex-1" onclick="closeModal();addToWatchlistDirect('${coin.symbol.toUpperCase()}','${coin.name}');toast('${coin.symbol.toUpperCase()} ADDED TO WATCHLIST')">+ WATCHLIST</button>`
+      : `<button class="dd-btn flex-1" onclick="closeModal();openAuthModal('signin')">+ WATCHLIST (SIGN IN)</button>`;
+    document.getElementById('crypto-detail-content').innerHTML=`<div class="flex items-center gap-3 mb-4"><img src="${coin.image.large}" class="w-12 h-12"><div><h3 class="text-xl font-black t-1">${coin.name}</h3><p class="text-sm t-3 font-bold uppercase tracking-wider">${coin.symbol.toUpperCase()} · Rank #${rank}</p></div></div><div class="mb-4"><p class="stat-number text-3xl t-1 mb-1">$${formatPrice(price)}</p><p class="text-sm font-bold ${chg24>=0?'crypto-up':'crypto-down'}">${chg24>=0?'+':''}${chg24.toFixed(2)}% (24h)</p></div><div class="grid grid-cols-2 gap-3 mb-4"><div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">Market Cap</p><p class="text-lg font-black stat-number t-1">${formatBigNum(mcap)}</p></div><div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">24h Volume</p><p class="text-lg font-black stat-number t-1">${formatBigNum(volume)}</p></div><div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">24h High</p><p class="text-lg font-black stat-number crypto-up">$${formatPrice(high24)}</p></div><div class="p-3" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider">24h Low</p><p class="text-lg font-black stat-number crypto-down">$${formatPrice(low24)}</p></div></div><div class="p-3 mb-4" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider mb-2">Performance</p><div class="grid grid-cols-4 gap-2"><div><p class="text-[10px] t-3 font-bold">1h</p><p class="text-sm font-black">${formatPct(coin.market_data.price_change_percentage_1h_in_currency)}</p></div><div><p class="text-[10px] t-3 font-bold">24h</p><p class="text-sm font-black">${formatPct(chg24)}</p></div><div><p class="text-[10px] t-3 font-bold">7d</p><p class="text-sm font-black">${formatPct(chg7d)}</p></div><div><p class="text-[10px] t-3 font-bold">30d</p><p class="text-sm font-black">${formatPct(chg30d)}</p></div></div></div><div class="p-3 mb-4" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider mb-2">All-Time High</p><div class="flex justify-between items-center"><p class="text-lg font-black stat-number t-1">$${formatPrice(ath)}</p><p class="text-xs font-bold ${athChange>=0?'crypto-up':'crypto-down'}">${athChange.toFixed(2)}% from ATH</p></div><div class="mt-2 progress-bar"><div class="progress-fill" style="width:${Math.min(100,(price/ath)*100)}%"></div></div></div>${sentimentUp?`<div class="p-3 mb-4" style="border:2px solid var(--frame);background:var(--bg-3)"><p class="text-[10px] t-3 font-black uppercase tracking-wider mb-2">Community Sentiment</p><div class="flex gap-2 mb-2"><div class="flex-1 progress-bar"><div class="h-full" style="width:${sentimentUp}%;background:var(--success)"></div></div></div><div class="flex justify-between text-xs"><span class="crypto-up font-black">👍 ${sentimentUp.toFixed(0)}% BULLISH</span><span class="crypto-down font-black">👎 ${sentimentDown?.toFixed(0)||0}% BEARISH</span></div></div>`:''}<div class="flex gap-2"><a href="${coin.links.homepage[0]}" target="_blank" rel="noopener" class="dd-btn dd-btn-sec flex-1 text-center">VISIT WEBSITE →</a>${watchlistBtn}</div><p class="text-[10px] t-3 font-bold uppercase tracking-wider mt-4 text-center">Data provided by CoinGecko API · Prices may be delayed</p>`;
+  }catch(err){
+    document.getElementById('crypto-detail-content').innerHTML=`<div class="p-8 text-center"><p class="text-sm font-black accent-3">⚠️ UNABLE TO LOAD COIN DETAILS</p><p class="text-xs t-3 font-bold mt-2">API rate limit may be reached. Try again shortly.</p><button class="dd-btn dd-btn-sec mt-3 text-xs" onclick="closeModal();cryptoDetailModal('${coinId}')">RETRY</button></div>`;
+  }
+}
+
+function startCryptoRefresh(){
+  if(refreshInterval)clearInterval(refreshInterval);
+  refreshInterval=setInterval(()=>{if(document.getElementById('p-dashboard').classList.contains('active'))loadCryptoMarkets()},60000);
+}
+
+let keyBuffer='';let keyTimer=null;
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
+  if(e.key==='Escape'){closeModal();closeAuthModal();closeDrops();return}
+  if(e.key==='/'){e.preventDefault();document.getElementById('gsearch').focus();return}
+  if(e.key==='t'||e.key==='T'){handleThemeToggle();return}
+  if(e.key==='e'||e.key==='E'){exportCSV();return}
+});
+
+document.querySelector('.sc-card[data-sc="baseline"]')&&(document.querySelector('.sc-card[data-sc="baseline"]').style.borderColor='var(--accent)');
+window.addEventListener('resize',()=>{if(window.innerWidth>=1024)closeSidebar()});
+loadCryptoMarkets();
+startCryptoRefresh();
+document.addEventListener('click',e=>{if(!e.target.closest('#gsearch')&&!e.target.closest('#search-dd'))document.getElementById('search-dd').classList.remove('active')});
+</script>
+
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
