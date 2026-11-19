@@ -30,8 +30,12 @@ async function chatCompletion(baseUrl: string, apiKey: string, model: string, pr
   }
 }
 
-/** OmniRoute via any configured base URL (OMNIROUTE_URL, then OMNIROUTE_BASE_URL). */
+/** OmniRoute via any configured base URL (OMNIROUTE_URL, then OMNIROUTE_BASE_URL).
+ * OMNIROUTE_DISABLED=true bypasses OmniRoute entirely (callers fall back to Gemini). */
 export async function callOmniRoute(prompt: string): Promise<Record<string, unknown>> {
+  if (Deno.env.get("OMNIROUTE_DISABLED") === "true") {
+    throw new Error("OMNIROUTE_DISABLED=true — using Gemini fallback");
+  }
   const apiKey = Deno.env.get("OMNIROUTE_API_KEY") || "";
   if (!apiKey) throw new Error("OMNIROUTE_API_KEY not configured");
   const bases = [Deno.env.get("OMNIROUTE_URL"), Deno.env.get("OMNIROUTE_BASE_URL")].filter(Boolean) as string[];

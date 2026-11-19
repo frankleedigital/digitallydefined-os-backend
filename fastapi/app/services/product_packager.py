@@ -59,4 +59,3 @@ class ProductPackager:
 
 
 packager = ProductPackager()
-EOF

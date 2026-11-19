@@ -50,6 +50,13 @@ export type NotionPropSpec = {
    * the Notion API rejects writes to these.
    */
   readOnly?: boolean;
+  /**
+   * The name this property actually carries in the live Notion database when
+   * it differs from the canonical `name` (DB-wins). Set ONLY for live
+   * databases verified to use a non-canonical property name; writes and
+   * dedup filters emit this instead of `name`.
+   */
+  liveName?: string;
 };
 
 export type NotionDbSpec = {
@@ -136,6 +143,14 @@ export const NOTION_OS_DBS: Record<string, NotionDbSpec> = {
       { name: "Created", type: "date", required: false, synonyms: DATE_SYNONYMS },
       { name: "Suggested Assets", type: "rich_text", required: false, maxChars: 2000 },
       { name: "Digital Independence Score", type: "number", required: false },
+      // BuildNow: when true, triggers the product factory pipeline.
+      // Ready for AI: when true, AI generates product metadata.
+      // Ready for Insights: when true, AI scores the idea for opportunity.
+      { name: "BuildNow", type: "select", required: false, options: ["true", "false"], synonyms: { "yes": "true", "no": "false", "1": "true", "0": "false" } },
+      { name: "Ready for AI", type: "select", required: false, options: ["true", "false"], synonyms: { "yes": "true", "no": "false", "1": "true", "0": "false" } },
+      { name: "Ready for Insights", type: "select", required: false, options: ["true", "false"], synonyms: { "yes": "true", "no": "false", "1": "true", "0": "false" } },
+      { name: "Opportunity Score", type: "number", required: false },
+      { name: "Build Decision", type: "select", required: false, options: ["Build", "Skip", "Research More"] },
     ],
   },
   money: {
@@ -206,12 +221,23 @@ export const NOTION_OS_DBS: Record<string, NotionDbSpec> = {
     envVar: "NOTION_AUTOMATIONS_DB_ID",
     dedupKeys: ["Name", "Created"],
     properties: [
-      { name: "Name", type: "title", required: true, maxChars: 2000 },
-      { name: "Status", type: "select", required: false, options: ["Draft", "Published", "Done", "Failed"], synonyms: STATUS_SYNONYMS },
+      // Live title property is "Automation Name" (verified against the deployed
+      // DB on 2026-11-02). "Name" and "Action" are accepted legacy inputs so
+      // older callers keep working, but writes must emit "Automation Name" or
+      // Notion rejects the page with a validation_error.
+      { name: "Name", type: "title", required: true, maxChars: 2000, legacyNames: ["Automation Name", "Action"], liveName: "Automation Name" },
+      // Live select carries a "Succeeded" option in addition to the base set.
+      { name: "Status", type: "select", required: false, options: ["Draft", "Published", "Done", "Failed", "Succeeded"], synonyms: STATUS_SYNONYMS },
+      // Live "Source" is rich_text, NOT select — sending select fails validation.
       { name: "Source", type: "rich_text", required: false, maxChars: 200 },
       { name: "Email", type: "email", required: false },
       { name: "Superpower", type: "rich_text", required: false, maxChars: 100 },
       { name: "Created", type: "date", required: false, synonyms: DATE_SYNONYMS },
+      // Additional live columns used by automation logging.
+      { name: "Error Log", type: "rich_text", required: false, maxChars: 2000 },
+      { name: "Payload", type: "rich_text", required: false, maxChars: 2000 },
+      { name: "Run ID", type: "rich_text", required: false, maxChars: 200 },
+      { name: "External ID", type: "rich_text", required: false, maxChars: 200 },
     ],
   },
   templates: {
@@ -246,9 +272,12 @@ export function getNotionDbId(key: string): string | null {
   return null;
 }
 
-/** The canonical architect property name. Returns the `name` field. */
+/**
+ * The property name to emit on the live Notion database. Prefers the verified
+ * live name (`liveName`) when set (DB-wins), else the canonical architect name.
+ */
 export function notionPropName(prop: NotionPropSpec): string {
-  return prop.name;
+  return prop.liveName ?? prop.name;
 }
 
 /**

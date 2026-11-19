@@ -4,6 +4,17 @@ Backward-compatible: existing code that does `from .config import settings`
 still works via re-export.
 """
 
+import importlib.util
+import os
+
+_spec = importlib.util.spec_from_file_location(
+    "_digitallydefined_config_py",
+    os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.py"),
+)
+_config_py = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_config_py)
+settings = _config_py.settings
+
 from .google import (
     PROJECT_ID as GOOGLE_PROJECT_ID,
     LOCATION as GOOGLE_LOCATION,

@@ -14,6 +14,7 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:5173',
+  'http://localhost:4173',
   ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
 ];
 
@@ -341,7 +342,11 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = FETCH_TIMEOUT_MS)
 function getClientIp(req) {
   const forwardedFor = req.headers['x-forwarded-for'];
   if (typeof forwardedFor === 'string' && forwardedFor.trim()) {
-    return forwardedFor.split(',')[0].trim();
+    // Vercel sets x-forwarded-for as: client, proxy1, proxy2, ...
+    // The LAST entry is the one added by the trusted proxy (Vercel).
+    // The first entry is client-controlled and can be spoofed.
+    const parts = forwardedFor.split(',').map(p => p.trim()).filter(Boolean);
+    return parts[parts.length - 1] || parts[0] || 'unknown';
   }
   return req.socket?.remoteAddress || 'unknown';
 }
@@ -452,7 +457,22 @@ function maskErrorDetails(err, source) {
   return `${source} request failed.`;
 }
 
-// ---- Notion snapshot for the dashboard Notion tab ----
+// Cache for Notion snapshot (15 minutes TTL)
+const notionCache = globalThis.__notionCache || { data: null, expiry: 0 };
+if (!globalThis.__notionCache) {
+  globalThis.__notionCache = notionCache;
+}
+
+async function fetchNotionSnapshotCached() {
+  const now = Date.now();
+  if (notionCache.data && now < notionCache.expiry) {
+    return { ...notionCache.data, fromCache: true };
+  }
+  const result = await fetchNotionSnapshot();
+  notionCache.data = result;
+  notionCache.expiry = now + 15 * 60 * 1000;
+  return { ...result, fromCache: false };
+}
 // NotionTab expects a `notion` object keyed by database (ideas, content,
 // automations, publishingQueue, approvals, buyerSignals, aiDrafts, ...). We read
 // the configured production databases via the Notion API and return the most
@@ -2359,7 +2379,7 @@ export default async function handler(req, res) {
       // Notion data is fetched on demand by the Notion tab (context.includeNotion).
       const notionSnapshot =
         req.body?.context?.includeNotion === true
-          ? await fetchNotionSnapshot()
+          ? await fetchNotionSnapshotCached()
           : emptyNotionSnapshot();
 
       const legacyDashboardPayload = {
@@ -3024,7 +3044,33 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(404).json({ error: `Unknown action: ${action}` });
+    if (action === 'product.factory') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      const ideaId = req.body?.ideaId || req.body?.id;
+      if (!ideaId) {
+        return res.status(400).json({ error: 'ideaId is required' });
+      }
+      // Call the product-factory edge function
+      const supabaseUrl = process.env.SUPABASE_URL || 'https://dijjlppdljpcgyoakdnq.supabase.co';
+      const serviceKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+      try {
+        const upstream = await fetchWithTimeout(`${supabaseUrl}/functions/v1/product-factory`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${serviceKey}`,
+          },
+          body: JSON.stringify({ action: 'build', ideaId }),
+        }, 60000);
+        const text = await upstream.text();
+        return res.status(upstream.status).setHeader('content-type', 'application/json').send(text);
+      } catch (error) {
+        return res.status(502).json({ error: error instanceof Error ? error.message : 'Product factory failed' });
+      }
+    }
+
   } catch (err) {
     console.error('Dashboard error:', err);
     const origin = (req.headers && req.headers.origin) || '';
@@ -3033,6 +3079,7 @@ export default async function handler(req, res) {
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:5173',
+      'http://localhost:4173',
     ];
     const corsOrigin = allowed.includes(origin) ? origin : 'https://dashboard.digitallydefined.agency';
     res.setHeader('Access-Control-Allow-Origin', corsOrigin);
