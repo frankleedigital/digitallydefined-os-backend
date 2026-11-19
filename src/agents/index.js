@@ -134,8 +134,7 @@ export const agentRegistry = {
   brandSupervisor: {
     name: 'Brand Enforcement AI',
     description: 'Active Brand Enforcement System. Automatically identifies violations, refactors copy, strips non-compliant styling, and generates 100% compliant production-ready assets.',
-    category: 'governance',
-    execute: evaluateBrandCompliance,
+    handler: evaluateBrandCompliance,
   },
 
   // Phase 2: Hermes specialist agents

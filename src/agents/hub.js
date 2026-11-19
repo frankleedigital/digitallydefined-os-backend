@@ -49,15 +49,16 @@ export const AGENT_CATEGORIES = {
   digitalRealEstate: {
     label: 'Digital Real Estate',
     tagline: 'Acquire and grow scalable assets',
-    color: '#8B5CF6',
+    color: '#47B7D4',
     agents: {
       growthAgent: 'Rank-and-Rent / Growth',
+      growth: 'Growth Strategist',
     },
   },
   financialResilience: {
     label: 'Financial Resilience',
     tagline: 'Close the retirement gap and build a legacy',
-    color: '#C20F0A',
+    color: '#8B1A0A',
     agents: {
       retirementGap: 'Retirement Gap',
       wealthCalculator: 'Wealth Calculator',
@@ -68,15 +69,16 @@ export const AGENT_CATEGORIES = {
   revenue: {
     label: 'Revenue & Affiliate',
     tagline: 'Flip traffic into high-paying affiliate income',
-    color: '#D4A017',
+    color: '#F18B25',
     agents: {
       affiliateFlipper: 'Affiliate Flipper AI',
+      businessAgent: 'Agency Strategy',
     },
   },
   governance: {
     label: 'Brand & Governance',
     tagline: 'Active brand enforcement and implementation system',
-    color: '#2A9D5C',
+    color: '#16A34A',
     agents: {
       brandSupervisor: 'Brand Enforcement AI',
     },
