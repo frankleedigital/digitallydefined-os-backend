@@ -23,6 +23,9 @@ import { evaluateLegacyOS } from './legacyOSAgent.js';
 // Revenue & Affiliate agent
 import { analyzeAffiliateFlip } from './affiliateFlipper.js';
 
+// Notion Architect agent
+import { notionArchitect } from './notionArchitect.js';
+
 // Brand & Governance agent
 import { evaluateBrandCompliance } from './brandSupervisor.js';
 
@@ -135,6 +138,13 @@ export const agentRegistry = {
     name: 'Brand Enforcement AI',
     description: 'Active Brand Enforcement System. Automatically identifies violations, refactors copy, strips non-compliant styling, and generates 100% compliant production-ready assets.',
     handler: evaluateBrandCompliance,
+  },
+
+  // Notion OS Architect agent
+  notionArchitect: {
+    name: 'Notion OS Architect',
+    description: 'Notion Product Architect that designs, builds, audits, optimizes, documents, and maintains premium Notion-based digital products for the DigitallyDefined ecosystem.',
+    handler: notionArchitect,
   },
 
   // Phase 2: Hermes specialist agents

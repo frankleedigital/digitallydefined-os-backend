@@ -33,6 +33,7 @@ export const AGENT_CATEGORIES = {
     agents: {
       product: 'Product Generator',
       visualAsset: 'Visual Asset & SVG Generator',
+      notionArchitect: 'Notion OS Architect',
       productAgent: 'Offer Architect',
       roadmap: 'Authority Blueprint',
     },
@@ -165,6 +166,13 @@ export const AGENT_INPUT_SPECS = {
     fields: [
       { name: 'content', label: 'Content, Code, or Component Spec to Enforce *', type: 'text', required: true },
       { name: 'contentType', label: 'Asset Type', type: 'select', options: ['copy', 'ui-component', 'product', 'landing-page', 'social'], required: false },
+    ],
+  },
+  notionArchitect: {
+    fields: [
+      { name: 'goal', label: 'Product goal / idea (e.g., "Design a Reputation OS dashboard")', type: 'text', required: true },
+      { name: 'action', label: 'Architect action', type: 'select', options: ['design', 'audit', 'optimize', 'document', 'success-framework'], required: false },
+      { name: 'currentWorkspace', label: 'Existing workspace structure (paste page/db names)', type: 'textarea', required: false },
     ],
   },
   productAgent: { fields: [{ name: 'message', label: 'What should the agent do?', type: 'text', required: true }] },
