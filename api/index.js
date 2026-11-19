@@ -1142,7 +1142,7 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
     const geminiModels = [...new Set([
       callerModel,
       'gemini-3.5-flash-lite',
-      'gemini-3.1-flash-lite',
+      'gemini-1.5-flash',
       'gemini-flash-latest',
     ])];
     for (const model of geminiModels) {
@@ -1251,7 +1251,7 @@ async function fetchAIBrief(context) {
       name: 'gemini-direct',
       url: `${(process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta/openai').replace(/\/+$/, '')}/chat/completions`,
       key: briefGeminiKey,
-      model: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
+      model: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
     });
   }
 
