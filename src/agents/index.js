@@ -29,6 +29,9 @@ import { notionArchitect } from './notionArchitect.js';
 // Brand & Governance agent
 import { evaluateBrandCompliance } from './brandSupervisor.js';
 
+// Gumroad marketing pipeline agent
+import { marketProduct } from './gumroadPublisher.js';
+
 // Hermes specialist agents (Phase 2)
 import { businessAgentHandler } from '../agents/hermes/businessAgent.js';
 import { contentAgentHandler } from '../agents/hermes/contentAgent.js';
@@ -138,6 +141,14 @@ export const agentRegistry = {
     name: 'Brand Enforcement AI',
     description: 'Active Brand Enforcement System. Automatically identifies violations, refactors copy, strips non-compliant styling, and generates 100% compliant production-ready assets.',
     handler: evaluateBrandCompliance,
+  },
+
+  // Gumroad marketing pipeline agent (Digital Products tab → "Market This")
+  gumroadPublisher: {
+    name: 'Gumroad Publisher',
+    description:
+      'One-click marketing pipeline: Brand Supervisor audit → No-BS Gumroad listing copy → Flat Soft Brutalism cover + thumbnail → best-effort draft publish to Gumroad.',
+    handler: marketProduct,
   },
 
   // Notion OS Architect agent

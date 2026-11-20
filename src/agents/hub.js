@@ -36,6 +36,7 @@ export const AGENT_CATEGORIES = {
       notionArchitect: 'Notion OS Architect',
       productAgent: 'Offer Architect',
       roadmap: 'Authority Blueprint',
+      gumroadPublisher: 'Gumroad Publisher',
     },
   },
   content: {
@@ -114,6 +115,14 @@ export const AGENT_INPUT_SPECS = {
     ],
   },
   roadmap: { fields: [{ name: 'niche', label: 'Niche / topic', type: 'text', required: true }] },
+  gumroadPublisher: {
+    fields: [
+      { name: 'name', label: 'Product name', type: 'text', required: true },
+      { name: 'brief', label: 'Product brief / description', type: 'text', required: true },
+      { name: 'price', label: 'Price (USD)', type: 'text', required: false },
+      { name: 'persona', label: 'Target persona (optional)', type: 'text', required: false },
+    ],
+  },
   social: {
     fields: [
       { name: 'niche', label: 'Topic / product', type: 'text', required: true },
