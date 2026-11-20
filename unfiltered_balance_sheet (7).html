@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigitallyDefined | Content Engine</title>
+    
+    <!-- Fonts: Inter & DM Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,5..100,400;0,5..100,500&family=Inter:wght@700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- DIGITALLYDEFINED GLOBAL STYLES --- */
+        :root {
+            --bg-cream: #FFFCF9;
+            --bg-white: #FFFFFF;
+            --text-ink: #111111;
+            --text-slate: #2D3748;
+            --accent-orange: #F18B25;
+            --accent-blue: #47B7D4;
+            --accent-red: #C20F0A;
+            --border-color: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-slate);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, .dd-label, .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            color: var(--text-ink);
+            letter-spacing: -0.03em;
+        }
+
+        /* --- LAYOUT UTILITIES --- */
+        .dd-page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .dd-section {
+            padding: 60px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .dd-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .dd-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 40px;
+        }
+
+        /* --- COMPONENT: CARD --- */
+        .dd-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 0; /* Sharp edges only */
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .dd-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0px var(--border-color);
+        }
+
+        /* --- COMPONENT: INPUTS --- */
+        .dd-input-group {
+            margin-bottom: 24px;
+        }
+
+        .dd-label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            color: var(--text-ink);
+        }
+
+        .dd-input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-white);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            border-radius: 0;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .dd-input:focus {
+            border-color: var(--accent-orange);
+            background: #FFFAF5;
+        }
+
+        textarea.dd-input {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* --- COMPONENT: BUTTONS --- */
+        .dd-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 32px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            font-weight: 800;
+            border-radius: 0;
+        }
+
+        .dd-btn-primary {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .dd-btn-primary:hover {
+            background: #d67a1e;
+            box-shadow: 3px 3px 0px var(--border-color);
+            transform: translate(-1px, -1px);
+        }
+
+        .dd-btn-secondary {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .dd-btn-outline {
+            background: transparent;
+            color: var(--text-ink);
+        }
+
+        .dd-btn-outline:hover {
+            background: var(--text-ink);
+            color: white;
+        }
+
+        /* --- SPECIFIC UI ELEMENTS --- */
+        .hero-headline {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero-sub {
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .platform-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: 1px solid var(--border-color);
+            margin-right: 10px;
+        }
+
+        .badge-li { background: #E1E9EE; }
+        .badge-fb { background: #E1F5FE; }
+        .badge-ig { background: #FCE4EC; }
+
+        .result-block {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #ccc;
+        }
+        
+        .result-block:last-child {
+            border-bottom: none;
+        }
+
+        .keyword-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            background: var(--text-ink);
+            color: white;
+            margin-right: 5px;
+            margin-top: 5px;
+        }
+
+        /* --- LOADING STATE --- */
+        .loading-overlay {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            border: 1px solid var(--border-color);
+            background: white;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--text-ink);
+            border-top: 4px solid var(--accent-orange);
+            border-radius: 0; /* Square spinner for soft brutalism */
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- UTILITIES --- */
+        .hidden { display: none; }
+        .mt-4 { margin-top: 2rem; }
+        .text-center { text-align: center; }
+        .w-full { width: 100%; }
+
+    </style>
+</head>
+<body>
+
+    <!-- PAGE WRAPPER -->
+    <div class="dd-page">
+
+        <!-- HERO SECTION -->
+        <section class="dd-section">
+            <span class="dd-label" style="color: var(--accent-orange);">The Content Engine v1.0</span>
+            <h1 class="hero-headline">Stop Trading Hours<br>For Content.</h1>
+            <p class="hero-sub">Transform one source of truth into high-converting social assets for LinkedIn, Facebook, and Instagram. Automate the thinking so you can focus on positioning.</p>
+            
+            <div class="dd-grid-2">
+                <!-- INPUT MODULE -->
+                <div class="dd-card">
+                    <h3 style="margin-bottom: 20px;">01 — Input Source</h3>
+                    
+                    <div class="dd-input-group">
+                        <label class="dd-label">Article or Blog URL</label>
+                        <input type="url" id="inputUrl" class="dd-input" placeholder="https://example.com/blog-post">
+                    </div>
+
+                    <div class="dd-input-group">
+                        <label class="dd-label">YouTube Link (Transcript)</label>
+                        <input type="url" id="inputYoutube" class="dd-input" placeholder="https://youtube.com/watch?v=...">
+                    </div>
+
+                    <div class="dd-input-group">
+                        <label class="dd-label">Raw Text / Notes</label>
+                        <textarea id="inputText" class="dd-input" placeholder="Paste your rough notes, transcript, or ideas here..."></textarea>
+                    </div>
+
+                    <button onclick="generateAssets()" class="dd-btn dd-btn-primary w-full">
+                        Generate Assets →
+                    </button>
+                </div>
+
+                <!-- INSTRUCTIONS / CONTEXT -->
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <div class="dd-card" style="background: var(--bg-cream); border-style: dashed;">
+                        <h3>The "No-BS" Protocol</h3>
+                        <ul style="list-style: none; margin-top: 15px;">
+                            <li style="margin-bottom: 10px;"><strong>✓ Identity First:</strong> AI adopts your pragmatic Gen X voice.</li>
+                            <li style="margin-bottom: 10px;"><strong>✓ Structure Second:</strong> Output is JSON-ready for clean UI.</li>
+                            <li style="margin-bottom: 10px;"><strong>✓ Speed:</strong> From paste to publish in &lt;5 seconds.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LOADING STATE -->
+        <div id="loadingState" class="loading-overlay">
+            <div class="spinner"></div>
+            <h3>Extracting Gold...</h3>
+            <p>Refining legacy content into sovereign assets.</p>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <section id="resultsSection" class="dd-section hidden">
+            <span class="dd-label" style="color: var(--accent-blue);">02 — Your Asset Matrix</span>
+            <h2 style="margin-bottom: 30px;">Ready for Deployment</h2>
+
+            <div class="dd-grid">
+                
+                <!-- LINKEDIN CARD -->
+                <article class="dd-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                        <span class="platform-badge badge-li">LinkedIn</span>
+                        <button class="dd-btn dd-btn-outline" style="padding: 5px 10px; font-size: 0.7rem;" onclick="copyToClipboard('linkedin')">Copy</button>
+                    </div>
+                    
+                    <div class="result-block">
+                        <span class="dd-label">The Hook</span>
+                        <p id="li-hook" style="font-weight: 700; font-size: 1.1rem; margin-bottom: 10px;"></p>
+                    </div>
+                    
+                    <div class="result-block">
+                        <span class="dd-label">The Body</span>
+                        <p id="li-body" style="font-size: 0.95rem;"></p>
+                    </div>
+
+                    <div>
+                        <span class="dd-label">SEO Signals</span>
+                        <div id="li-keywords"></div>
+                    </div>
+                </article>
+
+                <!-- FACEBOOK CARD -->
+                <article class="dd-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                        <span class="platform-badge badge-fb">Facebook</span>
+                        <button class="dd-btn dd-btn-outline" style="padding: 5px 10px; font-size: 0.7rem;" onclick="copyToClipboard('facebook')">Copy</button>
+                    </div>
+                    
+                    <div class="result-block">
+                        <span class="dd-label">The Hook</span>
+                        <p id="fb-hook" style="font-weight: 700; font-size: 1.1rem; margin-bottom: 10px;"></p>
+                    </div>
+                    
+                    <div class="result-block">
+                        <span class="dd-label">The Body</span>
+                        <p id="fb-body" style="font-size: 0.95rem;"></p>
+                    </div>
+
+                    <div>
+                        <span class="dd-label">SEO Signals</span>
+                        <div id="fb-keywords"></div>
+                    </div>
+                </article>
+
+                <!-- INSTAGRAM CARD -->
+                <article class="dd-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                        <span class="platform-badge badge-ig">Instagram</span>
+                        <button class="dd-btn dd-btn-outline" style="padding: 5px 10px; font-size: 0.7rem;" onclick="copyToClipboard('instagram')">Copy</button>
+                    </div>
+                    
+                    <div class="result-block">
+                        <span class="dd-label">The Hook</span>
+                        <p id="ig-hook" style="font-weight: 700; font-size: 1.1rem; margin-bottom: 10px;"></p>
+                    </div>
+                    
+                    <div class="result-block">
+                        <span class="dd-label">The Caption</span>
+                        <p id="ig-body" style="font-size: 0.95rem;"></p>
+                    </div>
+
+                    <div>
+                        <span class="dd-label">Hashtag Cluster</span>
+                        <div id="ig-keywords"></div>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- FOOTER CTA (UPDATED) -->
+        <section class="dd-section" style="border-bottom: none;">
+            <div class="dd-card" style="background: var(--text-ink); color: white; text-align: center; padding: 60px 20px;">
+                <h2 style="color: white; margin-bottom: 15px;">Own Your Power.</h2>
+                <p style="color: #ccc; max-width: 500px; margin: 0 auto 30px;">
+                    This engine is just the start. Join the Inner Circle community for the full Automation Stack, Legacy Blueprints, and peer support.
+                </p>
+                <a href="https://facebook.com/groups/digitallydefind" target="_blank" rel="noopener noreferrer" class="dd-btn dd-btn-primary">Join Inner Circle →</a>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- LOGIC -->
+    <script>
+        // Mock Data Generator based on PRD Persona (Gen X, Direct, Pragmatic)
+        const mockResponses = {
+            linkedin: {
+                hook: "The retirement math doesn't add up for Gen X. Here is the fix.",
+                body: "We were promised pensions. We got inflation.\n\nTraditional saving is a slow death by 2% annual erosion. The only way out is building Digital Real Estate—assets that work while you sleep.\n\nI stopped trading hours for dollars 3 years ago. Here is the exact framework I used to pivot from Human Capital to Digital Capital.\n\n1. Audit your knowledge.\n2. Package it into a faceless asset.\n3. Automate the delivery.\n\nStop saving. Start building.",
+                keywords: ["Digital Sovereignty", "Gen X Wealth", "Passive Income"]
+            },
+            facebook: {
+                hook: "Stop apologizing for wanting financial freedom.",
+                body: "You have 30 years of experience. That is not 'baggage'. That is inventory.\n\nMost women sit on a goldmine of strategic nuance but feel 'tech shame' holding them back. \n\nI built a system that respects your privacy and your time. No dancing on TikTok. No showing your face. Just pure, high-value assets solving bleeding-neck problems.\n\nComment 'BLUEPRINT' if you are ready to stop guessing and start building.",
+                keywords: ["Women in Business", "Faceless Marketing", "Career Pivot"]
+            },
+            instagram: {
+                hook: "POV: You finally fired your boss.",
+                body: "Digital sovereignty isn't about Lambos. It's about options.\n\n✅ No more commute\n✅ No more permission slips\n✅ No more ceiling\n\nI help Gen X women build faceless digital empires using the L.E.G.A.C.Y. framework. \n\nLink in bio to calculate your Freedom Number.",
+                keywords: ["#digitalsovereignty", "#genxwomen", "#facelessmarketing", "#freedomnumber"]
+            }
+        };
+
+        function generateAssets() {
+            const url = document.getElementById('inputUrl').value;
+            const youtube = document.getElementById('inputYoutube').value;
+            const text = document.getElementById('inputText').value;
+
+            // Simple Validation
+            if (!url && !youtube && !text) {
+                alert("Please provide a URL, YouTube link, or Raw Text.");
+                return;
+            }
+
+            // UI State: Loading
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('loadingState').style.display = 'block';
+
+            // Simulate API Latency (PRD: < 5 seconds)
+            setTimeout(() => {
+                renderResults(mockResponses);
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('resultsSection').classList.remove('hidden');
+                
+                // Scroll to results
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+            }, 1500);
+        }
+
+        function renderResults(data) {
+            // LinkedIn
+            document.getElementById('li-hook').innerText = data.linkedin.hook;
+            document.getElementById('li-body').innerText = data.linkedin.body;
+            renderKeywords('li-keywords', data.linkedin.keywords);
+
+            // Facebook
+            document.getElementById('fb-hook').innerText = data.facebook.hook;
+            document.getElementById('fb-body').innerText = data.facebook.body;
+            renderKeywords('fb-keywords', data.facebook.keywords);
+
+            // Instagram
+            document.getElementById('ig-hook').innerText = data.instagram.hook;
+            document.getElementById('ig-body').innerText = data.instagram.body;
+            renderKeywords('ig-keywords', data.instagram.keywords, true);
+        }
+
+        function renderKeywords(elementId, keywords, isHash = false) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = '';
+            keywords.forEach(word => {
+                const span = document.createElement('span');
+                span.className = 'keyword-tag';
+                span.innerText = isHash ? word : word; 
+                container.appendChild(span);
+            });
+        }
+
+        function copyToClipboard(platform) {
+            let text = "";
+            if (platform === 'linkedin') {
+                text = document.getElementById('li-hook').innerText + "\n\n" + document.getElementById('li-body').innerText;
+            } else if (platform === 'facebook') {
+                text = document.getElementById('fb-hook').innerText + "\n\n" + document.getElementById('fb-body').innerText;
+            } else if (platform === 'instagram') {
+                text = document.getElementById('ig-hook').innerText + "\n\n" + document.getElementById('ig-body').innerText;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Asset copied to clipboard. Go post it.");
+            });
+        }
+    </script>
+</body>
+</html>

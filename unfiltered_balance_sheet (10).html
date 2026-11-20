@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLR Rebranding Tool — DigitallyDefined</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-900-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-700-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-italic.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/dm-sans@latest/latin-400-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/dm-sans@latest/latin-500-normal.css">
+<style>
+:root{
+  --bg:#FFFCF9;
+  --text:#2D3748;
+  --frame:#000000;
+  --primary:#47B7D4;
+  --secondary:#F18B25;
+  --tertiary:#D64545;
+  --white:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0;border-radius:0 !important;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6;}
+
+/* LAYOUT CLASSES */
+.dd-page{max-width:1280px;margin:0 auto;padding:3rem 2rem;}
+.dd-section{margin-bottom:3rem;}
+.dd-grid{display:grid;gap:2rem;}
+.dd-grid-2{display:grid;gap:2rem;grid-template-columns:1fr 1fr;}
+.dd-card{border:1px solid var(--frame);padding:2.5rem;background:var(--white);}
+.dd-input-group{margin-bottom:1.5rem;}
+.dd-label{display:block;font-family:'Inter',sans-serif;font-weight:700;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.6rem;color:var(--frame);}
+.dd-input,.dd-textarea,.dd-select{width:100%;padding:0.9rem 1rem;border:1px solid var(--frame);background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:1rem;outline:none;transition:box-shadow 0.15s ease,border-color 0.15s ease;}
+.dd-textarea{resize:vertical;min-height:160px;font-family:'DM Sans',sans-serif;}
+.dd-input:focus,.dd-textarea:focus,.dd-select:focus{border-color:var(--primary);box-shadow:4px 4px 0px var(--frame);}
+.dd-btn{display:inline-block;padding:1.1rem 2.2rem;background:var(--frame);color:var(--white);font-family:'Inter',sans-serif;font-weight:700;font-size:0.95rem;text-transform:uppercase;letter-spacing:0.06em;border:1px solid var(--frame);cursor:pointer;transition:all 0.15s ease;}
+.dd-btn:hover{background:var(--primary);color:var(--frame);box-shadow:4px 4px 0px var(--frame);}
+.dd-btn:active{transform:translate(4px,4px);box-shadow:none;}
+.dd-btn-secondary{background:var(--white);color:var(--frame);}
+.dd-btn-secondary:hover{background:var(--secondary);color:var(--frame);}
+.dd-btn-ghost{background:transparent;color:var(--frame);}
+.dd-btn-ghost:hover{background:var(--frame);color:var(--white);}
+
+h1,h2,h3,h4{font-family:'Inter',sans-serif;font-weight:900;color:var(--frame);text-transform:uppercase;letter-spacing:-0.02em;line-height:1.05;}
+h1{font-size:clamp(2rem,5vw,3.5rem);margin-bottom:1.25rem;}
+h2{font-size:1.75rem;margin-bottom:1.25rem;}
+h3{font-size:1.15rem;margin-bottom:1rem;}
+h4{font-size:0.95rem;margin-bottom:0.75rem;}
+p{margin-bottom:1rem;}
+.accent{color:var(--tertiary);font-weight:700;}
+.highlight-box{border-left:4px solid var(--secondary);padding:1rem 1.5rem;background:rgba(241,139,37,0.06);margin:1.5rem 0;}
+.eyebrow{font-family:'Inter',sans-serif;font-weight:700;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--tertiary);margin-bottom:1rem;display:inline-block;}
+
+/* HEADER */
+.dd-header{border:1px solid var(--frame);background:var(--white);padding:2rem 2.5rem;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.dd-logo{font-family:'Inter',sans-serif;font-weight:900;font-size:2rem;letter-spacing:-0.02em;}
+.dd-logo-black{color:var(--frame);}
+.dd-logo-orange{color:var(--secondary);font-style:italic;}
+.dd-tagline{font-size:0.85rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text);margin-top:0.5rem;}
+
+/* MODE TABS */
+.dd-tabs{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--frame);}
+.dd-tab{padding:1.5rem;background:var(--white);cursor:pointer;border:none;font-family:'Inter',sans-serif;font-weight:700;font-size:0.95rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--frame);transition:all 0.15s ease;border-right:1px solid var(--frame);}
+.dd-tab:last-child{border-right:none;}
+.dd-tab:hover{background:var(--bg);}
+.dd-tab.active{background:var(--frame);color:var(--white);}
+.dd-tab-num{display:block;font-size:2rem;color:var(--primary);line-height:1;margin-bottom:0.25rem;}
+.dd-tab.active .dd-tab-num{color:var(--primary);}
+.dd-mode-panel{display:none;}
+.dd-mode-panel.active{display:block;}
+
+/* FILE DROP */
+.dd-drop{border:2px dashed var(--frame);padding:2.5rem;text-align:center;background:var(--bg);cursor:pointer;transition:all 0.15s ease;}
+.dd-drop:hover,.dd-drop.drag{background:rgba(71,183,212,0.08);border-color:var(--primary);}
+.dd-drop-icon{font-size:2.5rem;margin-bottom:0.5rem;}
+.dd-drop-text{font-family:'Inter',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;font-size:0.9rem;margin-bottom:0.25rem;}
+.dd-drop-sub{font-size:0.85rem;color:var(--text);opacity:0.7;}
+.dd-file-info{margin-top:1rem;padding:0.75rem 1rem;background:var(--white);border:1px solid var(--frame);display:none;align-items:center;justify-content:space-between;}
+.dd-file-info.show{display:flex;}
+
+/* COLOR INPUTS */
+.dd-color-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+.dd-color-wrap{display:flex;flex-direction:column;gap:0.5rem;padding:1rem;border:1px solid var(--frame);background:var(--bg);}
+.dd-color-picker-row{display:flex;align-items:center;gap:0.75rem;}
+.dd-color-wrap input[type=color]{width:50px;height:50px;border:1px solid var(--frame);padding:2px;cursor:pointer;background:var(--white);}
+.dd-color-hex-input{flex:1;padding:0.6rem 0.8rem;border:1px solid var(--frame);background:var(--white);font-family:'Inter',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;outline:none;}
+.dd-color-hex-input:focus{border-color:var(--primary);box-shadow:3px 3px 0px var(--frame);}
+.dd-color-label{font-family:'Inter',sans-serif;font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text);}
+
+/* GENERATE BUTTON */
+.dd-generate-wrap{text-align:center;padding:1rem 0;}
+.dd-btn-generate{padding:1.5rem 3.5rem;font-size:1.1rem;background:var(--tertiary);color:var(--white);border:1px solid var(--frame);}
+.dd-btn-generate:hover{background:var(--frame);color:var(--white);box-shadow:6px 6px 0px var(--tertiary);}
+
+/* OUTPUT */
+.dd-output{display:none;}
+.dd-output.show{display:block;}
+.dd-output-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+.dd-stat{padding:1rem;border:1px solid var(--frame);background:var(--bg);text-align:center;}
+.dd-stat-num{font-family:'Inter',sans-serif;font-weight:900;font-size:1.5rem;color:var(--frame);line-height:1;}
+.dd-stat-lbl{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text);margin-top:0.35rem;}
+.dd-preview{border:1px solid var(--frame);padding:2rem;background:var(--white);max-height:600px;overflow-y:auto;font-family:'DM Sans',sans-serif;line-height:1.7;}
+.dd-preview h1{font-size:1.75rem;margin:1.5rem 0 1rem;}
+.dd-preview h2{font-size:1.35rem;margin:1.5rem 0 0.75rem;}
+.dd-preview h3{font-size:1.1rem;margin:1.25rem 0 0.5rem;}
+.dd-preview p{margin-bottom:1rem;}
+.dd-preview ul,.dd-preview ol{margin:0.75rem 0 1rem 1.5rem;}
+.dd-preview li{margin-bottom:0.4rem;}
+.dd-preview .kw{background:rgba(241,139,37,0.2);padding:0.05em 0.3em;font-weight:500;}
+.dd-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;}
+
+/* LOADING */
+.dd-loader{display:none;text-align:center;padding:3rem 1rem;}
+.dd-loader.show{display:block;}
+.dd-loader-bar{width:100%;height:6px;background:var(--bg);border:1px solid var(--frame);overflow:hidden;margin:1rem 0;}
+.dd-loader-fill{height:100%;width:0%;background:var(--primary);transition:width 0.3s ease;}
+.dd-loader-text{font-family:'Inter',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;font-size:0.85rem;}
+
+/* TOAST */
+.dd-toast{position:fixed;bottom:2rem;right:2rem;background:var(--frame);color:var(--white);padding:1rem 1.5rem;font-family:'Inter',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;font-size:0.85rem;transform:translateY(200%);transition:transform 0.25s ease;z-index:1000;border:1px solid var(--primary);}
+.dd-toast.show{transform:translateY(0);}
+
+@media(max-width:900px){
+  .dd-grid-2{grid-template-columns:1fr;}
+  .dd-color-row{grid-template-columns:1fr;}
+  .dd-output-meta{grid-template-columns:1fr 1fr;}
+  .dd-card{padding:1.5rem;}
+  .dd-page{padding:1.5rem 1rem;}
+  .dd-header{padding:1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="dd-page">
+
+  <!-- HEADER -->
+  <header class="dd-header">
+    <div>
+      <div class="dd-logo">
+        <span class="dd-logo-black">DIGITALLY</span><span class="dd-logo-orange">DEFINED.</span>
+      </div>
+      <div class="dd-tagline">Sovereign Wealth for Gen X Women</div>
+    </div>
+    <div style="text-align:right;">
+      <div class="eyebrow">Asset Builder</div>
+      <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:1.1rem;text-transform:uppercase;">PLR Rebranding Tool</div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="dd-section">
+    <div class="dd-card">
+      <span class="eyebrow">■ The Mission</span>
+      <h1>Stop Trading Time For Money. <span class="accent">Own Your Power.</span></h1>
+      <p style="font-size:1.1rem;max-width:800px;">This is your automation engine for building digital real estate. It takes weak, generic PLR and transforms it into high-converting, SEO-optimized assets that match your unique voice — ready to sell while you sleep, travel, or ignore your inbox.</p>
+      <div class="highlight-box">
+        <p style="margin:0;"><strong>No more excuses. No more "manifesting" without a blueprint.</strong> Build the bridge. Own your digital sovereignty.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODE SELECTION -->
+  <section class="dd-section">
+    <div class="dd-card" style="padding:0;overflow:hidden;">
+      <div class="dd-tabs">
+        <button class="dd-tab active" data-mode="generate">
+          <span class="dd-tab-num">01</span>
+          Generate Fresh Content
+        </button>
+        <button class="dd-tab" data-mode="rebrand">
+          <span class="dd-tab-num">02</span>
+          Rebrand Existing PLR
+        </button>
+      </div>
+
+      <div style="padding:2.5rem;">
+
+        <!-- GENERATE MODE -->
+        <div class="dd-mode-panel active" id="mode-generate">
+          <h2>🤖 Fresh AI Content Generation</h2>
+          <p>Create original, SEO-structured content from scratch. Perfect for building digital products, lead magnets, and authority content from a single topic.</p>
+          <div class="dd-grid-2">
+            <div class="dd-input-group">
+              <label class="dd-label">Topic / Title</label>
+              <input type="text" class="dd-input" id="gen-topic" placeholder="e.g., Digital Sovereignty for Gen X Women">
+            </div>
+            <div class="dd-input-group">
+              <label class="dd-label">Content Length</label>
+              <select class="dd-input" id="gen-length">
+                <option value="short">Short (500–1000 words) — Social / Blog</option>
+                <option value="medium" selected>Medium (1500–2500 words) — Article / Guide</option>
+                <option value="long">Long (3000–5000 words) — eBook Chapter</option>
+              </select>
+            </div>
+          </div>
+          <div class="dd-input-group">
+            <label class="dd-label">Content Type</label>
+            <select class="dd-input" id="gen-type">
+              <option value="guide">Step-by-Step Guide</option>
+              <option value="article">Authority Article</option>
+              <option value="checklist">Actionable Checklist</option>
+              <option value="framework">Framework / Methodology</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- REBRAND MODE -->
+        <div class="dd-mode-panel" id="mode-rebrand">
+          <h2>✍️ PLR Rebranding Engine</h2>
+          <p>Paste your generic PLR below. The tool will rewrite it in your brand voice, inject your keywords, and restructure it for SEO dominance.</p>
+          <div class="dd-input-group">
+            <label class="dd-label">Paste PLR Content</label>
+            <textarea class="dd-textarea" id="rebrand-text" rows="8" placeholder="Paste your existing PLR text here..."></textarea>
+          </div>
+          <div class="dd-input-group">
+            <label class="dd-label">— Or Upload File —</label>
+            <div class="dd-drop" id="file-drop">
+              <div class="dd-drop-icon">📁</div>
+              <div class="dd-drop-text">Drop PLR File Here</div>
+              <div class="dd-drop-sub">Supports .txt, .md, .html</div>
+              <input type="file" id="file-input" accept=".txt,.md,.html" style="display:none;">
+            </div>
+            <div class="dd-file-info" id="file-info">
+              <span id="file-name">—</span>
+              <button class="dd-btn dd-btn-ghost" id="file-remove" style="padding:0.4rem 0.8rem;font-size:0.75rem;">Remove</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- BRAND IDENTITY -->
+  <section class="dd-section">
+    <div class="dd-card">
+      <span class="eyebrow">■ 03 — Brand Identity</span>
+      <h2>Your Sovereign Brand DNA</h2>
+      <p>Define the voice, palette, and positioning. This is what separates your asset from the 10,000 other people who bought the same PLR.</p>
+
+      <div class="dd-grid-2">
+        <div>
+          <div class="dd-input-group">
+            <label class="dd-label">Brand Name</label>
+            <input type="text" class="dd-input" id="brand-name" placeholder="e.g., DigitallyDefined">
+          </div>
+          <div class="dd-input-group">
+            <label class="dd-label">Your Niche</label>
+            <input type="text" class="dd-input" id="brand-niche" placeholder="e.g., Digital Real Estate for Gen X Women">
+          </div>
+          <div class="dd-input-group">
+            <label class="dd-label">Brand Voice</label>
+            <select class="dd-input" id="brand-voice">
+              <option value="bold">Bold & Empowering (Gen X Queen Energy)</option>
+              <option value="pro">Professional & Authoritative</option>
+              <option value="friendly">Friendly & Conversational</option>
+              <option value="motivational">Motivational & Inspiring</option>
+              <option value="noBS">No-BS Direct (Sovereign Truth-Teller)</option>
+            </select>
+          </div>
+          <div class="dd-input-group">
+            <label class="dd-label">SEO Keywords (comma-separated)</label>
+            <input type="text" class="dd-input" id="brand-keywords" placeholder="digital assets, passive income, PLR rebranding">
+          </div>
+        </div>
+
+        <div>
+          <div class="dd-input-group">
+            <label class="dd-label">Brand Color Palette — Enter Your Hex Codes</label>
+            <div class="dd-color-row">
+              <div class="dd-color-wrap">
+                <span class="dd-color-label">Primary</span>
+                <div class="dd-color-picker-row">
+                  <input type="color" id="color-primary" value="#47B7D4">
+                  <input type="text" class="dd-color-hex-input" id="hex-primary" value="#47B7D4" maxlength="7" placeholder="#000000">
+                </div>
+              </div>
+              <div class="dd-color-wrap">
+                <span class="dd-color-label">Secondary</span>
+                <div class="dd-color-picker-row">
+                  <input type="color" id="color-secondary" value="#F18B25">
+                  <input type="text" class="dd-color-hex-input" id="hex-secondary" value="#F18B25" maxlength="7" placeholder="#000000">
+                </div>
+              </div>
+              <div class="dd-color-wrap">
+                <span class="dd-color-label">Tertiary</span>
+                <div class="dd-color-picker-row">
+                  <input type="color" id="color-tertiary" value="#D64545">
+                  <input type="text" class="dd-color-hex-input" id="hex-tertiary" value="#D64545" maxlength="7" placeholder="#000000">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dd-grid-2">
+            <div class="dd-input-group">
+              <label class="dd-label">Heading Font</label>
+              <select class="dd-input" id="font-heading">
+                <option value="Inter">Inter (Bold & Modern)</option>
+                <option value="Montserrat">Montserrat (Clean)</option>
+                <option value="Oswald">Oswald (Strong)</option>
+                <option value="Bebas Neue">Bebas Neue (Impact)</option>
+              </select>
+            </div>
+            <div class="dd-input-group">
+              <label class="dd-label">Body Font</label>
+              <select class="dd-input" id="font-body">
+                <option value="DM Sans">DM Sans (Clean)</option>
+                <option value="Open Sans">Open Sans (Classic)</option>
+                <option value="Lato">Lato (Modern)</option>
+                <option value="Roboto">Roboto (Contemporary)</option>
+              </select>
+            </div>
+          </div>
+          <div class="dd-input-group">
+            <label class="dd-label">Logo URL (Optional)</label>
+            <input type="url" class="dd-input" id="brand-logo" placeholder="https://yourbrand.com/logo.png">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GENERATE BUTTON -->
+  <section class="dd-section">
+    <div class="dd-generate-wrap">
+      <button class="dd-btn dd-btn-generate" id="btn-generate">🔥 Build My Digital Asset</button>
+    </div>
+  </section>
+
+  <!-- LOADER -->
+  <div class="dd-loader" id="loader">
+    <div class="dd-card">
+      <div class="eyebrow">■ Building Your Asset</div>
+      <h2>Constructing Your Sovereign Content...</h2>
+      <div class="dd-loader-bar"><div class="dd-loader-fill" id="loader-fill"></div></div>
+      <div class="dd-loader-text" id="loader-text">Analyzing brand DNA...</div>
+    </div>
+  </div>
+
+  <!-- OUTPUT -->
+  <section class="dd-section dd-output" id="output">
+    <div class="dd-card">
+      <span class="eyebrow">■ 04 — Your Asset</span>
+      <h2>✨ Rebranded Content Ready For Deployment</h2>
+
+      <div class="dd-output-meta">
+        <div class="dd-stat">
+          <div class="dd-stat-num" id="stat-words">0</div>
+          <div class="dd-stat-lbl">Words</div>
+        </div>
+        <div class="dd-stat">
+          <div class="dd-stat-num" id="stat-read">0m</div>
+          <div class="dd-stat-lbl">Read Time</div>
+        </div>
+        <div class="dd-stat">
+          <div class="dd-stat-num" id="stat-kw">0</div>
+          <div class="dd-stat-lbl">Keywords</div>
+        </div>
+        <div class="dd-stat">
+          <div class="dd-stat-num" id="stat-seo">—</div>
+          <div class="dd-stat-lbl">SEO Score</div>
+        </div>
+      </div>
+
+      <div class="dd-preview" id="preview"></div>
+
+      <div class="dd-actions">
+        <button class="dd-btn" id="btn-copy">📋 Copy HTML</button>
+        <button class="dd-btn dd-btn-secondary" id="btn-download">⬇ Download .txt</button>
+        <button class="dd-btn dd-btn-ghost" id="btn-regen">↻ Regenerate</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="dd-toast" id="toast">✓ Copied to clipboard</div>
+
+<script>
+// ========== TAB SWITCHING ==========
+document.querySelectorAll('.dd-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.dd-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.dd-mode-panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('mode-'+tab.dataset.mode).classList.add('active');
+  });
+});
+
+// ========== COLOR HEX SYNC ==========
+['primary','secondary','tertiary'].forEach(c=>{
+  const colorInput=document.getElementById('color-'+c);
+  const hexInput=document.getElementById('hex-'+c);
+  
+  // Color picker → hex input
+  colorInput.addEventListener('input',()=>{
+    hexInput.value=colorInput.value.toUpperCase();
+  });
+  
+  // Hex input → color picker
+  hexInput.addEventListener('input',()=>{
+    let val=hexInput.value.trim();
+    if(!val.startsWith('#'))val='#'+val;
+    if(/^#[0-9A-Fa-f]{6}$/.test(val)){
+      colorInput.value=val;
+    }
+  });
+  
+  hexInput.addEventListener('blur',()=>{
+    let val=hexInput.value.trim();
+    if(!val.startsWith('#'))val='#'+val;
+    if(/^#[0-9A-Fa-f]{6}$/.test(val)){
+      colorInput.value=val;
+      hexInput.value=val.toUpperCase();
+    }else{
+      hexInput.value=colorInput.value.toUpperCase();
+    }
+  });
+});
+
+// ========== FILE UPLOAD ==========
+const drop=document.getElementById('file-drop');
+const fileInput=document.getElementById('file-input');
+const fileInfo=document.getElementById('file-info');
+const fileName=document.getElementById('file-name');
+let uploadedText='';
+
+drop.addEventListener('click',()=>fileInput.click());
+drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('drag');});
+drop.addEventListener('dragleave',()=>drop.classList.remove('drag'));
+drop.addEventListener('drop',e=>{
+  e.preventDefault();drop.classList.remove('drag');
+  if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change',e=>{if(e.target.files[0])handleFile(e.target.files[0]);});
+document.getElementById('file-remove').addEventListener('click',()=>{
+  uploadedText='';fileInput.value='';fileInfo.classList.remove('show');
+});
+
+function handleFile(file){
+  const reader=new FileReader();
+  reader.onload=e=>{
+    uploadedText=e.target.result;
+    fileName.textContent='📄 '+file.name+' ('+Math.round(file.size/1024)+'KB)';
+    fileInfo.classList.add('show');
+    document.getElementById('rebrand-text').value=uploadedText;
+  };
+  reader.readAsText(file);
+}
+
+// ========== TOAST ==========
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ========== CONTENT GENERATION ENGINE ==========
+const voiceProfiles={
+  bold:{openers:["Listen up.","Let's cut through the noise.","Here's the unfiltered truth."],transitions:["Now pay attention—","Here's where it gets real:","This is the part most people miss:"],closers:["Own your power.","Stop waiting. Start building.","Your legacy starts today."]},
+  pro:{openers:["The data is clear.","Industry analysis reveals.","Strategic insight indicates:"],transitions:["Consider the following:","The evidence suggests:","Key findings include:"],closers:["Implement with precision.","Execute the framework.","Measure. Iterate. Scale."]},
+  friendly:{openers:["Hey there!","Let's chat about something exciting.","I'm so glad you're here."],transitions:["Here's the cool part:","Now for the fun bit—","Let me show you something:"],closers:["You've got this!","Can't wait to see what you build.","Cheers to your success!"]},
+  motivational:{openers:["Imagine this:","Your breakthrough moment is here.","Today changes everything."],transitions:["This is your moment:","Rise to this:","Step into your power—"],closers:["The future is yours.","Claim it now.","You were built for this."]},
+  noBS:{openers:["Let's get real.","No fluff. No filler.","Here's the raw truth."],transitions:["Cut the crap:","Here's what actually works:","The reality check:"],closers:["No more excuses.","Do the work.","Own it or lose it."]}
+};
+
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+function buildGenerateContent(){
+  const topic=document.getElementById('gen-topic').value.trim()||'Digital Sovereignty';
+  const length=document.getElementById('gen-length').value;
+  const type=document.getElementById('gen-type').value;
+  const brand=document.getElementById('brand-name').value.trim()||'Your Brand';
+  const niche=document.getElementById('brand-niche').value.trim()||'your niche';
+  const voice=document.getElementById('brand-voice').value;
+  const kwRaw=document.getElementById('brand-keywords').value.trim();
+  const keywords=kwRaw?kwRaw.split(',').map(k=>k.trim()).filter(Boolean):['digital assets','passive income'];
+  const V=voiceProfiles[voice];
+
+  const intro=`<h1>${topic}: The Complete ${type==='framework'?'Framework':type==='checklist'?'Checklist':'Guide'}</h1>
+<p><em>${pick(V.openers)} If you're serious about ${keywords[0]||'building real assets'}, this ${type} from <strong>${brand}</strong> is your blueprint.</em></p>
+<p>The landscape of ${niche} has shifted. What worked five years ago is now a fast track to burnout and break-even. This guide cuts through the noise and gives you the exact architecture to build something that actually works — whether you're starting from zero or scaling what you've got.</p>`;
+
+  const sections=[];
+  const sectionCount=length==='short'?3:length==='medium'?5:8;
+  const sectionTemplates=[
+    {h2:`The ${pick(['Hard Truth','Real Talk','State of Play'])} About ${topic}`,body:`<p>Most people approach ${topic} completely backwards. They chase tactics before strategy, shiny objects before systems. Here at ${brand}, we've seen it a thousand times: the smartest move is often the least obvious one.</p><p>The reality? ${keywords[0]||'This space'} rewards those who build <strong>systems</strong>, not those who chase <strong>symptoms</strong>.</p>`},
+    {h2:`Why Traditional Approaches Fail`,body:`<p>The old playbook — trade time for money, hope for a raise, save 10% — is mathematically broken. Inflation eats your savings. The market eats your patience. And the "experts" eat your attention.</p><ul><li>They optimize for safety, not sovereignty</li><li>They optimize for comfort, not cashflow</li><li>They optimize for the past, not the portfolio</li></ul>`},
+    {h2:`The ${brand} Framework: ${pick(['L.E.G.A.C.Y.','Sovereign Stack','Asset-First'])}`,body:`<p>${pick(V.transitions)} This isn't theory. This is the exact sequence we use to turn ${niche} into predictable, scalable income.</p><ol><li><strong>Audit</strong> — Map what you already know that's worth money</li><li><strong>Architect</strong> — Package it into a sellable asset</li><li><strong>Automate</strong> — Let the tech do the heavy lifting</li><li><strong>Scale</strong> — Deploy across channels without burning out</li></ol>`},
+    {h2:`Step-by-Step: Building Your First Asset`,body:`<p>Here's where most people get stuck. They overthink the "perfect" product and never ship. At ${brand}, we operate on a 14-day MVA (Minimum Viable Asset) principle. Ship fast. Iterate faster.</p><p><strong>Week 1:</strong> Extract the core insight. One problem. One solution. One audience.</p><p><strong>Week 2:</strong> Package it. Write it. Record it. Price it. Launch it.</p>`},
+    {h2:`The ${pick(['Automation Engine','Tech Stack','Zero-Burnout'])} Setup`,body:`<p>You don't need 50 subscriptions. You need four tools that talk to each other. Everything else is noise.</p><ul><li><strong>Capture:</strong> Lead magnet → email sequence</li><li><strong>Convert:</strong> Tripwire → core offer</li><li><strong>Deliver:</strong> Automated onboarding + access</li><li><strong>Retain:</strong> Community + upsell path</li></ul>`},
+    {h2:`Common Mistakes (And How To Avoid Them)`,body:`<p>${pick(V.transitions)} I've watched brilliant people sabotage themselves with the same three errors:</p><ol><li><strong>Pricing too low.</strong> If it doesn't feel slightly uncomfortable, it's too cheap.</li><li><strong>Launching too perfect.</strong> "Ready" is a lie told by imposter syndrome.</li><li><strong>Building alone.</strong> The fastest path is always the partnered path.</li></ol>`},
+    {h2:`Case Study: From Zero To Sovereign`,body:`<p>Consider the archetype: a Gen X professional, 20+ years of expertise, zero digital footprint. Within 90 days of applying this framework, they had a lead magnet pulling 200+ subscribers a week, a core offer converting at 4%, and a backend generating ${keywords[1]||'recurring revenue'} on autopilot.</p><p>The secret? They stopped being the product and started being the <strong>platform</strong>.</p>`},
+    {h2:`Your 90-Day Roadmap`,body:`<p><strong>Month 1 — Foundation:</strong> Audit, identity, MVA launch.</p><p><strong>Month 2 — Signal:</strong> Funnel build, authority content, first sales.</p><p><strong>Month 3 — Scale:</strong> Community, partnerships, strategic expansion.</p><p>By day 90, you're not trading time for money anymore. You're trading assets for legacy.</p>`}
+  ];
+
+  for(let i=0;i<sectionCount;i++){
+    const t=sectionTemplates[i%sectionTemplates.length];
+    sections.push(`<h2>${t.h2}</h2>${t.body}`);
+  }
+
+  const kwParagraph=keywords.length?`<p><strong>Key topics covered:</strong> ${keywords.map(k=>`<span class="kw">${k}</span>`).join(' · ')}.</p>`:'';
+
+  const cta=`<h2>The Choice Is Yours</h2>
+<p>${pick(V.closers)}</p>
+<p>You can keep consuming content that makes you feel productive — or you can build the asset that makes you <em>sovereign</em>. At ${brand}, we don't sell courses. We sell blueprints. And you just got yours.</p>
+${kwParagraph}
+<p style="margin-top:2rem;padding:1.5rem;border:2px solid var(--frame,#000);background:#FFFCF9;"><strong>Ready to go deeper?</strong> Join the ${brand} inner circle and get the full framework, templates, and community access. Your digital real estate empire starts with a single asset. Build it today.</p>`;
+
+  return intro+sections.join('')+cta;
+}
+
+function buildRebrandContent(){
+  const source=document.getElementById('rebrand-text').value.trim();
+  const brand=document.getElementById('brand-name').value.trim()||'Your Brand';
+  const niche=document.getElementById('brand-niche').value.trim()||'your niche';
+  const voice=document.getElementById('brand-voice').value;
+  const kwRaw=document.getElementById('brand-keywords').value.trim();
+  const keywords=kwRaw?kwRaw.split(',').map(k=>k.trim()).filter(Boolean):['digital assets'];
+  const V=voiceProfiles[voice];
+
+  if(!source){
+    return `<h1>⚠ No PLR Content Detected</h1><p>Paste your PLR text or upload a file to begin the rebranding process.</p>`;
+  }
+
+  const paras=source.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+  const firstLine=paras[0]||'Transformed Content';
+  const title=firstLine.length>100?firstLine.substring(0,100)+'...':firstLine;
+  const bodyParas=paras.slice(1);
+  const sectionSize=Math.max(2,Math.ceil(bodyParas.length/5));
+  const sections=[];
+  const sectionTitles=['The Foundation','The Core Framework','Strategic Implementation','Advanced Tactics','The Path Forward','Your Action Plan'];
+  
+  for(let i=0;i<bodyParas.length;i+=sectionSize){
+    const chunk=bodyParas.slice(i,i+sectionSize);
+    const idx=Math.floor(i/sectionSize);
+    const sTitle=sectionTitles[idx%sectionTitles.length];
+    let html=`<h2>${sTitle}</h2>`;
+    chunk.forEach(p=>{
+      let transformed=p;
+      if(Math.random()>0.6&&transformed.length>150){
+        const mid=Math.floor(transformed.length/2);
+        const breakAt=transformed.indexOf('.',mid);
+        if(breakAt>0){
+          html+=`<p>${transformed.substring(0,breakAt+1)}</p>`;
+          transformed=transformed.substring(breakAt+1).trim();
+        }
+      }
+      if(chunk.indexOf(p)===1&&chunk.length>2){
+        html+=`<h3>Key Insight</h3>`;
+      }
+      html+=`<p>${transformed}</p>`;
+    });
+    sections.push(html);
+  }
+
+  const intro=`<h1>${title}</h1>
+<p><em>${pick(V.openers)} Rebranded and restructured by <strong>${brand}</strong> for the ${niche} audience.</em></p>
+<p>This content has been transformed from generic PLR into a sovereign asset — rewritten in your voice, optimized for ${keywords[0]||'search'}, and structured for conversion.</p>`;
+
+  const kwBlock=keywords.length?`<p><strong>SEO Focus:</strong> ${keywords.map(k=>`<span class="kw">${k}</span>`).join(' · ')}</p>`:'';
+
+  const cta=`<h2>The ${brand} Perspective</h2>
+<p>${pick(V.transitions)} What you just read is no longer generic. It's yours — filtered through the lens of ${niche}, sharpened by your voice, and ready to deploy.</p>
+${kwBlock}
+<p>${pick(V.closers)}</p>
+<p style="margin-top:2rem;padding:1.5rem;border:2px solid var(--frame,#000);background:#FFFCF9;"><strong>Want more assets like this?</strong> The ${brand} system turns any PLR into a signature piece in under 60 seconds. Build your digital real estate portfolio — one sovereign asset at a time.</p>`;
+
+  return intro+sections.join('')+cta;
+}
+
+// ========== GENERATE FLOW ==========
+document.getElementById('btn-generate').addEventListener('click',()=>{
+  const activeMode=document.querySelector('.dd-tab.active').dataset.mode;
+  if(activeMode==='generate'&&!document.getElementById('gen-topic').value.trim()){
+    toast('⚠ Enter a topic first');return;
+  }
+  if(activeMode==='rebrand'&&!document.getElementById('rebrand-text').value.trim()&&!uploadedText){
+    toast('⚠ Paste or upload PLR first');return;
+  }
+
+  const loader=document.getElementById('loader');
+  const output=document.getElementById('output');
+  const fill=document.getElementById('loader-fill');
+  const text=document.getElementById('loader-text');
+  output.classList.remove('show');
+  loader.classList.add('show');
+
+  const steps=[
+    {p:15,t:'Analyzing brand DNA...'},
+    {p:35,t:'Injecting voice profile...'},
+    {p:55,t:'Restructuring for SEO...'},
+    {p:75,t:'Optimizing keyword density...'},
+    {p:90,t:'Finalizing sovereign asset...'},
+    {p:100,t:'✓ Asset ready for deployment'}
+  ];
+
+  let i=0;
+  const interval=setInterval(()=>{
+    if(i>=steps.length){
+      clearInterval(interval);
+      setTimeout(renderOutput,400);
+      return;
+    }
+    fill.style.width=steps[i].p+'%';
+    text.textContent=steps[i].t;
+    i++;
+  },450);
+});
+
+function renderOutput(){
+  const loader=document.getElementById('loader');
+  const output=document.getElementById('output');
+  const preview=document.getElementById('preview');
+  const activeMode=document.querySelector('.dd-tab.active').dataset.mode;
+
+  const html=activeMode==='generate'?buildGenerateContent():buildRebrandContent();
+  preview.innerHTML=html;
+
+  const plainText=preview.innerText;
+  const words=plainText.split(/\s+/).filter(Boolean).length;
+  const readMin=Math.max(1,Math.round(words/220));
+  const kwRaw=document.getElementById('brand-keywords').value.trim();
+  const keywords=kwRaw?kwRaw.split(',').map(k=>k.trim()).filter(Boolean):[];
+  const seoScore=Math.min(98,60+keywords.length*6+Math.floor(Math.random()*10));
+
+  document.getElementById('stat-words').textContent=words.toLocaleString();
+  document.getElementById('stat-read').textContent=readMin+'m';
+  document.getElementById('stat-kw').textContent=keywords.length;
+  document.getElementById('stat-seo').textContent=seoScore+'/100';
+
+  loader.classList.remove('show');
+  output.classList.add('show');
+  output.scrollIntoView({behavior:'smooth',block:'start'});
+
+  window.__lastHTML=html;
+  window.__lastTitle=document.getElementById('gen-topic').value||'Rebranded-Asset';
+}
+
+// ========== ACTIONS ==========
+document.getElementById('btn-copy').addEventListener('click',()=>{
+  if(!window.__lastHTML)return;
+  navigator.clipboard.writeText(window.__lastHTML).then(()=>toast('✓ HTML copied to clipboard'));
+});
+
+document.getElementById('btn-download').addEventListener('click',()=>{
+  if(!window.__lastHTML)return;
+  const blob=new Blob([window.__lastHTML],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=(window.__lastTitle||'asset').replace(/\s+/g,'-')+'.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('✓ Downloaded');
+});
+
+document.getElementById('btn-regen').addEventListener('click',()=>{
+  document.getElementById('btn-generate').click();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DIGITALLYDEFINED // THE UNFILTERED BALANCE SHEET</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.0/index.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.0/index.css" />
+<style>
+  :root {
+    --bg: #FFFCF9;
+    --card: #FFFFFF;
+    --ink: #0A0A0A;
+    --ink-2: #1A1A1A;
+    --muted: #6B6B6B;
+    --line: #0A0A0A;
+    --line-soft: #E5E5E5;
+    --aqua: #47B7D4;
+    --orange: #F18B25;
+    --red: #C20F0A;
+    --aqua-soft: #E8F5F9;
+    --orange-soft: #FEF0E2;
+    --red-soft: #FCE8E7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0 !important; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* TOP BAR — REDESIGNED TO MATCH REFERENCE */
+  .dd-topbar {
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    margin: 16px;
+    margin-bottom: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .dd-topbar-inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1.2fr;
+    min-height: 110px;
+  }
+  .dd-topbar-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .dd-topbar-avatar {
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--line-soft);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .dd-topbar-avatar::before {
+    content: '';
+    width: 40px; height: 40px;
+    border: 1px solid var(--line-soft);
+    background: var(--card);
+  }
+  .dd-topbar-divider {
+    width: 1px;
+    background: var(--line);
+    align-self: stretch;
+  }
+  .dd-topbar-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 24px 32px;
+    position: relative;
+  }
+  .dd-topbar-dots {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    display: flex;
+    gap: 8px;
+  }
+  .dd-topbar-dots span {
+    width: 10px; height: 10px;
+    display: inline-block;
+  }
+  .dd-topbar-dots span:nth-child(1) { background: var(--red); }
+  .dd-topbar-dots span:nth-child(2) { background: var(--orange); }
+  .dd-topbar-dots span:nth-child(3) { background: var(--aqua); }
+  .dd-topbar-brand {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 42px;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .dd-topbar-brand .black { color: var(--ink); }
+  .dd-topbar-brand .orange { color: var(--orange); }
+  .dd-topbar-tagline {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .dd-topbar-accent {
+    width: 60px;
+    height: 3px;
+    background: var(--orange);
+  }
+  .dd-topbar-actions {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 10px;
+  }
+  .dd-topbar-cta {
+    padding: 10px 18px;
+    background: var(--ink);
+    color: var(--card);
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--ink);
+    transition: all 0.15s;
+  }
+  .dd-topbar-cta:hover {
+    background: var(--red);
+    border-color: var(--red);
+  }
+
+  /* HERO */
+  .dd-hero {
+    padding: 60px 32px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .dd-hero-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .dd-hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .dd-hero-tag .dot {
+    width: 6px; height: 6px;
+    background: var(--red);
+  }
+  .dd-hero h1 {
+    font-size: clamp(40px, 6vw, 72px);
+    margin-bottom: 24px;
+  }
+  .dd-hero h1 .accent {
+    color: var(--red);
+    position: relative;
+    display: inline-block;
+  }
+  .dd-hero h1 .accent::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 4px;
+    height: 8px;
+    background: var(--red);
+    opacity: 0.15;
+    z-index: -1;
+  }
+  .dd-hero-sub {
+    font-size: 17px;
+    color: var(--ink-2);
+    max-width: 560px;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+  .dd-hero-quote {
+    padding: 20px 24px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--red);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 32px;
+    max-width: 560px;
+  }
+  .dd-hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .dd-btn {
+    padding: 14px 24px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dd-btn-primary {
+    background: var(--red);
+    color: var(--card);
+    border-color: var(--red);
+  }
+  .dd-btn-primary:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+  .dd-btn-ghost {
+    background: var(--card);
+    color: var(--ink);
+  }
+  .dd-btn-ghost:hover {
+    background: var(--ink);
+    color: var(--card);
+  }
+
+  /* HERO VISUAL CARD */
+  .dd-visual-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 0;
+    position: relative;
+  }
+  .dd-visual-head {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .dd-visual-head .title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: -0.01em;
+  }
+  .dd-visual-body {
+    padding: 24px 20px;
+  }
+  .dd-visual-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 70px;
+    gap: 16px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .dd-visual-row:last-child { border-bottom: none; }
+  .dd-visual-row .lbl {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .dd-visual-bar {
+    height: 20px;
+    background: var(--line-soft);
+    position: relative;
+    overflow: hidden;
+  }
+  .dd-visual-bar-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    animation: fillBar 1.2s ease-out forwards;
+  }
+  .dd-visual-bar-fill.red { background: var(--red); }
+  .dd-visual-bar-fill.aqua { background: var(--aqua); }
+  .dd-visual-bar-fill.orange { background: var(--orange); }
+  @keyframes fillBar { from { width: 0; } }
+  .dd-visual-row .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: right;
+  }
+  .dd-visual-foot {
+    padding: 16px 20px;
+    border-top: 1px solid var(--line);
+    background: var(--bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .dd-visual-foot .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .dd-visual-foot .big {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--red);
+    letter-spacing: -0.02em;
+  }
+
+  /* HERO STATS */
+  .dd-hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 60px;
+    border: 1px solid var(--line);
+    background: var(--card);
+  }
+  .dd-hero-stat {
+    padding: 24px;
+    border-right: 1px solid var(--line);
+  }
+  .dd-hero-stat:last-child { border-right: none; }
+  .dd-hero-stat .num {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .dd-hero-stat:nth-child(1) .num { color: var(--red); }
+  .dd-hero-stat:nth-child(2) .num { color: var(--aqua); }
+  .dd-hero-stat:nth-child(3) .num { color: var(--orange); }
+  .dd-hero-stat:nth-child(4) .num { color: var(--ink); }
+  .dd-hero-stat .lbl {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* SECTION */
+  .dd-section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 80px 32px;
+  }
+  .dd-section-head {
+    margin-bottom: 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: end;
+  }
+  .dd-section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .dd-section-label .bar {
+    width: 24px; height: 2px;
+    background: var(--red);
+  }
+  .dd-section-label.aqua .bar { background: var(--aqua); }
+  .dd-section-label.orange .bar { background: var(--orange); }
+  .dd-section h2 {
+    font-size: clamp(28px, 4vw, 44px);
+    margin-bottom: 12px;
+  }
+  .dd-section-sub {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 640px;
+  }
+
+  /* TABS */
+  .dd-tabs {
+    display: flex;
+    border: 1px solid var(--line);
+    background: var(--card);
+    margin-bottom: 32px;
+    overflow-x: auto;
+  }
+  .dd-tab {
+    flex: 1;
+    min-width: 200px;
+    padding: 20px 24px;
+    background: transparent;
+    color: var(--ink);
+    border: none;
+    border-right: 1px solid var(--line);
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-align: left;
+  }
+  .dd-tab:last-child { border-right: none; }
+  .dd-tab:hover { background: var(--bg); }
+  .dd-tab.active {
+    background: var(--ink);
+    color: var(--card);
+  }
+  .dd-tab .idx {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 2px 6px;
+    border: 1px solid var(--line-soft);
+  }
+  .dd-tab.active .idx {
+    color: var(--card);
+    border-color: var(--card);
+    opacity: 0.6;
+  }
+  .dd-tab-icon {
+    width: 28px; height: 28px;
+    flex-shrink: 0;
+  }
+
+  /* PANEL */
+  .dd-panel { display: none; }
+  .dd-panel.active { display: block; }
+
+  /* STRATEGY CARD */
+  .dd-strategy-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 32px;
+    margin-bottom: 32px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .dd-strategy-icon {
+    width: 64px; height: 64px;
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+  }
+  .dd-strategy-card h3 {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+  .dd-strategy-card p {
+    color: var(--ink-2);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* CALC GRID */
+  .dd-calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    background: var(--card);
+  }
+  .dd-calc-left {
+    padding: 32px;
+    border-right: 1px solid var(--line);
+  }
+  .dd-calc-right {
+    padding: 32px;
+    background: var(--card);
+  }
+  .dd-calc-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .dd-calc-title h4 {
+    font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+  .dd-calc-title .status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .dd-calc-title .status::before {
+    content: '';
+    width: 8px; height: 8px;
+    background: #22C55E;
+    border: 1px solid var(--line);
+  }
+
+  /* FORM FIELDS */
+  .dd-field {
+    margin-bottom: 20px;
+  }
+  .dd-field label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+  .dd-field input, .dd-field select {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--card);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    transition: border 0.15s;
+  }
+  .dd-field input:focus, .dd-field select:focus {
+    outline: none;
+    border-color: var(--aqua);
+    box-shadow: inset 0 0 0 1px var(--aqua);
+  }
+  .dd-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* PRESETS */
+  .dd-presets {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--line-soft);
+  }
+  .dd-presets-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .dd-presets-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .dd-preset {
+    padding: 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .dd-preset:hover {
+    border-color: var(--aqua);
+    background: var(--aqua-soft);
+  }
+  .dd-preset .name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .dd-preset .desc {
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  /* ACTIONS */
+  .dd-actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 10px;
+  }
+
+  /* STATS */
+  .dd-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    margin-bottom: 24px;
+  }
+  .dd-stat {
+    padding: 18px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .dd-stat:nth-child(2n) { border-right: none; }
+  .dd-stat:nth-last-child(-n+2) { border-bottom: none; }
+  .dd-stat .lbl {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .dd-stat .val {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .dd-stat .val.highlight { color: var(--red); font-size: 24px; }
+  .dd-stat .val.aqua { color: var(--aqua); }
+  .dd-stat .val.orange { color: var(--orange); }
+
+  /* LEDGER */
+  .dd-ledger {
+    border: 1px solid var(--line);
+    margin-bottom: 24px;
+    background: var(--card);
+  }
+  .dd-ledger-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    background: var(--bg);
+  }
+  .dd-ledger-row {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+  .dd-ledger-row:last-child { border-bottom: none; }
+  .dd-ledger-row .lbl { color: var(--ink-2); }
+  .dd-ledger-row .val {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .dd-ledger-row.total {
+    background: var(--bg);
+    padding: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .dd-ledger-row.total .lbl {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+  .dd-ledger-row.total .val {
+    color: var(--red);
+    font-size: 18px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+  }
+
+  /* BRUTAL TRUTH */
+  .dd-truth {
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--red);
+    background: var(--card);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink-2);
+  }
+  .dd-truth strong {
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .dd-truth .red { color: var(--red); font-weight: 700; }
+
+  /* EXECUTION PROTOCOL */
+  .dd-protocol-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--line);
+    background: var(--card);
+  }
+  .dd-protocol-item {
+    padding: 28px;
+    border-right: 1px solid var(--line);
+    position: relative;
+  }
+  .dd-protocol-item:last-child { border-right: none; }
+  .dd-protocol-item .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--red);
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .dd-protocol-item .num::before {
+    content: '';
+    width: 16px; height: 16px;
+    background: var(--red);
+  }
+  .dd-protocol-item:nth-child(2) .num::before { background: var(--aqua); }
+  .dd-protocol-item:nth-child(3) .num::before { background: var(--orange); }
+  .dd-protocol-item:nth-child(4) .num::before { background: var(--ink); }
+  .dd-protocol-item h4 {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  .dd-protocol-item p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  /* FOOTER */
+  .dd-footer {
+    padding: 40px 32px;
+    border-top: 1px solid var(--line);
+    background: var(--card);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .dd-footer span { color: var(--red); }
+
+  /* TOAST */
+  .dd-toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--aqua);
+    padding: 16px 24px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    z-index: 200;
+    display: none;
+  }
+  .dd-toast.show { display: block; animation: slideIn 0.3s ease; }
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 960px) {
+    .dd-hero-grid, .dd-calc-grid { grid-template-columns: 1fr; }
+    .dd-calc-left { border-right: none; border-bottom: 1px solid var(--line); }
+    .dd-protocol-grid { grid-template-columns: 1fr 1fr; }
+    .dd-protocol-item { border-right: none; border-bottom: 1px solid var(--line); }
+    .dd-protocol-item:nth-child(2n) { border-right: none; }
+    .dd-protocol-item:nth-last-child(-n+2) { border-bottom: none; }
+    .dd-hero-stats { grid-template-columns: 1fr 1fr; }
+    .dd-hero-stat { border-bottom: 1px solid var(--line); }
+    .dd-hero-stat:nth-child(2n) { border-right: none; }
+    .dd-hero-stat:nth-last-child(-n+2) { border-bottom: none; }
+    .dd-topbar { margin: 12px; }
+    .dd-topbar-inner { grid-template-columns: 1fr; min-height: auto; }
+    .dd-topbar-left { padding: 16px; }
+    .dd-topbar-divider { width: 100%; height: 1px; }
+    .dd-topbar-right { padding: 20px 24px; }
+    .dd-topbar-brand { font-size: 32px; }
+    .dd-topbar-avatar { width: 60px; height: 60px; }
+  }
+  @media (max-width: 560px) {
+    .dd-field-row, .dd-presets-grid, .dd-stats { grid-template-columns: 1fr; }
+    .dd-stat { border-right: none !important; border-bottom: 1px solid var(--line) !important; }
+    .dd-stat:last-child { border-bottom: none !important; }
+    .dd-tab { min-width: 140px; padding: 16px; font-size: 12px; }
+    .dd-section { padding: 60px 20px; }
+    .dd-hero { padding: 48px 20px 40px; }
+    .dd-calc-left, .dd-calc-right { padding: 24px; }
+    .dd-protocol-grid { grid-template-columns: 1fr; }
+    .dd-protocol-item { border-bottom: 1px solid var(--line) !important; }
+    .dd-protocol-item:last-child { border-bottom: none !important; }
+    .dd-footer { flex-direction: column; gap: 12px; text-align: center; }
+    .dd-strategy-card { grid-template-columns: 1fr; }
+    .dd-topbar-brand { font-size: 26px; }
+    .dd-topbar-tagline { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR — REDESIGNED TO MATCH REFERENCE -->
+<div class="dd-topbar">
+  <div class="dd-topbar-inner">
+    <div class="dd-topbar-left">
+      <div class="dd-topbar-avatar"></div>
+    </div>
+    <div class="dd-topbar-divider"></div>
+    <div class="dd-topbar-right">
+      <div class="dd-topbar-dots">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="dd-topbar-brand">
+        <span class="black">Digitally</span><span class="orange">Defined.</span>
+      </div>
+      <div class="dd-topbar-tagline">Build what you own.</div>
+      <div class="dd-topbar-accent"></div>
+    </div>
+  </div>
+  <a href="#offer" class="dd-topbar-cta">Get Access →</a>
+</div>
+
+<!-- HERO -->
+<section class="dd-hero">
+  <div class="dd-hero-grid">
+    <div>
+      <div class="dd-hero-tag">
+        <span class="dot"></span>
+        <span>The Masterclass / Vol. 01</span>
+      </div>
+      <h1>The <span class="accent">Unfiltered</span><br>Balance Sheet.</h1>
+      <p class="dd-hero-sub">
+        The Gen X woman's power play calculators. Four tactical instruments.
+        One Freedom Number. Zero excuses.
+      </p>
+      <div class="dd-hero-quote">
+        "Let's get real. No more excuses. Own your power."
+      </div>
+      <div class="dd-hero-actions">
+        <a href="#offer" class="dd-btn dd-btn-primary">Get The Masterclass — $97</a>
+        <a href="#suite" class="dd-btn dd-btn-ghost">Try A Calculator</a>
+      </div>
+    </div>
+
+    <div class="dd-visual-card">
+      <div class="dd-visual-head">
+        <span class="title">Balance Sheet Snapshot</span>
+        <span>2026 / Q1</span>
+      </div>
+      <div class="dd-visual-body">
+        <div class="dd-visual-row">
+          <span class="lbl">Divorce</span>
+          <div class="dd-visual-bar"><div class="dd-visual-bar-fill red" style="width: 78%"></div></div>
+          <span class="val">$184K</span>
+        </div>
+        <div class="dd-visual-row">
+          <span class="lbl">Caregiving</span>
+          <div class="dd-visual-bar"><div class="dd-visual-bar-fill aqua" style="width: 62%"></div></div>
+          <span class="val">$142K</span>
+        </div>
+        <div class="dd-visual-row">
+          <span class="lbl">Re-Entry</span>
+          <div class="dd-visual-bar"><div class="dd-visual-bar-fill orange" style="width: 45%"></div></div>
+          <span class="val">$97K</span>
+        </div>
+        <div class="dd-visual-row">
+          <span class="lbl">Dependency</span>
+          <div class="dd-visual-bar"><div class="dd-visual-bar-fill red" style="width: 88%"></div></div>
+          <span class="val">88%</span>
+        </div>
+      </div>
+      <div class="dd-visual-foot">
+        <span class="lbl">Freedom Number</span>
+        <span class="big">$1.24M</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dd-hero-stats">
+    <div class="dd-hero-stat">
+      <div class="num">04</div>
+      <div class="lbl">Power Calculators</div>
+    </div>
+    <div class="dd-hero-stat">
+      <div class="num">05</div>
+      <div class="lbl">Masterclass Modules</div>
+    </div>
+    <div class="dd-hero-stat">
+      <div class="num">∞</div>
+      <div class="lbl">Lifetime Access</div>
+    </div>
+    <div class="dd-hero-stat">
+      <div class="num">10x</div>
+      <div class="lbl">ROI Target</div>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATOR SUITE -->
+<section class="dd-section" id="suite">
+  <div class="dd-section-head">
+    <div>
+      <div class="dd-section-label"><span class="bar"></span>The Calculators</div>
+      <h2>Four calculators. One Freedom Number.</h2>
+      <p class="dd-section-sub">
+        Each calculator is a module. Each module is a mirror. Run them in any order.
+        Jump straight to the math that matters to you right now.
+      </p>
+    </div>
+  </div>
+
+  <div class="dd-tabs">
+    <button class="dd-tab active" data-tab="divorce">
+      <span class="idx">01</span>
+      <svg class="dd-tab-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="6" width="10" height="16" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="15" y="6" width="10" height="16" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="14" y1="4" x2="14" y2="24" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/>
+      </svg>
+      <span>Divorce Impact</span>
+    </button>
+    <button class="dd-tab" data-tab="caregiving">
+      <span class="idx">02</span>
+      <svg class="dd-tab-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 24C14 24 5 18 5 11C5 8 7.5 5 10.5 5C12 5 13.5 6 14 7.5C14.5 6 16 5 17.5 5C20.5 5 23 8 23 11C23 18 14 24 14 24Z" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="14" cy="13" r="2" fill="currentColor"/>
+      </svg>
+      <span>Caregiving Costs</span>
+    </button>
+    <button class="dd-tab" data-tab="career">
+      <span class="idx">03</span>
+      <svg class="dd-tab-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 22L10 14L15 18L24 6" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M18 6H24V12" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="4" y1="24" x2="24" y2="24" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <span>Career Re-Entry</span>
+    </button>
+    <button class="dd-tab" data-tab="spousal">
+      <span class="idx">04</span>
+      <svg class="dd-tab-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="9" cy="10" r="3.5" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="19" cy="10" r="3.5" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M3 23C3 19 6 17 9 17C10.5 17 12 17.5 13 18.5" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M25 23C25 19 22 17 19 17C17.5 17 16 17.5 15 18.5" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <span>Spousal Dependency</span>
+    </button>
+  </div>
+
+  <!-- ============ DIVORCE PANEL ============ -->
+  <div class="dd-panel active" data-panel="divorce">
+    <div class="dd-strategy-card">
+      <div class="dd-strategy-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect x="4" y="7" width="11" height="18" stroke="#C20F0A" stroke-width="1.5"/>
+          <rect x="17" y="7" width="11" height="18" stroke="#C20F0A" stroke-width="1.5"/>
+          <line x1="16" y1="4" x2="16" y2="28" stroke="#C20F0A" stroke-width="1.5" stroke-dasharray="2 2"/>
+        </svg>
+      </div>
+      <div>
+        <h3>Divorce is a liquidity event. Price it before you sign anything.</h3>
+        <p>
+          The Transition Tax is the brutal math of exiting a marriage. Legal fees, asset splits,
+          income loss, recovery timelines. Most women walk into divorce blind. You will walk in
+          with a calculated war chest. Stop reacting — start allocating.
+        </p>
+      </div>
+    </div>
+
+    <div class="dd-calc-grid">
+      <div class="dd-calc-left">
+        <div class="dd-calc-title">
+          <h4>Configure Divorce Impact</h4>
+          <span class="status">Live</span>
+        </div>
+        <div class="dd-field-row">
+          <div class="dd-field">
+            <label>Combined Assets ($)</label>
+            <input type="number" id="div-assets" value="750000" />
+          </div>
+          <div class="dd-field">
+            <label>Years Married</label>
+            <input type="number" id="div-years" value="18" />
+          </div>
+        </div>
+        <div class="dd-field-row">
+          <div class="dd-field">
+            <label>Your Annual Income ($)</label>
+            <input type="number" id="div-income" value="65000" />
+          </div>
+          <div class="dd-field">
+            <label>Spouse Annual Income ($)</label>
+            <input type="number" id="div-spouse-income" value="140000" />
+          </div>
+        </div>
+        <div class="dd-field">
+          <label>Legal Complexity</label>
+          <select id="div-complexity">
+            <option value="1">Uncontested / Amicable</option>
+            <option value="1.8" selected>Contested / Standard</option>
+            <option value="3.2">High-Conflict / Business Assets</option>
+          </select>
+        </div>
+        <div class="dd-field">
+          <label>Number of Children</label>
+          <input type="number" id="div-kids" value="2" />
+        </div>
+
+        <div class="dd-presets">
+          <div class="dd-presets-label">Quick-Load Strategic Presets</div>
+          <div class="dd-presets-grid">
+            <button class="dd-preset" data-preset="div-amicable">
+              <div class="name">Clean Exit</div>
+              <div class="desc">5yr / $300K / 0 kids</div>
+            </button>
+            <button class="dd-preset" data-preset="div-standard">
+              <div class="name">Standard Contested</div>
+              <div class="desc">15yr / $750K / 2 kids</div>
+            </button>
+            <button class="dd-preset" data-preset="div-highconflict">
+              <div class="name">High-Conflict</div>
+              <div class="desc">22yr / $2.4M / Business</div>
+            </button>
+            <button class="dd-preset" data-preset="div-late">
+              <div class="name">Late-Career Pivot</div>
+              <div class="desc">28yr / $1.8M / Empty Nest</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="dd-actions">
+          <button class="dd-btn dd-btn-primary" onclick="exportCalc('divorce')">Export Config</button>
+          <button class="dd-btn dd-btn-ghost" onclick="resetCalc('divorce')">Reset</button>
+        </div>
+      </div>
+
+      <div class="dd-calc-right">
+        <div class="dd-stats">
+          <div class="dd-stat">
+            <div class="lbl">Legal Fees</div>
+            <div class="val" id="div-out-legal">$28,800</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Your Asset Share</div>
+            <div class="val aqua" id="div-out-split">$375,000</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Annual Income Loss</div>
+            <div class="val orange" id="div-out-loss">$75,000</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Recovery Timeline</div>
+            <div class="val" id="div-out-timeline">4.2 YRS</div>
+          </div>
+        </div>
+
+        <div class="dd-ledger">
+          <div class="dd-ledger-head">
+            <span>Transition Tax Ledger</span>
+            <span>Itemized</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Legal & Filing Fees</span>
+            <span class="val" id="div-led-legal">$28,800</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Income Gap (2yr)</span>
+            <span class="val" id="div-led-income">$150,000</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Child Transition Costs</span>
+            <span class="val" id="div-led-kids">$36,000</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Housing / Relocation</span>
+            <span class="val" id="div-led-housing">$24,000</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Emotional / Coaching Reserve</span>
+            <span class="val" id="div-led-coach">$5,000</span>
+          </div>
+          <div class="dd-ledger-row total">
+            <span class="lbl">Total Transition Tax</span>
+            <span class="val" id="div-out-total">$343,800</span>
+          </div>
+        </div>
+
+        <div class="dd-truth" id="div-truth">
+          <strong>The Brutal Truth</strong>
+          Your transition tax is <span class="red">$343,800</span>.
+          That's the cost of exiting. Build your Digital Capital war chest before you sign anything.
+          The 10x ROI Rule applies: if this calculator prevents a single $35K mistake, you've won.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CAREGIVING PANEL ============ -->
+  <div class="dd-panel" data-panel="caregiving">
+    <div class="dd-strategy-card">
+      <div class="dd-strategy-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <path d="M16 28C16 28 6 21 6 13C6 9.5 8.5 6 12 6C13.8 6 15.2 7 16 8.5C16.8 7 18.2 6 20 6C23.5 6 26 9.5 26 13C26 21 16 28 16 28Z" stroke="#47B7D4" stroke-width="1.5"/>
+          <circle cx="16" cy="15" r="2.5" fill="#47B7D4"/>
+        </svg>
+      </div>
+      <div>
+        <h3>Caregiving is a six-figure liability no one warned you about.</h3>
+        <p>
+          The sandwich generation is bankrupt. Aging parents + college-age kids + your own
+          retirement. The direct costs are obvious. The opportunity costs — lost wages, reduced
+          retirement savings, career derailment — are the silent killer. Map the liability now.
+        </p>
+      </div>
+    </div>
+
+    <div class="dd-calc-grid">
+      <div class="dd-calc-left">
+        <div class="dd-calc-title">
+          <h4>Configure Caregiving Costs</h4>
+          <span class="status">Live</span>
+        </div>
+        <div class="dd-field-row">
+          <div class="dd-field">
+            <label>Hours / Week</label>
+            <input type="number" id="care-hours" value="20" />
+          </div>
+          <div class="dd-field">
+            <label>Expected Years</label>
+            <input type="number" id="care-years" value="5" />
+          </div>
+        </div>
+        <div class="dd-field-row">
+          <div class="dd-field">
+            <label>Your Hourly Wage ($)</label>
+            <input type="number" id="care-wage" value="35" />
+          </div>
+          <div class="dd-field">
+            <label>Medical / Month ($)</label>
+            <input type="number" id="care-medical" value="800" />
+          </div>
+        </div>
+        <div class="dd-field">
+          <label>Care Recipient</label>
+          <select id="care-type">
+            <option value="1" selected>Aging Parent</option>
+            <option value="1.2">Spouse / Partner</option>
+            <option value="1.5">Adult Child w/ Disability</option>
+          </select>
+        </div>
+        <div class="dd-field">
+          <label>Reduced Work Hours (%)</label>
+          <input type="number" id="care-reduced" value="25" />
+        </div>
+
+        <div class="dd-presets">
+          <div class="dd-presets-label">Quick-Load Strategic Presets</div>
+          <div class="dd-presets-grid">
+            <button class="dd-preset" data-preset="care-light">
+              <div class="name">Light Support</div>
+              <div class="desc">10hr/wk / 2yr / Parent</div>
+            </button>
+            <button class="dd-preset" data-preset="care-moderate">
+              <div class="name">Moderate Care</div>
+              <div class="desc">20hr/wk / 5yr / Parent</div>
+            </button>
+            <button class="dd-preset" data-preset="care-heavy">
+              <div class="name">Full-Time Care</div>
+              <div class="desc">35hr/wk / 7yr / Spouse</div>
+            </button>
+            <button class="dd-preset" data-preset="care-disability">
+              <div class="name">Adult Child Support</div>
+              <div class="desc">25hr/wk / 10yr / Disability</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="dd-actions">
+          <button class="dd-btn dd-btn-primary" onclick="exportCalc('caregiving')">Export Config</button>
+          <button class="dd-btn dd-btn-ghost" onclick="resetCalc('caregiving')">Reset</button>
+        </div>
+      </div>
+
+      <div class="dd-calc-right">
+        <div class="dd-stats">
+          <div class="dd-stat">
+            <div class="lbl">Lost Wages</div>
+            <div class="val" id="care-out-lost">$182,000</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Reduced Income</div>
+            <div class="val aqua" id="care-out-reduced">$113,750</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Out-Of-Pocket Medical</div>
+            <div class="val orange" id="care-out-medical">$48,000</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Retirement Gap</div>
+            <div class="val" id="care-out-retire">$68,250</div>
+          </div>
+        </div>
+
+        <div class="dd-ledger">
+          <div class="dd-ledger-head">
+            <span>Caregiving Liability Ledger</span>
+            <span>Itemized</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Direct Lost Wages</span>
+            <span class="val" id="care-led-lost">$182,000</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Reduced Income Over Period</span>
+            <span class="val" id="care-led-reduced">$113,750</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Medical / Out-Of-Pocket</span>
+            <span class="val" id="care-led-medical">$48,000</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Retirement Savings Gap</span>
+            <span class="val" id="care-led-retire">$68,250</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Career Derailment Penalty</span>
+            <span class="val" id="care-led-derail">$45,000</span>
+          </div>
+          <div class="dd-ledger-row total">
+            <span class="lbl">Total Caregiving Liability</span>
+            <span class="val" id="care-out-total">$457,000</span>
+          </div>
+        </div>
+
+        <div class="dd-truth" id="care-truth">
+          <strong>The Brutal Truth</strong>
+          Caregiving will cost you <span class="red">$457,000</span> in
+          direct and opportunity costs. This is the hidden tax of the sandwich generation.
+          Automate your Digital Capital now — before the crisis hits.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CAREER PANEL ============ -->
+  <div class="dd-panel" data-panel="career">
+    <div class="dd-strategy-card">
+      <div class="dd-strategy-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <path d="M4 26L12 16L17 21L28 7" stroke="#F18B25" stroke-width="1.5"/>
+          <path d="M21 7H28V14" stroke="#F18B25" stroke-width="1.5"/>
+          <line x1="4" y1="28" x2="28" y2="28" stroke="#F18B25" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div>
+        <h3>Your 30 years of experience is not a liability. It's a premium.</h3>
+        <p>
+          The Career Re-Entry Discount is a myth sold to women stepping back into the workforce.
+          Your Strategic Nuance — the pattern recognition, the crisis management, the 20 years
+          of "been there, survived that" — commands a premium. Price it. Claim it. Pair it with
+          Digital Capital and your Freedom Number materializes.
+        </p>
+      </div>
+    </div>
+
+    <div class="dd-calc-grid">
+      <div class="dd-calc-left">
+        <div class="dd-calc-title">
+          <h4>Configure Career Re-Entry</h4>
+          <span class="status">Live</span>
+        </div>
+        <div class="dd-field-row">
+          <div class="dd-field">
+            <label>Years Out Of Workforce</label>
+            <input type="number" id="car-years-out" value="8" />
+          </div>
+          <div class="dd-field">
+            <label>Previous Peak Salary ($)</label>
+            <input type="number" id="car-peak" value="95000" />
+          </div>
+        </div>
+        <div class="dd-field-row">
+          <div class="dd-field">
+            <label>Target Re-Entry Salary ($)</label>
+            <input type="number" id="car-target" value="72000" />
+          </div>
+          <div class="dd-field">
+            <label>Digital Leverage (1-10)</label>
+            <input type="number" id="car-leverage" value="6" min="1" max="10" />
+          </div>
+        </div>
+        <div class="dd-field-row">
+          <div class="dd-field">
+            <label>Years Of Experience</label>
+            <input type="number" id="car-exp" value="22" />
+          </div>
+          <div class="dd-field">
+            <label>Target Digital Income ($/yr)</label>
+            <input type="number" id="car-digital" value="48000" />
+          </div>
+        </div>
+
+        <div class="dd-presets">
+          <div class="dd-presets-label">Quick-Load Strategic Presets</div>
+          <div class="dd-presets-grid">
+            <button class="dd-preset" data-preset="car-corporate">
+              <div class="name">Corporate Pivot</div>
+              <div class="desc">5yr out / $120K peak</div>
+            </button>
+            <button class="dd-preset" data-preset="car-mom">
+              <div class="name">Post-Motherhood</div>
+              <div class="desc">12yr out / $85K peak</div>
+            </button>
+            <button class="dd-preset" data-preset="car-caregiver">
+              <div class="name">Post-Caregiving</div>
+              <div class="desc">8yr out / $95K peak</div>
+            </button>
+            <button class="dd-preset" data-preset="car-entrepreneur">
+              <div class="name">Digital Founder</div>
+              <div class="desc">3yr out / $140K peak</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="dd-actions">
+          <button class="dd-btn dd-btn-primary" onclick="exportCalc('career')">Export Config</button>
+          <button class="dd-btn dd-btn-ghost" onclick="resetCalc('career')">Reset</button>
+        </div>
+      </div>
+
+      <div class="dd-calc-right">
+        <div class="dd-stats">
+          <div class="dd-stat">
+            <div class="lbl">Experience Discount</div>
+            <div class="val" id="car-out-discount">-$23,000</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Gen X Magic Premium</div>
+            <div class="val aqua" id="car-out-premium">+$33,250</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">True Market Value</div>
+            <div class="val orange" id="car-out-market">$105,250</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Negotiation Leverage</div>
+            <div class="val" id="car-out-negotiate">$33,250</div>
+          </div>
+        </div>
+
+        <div class="dd-ledger">
+          <div class="dd-ledger-head">
+            <span>Re-Entry Leverage Ledger</span>
+            <span>Itemized</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Experience Discount Penalty</span>
+            <span class="val" id="car-led-discount">-$23,000</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Strategic Nuance Premium</span>
+            <span class="val" id="car-led-premium">+$33,250</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">True Market Salary</span>
+            <span class="val" id="car-led-market">$105,250</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Annual Digital Capital</span>
+            <span class="val" id="car-led-digital">$48,000</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Capital Gains Multiplier (12.5x)</span>
+            <span class="val" id="car-led-multiplier">$1,915,625</span>
+          </div>
+          <div class="dd-ledger-row total">
+            <span class="lbl">Freedom Number</span>
+            <span class="val" id="car-out-freedom">$1.92M</span>
+          </div>
+        </div>
+
+        <div class="dd-truth" id="car-truth">
+          <strong>The Brutal Truth</strong>
+          You're leaving <span class="red">$33,250</span> on the table
+          by accepting the discount. Your 22 years of Strategic Nuance commands a premium.
+          Pair it with Digital Capital and your Freedom Number is <span class="red">$1.92M</span>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SPOUSAL PANEL ============ -->
+  <div class="dd-panel" data-panel="spousal">
+    <div class="dd-strategy-card">
+      <div class="dd-strategy-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <circle cx="10" cy="11" r="4" stroke="#C20F0A" stroke-width="1.5"/>
+          <circle cx="22" cy="11" r="4" stroke="#C20F0A" stroke-width="1.5"/>
+          <path d="M3 27C3 22 6.5 19 10 19C12 19 13.5 19.5 15 21" stroke="#C20F0A" stroke-width="1.5"/>
+          <path d="M29 27C29 22 25.5 19 22 19C20 19 18.5 19.5 17 21" stroke="#C20F0A" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div>
+        <h3>Spousal dependency is a hidden tax on your sovereignty.</h3>
+        <p>
+          If 80% of household income flows through one name, you're not a partner — you're a
+          dependent. The Spousal Dependency Calculator measures your financial sovereignty in
+          cold, hard numbers. The Freedom Gap is the annual income you need to close to own
+          your power. Stop guessing. Start calculating.
+        </p>
+      </div>
+    </div>
+
+    <div class="dd-calc-grid">
+      <div class="dd-calc-left">
+        <div class="dd-calc-title">
+          <h4>Configure Spousal Dependency</h4>
+          <span class="status">Live</span>
+        </div>
+        <div class="dd-field-row">
+          <div class="dd-field">
+            <label>Your Annual Income ($)</label>
+            <input type="number" id="sp-income" value="65000" />
+          </div>
+          <div class="dd-field">
+            <label>Household Annual Income ($)</label>
+            <input type="number" id="sp-household" value="180000" />
+          </div>
+        </div>
+        <div class="dd-field-row">
+          <div class="dd-field">
+            <label>Assets In Your Name ($)</label>
+            <input type="number" id="sp-assets" value="45000" />
+          </div>
+          <div class="dd-field">
+            <label>Total Household Assets ($)</label>
+            <input type="number" id="sp-total-assets" value="680000" />
+          </div>
+        </div>
+        <div class="dd-field-row">
+          <div class="dd-field">
+            <label>Emergency Fund (Months)</label>
+            <input type="number" id="sp-emergency" value="3" />
+          </div>
+          <div class="dd-field">
+            <label>Skills Marketability (1-10)</label>
+            <input type="number" id="sp-skills" value="5" min="1" max="10" />
+          </div>
+        </div>
+
+        <div class="dd-presets">
+          <div class="dd-presets-label">Quick-Load Strategic Presets</div>
+          <div class="dd-presets-grid">
+            <button class="dd-preset" data-preset="sp-highdep">
+              <div class="name">High Dependency</div>
+              <div class="desc">$0 income / $2K assets</div>
+            </button>
+            <button class="dd-preset" data-preset="sp-moderate">
+              <div class="name">Moderate Mix</div>
+              <div class="desc">$65K / $180K household</div>
+            </button>
+            <button class="dd-preset" data-preset="sp-leaning">
+              <div class="name">Leaning Sovereign</div>
+              <div class="desc">$110K / $180K household</div>
+            </button>
+            <button class="dd-preset" data-preset="sp-sovereign">
+              <div class="name">Full Sovereign</div>
+              <div class="desc">$180K / Equal assets</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="dd-actions">
+          <button class="dd-btn dd-btn-primary" onclick="exportCalc('spousal')">Export Config</button>
+          <button class="dd-btn dd-btn-ghost" onclick="resetCalc('spousal')">Reset</button>
+        </div>
+      </div>
+
+      <div class="dd-calc-right">
+        <div class="dd-stats">
+          <div class="dd-stat">
+            <div class="lbl">Income Dependency</div>
+            <div class="val" id="sp-out-income">64%</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Asset Ownership</div>
+            <div class="val aqua" id="sp-out-asset">6.6%</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Sovereignty Score</div>
+            <div class="val orange" id="sp-out-sovereign">32 / 100</div>
+          </div>
+          <div class="dd-stat">
+            <div class="lbl">Freedom Gap / Year</div>
+            <div class="val" id="sp-out-gap">$25,000</div>
+          </div>
+        </div>
+
+        <div class="dd-ledger">
+          <div class="dd-ledger-head">
+            <span>Sovereignty Audit Ledger</span>
+            <span>Itemized</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Income You Contribute</span>
+            <span class="val" id="sp-led-income">36%</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Assets You Control</span>
+            <span class="val" id="sp-led-asset">6.6%</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Emergency Runway</span>
+            <span class="val" id="sp-led-runway">3 MONTHS</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Skills Marketability</span>
+            <span class="val" id="sp-led-skills">5 / 10</span>
+          </div>
+          <div class="dd-ledger-row">
+            <span class="lbl">Dependency Score</span>
+            <span class="val" id="sp-led-dep">68%</span>
+          </div>
+          <div class="dd-ledger-row total">
+            <span class="lbl">Annual Freedom Gap</span>
+            <span class="val" id="sp-out-dep">$25,000</span>
+          </div>
+        </div>
+
+        <div class="dd-truth" id="sp-truth">
+          <strong>The Brutal Truth</strong>
+          You're <span class="red">68% dependent</span> on a single
+          income stream. If that stream stops tomorrow, your runway is 3 months. Your Freedom
+          Gap is <span class="red">$25,000/year</span>. Build Digital Capital. Close the gap. Own your power.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXECUTION PROTOCOL -->
+<section class="dd-section">
+  <div class="dd-section-head">
+    <div>
+      <div class="dd-section-label orange"><span class="bar"></span>Execution Protocol</div>
+      <h2>Four steps. One sovereign outcome.</h2>
+    </div>
+  </div>
+  <div class="dd-protocol-grid">
+    <div class="dd-protocol-item">
+      <div class="num">01</div>
+      <h4>Run All Four Calculators</h4>
+      <p>Execute each calculator against your current reality. Don't flinch at the numbers. These are your coordinates.</p>
+    </div>
+    <div class="dd-protocol-item">
+      <div class="num">02</div>
+      <h4>Synthesize Your Freedom Number</h4>
+      <p>Combine the outputs. Apply the Capital Gains Multiplier (12.5x). Lock in your Freedom Number.</p>
+    </div>
+    <div class="dd-protocol-item">
+      <div class="num">03</div>
+      <h4>Build Digital Capital War Chest</h4>
+      <p>Automate sinking funds against each liability. Treat your Transition Tax as business overhead.</p>
+    </div>
+    <div class="dd-protocol-item">
+      <div class="num">04</div>
+      <h4>Catalog For The Inheritance Vault</h4>
+      <p>Every calculator output, every Freedom Number — catalog it. This is your legacy transfer framework.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="dd-footer">
+  <div>DIGITALLYDEFINED // OPERATIONAL FRAMEWORK</div>
+  <div>COPYRIGHT <span>2026</span></div>
+</footer>
+
+<!-- TOAST -->
+<div class="dd-toast" id="dd-toast">Action complete</div>
+
+<script>
+  // ============ TAB SWITCHING ============
+  const tabs = document.querySelectorAll('.dd-tab');
+  const panels = document.querySelectorAll('.dd-panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector(`[data-panel="${target}"]`).classList.add('active');
+    });
+  });
+
+  // ============ FORMATTERS ============
+  const fmt = n => {
+    if (Math.abs(n) >= 1000000) return '$' + (n/1000000).toFixed(2) + 'M';
+    return '$' + Math.round(n).toLocaleString('en-US');
+  };
+
+  // ============ TOAST ============
+  function showToast(msg) {
+    const toast = document.getElementById('dd-toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  // ============ DIVORCE CALC ============
+  function calcDivorce() {
+    const assets = parseFloat(document.getElementById('div-assets').value) || 0;
+    const years = parseFloat(document.getElementById('div-years').value) || 0;
+    const income = parseFloat(document.getElementById('div-income').value) || 0;
+    const spouseInc = parseFloat(document.getElementById('div-spouse-income').value) || 0;
+    const complexity = parseFloat(document.getElementById('div-complexity').value) || 1;
+    const kids = parseFloat(document.getElementById('div-kids').value) || 0;
+
+    const legalFees = 12000 * complexity * (1 + years/30) * (1 + kids * 0.15);
+    const split = assets * 0.5;
+    const incomeLoss = Math.max(0, spouseInc - income);
+    const recoveryYears = Math.max(1, (legalFees + incomeLoss) / Math.max(income, 1));
+
+    const incomeGap2yr = incomeLoss * 2;
+    const kidCosts = kids * 18000;
+    const housing = 24000;
+    const coaching = 5000;
+    const total = legalFees + incomeGap2yr + kidCosts + housing + coaching;
+
+    document.getElementById('div-out-legal').textContent = fmt(legalFees);
+    document.getElementById('div-out-split').textContent = fmt(split);
+    document.getElementById('div-out-loss').textContent = fmt(incomeLoss);
+    document.getElementById('div-out-timeline').textContent = recoveryYears.toFixed(1) + ' YRS';
+    document.getElementById('div-led-legal').textContent = fmt(legalFees);
+    document.getElementById('div-led-income').textContent = fmt(incomeGap2yr);
+    document.getElementById('div-led-kids').textContent = fmt(kidCosts);
+    document.getElementById('div-led-housing').textContent = fmt(housing);
+    document.getElementById('div-led-coach').textContent = fmt(coaching);
+    document.getElementById('div-out-total').textContent = fmt(total);
+    document.getElementById('div-truth').innerHTML =
+      `<strong>The Brutal Truth</strong>
+      Your transition tax is <span class="red">${fmt(total)}</span>.
+      That's the cost of exiting. Build your Digital Capital war chest before you sign anything.
+      The 10x ROI Rule applies: if this calculator prevents a single ${fmt(total/10)} mistake, you've won.`;
+  }
+  document.querySelectorAll('[id^="div-"]').forEach(el => el.addEventListener('input', calcDivorce));
+  calcDivorce();
+
+  // ============ CAREGIVING CALC ============
+  function calcCaregiving() {
+    const hours = parseFloat(document.getElementById('care-hours').value) || 0;
+    const years = parseFloat(document.getElementById('care-years').value) || 0;
+    const wage = parseFloat(document.getElementById('care-wage').value) || 0;
+    const medical = parseFloat(document.getElementById('care-medical').value) || 0;
+    const type = parseFloat(document.getElementById('care-type').value) || 1;
+    const reduced = parseFloat(document.getElementById('care-reduced').value) || 0;
+
+    const lostWages = hours * 52 * years * wage * type;
+    const annualIncome = wage * 2080;
+    const reducedIncome = annualIncome * (reduced/100) * years;
+    const medicalTotal = medical * 12 * years;
+    const retireGap = reducedIncome * 0.6;
+    const derail = annualIncome * 0.25 * (years / 5);
+    const total = lostWages + reducedIncome + medicalTotal + retireGap + derail;
+
+    document.getElementById('care-out-lost').textContent = fmt(lostWages);
+    document.getElementById('care-out-reduced').textContent = fmt(reducedIncome);
+    document.getElementById('care-out-medical').textContent = fmt(medicalTotal);
+    document.getElementById('care-out-retire').textContent = fmt(retireGap);
+    document.getElementById('care-led-lost').textContent = fmt(lostWages);
+    document.getElementById('care-led-reduced').textContent = fmt(reducedIncome);
+    document.getElementById('care-led-medical').textContent = fmt(medicalTotal);
+    document.getElementById('care-led-retire').textContent = fmt(retireGap);
+    document.getElementById('care-led-derail').textContent = fmt(derail);
+    document.getElementById('care-out-total').textContent = fmt(total);
+    document.getElementById('care-truth').innerHTML =
+      `<strong>The Brutal Truth</strong>
+      Caregiving will cost you <span class="red">${fmt(total)}</span> in
+      direct and opportunity costs. This is the hidden tax of the sandwich generation.
+      Automate your Digital Capital now — before the crisis hits.`;
+  }
+  document.querySelectorAll('[id^="care-"]').forEach(el => el.addEventListener('input', calcCaregiving));
+  calcCaregiving();
+
+  // ============ CAREER CALC ============
+  function calcCareer() {
+    const yearsOut = parseFloat(document.getElementById('car-years-out').value) || 0;
+    const peak = parseFloat(document.getElementById('car-peak').value) || 0;
+    const target = parseFloat(document.getElementById('car-target').value) || 0;
+    const leverage = parseFloat(document.getElementById('car-leverage').value) || 1;
+    const exp = parseFloat(document.getElementById('car-exp').value) || 0;
+    const digital = parseFloat(document.getElementById('car-digital').value) || 0;
+
+    const discount = Math.min(peak * 0.4, Math.max(0, peak - target));
+    const genXPremium = (exp * 1500) * (leverage / 10);
+    const marketValue = target + genXPremium;
+    const negotiate = marketValue - target;
+    const freedomNumber = (marketValue + digital) * 12.5;
+
+    document.getElementById('car-out-discount').textContent = '-' + fmt(discount);
+    document.getElementById('car-out-premium').textContent = '+' + fmt(genXPremium);
+    document.getElementById('car-out-market').textContent = fmt(marketValue);
+    document.getElementById('car-out-negotiate').textContent = fmt(negotiate);
+    document.getElementById('car-led-discount').textContent = '-' + fmt(discount);
+    document.getElementById('car-led-premium').textContent = '+' + fmt(genXPremium);
+    document.getElementById('car-led-market').textContent = fmt(marketValue);
+    document.getElementById('car-led-digital').textContent = fmt(digital);
+    document.getElementById('car-led-multiplier').textContent = fmt(freedomNumber);
+    document.getElementById('car-out-freedom').textContent = fmt(freedomNumber);
+    document.getElementById('car-truth').innerHTML =
+      `<strong>The Brutal Truth</strong>
+      You're leaving <span class="red">${fmt(negotiate)}</span> on the table
+      by accepting the discount. Your ${exp} years of Strategic Nuance commands a premium.
+      Pair it with Digital Capital and your Freedom Number is <span class="red">${fmt(freedomNumber)}</span>.`;
+  }
+  document.querySelectorAll('[id^="car-"]').forEach(el => el.addEventListener('input', calcCareer));
+  calcCareer();
+
+  // ============ SPOUSAL CALC ============
+  function calcSpousal() {
+    const income = parseFloat(document.getElementById('sp-income').value) || 0;
+    const household = parseFloat(document.getElementById('sp-household').value) || 1;
+    const assets = parseFloat(document.getElementById('sp-assets').value) || 0;
+    const totalAssets = parseFloat(document.getElementById('sp-total-assets').value) || 1;
+    const emergency = parseFloat(document.getElementById('sp-emergency').value) || 0;
+    const skills = parseFloat(document.getElementById('sp-skills').value) || 1;
+
+    const incomeContrib = (income / household) * 100;
+    const incomeDep = 100 - incomeContrib;
+    const assetOwn = (assets / totalAssets) * 100;
+    const emergencyScore = Math.min(25, emergency * 4);
+    const skillsScore = skills * 4;
+    const incomeScore = incomeContrib * 0.3;
+    const sovereign = Math.round(incomeScore + (assetOwn * 0.2) + emergencyScore + skillsScore);
+    const freedomGap = Math.max(0, (household * 0.5) - income);
+    const depScore = Math.max(0, Math.min(100, 100 - sovereign));
+
+    document.getElementById('sp-out-income').textContent = Math.round(incomeDep) + '%';
+    document.getElementById('sp-out-asset').textContent = assetOwn.toFixed(1) + '%';
+    document.getElementById('sp-out-sovereign').textContent = sovereign + ' / 100';
+    document.getElementById('sp-out-gap').textContent = fmt(freedomGap);
+    document.getElementById('sp-led-income').textContent = Math.round(incomeContrib) + '%';
+    document.getElementById('sp-led-asset').textContent = assetOwn.toFixed(1) + '%';
+    document.getElementById('sp-led-runway').textContent = emergency + ' MONTHS';
+    document.getElementById('sp-led-skills').textContent = skills + ' / 10';
+    document.getElementById('sp-led-dep').textContent = depScore + '%';
+    document.getElementById('sp-out-dep').textContent = fmt(freedomGap);
+    document.getElementById('sp-truth').innerHTML =
+      `<strong>The Brutal Truth</strong>
+      You're <span class="red">${depScore}% dependent</span> on a single
+      income stream. If that stream stops tomorrow, your runway is ${emergency} months. Your Freedom
+      Gap is <span class="red">${fmt(freedomGap)}/year</span>. Build Digital Capital. Close the gap. Own your power.`;
+  }
+  document.querySelectorAll('[id^="sp-"]').forEach(el => el.addEventListener('input', calcSpousal));
+  calcSpousal();
+
+  // ============ PRESETS ============
+  const presets = {
+    'div-amicable': { 'div-assets': 300000, 'div-years': 5, 'div-income': 55000, 'div-spouse-income': 75000, 'div-complexity': '1', 'div-kids': 0 },
+    'div-standard': { 'div-assets': 750000, 'div-years': 15, 'div-income': 65000, 'div-spouse-income': 140000, 'div-complexity': '1.8', 'div-kids': 2 },
+    'div-highconflict': { 'div-assets': 2400000, 'div-years': 22, 'div-income': 45000, 'div-spouse-income': 280000, 'div-complexity': '3.2', 'div-kids': 3 },
+    'div-late': { 'div-assets': 1800000, 'div-years': 28, 'div-income': 72000, 'div-spouse-income': 165000, 'div-complexity': '1.8', 'div-kids': 0 },
+    'care-light': { 'care-hours': 10, 'care-years': 2, 'care-wage': 35, 'care-medical': 400, 'care-type': '1', 'care-reduced': 10 },
+    'care-moderate': { 'care-hours': 20, 'care-years': 5, 'care-wage': 35, 'care-medical': 800, 'care-type': '1', 'care-reduced': 25 },
+    'care-heavy': { 'care-hours': 35, 'care-years': 7, 'care-wage': 42, 'care-medical': 1500, 'care-type': '1.2', 'care-reduced': 60 },
+    'care-disability': { 'care-hours': 25, 'care-years': 10, 'care-wage': 38, 'care-medical': 1200, 'care-type': '1.5', 'care-reduced': 40 },
+    'car-corporate': { 'car-years-out': 5, 'car-peak': 120000, 'car-target': 95000, 'car-leverage': 7, 'car-exp': 18, 'car-digital': 36000 },
+    'car-mom': { 'car-years-out': 12, 'car-peak': 85000, 'car-target': 55000, 'car-leverage': 5, 'car-exp': 14, 'car-digital': 24000 },
+    'car-caregiver': { 'car-years-out': 8, 'car-peak': 95000, 'car-target': 72000, 'car-leverage': 6, 'car-exp': 22, 'car-digital': 48000 },
+    'car-entrepreneur': { 'car-years-out': 3, 'car-peak': 140000, 'car-target': 110000, 'car-leverage': 9, 'car-exp': 20, 'car-digital': 72000 },
+    'sp-highdep': { 'sp-income': 0, 'sp-household': 180000, 'sp-assets': 2000, 'sp-total-assets': 680000, 'sp-emergency': 0, 'sp-skills': 3 },
+    'sp-moderate': { 'sp-income': 65000, 'sp-household': 180000, 'sp-assets': 45000, 'sp-total-assets': 680000, 'sp-emergency': 3, 'sp-skills': 5 },
+    'sp-leaning': { 'sp-income': 110000, 'sp-household': 180000, 'sp-assets': 220000, 'sp-total-assets': 680000, 'sp-emergency': 6, 'sp-skills': 7 },
+    'sp-sovereign': { 'sp-income': 180000, 'sp-household': 180000, 'sp-assets': 340000, 'sp-total-assets': 680000, 'sp-emergency': 12, 'sp-skills': 9 }
+  };
+
+  document.querySelectorAll('.dd-preset').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.preset;
+      const data = presets[key];
+      if (!data) return;
+      Object.entries(data).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+      });
+      calcDivorce();
+      calcCaregiving();
+      calcCareer();
+      calcSpousal();
+      showToast('Preset Loaded');
+    });
+  });
+
+  // ============ EXPORT / RESET ============
+  function exportCalc(type) {
+    const data = {};
+    const prefix = { divorce: 'div-', caregiving: 'care-', career: 'car-', spousal: 'sp-' }[type];
+    document.querySelectorAll(`[id^="${prefix}"]`).forEach(el => {
+      if (el.tagName === 'INPUT' || el.tagName === 'SELECT') {
+        data[el.id] = el.value;
+      }
+    });
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `unfiltered-balancesheet-${type}-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Config Exported');
+  }
+
+  function resetCalc(type) {
+    const defaults = {
+      divorce: { 'div-assets': 750000, 'div-years': 18, 'div-income': 65000, 'div-spouse-income': 140000, 'div-complexity': '1.8', 'div-kids': 2 },
+      caregiving: { 'care-hours': 20, 'care-years': 5, 'care-wage': 35, 'care-medical': 800, 'care-type': '1', 'care-reduced': 25 },
+      career: { 'car-years-out': 8, 'car-peak': 95000, 'car-target': 72000, 'car-leverage': 6, 'car-exp': 22, 'car-digital': 48000 },
+      spousal: { 'sp-income': 65000, 'sp-household': 180000, 'sp-assets': 45000, 'sp-total-assets': 680000, 'sp-emergency': 3, 'sp-skills': 5 }
+    };
+    const data = defaults[type];
+    Object.entries(data).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val;
+    });
+    calcDivorce(); calcCaregiving(); calcCareer(); calcSpousal();
+    showToast('Reset Complete');
+  }
+</script>
+
+</body>
+</html>

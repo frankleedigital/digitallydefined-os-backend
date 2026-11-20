@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigitallyDefined - Financial Autonomy Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Inter:wght@700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ============ DIGITALLYDEFINED GLOBAL TOKENS ============ */
+        :root {
+            --dd-bg: #FFFCF9;
+            --dd-text: #2D3748;
+            --dd-frame: #000000;
+            --dd-primary: #47B7D4;
+            --dd-secondary: #F18B25;
+            --dd-tertiary: #D64545;
+            --dd-font-heading: 'Inter', sans-serif;
+            --dd-font-body: 'DM Sans', sans-serif;
+        }
+
+        /* ============ STRICT AESTHETIC RULES ============ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            border-radius: 0 !important; /* NO ROUNDED CORNERS */
+            box-shadow: none !important; /* NO SHADOWS */
+            text-shadow: none !important;
+        }
+
+        body {
+            background: var(--dd-bg);
+            color: var(--dd-text);
+            font-family: var(--dd-font-body);
+            font-size: 16px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ============ REQUIRED LAYOUT CLASSES ============ */
+        .dd-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .dd-section {
+            padding: 80px 0;
+            border-bottom: 2px solid var(--dd-frame);
+        }
+        .dd-section:last-child { border-bottom: none; }
+
+        .dd-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .dd-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .dd-card {
+            border: 2px solid var(--dd-frame);
+            background: var(--dd-bg);
+            padding: 32px;
+            position: relative;
+        }
+
+        .dd-input-group { margin-bottom: 24px; }
+
+        .dd-label {
+            display: block;
+            font-family: var(--dd-font-heading);
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            color: var(--dd-frame);
+        }
+
+        .dd-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--dd-frame);
+            background: var(--dd-bg);
+            font-family: var(--dd-font-body);
+            font-size: 16px;
+            color: var(--dd-text);
+            outline: none;
+        }
+        .dd-input:focus { border-color: var(--dd-secondary); }
+
+        .dd-btn {
+            display: inline-block;
+            padding: 16px 32px;
+            border: 2px solid var(--dd-frame);
+            background: var(--dd-frame);
+            color: var(--dd-bg);
+            font-family: var(--dd-font-heading);
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .dd-btn:hover {
+            background: var(--dd-secondary);
+            border-color: var(--dd-secondary);
+        }
+        .dd-btn--outline {
+            background: transparent;
+            color: var(--dd-frame);
+        }
+        .dd-btn--outline:hover {
+            background: var(--dd-frame);
+            color: var(--dd-bg);
+        }
+        .dd-btn--accent {
+            background: var(--dd-secondary);
+            border-color: var(--dd-secondary);
+        }
+        .dd-btn--accent:hover {
+            background: var(--dd-frame);
+            border-color: var(--dd-frame);
+        }
+
+        /* ============ TYPOGRAPHY ============ */
+        h1, h2, h3, h4 {
+            font-family: var(--dd-font-heading);
+            font-weight: 900;
+            line-height: 1.1;
+            color: var(--dd-frame);
+        }
+        h1 { font-size: 56px; letter-spacing: -0.02em; margin-bottom: 24px; }
+        h2 { font-size: 40px; letter-spacing: -0.01em; margin-bottom: 32px; }
+        h3 { font-size: 24px; margin-bottom: 16px; }
+        h4 { font-size: 18px; margin-bottom: 12px; }
+
+        p { margin-bottom: 16px; }
+
+        .dd-eyebrow {
+            font-family: var(--dd-font-heading);
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--dd-secondary);
+            margin-bottom: 16px;
+        }
+
+        .dd-number {
+            font-family: var(--dd-font-heading);
+            font-weight: 900;
+            font-size: 64px;
+            color: var(--dd-frame);
+            opacity: 0.05;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            line-height: 1;
+        }
+
+        /* ============ LOGO ============ */
+        .dd-logo-wrap {
+            padding: 40px 0;
+            border-bottom: 2px solid var(--dd-frame);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .dd-logo-icons { display: flex; gap: 8px; }
+        .dd-logo-divider {
+            width: 2px;
+            height: 60px;
+            background: var(--dd-frame);
+        }
+        .dd-logo-text-wrap { display: flex; flex-direction: column; gap: 8px; }
+        .dd-logo-title {
+            font-family: var(--dd-font-heading);
+            font-weight: 900;
+            font-size: 32px;
+            letter-spacing: -0.02em;
+            color: var(--dd-frame);
+        }
+        .dd-logo-title .accent { color: var(--dd-secondary); font-style: italic; }
+        .dd-logo-tagline {
+            font-family: var(--dd-font-heading);
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--dd-frame);
+            border-bottom: 2px solid var(--dd-secondary);
+            padding-bottom: 4px;
+            display: inline-block;
+        }
+
+        /* ============ HERO ============ */
+        .dd-hero {
+            padding: 80px 0;
+            border-bottom: 2px solid var(--dd-frame);
+        }
+        .dd-hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+        .dd-stat-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 2px solid var(--dd-frame);
+        }
+        .dd-stat-num {
+            font-family: var(--dd-font-heading);
+            font-weight: 900;
+            font-size: 40px;
+            color: var(--dd-frame);
+            line-height: 1;
+        }
+        .dd-stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        /* ============ CALCULATOR ============ */
+        .dd-range-wrap {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .dd-range {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            background: var(--dd-frame);
+            outline: none;
+        }
+        .dd-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--dd-secondary);
+            border: 2px solid var(--dd-frame);
+            cursor: pointer;
+        }
+        .dd-range-value {
+            font-family: var(--dd-font-heading);
+            font-weight: 700;
+            font-size: 16px;
+            min-width: 120px;
+            text-align: right;
+        }
+        .dd-result-box {
+            border: 2px solid var(--dd-frame);
+            padding: 24px;
+            margin-top: 24px;
+            background: var(--dd-frame);
+            color: var(--dd-bg);
+        }
+        .dd-result-label {
+            font-family: var(--dd-font-heading);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+        .dd-result-value {
+            font-family: var(--dd-font-heading);
+            font-weight: 900;
+            font-size: 48px;
+            line-height: 1;
+            color: var(--dd-secondary);
+        }
+
+        /* ============ TABLE ============ */
+        .dd-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--dd-font-body);
+        }
+        .dd-table th, .dd-table td {
+            border: 2px solid var(--dd-frame);
+            padding: 20px 24px;
+            text-align: left;
+        }
+        .dd-table th {
+            font-family: var(--dd-font-heading);
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: var(--dd-frame);
+            color: var(--dd-bg);
+        }
+        .dd-table .col-highlight { background: rgba(241, 139, 37, 0.05); }
+        .dd-table .col-highlight-header { background: var(--dd-secondary); color: var(--dd-bg); }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 960px) {
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .dd-grid, .dd-grid-2 { grid-template-columns: 1fr; }
+            .dd-hero-grid { grid-template-columns: 1fr; gap: 40px; }
+            .dd-logo-wrap { flex-direction: column; gap: 16px; }
+            .dd-logo-divider { width: 60px; height: 2px; }
+            .dd-stat-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dd-page">
+
+    <!-- LOGO -->
+    <div class="dd-logo-wrap">
+        <div class="dd-logo-icons">
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none"><rect x="4" y="12" width="56" height="44" stroke="#000" stroke-width="2.5" fill="#FFFCF9"/><rect x="4" y="12" width="56" height="10" fill="#F18B25" stroke="#000" stroke-width="2.5"/><path d="M22 30 L22 44 L27 40 L31 48 L35 46 L31 38 L38 38 Z" fill="#F18B25" stroke="#000" stroke-width="2" stroke-linejoin="round"/></svg>
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="26" fill="#E6F4F8" stroke="#000" stroke-width="2.5"/><ellipse cx="32" cy="32" rx="10" ry="26" fill="none" stroke="#000" stroke-width="2"/><line x1="6" y1="32" x2="58" y2="32" stroke="#000" stroke-width="2"/><line x1="32" y1="6" x2="32" y2="58" stroke="#000" stroke-width="2"/></svg>
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none"><rect x="10" y="14" width="44" height="44" fill="#E6F4F8" stroke="#000" stroke-width="2.5"/><rect x="18" y="22" width="8" height="8" fill="#F18B25" stroke="#000" stroke-width="2"/><rect x="30" y="22" width="8" height="8" fill="#F18B25" stroke="#000" stroke-width="2"/><rect x="42" y="22" width="8" height="8" fill="#F18B25" stroke="#000" stroke-width="2"/><rect x="28" y="46" width="8" height="12" fill="#F18B25" stroke="#000" stroke-width="2"/><line x1="6" y1="58" x2="58" y2="58" stroke="#000" stroke-width="2.5"/></svg>
+        </div>
+        <div class="dd-logo-divider"></div>
+        <div class="dd-logo-text-wrap">
+            <div class="dd-logo-title">DIGITALLY<span class="accent">DEFINED.</span></div>
+            <div class="dd-logo-tagline">Build What You Own.</div>
+        </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="dd-hero">
+        <div class="dd-hero-grid">
+            <div>
+                <div class="dd-eyebrow">The Gen X Retirement Gap Solver</div>
+                <h1>The Financial Autonomy Planner.</h1>
+                <p style="font-size: 18px; max-width: 520px;">
+                    Stop trading hours for dollars. Build a portfolio of faceless digital assets that generate sovereign, sellable cashflow — while you sleep, travel, or ignore your inbox.
+                </p>
+                <div style="margin-top: 32px; display: flex; gap: 16px; flex-wrap: wrap;">
+                    <a href="#calculator" class="dd-btn dd-btn--accent">Launch Calculator →</a>
+                    <a href="#framework" class="dd-btn dd-btn--outline">Read Blueprint</a>
+                </div>
+            </div>
+            <div class="dd-card">
+                <div class="dd-number">01</div>
+                <h3>The Wake-Up Call</h3>
+                <p>The Pension Myth is dead. Your current trajectory is a math problem that doesn't end in your favor. "Saving" is for people who don't understand inflation. Creators don't save — they build.</p>
+                <div style="margin-top: 24px; padding-top: 16px; border-top: 2px solid #000;">
+                    <div class="dd-label">From Human Capital →</div>
+                    <div class="dd-label" style="color: var(--dd-secondary);">To Digital Capital</div>
+                </div>
+            </div>
+        </div>
+        <div class="dd-stat-row">
+            <div>
+                <div class="dd-stat-num">$1.5M</div>
+                <div class="dd-stat-label">Avg. Retirement Gap for Gen X Women</div>
+            </div>
+            <div>
+                <div class="dd-stat-num">35×</div>
+                <div class="dd-stat-label">Monthly Profit Multiple on Asset Exit</div>
+            </div>
+            <div>
+                <div class="dd-stat-num">14 Days</div>
+                <div class="dd-stat-label">To Launch Minimum Viable Asset</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALCULATOR -->
+    <section class="dd-section" id="calculator">
+        <div style="margin-bottom: 48px; max-width: 720px;">
+            <div class="dd-eyebrow">02 / Calculate Your Freedom Number</div>
+            <h2>Build Your Portfolio Map.</h2>
+            <p style="font-size: 17px;">Traditional retirement portfolios are built on 40 years of financial erosion. Discover how faceless digital real estate lets you bypass decades of stress and build predictable, legacy cashflow.</p>
+        </div>
+
+        <div class="dd-grid-2">
+            <!-- 01 Freedom Target -->
+            <div class="dd-card">
+                <div class="dd-number">01</div>
+                <h3>Your Freedom Target</h3>
+                <p style="font-size: 14px; margin-bottom: 24px;">What monthly passive cash flow replaces your salary and secures independence?</p>
+                <div class="dd-input-group">
+                    <label class="dd-label">Monthly Freedom Goal</label>
+                    <div class="dd-range-wrap">
+                        <input type="range" class="dd-range" id="freedomGoal" min="2000" max="25000" step="500" value="8000">
+                        <div class="dd-range-value" id="freedomGoalVal">$8,000/mo</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 02 Digital Mix -->
+            <div class="dd-card">
+                <div class="dd-number">02</div>
+                <h3>Your Digital Real Estate Mix</h3>
+                <p style="font-size: 14px; margin-bottom: 24px;">Deploy faceless, automated assets. Adjust quantities and yields.</p>
+                
+                <div class="dd-input-group">
+                    <label class="dd-label">Template Hubs / Printables</label>
+                    <div class="dd-range-wrap">
+                        <input type="range" class="dd-range" id="templates" min="0" max="10" step="1" value="3">
+                        <div class="dd-range-value" id="templatesVal">3 × $1,000</div>
+                    </div>
+                </div>
+                <div class="dd-input-group">
+                    <label class="dd-label">Paid Newsletters (Mid-Tier)</label>
+                    <div class="dd-range-wrap">
+                        <input type="range" class="dd-range" id="newsletters" min="0" max="5" step="1" value="1">
+                        <div class="dd-range-value" id="newslettersVal">1 × $4,500</div>
+                    </div>
+                </div>
+                <div class="dd-input-group">
+                    <label class="dd-label">YouTube Automation</label>
+                    <div class="dd-range-wrap">
+                        <input type="range" class="dd-range" id="youtube" min="0" max="5" step="1" value="1">
+                        <div class="dd-range-value" id="youtubeVal">1 × $3,000</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 03 Portfolio Income -->
+            <div class="dd-card">
+                <div class="dd-number">03</div>
+                <h3>Projected Portfolio Income</h3>
+                <p style="font-size: 14px; margin-bottom: 24px;">Combined monthly yield from your digital asset stack.</p>
+                <div class="dd-result-box">
+                    <div class="dd-result-label">Monthly Cashflow</div>
+                    <div class="dd-result-value" id="portfolioIncome">$10,500</div>
+                </div>
+                <div style="margin-top: 24px;">
+                    <div class="dd-label">Goal Status</div>
+                    <div id="goalStatus" style="font-family: var(--dd-font-heading); font-weight: 700; font-size: 16px; margin-top: 4px;">✓ Surplus: +$2,500/mo</div>
+                </div>
+            </div>
+
+            <!-- 04 Capital Gains -->
+            <div class="dd-card">
+                <div class="dd-number">04</div>
+                <h3>The Capital Gains Multiplier</h3>
+                <p style="font-size: 14px; margin-bottom: 24px;">Digital assets are sellable entities. Market valuations range from 30× to 40× monthly net profit.</p>
+                <div class="dd-input-group">
+                    <label class="dd-label">Market Multiplier</label>
+                    <div class="dd-range-wrap">
+                        <input type="range" class="dd-range" id="multiplier" min="30" max="40" step="1" value="35">
+                        <div class="dd-range-value" id="multiplierVal">35×</div>
+                    </div>
+                </div>
+                <div class="dd-result-box">
+                    <div class="dd-result-label">Estimated Liquidation Value</div>
+                    <div class="dd-result-value" id="liquidationValue">$367,500</div>
+                </div>
+                <div style="margin-top: 24px; padding: 16px; border: 2px solid var(--dd-tertiary);">
+                    <div class="dd-label" style="color: var(--dd-tertiary); margin-bottom: 4px;"> Protect Your Sovereignty</div>
+                    <div style="font-size: 13px;">Catalog these assets in your Digital Inheritance Vault. Achievement is only true freedom if it is protected.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROI TABLE -->
+    <section class="dd-section">
+        <div style="margin-bottom: 48px;">
+            <div class="dd-eyebrow">05 / The ROI Contrast</div>
+            <h2>Traditional Savings vs. Digital Sovereign Wealth.</h2>
+        </div>
+        <div style="overflow-x: auto;">
+            <table class="dd-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Traditional Savings</th>
+                        <th class="col-highlight-header">Digital Sovereign Wealth</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Strategy</strong></td>
+                        <td>401(k) + Index Funds</td>
+                        <td class="col-highlight"><strong>Faceless Digital Assets</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>12-Month Outlook</strong></td>
+                        <td>$12,000 (after inflation erosion)</td>
+                        <td class="col-highlight"><strong>$84,000+ cashflow</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>24-Month Liquidity</strong></td>
+                        <td>$24,000 (purchasing power declined)</td>
+                        <td class="col-highlight"><strong>$168,000+ cashflow</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Exit Valuation</strong></td>
+                        <td>Market-dependent, illiquid</td>
+                        <td class="col-highlight"><strong>35× monthly profit = $367K+</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Time Freedom</strong></td>
+                        <td>Retire at 67 (maybe)</td>
+                        <td class="col-highlight"><strong>Autonomy in 14–24 months</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="margin-top: 32px;">
+            <a href="#" class="dd-btn dd-btn--accent">Access Digital Asset Blueprints →</a>
+        </div>
+    </section>
+
+    <!-- FRAMEWORK -->
+    <section class="dd-section" id="framework">
+        <div style="margin-bottom: 48px;">
+            <div class="dd-eyebrow">03 / The L.E.G.A.C.Y. Framework</div>
+            <h2>Asset Architecture for the Midlife Renaissance.</h2>
+        </div>
+        <div class="dd-grid">
+            <div class="dd-card">
+                <div class="dd-number" style="color: var(--dd-secondary); opacity: 1; font-size: 48px; top: 20px; right: 20px;">L</div>
+                <h3>Leverageable</h3>
+                <p>Can it work without you? If you're still trading hours, you haven't built an asset — you've built a job with better branding.</p>
+            </div>
+            <div class="dd-card">
+                <div class="dd-number" style="color: var(--dd-secondary); opacity: 1; font-size: 48px; top: 20px; right: 20px;">E</div>
+                <h3>Expensive</h3>
+                <p>Does it solve a "bleeding neck" problem? Utility content beats aspirational hype. Solve what keeps them up at 2 AM.</p>
+            </div>
+            <div class="dd-card">
+                <div class="dd-number" style="color: var(--dd-secondary); opacity: 1; font-size: 48px; top: 20px; right: 20px;">G</div>
+                <h3>Generational</h3>
+                <p>Is it built to last 20+ years? Digital real estate compounds. A template hub built today funds your granddaughter's tuition.</p>
+            </div>
+            <div class="dd-card">
+                <div class="dd-number" style="color: var(--dd-secondary); opacity: 1; font-size: 48px; top: 20px; right: 20px;">A</div>
+                <h3>Automated</h3>
+                <p>Is the tech doing the heavy lifting? Four tools. Zero burnout. AI as your Chief of Staff — not your replacement.</p>
+            </div>
+            <div class="dd-card">
+                <div class="dd-number" style="color: var(--dd-secondary); opacity: 1; font-size: 48px; top: 20px; right: 20px;">C</div>
+                <h3>Centered</h3>
+                <p>Does it align with your soul's purpose? The ADHD advantage is parallel processing. Weaponize your multi-interest nature.</p>
+            </div>
+            <div class="dd-card">
+                <div class="dd-number" style="color: var(--dd-secondary); opacity: 1; font-size: 48px; top: 20px; right: 20px;">Y</div>
+                <h3>Yield-Focused</h3>
+                <p>What is the ROI on your energy? Every hour invested must compound. No vanity metrics. Only sovereign cashflow.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="dd-section" style="border-bottom: none;">
+        <div class="dd-card" style="text-align: center; padding: 80px 48px; border-width: 3px;">
+            <div class="dd-eyebrow">The Punch</div>
+            <h2 style="max-width: 720px; margin: 0 auto 24px;">You Can Keep Manifesting Without a Blueprint. Or You Can Build the Bridge.</h2>
+            <p style="font-size: 17px; max-width: 560px; margin: 0 auto 40px;">
+                Exclusive entry to the DigitallyDefined Inner Circle. The Gen X women who refuse to leave their financial future to chance.
+            </p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="#" class="dd-btn dd-btn--accent">Join the Inner Circle →</a>
+                <a href="#" class="dd-btn dd-btn--outline">Book a Strategy Call</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="padding: 32px 0; border-top: 2px solid var(--dd-frame); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div style="font-family: var(--dd-font-heading); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em;">
+            © 2026 DigitallyDefined. Build What You Own.
+        </div>
+        <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em;">
+            Sovereign Wealth for Gen X Women
+        </div>
+    </footer>
+
+</div>
+
+<script>
+    const TEMPLATE_YIELD = 1000;
+    const NEWSLETTER_YIELD = 4500;
+    const YOUTUBE_YIELD = 3000;
+
+    const els = {
+        freedomGoal: document.getElementById('freedomGoal'),
+        freedomGoalVal: document.getElementById('freedomGoalVal'),
+        templates: document.getElementById('templates'),
+        templatesVal: document.getElementById('templatesVal'),
+        newsletters: document.getElementById('newsletters'),
+        newslettersVal: document.getElementById('newslettersVal'),
+        youtube: document.getElementById('youtube'),
+        youtubeVal: document.getElementById('youtubeVal'),
+        multiplier: document.getElementById('multiplier'),
+        multiplierVal: document.getElementById('multiplierVal'),
+        portfolioIncome: document.getElementById('portfolioIncome'),
+        liquidationValue: document.getElementById('liquidationValue'),
+        goalStatus: document.getElementById('goalStatus')
+    };
+
+    function fmt(n) { return '$' + n.toLocaleString('en-US'); }
+
+    function update() {
+        const fg = parseInt(els.freedomGoal.value);
+        const t = parseInt(els.templates.value);
+        const n = parseInt(els.newsletters.value);
+        const y = parseInt(els.youtube.value);
+        const m = parseInt(els.multiplier.value);
+
+        els.freedomGoalVal.textContent = fmt(fg) + '/mo';
+        els.templatesVal.textContent = t + ' × ' + fmt(TEMPLATE_YIELD);
+        els.newslettersVal.textContent = n + ' × ' + fmt(NEWSLETTER_YIELD);
+        els.youtubeVal.textContent = y + ' × ' + fmt(YOUTUBE_YIELD);
+        els.multiplierVal.textContent = m + '×';
+
+        const income = (t * TEMPLATE_YIELD) + (n * NEWSLETTER_YIELD) + (y * YOUTUBE_YIELD);
+        const liq = income * m;
+
+        els.portfolioIncome.textContent = fmt(income);
+        els.liquidationValue.textContent = fmt(liq);
+
+        const diff = income - fg;
+        if (diff >= 0) {
+            els.goalStatus.textContent = '✓ Surplus: +' + fmt(diff) + '/mo';
+            els.goalStatus.style.color = 'var(--dd-secondary)';
+        } else {
+            els.goalStatus.textContent = '⚠ Gap: ' + fmt(Math.abs(diff)) + '/mo to freedom';
+            els.goalStatus.style.color = 'var(--dd-tertiary)';
+        }
+    }
+
+    Object.values(els).forEach(el => {
+        if(el && el.tagName === 'INPUT') el.addEventListener('input', update);
+    });
+
+    update();
+</script>
+
+</body>
+</html>

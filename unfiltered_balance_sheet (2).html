@@ -1,0 +1,2117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Wealth Snapshot | DigitallyDefined</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.3/index.css">
+    <style>
+        :root {
+            --bg: #FFFCF9;
+            --text: #2D3748;
+            --frame: #000000;
+            --primary: #47B7D4;
+            --secondary: #F18B25;
+            --tertiary: #D64545;
+            --muted: #6B7280;
+            --line: #E5E1D8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border-radius: 0 !important;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6, .dd-label, .dd-btn, .stat-value, .lever-number, .phase-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        /* ============ PAGE WRAPPER ============ */
+        .dd-page {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--bg);
+        }
+
+        /* ============ HEADER ============ */
+        .dd-header {
+            border-bottom: 2px solid var(--frame);
+            padding: 28px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .dd-brand {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        /* ============ NEW LOGO ============ */
+        .dd-logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .dd-logo-icons {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding-right: 20px;
+            border-right: 2px solid var(--frame);
+        }
+
+        .dd-logo-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .dd-logo-wordmark {
+            display: flex;
+            align-items: baseline;
+            line-height: 1;
+        }
+
+        .dd-logo-wordmark .word-d {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 32px;
+            letter-spacing: -0.02em;
+            color: var(--frame);
+        }
+
+        .dd-logo-wordmark .word-f {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 32px;
+            font-style: italic;
+            letter-spacing: -0.02em;
+            color: var(--secondary);
+        }
+
+        .dd-logo-tagline {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--frame);
+            padding-bottom: 3px;
+            border-bottom: 2px solid var(--secondary);
+            display: inline-block;
+        }
+
+        .dd-header-badge {
+            border: 2px solid var(--frame);
+            padding: 10px 20px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: var(--secondary);
+            color: var(--frame);
+        }
+
+        /* ============ HERO ============ */
+        .dd-hero {
+            border-bottom: 2px solid var(--frame);
+            padding: 96px 120px;
+            background: var(--bg);
+            text-align: center;
+        }
+
+        .dd-hero .hero-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .dd-hero .hero-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .dd-hero h1 {
+            font-size: 56px;
+            line-height: 1.05;
+            color: var(--frame);
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
+        }
+
+        .dd-hero h1 .accent {
+            color: var(--primary);
+        }
+
+        .dd-hero p {
+            font-size: 18px;
+            color: var(--muted);
+            margin-bottom: 40px;
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .dd-phase-pills {
+            display: inline-flex;
+            gap: 0;
+            border: 2px solid var(--frame);
+            width: fit-content;
+            margin: 0 auto;
+        }
+
+        .phase-pill {
+            padding: 14px 24px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            background: var(--bg);
+            color: var(--text);
+            border: none;
+            border-right: 2px solid var(--frame);
+            transition: all 0.15s ease;
+        }
+
+        .phase-pill:last-child {
+            border-right: none;
+        }
+
+        .phase-pill:hover {
+            background: var(--primary);
+            color: var(--frame);
+        }
+
+        .phase-pill.active {
+            background: var(--frame);
+            color: var(--bg);
+        }
+
+        /* ============ SECTIONS ============ */
+        .dd-section {
+            padding: 64px 48px;
+            border-bottom: 2px solid var(--frame);
+        }
+
+        .dd-section-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .dd-section-number {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 72px;
+            line-height: 1;
+            color: var(--frame);
+            letter-spacing: -0.04em;
+            min-width: 140px;
+        }
+
+        .dd-section-meta {
+            flex: 1;
+        }
+
+        .dd-section-meta .section-tag {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        .dd-section-meta h2 {
+            font-size: 36px;
+            line-height: 1.1;
+            color: var(--frame);
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .dd-section-meta p {
+            font-size: 15px;
+            color: var(--muted);
+            max-width: 640px;
+        }
+
+        /* ============ GRID ============ */
+        .dd-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+        }
+
+        .dd-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0;
+        }
+
+        .dd-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+        }
+
+        /* ============ CARDS ============ */
+        .dd-card {
+            border: 2px solid var(--frame);
+            background: var(--bg);
+            padding: 32px;
+        }
+
+        .dd-card + .dd-card {
+            border-left: none;
+        }
+
+        .dd-grid .dd-card:nth-child(4n+1),
+        .dd-grid-2 .dd-card:nth-child(2n+1),
+        .dd-grid-3 .dd-card:nth-child(3n+1) {
+            border-left: 2px solid var(--frame);
+        }
+
+        .dd-grid-2 + .dd-grid-2 .dd-card,
+        .dd-grid + .dd-grid .dd-card {
+            border-top: none;
+        }
+
+        .dd-card .card-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .dd-card .stat-value {
+            font-size: 40px;
+            line-height: 1;
+            color: var(--frame);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .dd-card .stat-change {
+            font-size: 12px;
+            color: var(--muted);
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .dd-card .stat-change.up { color: var(--primary); }
+        .dd-card .stat-change.warn { color: var(--secondary); }
+        .dd-card .stat-change.alert { color: var(--tertiary); }
+
+        .dd-card .stat-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--frame);
+            color: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .dd-card .stat-icon.primary { background: var(--primary); color: var(--frame); }
+        .dd-card .stat-icon.secondary { background: var(--secondary); color: var(--frame); }
+        .dd-card .stat-icon.tertiary { background: var(--tertiary); color: var(--bg); }
+
+        /* ============ INPUTS ============ */
+        .dd-input-group {
+            margin-bottom: 20px;
+        }
+
+        .dd-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--frame);
+            margin-bottom: 8px;
+        }
+
+        .dd-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--frame);
+            background: var(--bg);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            color: var(--frame);
+            transition: all 0.15s ease;
+        }
+
+        .dd-input:focus {
+            outline: none;
+            background: var(--primary);
+            color: var(--frame);
+        }
+
+        .dd-input::placeholder {
+            color: var(--muted);
+        }
+
+        .dd-input-with-prefix {
+            position: relative;
+        }
+
+        .dd-input-with-prefix .prefix {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            color: var(--frame);
+            font-size: 15px;
+        }
+
+        .dd-input-with-prefix .dd-input {
+            padding-left: 32px;
+        }
+
+        /* ============ BUTTONS ============ */
+        .dd-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 28px;
+            border: 2px solid var(--frame);
+            background: var(--frame);
+            color: var(--bg);
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .dd-btn:hover {
+            background: var(--secondary);
+            color: var(--frame);
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--frame);
+        }
+
+        .dd-btn.secondary {
+            background: var(--bg);
+            color: var(--frame);
+        }
+
+        .dd-btn.secondary:hover {
+            background: var(--primary);
+        }
+
+        .dd-btn.full {
+            width: 100%;
+        }
+
+        .dd-btn.danger {
+            background: var(--bg);
+            color: var(--tertiary);
+            border-color: var(--tertiary);
+            padding: 8px 12px;
+            font-size: 11px;
+        }
+
+        .dd-btn.danger:hover {
+            background: var(--tertiary);
+            color: var(--bg);
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ============ PROGRESS BARS ============ */
+        .progress-block {
+            margin-bottom: 28px;
+        }
+
+        .progress-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+
+        .progress-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--frame);
+        }
+
+        .progress-value {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--frame);
+        }
+
+        .progress-bar {
+            height: 24px;
+            background: var(--bg);
+            border: 2px solid var(--frame);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .progress-fill.secondary { background: var(--secondary); }
+        .progress-fill.frame { background: var(--frame); }
+
+        /* ============ LEVER CARDS ============ */
+        .lever-card {
+            border: 2px solid var(--frame);
+            padding: 28px;
+            background: var(--bg);
+        }
+
+        .dd-grid-3 .lever-card + .lever-card {
+            border-left: none;
+        }
+
+        .dd-grid-3 .lever-card:nth-child(3n+1) {
+            border-left: 2px solid var(--frame);
+        }
+
+        .dd-grid-3 .lever-card:nth-child(n+4) {
+            border-top: none;
+        }
+
+        .lever-number {
+            width: 40px;
+            height: 40px;
+            background: var(--frame);
+            color: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .lever-card h4 {
+            font-size: 18px;
+            color: var(--frame);
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
+        }
+
+        .lever-card .lever-desc {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .lever-savings {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--primary);
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px solid var(--frame);
+        }
+
+        .lever-card.total {
+            background: var(--frame);
+            color: var(--bg);
+        }
+
+        .lever-card.total h4,
+        .lever-card.total .lever-desc,
+        .lever-card.total .lever-savings {
+            color: var(--bg);
+        }
+
+        .lever-card.total .lever-number {
+            background: var(--secondary);
+            color: var(--frame);
+        }
+
+        .lever-card.total .lever-savings {
+            color: var(--secondary);
+            font-size: 32px;
+            border-top-color: var(--bg);
+        }
+
+        /* ============ TOTAL BAR ============ */
+        .total-bar {
+            border: 2px solid var(--frame);
+            background: var(--frame);
+            color: var(--bg);
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 32px;
+        }
+
+        .total-bar .total-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .total-bar .total-value {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 32px;
+            color: var(--secondary);
+            letter-spacing: -0.02em;
+        }
+
+        /* ============ TABLE ============ */
+        .dd-table-wrap {
+            border: 2px solid var(--frame);
+            overflow-x: auto;
+        }
+
+        .dd-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg);
+        }
+
+        .dd-table thead th {
+            background: var(--frame);
+            color: var(--bg);
+            padding: 16px 20px;
+            text-align: left;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            border-right: 2px solid var(--bg);
+        }
+
+        .dd-table thead th:last-child {
+            border-right: none;
+        }
+
+        .dd-table tbody td {
+            padding: 0;
+            border-bottom: 2px solid var(--frame);
+            border-right: 2px solid var(--frame);
+        }
+
+        .dd-table tbody td:last-child {
+            border-right: none;
+        }
+
+        .dd-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .dd-table tbody td input {
+            width: 100%;
+            padding: 16px 20px;
+            border: none;
+            background: transparent;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            color: var(--frame);
+        }
+
+        .dd-table tbody td input:focus {
+            outline: none;
+            background: var(--primary);
+        }
+
+        .dd-table tbody td.computed {
+            padding: 16px 20px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            color: var(--primary);
+            background: var(--bg);
+        }
+
+        .dd-table tbody td.action {
+            padding: 12px;
+            text-align: center;
+        }
+
+        /* ============ MILESTONES ============ */
+        .milestone-list {
+            border: 2px solid var(--frame);
+        }
+
+        .milestone-item {
+            padding: 24px 28px;
+            border-bottom: 2px solid var(--frame);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: var(--bg);
+        }
+
+        .milestone-item:last-child {
+            border-bottom: none;
+        }
+
+        .milestone-marker {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--frame);
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .milestone-item.completed .milestone-marker {
+            background: var(--frame);
+            color: var(--bg);
+        }
+
+        .milestone-item.current .milestone-marker {
+            background: var(--secondary);
+            color: var(--frame);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(241, 139, 37, 0.6); }
+            50% { box-shadow: 0 0 0 8px rgba(241, 139, 37, 0); }
+        }
+
+        .milestone-content {
+            flex: 1;
+        }
+
+        .milestone-content h4 {
+            font-size: 16px;
+            color: var(--frame);
+            margin-bottom: 2px;
+        }
+
+        .milestone-content p {
+            font-size: 12px;
+            color: var(--muted);
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .milestone-amount {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 24px;
+            color: var(--primary);
+            letter-spacing: -0.02em;
+        }
+
+        /* ============ CHART ============ */
+        .chart-wrap {
+            border: 2px solid var(--frame);
+            padding: 24px;
+            background: var(--bg);
+            height: 340px;
+            position: relative;
+        }
+
+        .chart-wrap .chart-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--frame);
+            margin-bottom: 16px;
+        }
+
+        .chart-canvas-wrap {
+            position: relative;
+            height: calc(100% - 30px);
+        }
+
+        /* ============ WEEK LOG ============ */
+        .week-entry {
+            display: grid;
+            grid-template-columns: 80px 1fr 1fr 1fr auto;
+            gap: 0;
+            border: 2px solid var(--frame);
+            border-bottom: none;
+        }
+
+        .week-entry:last-of-type {
+            border-bottom: 2px solid var(--frame);
+        }
+
+        .week-entry > div,
+        .week-entry > input {
+            padding: 14px 16px;
+            border-right: 2px solid var(--frame);
+            font-size: 14px;
+        }
+
+        .week-entry > :last-child {
+            border-right: none;
+        }
+
+        .week-num {
+            background: var(--frame);
+            color: var(--bg);
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .week-entry input {
+            border: none;
+            background: transparent;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--frame);
+        }
+
+        .week-entry input:focus {
+            outline: none;
+            background: var(--primary);
+        }
+
+        /* ============ EXPENSE CATEGORIES ============ */
+        .expense-category {
+            border: 2px solid var(--frame);
+            padding: 24px;
+            background: var(--bg);
+        }
+
+        .dd-grid-3 .expense-category + .expense-category {
+            border-left: none;
+        }
+
+        .dd-grid-3 .expense-category:nth-child(3n+1) {
+            border-left: 2px solid var(--frame);
+        }
+
+        .expense-category h5 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--frame);
+            margin-bottom: 12px;
+        }
+
+        .expense-category .hint {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        /* ============ FOOTER ============ */
+        .dd-footer {
+            padding: 48px;
+            border-top: 2px solid var(--frame);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--frame);
+            color: var(--bg);
+        }
+
+        .dd-footer .footer-brand {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 14px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .dd-footer .footer-tag {
+            font-size: 12px;
+            color: var(--secondary);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+        }
+
+        /* ============ CALLOUT ============ */
+        .callout {
+            border: 2px solid var(--frame);
+            border-left: 8px solid var(--secondary);
+            padding: 24px 28px;
+            background: var(--bg);
+            margin-top: 32px;
+        }
+
+        .callout .callout-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        .callout p {
+            font-size: 15px;
+            color: var(--frame);
+            line-height: 1.6;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1024px) {
+            .dd-grid { grid-template-columns: repeat(2, 1fr); }
+            .dd-grid-3 { grid-template-columns: repeat(2, 1fr); }
+            .dd-grid .dd-card:nth-child(4n+1),
+            .dd-grid-3 .lever-card:nth-child(3n+1),
+            .dd-grid-3 .expense-category:nth-child(3n+1) {
+                border-left: 2px solid var(--frame);
+            }
+            .dd-grid .dd-card:nth-child(2n+1),
+            .dd-grid-3 .lever-card:nth-child(2n+1),
+            .dd-grid-3 .expense-category:nth-child(2n+1) {
+                border-left: 2px solid var(--frame);
+            }
+            .dd-grid .dd-card:nth-child(n+3),
+            .dd-grid-3 .lever-card:nth-child(n+3),
+            .dd-grid-3 .expense-category:nth-child(n+3) {
+                border-top: none;
+            }
+            .dd-hero { padding: 72px 60px; }
+            .dd-hero h1 { font-size: 44px; }
+        }
+
+        @media (max-width: 768px) {
+            .dd-header { padding: 20px 24px; flex-direction: column; gap: 16px; }
+            .dd-logo-wrap { flex-direction: column; gap: 12px; }
+            .dd-logo-icons { border-right: none; padding-right: 0; border-bottom: 2px solid var(--frame); padding-bottom: 12px; }
+            .dd-hero { padding: 56px 24px; }
+            .dd-hero h1 { font-size: 32px; }
+            .dd-hero p { font-size: 16px; }
+            .dd-section { padding: 40px 24px; }
+            .dd-section-header { flex-direction: column; gap: 16px; }
+            .dd-section-number { font-size: 48px; min-width: auto; }
+            .dd-grid, .dd-grid-2, .dd-grid-3 { grid-template-columns: 1fr; }
+            .dd-grid .dd-card, .dd-grid-2 .dd-card, .dd-grid-3 .lever-card, .dd-grid-3 .expense-category {
+                border-left: 2px solid var(--frame) !important;
+            }
+            .dd-grid .dd-card + .dd-card,
+            .dd-grid-2 .dd-card + .dd-card,
+            .dd-grid-3 .lever-card + .lever-card,
+            .dd-grid-3 .expense-category + .expense-category {
+                border-top: none;
+            }
+            .phase-pill { padding: 10px 14px; font-size: 10px; }
+            .week-entry { grid-template-columns: 60px 1fr 1fr; }
+            .week-entry > :nth-child(4),
+            .week-entry > :nth-child(5) { display: none; }
+            .dd-footer { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dd-page">
+
+    <!-- ============ HEADER ============ -->
+    <header class="dd-header">
+        <div class="dd-brand">
+            <div class="dd-logo-wrap">
+                <!-- Icon Cluster -->
+                <div class="dd-logo-icons">
+                    <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Browser Window -->
+                        <rect x="2" y="8" width="48" height="36" rx="2" fill="#FFFCF9" stroke="#000000" stroke-width="2.5"/>
+                        <rect x="2" y="8" width="48" height="10" fill="#F18B25" stroke="#000000" stroke-width="2.5"/>
+                        <circle cx="9" cy="13" r="1.5" fill="#000000"/>
+                        <circle cx="15" cy="13" r="1.5" fill="#000000"/>
+                        <circle cx="21" cy="13" r="1.5" fill="#000000"/>
+                        <!-- Cursor Arrow -->
+                        <path d="M20 22 L20 38 L25 33 L30 40 L33 38 L28 31 L34 31 Z" fill="#F18B25" stroke="#000000" stroke-width="2" stroke-linejoin="round"/>
+                    </svg>
+                    <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Globe -->
+                        <circle cx="26" cy="26" r="22" fill="#47B7D4" stroke="#000000" stroke-width="2.5"/>
+                        <ellipse cx="26" cy="26" rx="22" ry="8" fill="none" stroke="#000000" stroke-width="2"/>
+                        <ellipse cx="26" cy="26" rx="8" ry="22" fill="none" stroke="#000000" stroke-width="2"/>
+                        <line x1="4" y1="26" x2="48" y2="26" stroke="#000000" stroke-width="2"/>
+                        <line x1="26" y1="4" x2="26" y2="48" stroke="#000000" stroke-width="2"/>
+                        <!-- Orange segments -->
+                        <path d="M4 26 A22 22 0 0 1 26 4 A8 22 0 0 0 4 26 Z" fill="#F18B25" opacity="0.85"/>
+                        <path d="M48 26 A22 22 0 0 1 26 48 A8 22 0 0 0 48 26 Z" fill="#F18B25" opacity="0.85"/>
+                    </svg>
+                    <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Building -->
+                        <rect x="10" y="6" width="32" height="40" fill="#47B7D4" stroke="#000000" stroke-width="2.5"/>
+                        <!-- Windows row 1 -->
+                        <rect x="15" y="11" width="6" height="6" fill="#F18B25" stroke="#000000" stroke-width="1.5"/>
+                        <rect x="23" y="11" width="6" height="6" fill="#F18B25" stroke="#000000" stroke-width="1.5"/>
+                        <rect x="31" y="11" width="6" height="6" fill="#F18B25" stroke="#000000" stroke-width="1.5"/>
+                        <!-- Windows row 2 -->
+                        <rect x="15" y="20" width="6" height="6" fill="#F18B25" stroke="#000000" stroke-width="1.5"/>
+                        <rect x="23" y="20" width="6" height="6" fill="#F18B25" stroke="#000000" stroke-width="1.5"/>
+                        <rect x="31" y="20" width="6" height="6" fill="#F18B25" stroke="#000000" stroke-width="1.5"/>
+                        <!-- Windows row 3 -->
+                        <rect x="15" y="29" width="6" height="6" fill="#F18B25" stroke="#000000" stroke-width="1.5"/>
+                        <rect x="23" y="29" width="6" height="6" fill="#F18B25" stroke="#000000" stroke-width="1.5"/>
+                        <rect x="31" y="29" width="6" height="6" fill="#F18B25" stroke="#000000" stroke-width="1.5"/>
+                        <!-- Door -->
+                        <rect x="21" y="37" width="10" height="9" fill="#F18B25" stroke="#000000" stroke-width="1.5"/>
+                        <!-- Ground line -->
+                        <line x1="4" y1="46" x2="48" y2="46" stroke="#000000" stroke-width="2.5"/>
+                    </svg>
+                </div>
+                <!-- Wordmark -->
+                <div class="dd-logo-text">
+                    <div class="dd-logo-wordmark">
+                        <span class="word-d">DIGITALLY</span><span class="word-f">DEFINED.</span>
+                    </div>
+                    <span class="dd-logo-tagline">Build What You Own.</span>
+                </div>
+            </div>
+        </div>
+        <div class="dd-header-badge">90-Day Financial Peace Suite</div>
+    </header>
+
+    <!-- ============ HERO ============ -->
+    <section class="dd-hero">
+        <div class="hero-inner">
+            <div class="hero-label">Automated Wealth Snapshot → 01</div>
+            <h1>Stop the financial bleeding. <span class="accent">Build the bulletproof buffer.</span></h1>
+            <p>The Gen X Command Center. Track your progress, automate your savings, and close the retirement gap — all in one brutalist system. No fluff. Just protection.</p>
+            <div class="dd-phase-pills">
+                <button class="phase-pill active" onclick="setPhase(1)">Phase 01 — Stabilize</button>
+                <button class="phase-pill" onclick="setPhase(2)">Phase 02 — Automate</button>
+                <button class="phase-pill" onclick="setPhase(3)">Phase 03 — Sustain</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SECTION 01: DASHBOARD ============ -->
+    <section class="dd-section">
+        <div class="dd-section-header">
+            <div class="dd-section-number">01</div>
+            <div class="dd-section-meta">
+                <div class="section-tag">Financial Overview</div>
+                <h2>Your Command Center</h2>
+                <p>Four numbers that tell the whole story. Update your balance in Section 04 and watch the system recalculate.</p>
+            </div>
+        </div>
+
+        <div class="dd-grid">
+            <div class="dd-card">
+                <div class="stat-icon primary">💰</div>
+                <div class="card-label">Emergency Fund Balance</div>
+                <div class="stat-value" id="dash-balance">$0</div>
+                <div class="stat-change up" id="dash-balance-change">↑ Starting point</div>
+            </div>
+            <div class="dd-card">
+                <div class="stat-icon secondary">🎯</div>
+                <div class="card-label">Phase Goal</div>
+                <div class="stat-value" id="dash-goal">$500</div>
+                <div class="stat-change warn" id="dash-phase-label">Phase 01 — Stabilize</div>
+            </div>
+            <div class="dd-card">
+                <div class="stat-icon"></div>
+                <div class="card-label">Monthly Savings (Levers)</div>
+                <div class="stat-value" id="dash-lever-savings">$0</div>
+                <div class="stat-change up" id="dash-lever-count">0 levers active</div>
+            </div>
+            <div class="dd-card">
+                <div class="stat-icon tertiary">📅</div>
+                <div class="card-label">Current Day</div>
+                <div class="stat-value" id="dash-day">01</div>
+                <div class="stat-change">of 90</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 48px;" class="dd-grid-2">
+            <div class="dd-card">
+                <div class="card-label">Emergency Fund Progress</div>
+                <h3 style="font-size: 22px; color: var(--frame); margin-bottom: 28px; letter-spacing: -0.01em;">Three Phases. One Destination.</h3>
+
+                <div class="progress-block">
+                    <div class="progress-header">
+                        <span class="progress-label">Phase 01 — $500 Micro-Cushion</span>
+                        <span class="progress-value" id="phase1-pct">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="phase1-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="progress-block">
+                    <div class="progress-header">
+                        <span class="progress-label">Phase 02 — $1,500–$2,500 Buffer</span>
+                        <span class="progress-value" id="phase2-pct">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill secondary" id="phase2-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="progress-block">
+                    <div class="progress-header">
+                        <span class="progress-label">Phase 03 — 3-Month Fortress</span>
+                        <span class="progress-value" id="phase3-pct">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill frame" id="phase3-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dd-card" style="padding: 0;">
+                <div style="padding: 32px 32px 20px;">
+                    <div class="card-label">Milestone Timeline</div>
+                    <h3 style="font-size: 22px; color: var(--frame); letter-spacing: -0.01em;">The 90-Day Arc</h3>
+                </div>
+                <div class="milestone-list" style="border-left: none; border-right: none; border-bottom: none;">
+                    <div class="milestone-item current" id="ms-500">
+                        <div class="milestone-marker">01</div>
+                        <div class="milestone-content">
+                            <h4>$500 Micro-Cushion</h4>
+                            <p>Day 14 — Stop the bleeding</p>
+                        </div>
+                        <div class="milestone-amount">$500</div>
+                    </div>
+                    <div class="milestone-item" id="ms-1500">
+                        <div class="milestone-marker">02</div>
+                        <div class="milestone-content">
+                            <h4>$1,500 Protected</h4>
+                            <p>Day 45 — Automation kicks in</p>
+                        </div>
+                        <div class="milestone-amount">$1,500</div>
+                    </div>
+                    <div class="milestone-item" id="ms-2500">
+                        <div class="milestone-marker">03</div>
+                        <div class="milestone-content">
+                            <h4>$2,500 Accelerated</h4>
+                            <p>Day 45 — Side-cash sprints</p>
+                        </div>
+                        <div class="milestone-amount">$2,500</div>
+                    </div>
+                    <div class="milestone-item" id="ms-3month">
+                        <div class="milestone-marker">04</div>
+                        <div class="milestone-content">
+                            <h4>3-Month Fortress</h4>
+                            <p>Day 90 — Financial peace</p>
+                        </div>
+                        <div class="milestone-amount" id="ms-3month-val">$4,500</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 48px;">
+            <div class="chart-wrap">
+                <div class="chart-label">Savings Growth Projection → 90-Day Trajectory</div>
+                <div class="chart-canvas-wrap">
+                    <canvas id="growthChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SECTION 02: BIG 5 LEVERS ============ -->
+    <section class="dd-section">
+        <div class="dd-section-header">
+            <div class="dd-section-number">02</div>
+            <div class="dd-section-meta">
+                <div class="section-tag">Phase 01 — Stabilize</div>
+                <h2>The Big 5 Savings Levers</h2>
+                <p>Identify and cut the leaks draining your checking account. Enter your current monthly spend and your reduced amount. The system calculates your savings automatically.</p>
+            </div>
+        </div>
+
+        <div class="dd-grid-3">
+            <div class="lever-card">
+                <div class="lever-number">01</div>
+                <h4>Subscriptions & Streaming</h4>
+                <div class="lever-desc">Cancel unused services. Audit recurring charges.</div>
+                <div class="dd-input-group">
+                    <label class="dd-label">Current Monthly</label>
+                    <div class="dd-input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input type="number" class="dd-input" id="lever1-current" value="0" oninput="calculateLevers()">
+                    </div>
+                </div>
+                <div class="dd-input-group">
+                    <label class="dd-label">Reduced Monthly</label>
+                    <div class="dd-input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input type="number" class="dd-input" id="lever1-reduced" value="0" oninput="calculateLevers()">
+                    </div>
+                </div>
+                <div class="lever-savings" id="lever1-savings">$0/mo saved</div>
+            </div>
+
+            <div class="lever-card">
+                <div class="lever-number">02</div>
+                <h4>Dining Out & Takeout</h4>
+                <div class="lever-desc">Reduce restaurant visits. Meal prep instead.</div>
+                <div class="dd-input-group">
+                    <label class="dd-label">Current Monthly</label>
+                    <div class="dd-input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input type="number" class="dd-input" id="lever2-current" value="0" oninput="calculateLevers()">
+                    </div>
+                </div>
+                <div class="dd-input-group">
+                    <label class="dd-label">Reduced Monthly</label>
+                    <div class="dd-input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input type="number" class="dd-input" id="lever2-reduced" value="0" oninput="calculateLevers()">
+                    </div>
+                </div>
+                <div class="lever-savings" id="lever2-savings">$0/mo saved</div>
+            </div>
+
+            <div class="lever-card">
+                <div class="lever-number">03</div>
+                <h4>Insurance Premiums</h4>
+                <div class="lever-desc">Shop every 6–12 months for better rates.</div>
+                <div class="dd-input-group">
+                    <label class="dd-label">Current Monthly</label>
+                    <div class="dd-input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input type="number" class="dd-input" id="lever3-current" value="0" oninput="calculateLevers()">
+                    </div>
+                </div>
+                <div class="dd-input-group">
+                    <label class="dd-label">Reduced Monthly</label>
+                    <div class="dd-input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input type="number" class="dd-input" id="lever3-reduced" value="0" oninput="calculateLevers()">
+                    </div>
+                </div>
+                <div class="lever-savings" id="lever3-savings">$0/mo saved</div>
+            </div>
+
+            <div class="lever-card">
+                <div class="lever-number">04</div>
+                <h4>Transportation</h4>
+                <div class="lever-desc">Carpool, transit, or refinance auto loan.</div>
+                <div class="dd-input-group">
+                    <label class="dd-label">Current Monthly</label>
+                    <div class="dd-input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input type="number" class="dd-input" id="lever4-current" value="0" oninput="calculateLevers()">
+                    </div>
+                </div>
+                <div class="dd-input-group">
+                    <label class="dd-label">Reduced Monthly</label>
+                    <div class="dd-input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input type="number" class="dd-input" id="lever4-reduced" value="0" oninput="calculateLevers()">
+                    </div>
+                </div>
+                <div class="lever-savings" id="lever4-savings">$0/mo saved</div>
+            </div>
+
+            <div class="lever-card">
+                <div class="lever-number">05</div>
+                <h4>Impulse Purchases</h4>
+                <div class="lever-desc">Amazon/Target runs. Online shopping sprees.</div>
+                <div class="dd-input-group">
+                    <label class="dd-label">Current Monthly</label>
+                    <div class="dd-input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input type="number" class="dd-input" id="lever5-current" value="0" oninput="calculateLevers()">
+                    </div>
+                </div>
+                <div class="dd-input-group">
+                    <label class="dd-label">Reduced Monthly</label>
+                    <div class="dd-input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input type="number" class="dd-input" id="lever5-reduced" value="0" oninput="calculateLevers()">
+                    </div>
+                </div>
+                <div class="lever-savings" id="lever5-savings">$0/mo saved</div>
+            </div>
+
+            <div class="lever-card total">
+                <div class="lever-number">Σ</div>
+                <h4>Total Monthly Savings</h4>
+                <div class="lever-desc">All levers combined. Redirected to your buffer.</div>
+                <div class="lever-savings" id="lever-total">$0/mo</div>
+                <div style="font-size: 12px; color: var(--bg); margin-top: 8px; opacity: 0.7; font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;" id="lever-annual">$0/year projected</div>
+            </div>
+        </div>
+
+        <div class="total-bar">
+            <div class="total-label">Leveraged Savings → Redirected to Emergency Fund</div>
+            <div class="total-value" id="lever-total-bar">$0/mo</div>
+        </div>
+
+        <div class="callout">
+            <div class="callout-label">The 10x Rule</div>
+            <p>Every $1 you cut from the Big 5 is worth $12/year redirected to your buffer. At 4%+ APY, that's money making money while you sleep.</p>
+        </div>
+
+        <!-- Expense Snapshot -->
+        <div style="margin-top: 64px;">
+            <div style="margin-bottom: 32px;">
+                <div class="section-tag">30-Minute Expense Snapshot</div>
+                <h3 style="font-size: 28px; color: var(--frame); letter-spacing: -0.02em; margin-top: 8px;">Categorize Your Spending. Find The Leaks.</h3>
+            </div>
+
+            <div class="dd-grid-3">
+                <div class="expense-category">
+                    <h5>Fixed Essentials</h5>
+                    <div class="dd-input-group">
+                        <label class="dd-label">Monthly Total</label>
+                        <div class="dd-input-with-prefix">
+                            <span class="prefix">$</span>
+                            <input type="number" class="dd-input" id="expense-fixed" value="0" oninput="calculateExpenses()">
+                        </div>
+                    </div>
+                    <div class="hint">Rent/mortgage, utilities, insurance, minimum debt, groceries, gas.</div>
+                </div>
+                <div class="expense-category">
+                    <h5>Variable Essentials</h5>
+                    <div class="dd-input-group">
+                        <label class="dd-label">Monthly Total</label>
+                        <div class="dd-input-with-prefix">
+                            <span class="prefix">$</span>
+                            <input type="number" class="dd-input" id="expense-variable" value="0" oninput="calculateExpenses()">
+                        </div>
+                    </div>
+                    <div class="hint">Clothing, personal care, household supplies, occasional dining.</div>
+                </div>
+                <div class="expense-category" style="border-left-color: var(--tertiary);">
+                    <h5 style="color: var(--tertiary);">The Leaks</h5>
+                    <div class="dd-input-group">
+                        <label class="dd-label">Monthly Total</label>
+                        <div class="dd-input-with-prefix">
+                            <span class="prefix">$</span>
+                            <input type="number" class="dd-input" id="expense-leaks" value="0" oninput="calculateExpenses()">
+                        </div>
+                    </div>
+                    <div class="hint">Everything else — subscriptions, impulse buys, unused services.</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 32px;">
+                <div class="chart-wrap">
+                    <div class="chart-label">Expense Allocation → Where Your Money Actually Goes</div>
+                    <div class="chart-canvas-wrap">
+                        <canvas id="expenseChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SECTION 03: SINKING FUNDS ============ -->
+    <section class="dd-section">
+        <div class="dd-section-header">
+            <div class="dd-section-number">03</div>
+            <div class="dd-section-meta">
+                <div class="section-tag">Phase 03 — Sustain</div>
+                <h2>Sinking Fund Manager</h2>
+                <p>Make "unexpected" costs predictable. Set up categories for known upcoming expenses. The system calculates exactly how much to save monthly for each.</p>
+            </div>
+        </div>
+
+        <div class="dd-table-wrap">
+            <table class="dd-table" id="sinkingTable">
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">Fund Category</th>
+                        <th style="width: 20%;">Annual Cost</th>
+                        <th style="width: 20%;">Monthly Savings Needed</th>
+                        <th style="width: 20%;">Current Balance</th>
+                        <th style="width: 10%;"></th>
+                    </tr>
+                </thead>
+                <tbody id="sinkingBody">
+                    <tr>
+                        <td><input type="text" value="Car Repairs & Maintenance" oninput="calculateSinking()"></td>
+                        <td><input type="number" value="900" oninput="calculateSinking()"></td>
+                        <td class="computed sinking-monthly">$75</td>
+                        <td><input type="number" value="0" oninput="calculateSinking()"></td>
+                        <td class="action"><button class="dd-btn danger" onclick="deleteSinkingRow(this)">✕</button></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" value="Home Repairs & HOA" oninput="calculateSinking()"></td>
+                        <td><input type="number" value="2400" oninput="calculateSinking()"></td>
+                        <td class="computed sinking-monthly">$200</td>
+                        <td><input type="number" value="0" oninput="calculateSinking()"></td>
+                        <td class="action"><button class="dd-btn danger" onclick="deleteSinkingRow(this)">✕</button></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" value="Medical/Dental Deductibles" oninput="calculateSinking()"></td>
+                        <td><input type="number" value="1500" oninput="calculateSinking()"></td>
+                        <td class="computed sinking-monthly">$125</td>
+                        <td><input type="number" value="0" oninput="calculateSinking()"></td>
+                        <td class="action"><button class="dd-btn danger" onclick="deleteSinkingRow(this)">✕</button></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" value="Gifts & Holidays" oninput="calculateSinking()"></td>
+                        <td><input type="number" value="600" oninput="calculateSinking()"></td>
+                        <td class="computed sinking-monthly">$50</td>
+                        <td><input type="number" value="0" oninput="calculateSinking()"></td>
+                        <td class="action"><button class="dd-btn danger" onclick="deleteSinkingRow(this)">✕</button></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" value="Pet Emergencies" oninput="calculateSinking()"></td>
+                        <td><input type="number" value="500" oninput="calculateSinking()"></td>
+                        <td class="computed sinking-monthly">$42</td>
+                        <td><input type="number" value="0" oninput="calculateSinking()"></td>
+                        <td class="action"><button class="dd-btn danger" onclick="deleteSinkingRow(this)">✕</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <button class="dd-btn secondary full" style="margin-top: 24px;" onclick="addSinkingRow()">+ Add New Sinking Fund Category</button>
+
+        <div class="total-bar">
+            <div class="total-label">Total Monthly Sinking Fund Contribution</div>
+            <div class="total-value" id="sinking-total">$492/mo</div>
+        </div>
+
+        <div style="margin-top: 48px;">
+            <div class="chart-wrap">
+                <div class="chart-label">Sinking Fund Allocation → Monthly Contribution Breakdown</div>
+                <div class="chart-canvas-wrap">
+                    <canvas id="sinkingChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SECTION 04: PROGRESS TRACKER ============ -->
+    <section class="dd-section">
+        <div class="dd-section-header">
+            <div class="dd-section-number">04</div>
+            <div class="dd-section-meta">
+                <div class="section-tag">Weekly Ritual</div>
+                <h2>Progress Tracker & Victory Log</h2>
+                <p>10 minutes every Sunday. Update your numbers, log your wins, and watch the trajectory shift. Consistency beats perfection.</p>
+            </div>
+        </div>
+
+        <div class="dd-grid-2">
+            <div class="dd-card">
+                <div class="card-label">Update Your Numbers</div>
+                <h3 style="font-size: 22px; color: var(--frame); margin-bottom: 28px; letter-spacing: -0.01em;">Input → System Recalculates</h3>
+
+                <div class="dd-input-group">
+                    <label class="dd-label">Current Emergency Fund Balance</label>
+                    <div class="dd-input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input type="number" class="dd-input" id="current-balance" value="0" oninput="updateAll()">
+                    </div>
+                </div>
+
+                <div class="dd-input-group">
+                    <label class="dd-label">Current Day (1–90)</label>
+                    <input type="number" class="dd-input" id="current-day" value="1" min="1" max="90" oninput="updateAll()">
+                </div>
+
+                <div class="dd-input-group">
+                    <label class="dd-label">Monthly Expenses (3-Month Target Base)</label>
+                    <div class="dd-input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input type="number" class="dd-input" id="monthly-expenses" value="1500" oninput="updateAll()">
+                    </div>
+                </div>
+
+                <div class="dd-input-group">
+                    <label class="dd-label">Biweekly Auto-Transfer Amount</label>
+                    <div class="dd-input-with-prefix">
+                        <span class="prefix">$</span>
+                        <input type="number" class="dd-input" id="auto-transfer" value="100" oninput="updateAll()">
+                    </div>
+                </div>
+
+                <div class="dd-input-group">
+                    <label class="dd-label">High-Yield APY (%)</label>
+                    <input type="number" class="dd-input" id="apy-rate" value="4.09" step="0.01" oninput="updateAll()">
+                </div>
+
+                <button class="dd-btn full" onclick="updateAll()">Update Dashboard →</button>
+            </div>
+
+            <div class="dd-card">
+                <div class="card-label">Weekly Savings Log</div>
+                <h3 style="font-size: 22px; color: var(--frame); margin-bottom: 28px; letter-spacing: -0.01em;">12 Weeks. One Trajectory.</h3>
+
+                <div id="weeklyLog">
+                    <!-- Generated by JS -->
+                </div>
+
+                <button class="dd-btn secondary full" style="margin-top: 24px;" onclick="addWeekLog()">+ Add Week Entry</button>
+            </div>
+        </div>
+
+        <div style="margin-top: 48px;">
+            <div class="chart-wrap">
+                <div class="chart-label">Your Savings Trajectory → Actual vs. Projected</div>
+                <div class="chart-canvas-wrap">
+                    <canvas id="progressChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Victory Log -->
+        <div style="margin-top: 48px;" class="dd-card">
+            <div class="card-label">Victory Log</div>
+            <h3 style="font-size: 28px; color: var(--frame); margin-bottom: 8px; letter-spacing: -0.02em;">Celebrate Your Wins.</h3>
+            <p style="color: var(--muted); margin-bottom: 32px;">Consistency beats perfection. Log what worked this week.</p>
+
+            <div class="dd-grid-3">
+                <div class="dd-input-group">
+                    <label class="dd-label">Biggest Financial Win This Week</label>
+                    <input type="text" class="dd-input" id="victory-1" placeholder="e.g., Cancelled 3 unused subscriptions">
+                </div>
+                <div class="dd-input-group">
+                    <label class="dd-label">What Leak Did You Plug?</label>
+                    <input type="text" class="dd-input" id="victory-2" placeholder="e.g., Stopped takeout 4x/week → saved $120">
+                </div>
+                <div class="dd-input-group">
+                    <label class="dd-label">Peace of Mind Score (1–10)</label>
+                    <input type="number" class="dd-input" id="victory-3" min="1" max="10" placeholder="Rate your confidence">
+                </div>
+            </div>
+
+            <button class="dd-btn" onclick="saveVictory()">✓ Save Victory Log</button>
+        </div>
+
+        <div class="callout" style="margin-top: 48px;">
+            <div class="callout-label">Gen X Reminder</div>
+            <p>Financial peace is not about deprivation; it's about protection. You are building a bulletproof buffer so you can support your family without sacrificing your own future. You've got this.</p>
+        </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="dd-footer">
+        <div class="footer-brand">DIGITALLY DEFINED. © 2026</div>
+        <div class="footer-tag">90-Day Financial Peace Suite → Build What You Own.</div>
+    </footer>
+
+</div>
+
+<script>
+    // ============ STATE ============
+    let state = {
+        balance: 0,
+        day: 1,
+        monthlyExpenses: 1500,
+        autoTransfer: 100,
+        apy: 4.09,
+        leverSavings: 0,
+        phase: 1,
+        weeklyLogs: []
+    };
+
+    // ============ PHASE SWITCHING ============
+    function setPhase(phase) {
+        state.phase = phase;
+        document.querySelectorAll('.phase-pill').forEach((p, i) => {
+            p.classList.toggle('active', i === phase - 1);
+        });
+        updateDashboard();
+    }
+
+    // ============ BIG 5 LEVERS ============
+    function calculateLevers() {
+        let total = 0;
+        let activeCount = 0;
+        for (let i = 1; i <= 5; i++) {
+            const current = parseFloat(document.getElementById(`lever${i}-current`).value) || 0;
+            const reduced = parseFloat(document.getElementById(`lever${i}-reduced`).value) || 0;
+            const savings = current - reduced;
+            document.getElementById(`lever${i}-savings`).textContent = `$${savings.toFixed(0)}/mo saved`;
+            if (savings > 0) activeCount++;
+            total += savings;
+        }
+        state.leverSavings = total;
+        document.getElementById('lever-total').textContent = `$${total.toFixed(0)}/mo`;
+        document.getElementById('lever-annual').textContent = `$${(total * 12).toFixed(0)}/year projected`;
+        document.getElementById('lever-total-bar').textContent = `$${total.toFixed(0)}/mo`;
+        document.getElementById('dash-lever-savings').textContent = `$${total.toFixed(0)}`;
+        document.getElementById('dash-lever-count').textContent = `${activeCount} lever${activeCount !== 1 ? 's' : ''} active`;
+        updateDashboard();
+    }
+
+    // ============ EXPENSE SNAPSHOT ============
+    function calculateExpenses() {
+        updateExpenseChart();
+    }
+
+    let expenseChart;
+    function updateExpenseChart() {
+        const fixed = parseFloat(document.getElementById('expense-fixed').value) || 0;
+        const variable = parseFloat(document.getElementById('expense-variable').value) || 0;
+        const leaks = parseFloat(document.getElementById('expense-leaks').value) || 0;
+        const total = fixed + variable + leaks;
+
+        const ctx = document.getElementById('expenseChart').getContext('2d');
+        if (expenseChart) expenseChart.destroy();
+
+        expenseChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Fixed Essentials', 'Variable Essentials', 'The Leaks'],
+                datasets: [{
+                    label: 'Monthly Spend',
+                    data: [fixed, variable, leaks],
+                    backgroundColor: ['#000000', '#47B7D4', '#D64545'],
+                    borderWidth: 2,
+                    borderColor: '#000000',
+                    barThickness: 60
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#000000',
+                        titleFont: { family: 'Inter', weight: '700', size: 12 },
+                        bodyFont: { family: 'DM Sans', size: 13 },
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                const pct = total > 0 ? ((context.raw / total) * 100).toFixed(1) : 0;
+                                return `$${context.raw} (${pct}%)`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#E5E1D8', drawBorder: false },
+                        border: { color: '#000000', width: 2 },
+                        ticks: {
+                            callback: (v) => '$' + v,
+                            font: { family: 'Inter', size: 11, weight: '700' },
+                            color: '#000000'
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        border: { color: '#000000', width: 2 },
+                        ticks: { font: { family: 'Inter', size: 11, weight: '700' }, color: '#000000' }
+                    }
+                }
+            }
+        });
+    }
+
+    // ============ SINKING FUNDS ============
+    function calculateSinking() {
+        const rows = document.querySelectorAll('#sinkingBody tr');
+        let total = 0;
+        rows.forEach(row => {
+            const inputs = row.querySelectorAll('input[type="number"]');
+            const annual = parseFloat(inputs[0].value) || 0;
+            const monthly = annual / 12;
+            row.querySelector('.sinking-monthly').textContent = `$${monthly.toFixed(0)}`;
+            total += monthly;
+        });
+        document.getElementById('sinking-total').textContent = `$${total.toFixed(0)}/mo`;
+        updateSinkingChart();
+    }
+
+    function addSinkingRow() {
+        const tbody = document.getElementById('sinkingBody');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><input type="text" value="New Fund" oninput="calculateSinking()"></td>
+            <td><input type="number" value="0" oninput="calculateSinking()"></td>
+            <td class="computed sinking-monthly">$0</td>
+            <td><input type="number" value="0" oninput="calculateSinking()"></td>
+            <td class="action"><button class="dd-btn danger" onclick="deleteSinkingRow(this)">✕</button></td>
+        `;
+        tbody.appendChild(row);
+        calculateSinking();
+    }
+
+    function deleteSinkingRow(btn) {
+        btn.closest('tr').remove();
+        calculateSinking();
+    }
+
+    let sinkingChart;
+    function updateSinkingChart() {
+        const rows = document.querySelectorAll('#sinkingBody tr');
+        const labels = [];
+        const data = [];
+        rows.forEach(row => {
+            const name = row.querySelector('input[type="text"]').value;
+            const annual = parseFloat(row.querySelectorAll('input[type="number"]')[0].value) || 0;
+            labels.push(name);
+            data.push(annual / 12);
+        });
+
+        const ctx = document.getElementById('sinkingChart').getContext('2d');
+        if (sinkingChart) sinkingChart.destroy();
+
+        const colors = ['#000000', '#47B7D4', '#F18B25', '#D64545', '#2D3748', '#6B7280'];
+
+        sinkingChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Monthly Contribution',
+                    data: data,
+                    backgroundColor: colors.slice(0, data.length),
+                    borderWidth: 2,
+                    borderColor: '#000000',
+                    barThickness: 48
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#000000',
+                        titleFont: { family: 'Inter', weight: '700', size: 12 },
+                        bodyFont: { family: 'DM Sans', size: 13 },
+                        padding: 12,
+                        callbacks: {
+                            label: (ctx) => `$${ctx.raw.toFixed(0)}/month`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#E5E1D8', drawBorder: false },
+                        border: { color: '#000000', width: 2 },
+                        ticks: {
+                            callback: (v) => '$' + v,
+                            font: { family: 'Inter', size: 11, weight: '700' },
+                            color: '#000000'
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        border: { color: '#000000', width: 2 },
+                        ticks: { font: { family: 'Inter', size: 10, weight: '700' }, color: '#000000', maxRotation: 0 }
+                    }
+                }
+            }
+        });
+    }
+
+    // ============ PROGRESS TRACKER ============
+    function updateAll() {
+        state.balance = parseFloat(document.getElementById('current-balance').value) || 0;
+        state.day = parseInt(document.getElementById('current-day').value) || 1;
+        state.monthlyExpenses = parseFloat(document.getElementById('monthly-expenses').value) || 1500;
+        state.autoTransfer = parseFloat(document.getElementById('auto-transfer').value) || 100;
+        state.apy = parseFloat(document.getElementById('apy-rate').value) || 4.09;
+
+        if (state.day <= 14) setPhase(1);
+        else if (state.day <= 45) setPhase(2);
+        else setPhase(3);
+
+        updateDashboard();
+        updateProgressChart();
+    }
+
+    function updateDashboard() {
+        const balance = state.balance;
+        const target3Month = state.monthlyExpenses * 3;
+
+        document.getElementById('dash-balance').textContent = `$${balance.toLocaleString()}`;
+        document.getElementById('dash-day').textContent = String(state.day).padStart(2, '0');
+
+        const phase1Target = 500;
+        const phase2Target = 2000;
+        const phase3Target = target3Month;
+
+        const phase1Pct = Math.min(100, (balance / phase1Target) * 100);
+        const phase2Pct = Math.min(100, (balance / phase2Target) * 100);
+        const phase3Pct = Math.min(100, (balance / phase3Target) * 100);
+
+        document.getElementById('phase1-pct').textContent = `${phase1Pct.toFixed(0)}%`;
+        document.getElementById('phase1-bar').style.width = `${phase1Pct}%`;
+        document.getElementById('phase2-pct').textContent = `${phase2Pct.toFixed(0)}%`;
+        document.getElementById('phase2-bar').style.width = `${phase2Pct}%`;
+        document.getElementById('phase3-pct').textContent = `${phase3Pct.toFixed(0)}%`;
+        document.getElementById('phase3-bar').style.width = `${phase3Pct}%`;
+
+        const phaseLabels = ['Phase 01 — Stabilize', 'Phase 02 — Automate', 'Phase 03 — Sustain'];
+        document.getElementById('dash-phase-label').textContent = phaseLabels[state.phase - 1];
+
+        const goals = ['$500', '$2,000', `$${target3Month.toLocaleString()}`];
+        document.getElementById('dash-goal').textContent = goals[state.phase - 1];
+
+        updateMilestones(balance, target3Month);
+        document.getElementById('ms-3month-val').textContent = `$${target3Month.toLocaleString()}`;
+
+        updateGrowthChart();
+    }
+
+    function updateMilestones(balance, target3Month) {
+        const ms500 = document.getElementById('ms-500');
+        const ms1500 = document.getElementById('ms-1500');
+        const ms2500 = document.getElementById('ms-2500');
+        const ms3month = document.getElementById('ms-3month');
+
+        [ms500, ms1500, ms2500, ms3month].forEach(m => {
+            m.classList.remove('completed', 'current');
+        });
+
+        if (balance >= 500) ms500.classList.add('completed');
+        else ms500.classList.add('current');
+
+        if (balance >= 1500) ms1500.classList.add('completed');
+        else if (balance >= 500) ms1500.classList.add('current');
+
+        if (balance >= 2500) ms2500.classList.add('completed');
+        else if (balance >= 1500) ms2500.classList.add('current');
+
+        if (balance >= target3Month) ms3month.classList.add('completed');
+        else if (balance >= 2500) ms3month.classList.add('current');
+    }
+
+    // ============ CHARTS ============
+    let growthChart;
+    function updateGrowthChart() {
+        const ctx = document.getElementById('growthChart').getContext('2d');
+        if (growthChart) growthChart.destroy();
+
+        const months = ['Start', 'Wk 2', 'Wk 4', 'Wk 6', 'Wk 8', 'Wk 10', 'Wk 12'];
+        const transferPerWeek = (state.autoTransfer * 2) / 4;
+        const leverPerWeek = state.leverSavings / 4;
+        const weeklySavings = transferPerWeek + leverPerWeek;
+
+        const projected = months.map((_, i) => {
+            if (i === 0) return 0;
+            return Math.round(weeklySavings * (i * 2));
+        });
+
+        const dayRatio = state.day / 90;
+        const actual = months.map((_, i) => {
+            if (i === 0) return 0;
+            return Math.round(state.balance * (i / (months.length - 1)) * (1 / Math.max(dayRatio, 0.1)));
+        });
+        actual[actual.length - 1] = state.balance;
+
+        growthChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'Projected Growth',
+                        data: projected,
+                        borderColor: '#F18B25',
+                        backgroundColor: 'rgba(241, 139, 37, 0.1)',
+                        fill: true,
+                        tension: 0,
+                        borderWidth: 3,
+                        borderDash: [6, 4],
+                        pointRadius: 5,
+                        pointBackgroundColor: '#F18B25',
+                        pointBorderColor: '#000000',
+                        pointBorderWidth: 2
+                    },
+                    {
+                        label: 'Your Progress',
+                        data: actual,
+                        borderColor: '#47B7D4',
+                        backgroundColor: 'rgba(71, 183, 212, 0.15)',
+                        fill: true,
+                        tension: 0,
+                        borderWidth: 3,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#47B7D4',
+                        pointBorderColor: '#000000',
+                        pointBorderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            usePointStyle: false,
+                            padding: 20,
+                            font: { family: 'Inter', size: 11, weight: '700' },
+                            color: '#000000'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#000000',
+                        titleFont: { family: 'Inter', weight: '700', size: 12 },
+                        bodyFont: { family: 'DM Sans', size: 13 },
+                        padding: 12,
+                        callbacks: {
+                            label: (ctx) => `${ctx.dataset.label}: $${ctx.raw.toLocaleString()}`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#E5E1D8', drawBorder: false },
+                        border: { color: '#000000', width: 2 },
+                        ticks: {
+                            callback: (v) => '$' + v.toLocaleString(),
+                            font: { family: 'Inter', size: 11, weight: '700' },
+                            color: '#000000'
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        border: { color: '#000000', width: 2 },
+                        ticks: { font: { family: 'Inter', size: 11, weight: '700' }, color: '#000000' }
+                    }
+                }
+            }
+        });
+    }
+
+    let progressChart;
+    function updateProgressChart() {
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        if (progressChart) progressChart.destroy();
+
+        const weeks = state.weeklyLogs.length > 0 ? state.weeklyLogs.map(l => l.week) : ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Wk 5', 'Wk 6', 'Wk 7', 'Wk 8', 'Wk 9', 'Wk 10', 'Wk 11', 'Wk 12'];
+        const savings = state.weeklyLogs.length > 0 ? state.weeklyLogs.map(l => l.saved) : Array(12).fill(0);
+        const cumulative = [];
+        let running = 0;
+        savings.forEach(s => {
+            running += s;
+            cumulative.push(running);
+        });
+
+        progressChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: weeks,
+                datasets: [
+                    {
+                        label: 'Weekly Savings',
+                        data: savings,
+                        backgroundColor: '#47B7D4',
+                        borderColor: '#000000',
+                        borderWidth: 2,
+                        order: 2
+                    },
+                    {
+                        label: 'Cumulative Balance',
+                        data: cumulative,
+                        type: 'line',
+                        borderColor: '#F18B25',
+                        backgroundColor: 'transparent',
+                        borderWidth: 3,
+                        tension: 0,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#F18B25',
+                        pointBorderColor: '#000000',
+                        pointBorderWidth: 2,
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            usePointStyle: false,
+                            padding: 20,
+                            font: { family: 'Inter', size: 11, weight: '700' },
+                            color: '#000000'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#000000',
+                        titleFont: { family: 'Inter', weight: '700', size: 12 },
+                        bodyFont: { family: 'DM Sans', size: 13 },
+                        padding: 12,
+                        callbacks: {
+                            label: (ctx) => `${ctx.dataset.label}: $${ctx.raw.toLocaleString()}`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#E5E1D8', drawBorder: false },
+                        border: { color: '#000000', width: 2 },
+                        ticks: {
+                            callback: (v) => '$' + v.toLocaleString(),
+                            font: { family: 'Inter', size: 11, weight: '700' },
+                            color: '#000000'
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        border: { color: '#000000', width: 2 },
+                        ticks: { font: { family: 'Inter', size: 11, weight: '700' }, color: '#000000' }
+                    }
+                }
+            }
+        });
+    }
+
+    // ============ WEEKLY LOG ============
+    function generateWeeklyLog() {
+        const container = document.getElementById('weeklyLog');
+        container.innerHTML = '';
+        for (let i = 1; i <= 4; i++) {
+            const entry = document.createElement('div');
+            entry.className = 'week-entry';
+            entry.innerHTML = `
+                <div class="week-num">WK ${String(i).padStart(2, '0')}</div>
+                <input type="number" placeholder="Saved ($)" value="${state.weeklyLogs[i-1]?.saved || ''}" onchange="saveWeekLog(${i}, this.value)">
+                <input type="number" placeholder="Balance ($)" value="${state.weeklyLogs[i-1]?.balance || ''}" onchange="saveWeekBalance(${i}, this.value)">
+                <input type="text" placeholder="Notes..." value="${state.weeklyLogs[i-1]?.notes || ''}" onchange="saveWeekNotes(${i}, this.value)">
+                <button class="dd-btn danger" onclick="this.parentElement.remove()">✕</button>
+            `;
+            container.appendChild(entry);
+        }
+    }
+
+    function saveWeekLog(week, value) {
+        if (!state.weeklyLogs[week - 1]) state.weeklyLogs[week - 1] = { week: `Wk ${week}`, saved: 0, balance: 0, notes: '' };
+        state.weeklyLogs[week - 1].saved = parseFloat(value) || 0;
+        updateProgressChart();
+    }
+
+    function saveWeekBalance(week, value) {
+        if (!state.weeklyLogs[week - 1]) state.weeklyLogs[week - 1] = { week: `Wk ${week}`, saved: 0, balance: 0, notes: '' };
+        state.weeklyLogs[week - 1].balance = parseFloat(value) || 0;
+    }
+
+    function saveWeekNotes(week, value) {
+        if (!state.weeklyLogs[week - 1]) state.weeklyLogs[week - 1] = { week: `Wk ${week}`, saved: 0, balance: 0, notes: '' };
+        state.weeklyLogs[week - 1].notes = value;
+    }
+
+    function addWeekLog() {
+        const container = document.getElementById('weeklyLog');
+        const count = container.children.length + 1;
+        const entry = document.createElement('div');
+        entry.className = 'week-entry';
+        entry.innerHTML = `
+            <div class="week-num">WK ${String(count).padStart(2, '0')}</div>
+            <input type="number" placeholder="Saved ($)" onchange="saveWeekLog(${count}, this.value)">
+            <input type="number" placeholder="Balance ($)" onchange="saveWeekBalance(${count}, this.value)">
+            <input type="text" placeholder="Notes..." onchange="saveWeekNotes(${count}, this.value)">
+            <button class="dd-btn danger" onclick="this.parentElement.remove()">✕</button>
+        `;
+        container.appendChild(entry);
+    }
+
+    // ============ VICTORY LOG ============
+    function saveVictory() {
+        const v1 = document.getElementById('victory-1').value;
+        const v2 = document.getElementById('victory-2').value;
+        const v3 = document.getElementById('victory-3').value;
+
+        if (v1 || v2 || v3) {
+            const btn = event.currentTarget;
+            btn.textContent = '✓ SAVED SUCCESSFULLY';
+            btn.style.background = '#47B7D4';
+            btn.style.color = '#000000';
+            setTimeout(() => {
+                btn.textContent = '✓ SAVE VICTORY LOG';
+                btn.style.background = '';
+                btn.style.color = '';
+            }, 2000);
+        }
+    }
+
+    // ============ INITIALIZATION ============
+    function init() {
+        calculateLevers();
+        calculateExpenses();
+        calculateSinking();
+        generateWeeklyLog();
+        updateDashboard();
+
+        setTimeout(() => {
+            updateExpenseChart();
+            updateSinkingChart();
+            updateGrowthChart();
+            updateProgressChart();
+        }, 200);
+    }
+
+    window.addEventListener('load', init);
+</script>
+
+</body>
+</html>
