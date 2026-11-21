@@ -74,6 +74,7 @@ export const AUTHED_ACTIONS = [
   "antigravity.reconcileDatabase",
   "antigravity.runAutomation",
   "antigravity.status",
+  "puter.run_agent",
 ] as const;
 
 /** GET-only actions (system probes). */
@@ -100,6 +101,7 @@ export const GET_OR_POST_ACTIONS = [
 export const POST_ONLY_ACTIONS = [
   "automation.sync",
   "automation.run",
+  "puter.run_agent",
 ] as const;
 
 export function isPublicAction(action: string): boolean {
