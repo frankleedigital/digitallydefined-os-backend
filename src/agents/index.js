@@ -38,6 +38,9 @@ import { contentAgentHandler } from '../agents/hermes/contentAgent.js';
 import { growthAgentHandler } from '../agents/hermes/growthAgent.js';
 import { productAgentHandler } from '../agents/hermes/productAgent.js';
 
+// KB: mandatory agent telemetry (Contract C4)
+import { recordAgentRun } from '../services/kb/kbTelemetry.js';
+
 /** Agent registry for clean access to all agents. */
 export const agentRegistry = {
   niche: {
@@ -211,12 +214,12 @@ export async function executeAgent(name, params) {
 
   logger.info('Executing agent', { agent: name, params: Object.keys(params) });
 
-  try {
-    const result = await agent.handler(params);
-    logger.info('Agent execution completed', { agent: name, success: true });
-    return result;
-  } catch (error) {
-    logger.error('Agent execution failed', { agent: name, error: error.message });
-    throw error;
-  }
+  // C4: every run records telemetry. recordAgentRun preserves the original
+  // return/throw semantics and writes fire-and-forget, so telemetry can never
+  // block or fail the agent.
+  const kbParams = {
+    ...(params || {}),
+    input: (params && params.input) || (params && params.params) || {},
+  };
+  return recordAgentRun(name, agent, () => agent.handler(params), kbParams);
 }
