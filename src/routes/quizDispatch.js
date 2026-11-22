@@ -136,6 +136,18 @@ export async function handleQuiz(req, res) {
         },
       });
       logger.info('Quiz contact captured', { email, ok: listResult?.ok, persona: personaKey });
+
+      // Slack onboarding alert for the new quiz lead (fire-and-forget; logged, never silent).
+      import('../../lib/slack.js')
+        .then(({ postSlack }) =>
+          postSlack(
+            `*New quiz lead* — ${email}\n` +
+              `Persona: ${payload.superpowerName || payload.superpower || '—'}\n` +
+              `Source: ${body.source || 'digital-superpower-quiz'}`
+          )
+        )
+        .then((r) => logger.info('Slack lead alert posted', { email, ok: !!r?.ok }))
+        .catch((e) => logger.warn('Slack lead alert failed', { email, error: e.message }));
     }
 
     let emailResult = null;

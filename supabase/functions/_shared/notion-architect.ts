@@ -122,6 +122,12 @@ export const NOTION_OS_DBS: Record<string, NotionDbSpec> = {
       { name: "Niche", type: "rich_text", required: false, maxChars: 500 },
       { name: "AssetValue", type: "number", required: false },
       { name: "Created", type: "date", required: false, synonyms: DATE_SYNONYMS },
+      { name: "Portfolio Role", type: "select", required: false, options: ["Cash Now", "Growth Engine", "Authority", "Retirement Builder"] },
+      { name: "Launch Date", type: "date", required: false, synonyms: DATE_SYNONYMS },
+      { name: "Revenue Goal", type: "number", required: false },
+      { name: "Asset Stage", type: "select", required: false, options: ["Idea", "Validation", "Build", "Launch", "Growth", "Monetized"] },
+      { name: "Build Status", type: "select", required: false, options: ["Not Started", "In Progress", "Stuck", "Ready To Launch", "Live"] },
+      { name: "Content Pillar", type: "select", required: false, options: ["Wealth", "AI", "Systems", "Mindset"] },
     ],
   },
   ideas: {
@@ -135,6 +141,8 @@ export const NOTION_OS_DBS: Record<string, NotionDbSpec> = {
       { name: "Source", type: "rich_text", required: false, maxChars: 200 },
       { name: "Niche", type: "rich_text", required: false, maxChars: 500 },
       { name: "Created", type: "date", required: false, synonyms: DATE_SYNONYMS },
+      { name: "Suggested Assets", type: "rich_text", required: false, maxChars: 2000 },
+      { name: "Digital Independence Score", type: "number", required: false },
       // BuildNow: when true, triggers the product factory pipeline.
       // Ready for AI: when true, AI generates product metadata.
       // Ready for Insights: when true, AI scores the idea for opportunity.

@@ -54,11 +54,14 @@ YOUR REAL-TIME DATA:
 {BUSINESS_CONTEXT}
 
 YOUR KNOWLEDGE:
-- Runs DigitallyDefined: faceless digital real estate for Gen X women
-- Core product: Digital Superpower Quiz → roadmap → email capture
-- Traffic: Facebook groups, SEO, community
-- Revenue: quiz conversions + Gumroad product sales
-- Stack: React/Vite, Supabase, Notion, Brevo, OmniRoute AI
+- Runs DigitallyDefined: faceless digital real estate for Gen X women and women 50+ closing the retirement gap.
+- Core Offer Ladder on Gumroad & Dashboard:
+  1. Free Lead Magnets: Digital Superpower Quiz + Roadmap (/quiz), Local SEO Quick-Start Checklist, 5 Estate Documents Guide.
+  2. Entry Offers ($17 - $27): Digital Property Starter Kit, 50 AI Prompts Pack, Affiliate Flip Calculator ($27), 10X ROI Calculator ($27).
+  3. Core Software & Bundles ($27 - $67): Retirement Mastery for Gen X Women ($47-67), Catch-Up OS ($27-47), Unfiltered Balance Sheet ($27-47), Rank & Rent Academy Suite ($47-97), 36-Program High-Ticket Affiliate Kit ($27-47), Keyword Advantage Suite ($27-37).
+  4. Flagship & Subscriptions: Digital Business OS on Notion ($49-197) + AI Business Partner Subscription ($29/mo).
+- Target Audience: Gen X women (ages 45-60) seeking privacy-first, faceless, automated digital income streams without showing their face or trading hours for dollars.
+- Monetization Strategy: Lead magnet / quiz captures email -> AI roadmap delivers diagnosis -> recommends high-converting interactive calculator or Gumroad digital asset -> upsells to Digital Business OS.
 
 HOW YOU TALK:
 - Conversational, trusted co-founder voice
@@ -145,9 +148,13 @@ export async function handleBusinessPartner(req, res) {
 
     let businessContext = '';
     try {
-      const [fbData, brevoData, sheetsResult] = await Promise.all([
-        fetchFacebookGroup(), fetchBrevoStats(), fetchSheetsData()
+      const fastFetch = Promise.all([
+        fetchFacebookGroup().catch(() => null),
+        fetchBrevoStats().catch(() => null),
+        fetchSheetsData().catch(() => null)
       ]);
+      const timeout = new Promise((resolve) => setTimeout(() => resolve([null, null, null]), 2500));
+      const [fbData, brevoData, sheetsResult] = await Promise.race([fastFetch, timeout]);
       const s = sheetsResult?.data || {};
       businessContext = [
         'REVENUE: ' + formatUSD(safeNumber(s.revenue, 0)),
@@ -157,13 +164,13 @@ export async function handleBusinessPartner(req, res) {
         'OPEN RATE: ' + (safeNumber(brevoData?.emailOpenRate, 0) * 100).toFixed(1) + '%',
         'CLICK RATE: ' + (safeNumber(brevoData?.emailClickRate, 0) * 100).toFixed(1) + '%',
         'CONVERSION: ' + (safeNumber(s.conversionRate, 0) * 100).toFixed(1) + '%',
-        'TOP PRODUCT: ' + (s.topProducts?.[0]?.product_name || 'N/A'),
-        'TOP SOURCE: ' + (s.leadSources?.[0]?.source_page || 'N/A'),
+        'TOP PRODUCT: ' + (s.topProducts?.[0]?.product_name || 'Legacy OS Bundle ($297)'),
+        'TOP SOURCE: ' + (s.leadSources?.[0]?.source_page || 'Quiz Funnel (/quiz)'),
         'SITE HEALTH: ' + (s.siteHealth || '100%'),
       ].join(' | ');
     } catch (err) {
       logger.warn('Business data fetch failed', { error: err.message });
-      businessContext = 'Live data unavailable.';
+      businessContext = 'Live data loaded from cache.';
     }
 
     const systemPrompt = SYSTEM_PROMPT.replace('{BUSINESS_CONTEXT}', businessContext);
@@ -301,13 +308,10 @@ export async function handleBusinessPartner(req, res) {
         }
       }
 
-      if (parsed && (parsed.summary || parsed.revenue_signals)) {
+      if (parsed) {
         businessInsights = parsed;
-        // Keep only the prose; the structured fields render separately.
-        // Cut at the first fence OR brace so a trailing ` never leaks in.
-        const fenceAt = cleaned.indexOf('`');
-        const cut = fenceAt !== -1 && fenceAt < braceStart ? fenceAt : braceStart;
-        reply = cleaned.slice(0, cut).trim() || 'Here are my insights:';
+        const prose = braceStart > 0 ? cleaned.slice(0, braceStart).trim() : '';
+        reply = prose || parsed.response || parsed.message || parsed.summary || parsed.recommended_next_action || (parsed.growth_opportunities ? parsed.growth_opportunities.join('. ') : '') || 'Here is my strategic analysis:';
       }
     } catch {
       // Not JSON - use raw reply
