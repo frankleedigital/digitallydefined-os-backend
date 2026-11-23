@@ -257,19 +257,21 @@ export async function handleAgentsRun(params = {}) {
  * agents.orchestrate — hand a goal to the Business Partner orchestrator.
  * It classifies intent, runs the right specialist, and returns a plan.
  */
-export async function handleAgentsOrchestrate(params = {}) {
+export async function handleAgentsOrchestrate(params = {}, handler = handleHermesMessage) {
   const goal = String(params.goal || params.message || '').trim();
   if (!goal) {
     return { success: false, error: 'A goal is required to orchestrate across agents.' };
   }
   try {
-    const result = await handleHermesMessage(goal, { context: params.context || {} });
+    const result = await handler(goal, { context: params.context || {} });
     return {
-      success: !result?.degraded,
+      success: result.ok === true,
+      agent: result.agent,
       goal,
-      plan: result,
-      classification: result.classification,
-      degraded: !!result.degraded,
+      plan: result.result,
+      evaluation: result.evaluation,
+      decisionId: result.decisionId,
+      degraded: result.ok === false,
       timestamp: Date.now(),
     };
   } catch (err) {
