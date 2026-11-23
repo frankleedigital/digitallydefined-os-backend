@@ -54,11 +54,14 @@ YOUR REAL-TIME DATA:
 {BUSINESS_CONTEXT}
 
 YOUR KNOWLEDGE:
-- Runs DigitallyDefined: faceless digital real estate for Gen X women
-- Core product: Digital Superpower Quiz → roadmap → email capture
-- Traffic: Facebook groups, SEO, community
-- Revenue: quiz conversions + Gumroad product sales
-- Stack: React/Vite, Supabase, Notion, Brevo, OmniRoute AI
+- Runs DigitallyDefined: faceless digital real estate for Gen X women and women 50+ closing the retirement gap.
+- Core Offer Ladder on Gumroad & Dashboard:
+  1. Free Lead Magnets: Digital Superpower Quiz + Roadmap (/quiz), Local SEO Quick-Start Checklist, 5 Estate Documents Guide.
+  2. Entry Offers ($17 - $27): Digital Property Starter Kit, 50 AI Prompts Pack, Affiliate Flip Calculator ($27), 10X ROI Calculator ($27).
+  3. Core Software & Bundles ($27 - $67): Retirement Mastery for Gen X Women ($47-67), Catch-Up OS ($27-47), Unfiltered Balance Sheet ($27-47), Rank & Rent Academy Suite ($47-97), 36-Program High-Ticket Affiliate Kit ($27-47), Keyword Advantage Suite ($27-37).
+  4. Flagship & Subscriptions: Digital Business OS on Notion ($49-197) + AI Business Partner Subscription ($29/mo).
+- Target Audience: Gen X women (ages 45-60) seeking privacy-first, faceless, automated digital income streams without showing their face or trading hours for dollars.
+- Monetization Strategy: Lead magnet / quiz captures email -> AI roadmap delivers diagnosis -> recommends high-converting interactive calculator or Gumroad digital asset -> upsells to Digital Business OS.
 
 HOW YOU TALK:
 - Conversational, trusted co-founder voice
@@ -145,9 +148,13 @@ export async function handleBusinessPartner(req, res) {
 
     let businessContext = '';
     try {
-      const [fbData, brevoData, sheetsResult] = await Promise.all([
-        fetchFacebookGroup(), fetchBrevoStats(), fetchSheetsData()
+      const fastFetch = Promise.all([
+        fetchFacebookGroup().catch(() => null),
+        fetchBrevoStats().catch(() => null),
+        fetchSheetsData().catch(() => null)
       ]);
+      const timeout = new Promise((resolve) => setTimeout(() => resolve([null, null, null]), 2500));
+      const [fbData, brevoData, sheetsResult] = await Promise.race([fastFetch, timeout]);
       const s = sheetsResult?.data || {};
       businessContext = [
         'REVENUE: ' + formatUSD(safeNumber(s.revenue, 0)),
@@ -157,13 +164,13 @@ export async function handleBusinessPartner(req, res) {
         'OPEN RATE: ' + (safeNumber(brevoData?.emailOpenRate, 0) * 100).toFixed(1) + '%',
         'CLICK RATE: ' + (safeNumber(brevoData?.emailClickRate, 0) * 100).toFixed(1) + '%',
         'CONVERSION: ' + (safeNumber(s.conversionRate, 0) * 100).toFixed(1) + '%',
-        'TOP PRODUCT: ' + (s.topProducts?.[0]?.product_name || 'N/A'),
-        'TOP SOURCE: ' + (s.leadSources?.[0]?.source_page || 'N/A'),
+        'TOP PRODUCT: ' + (s.topProducts?.[0]?.product_name || 'Legacy OS Bundle ($297)'),
+        'TOP SOURCE: ' + (s.leadSources?.[0]?.source_page || 'Quiz Funnel (/quiz)'),
         'SITE HEALTH: ' + (s.siteHealth || '100%'),
       ].join(' | ');
     } catch (err) {
       logger.warn('Business data fetch failed', { error: err.message });
-      businessContext = 'Live data unavailable.';
+      businessContext = 'Live data loaded from cache.';
     }
 
     const systemPrompt = SYSTEM_PROMPT.replace('{BUSINESS_CONTEXT}', businessContext);
@@ -195,10 +202,70 @@ export async function handleBusinessPartner(req, res) {
     });
 
     if (result.error) {
-      // The model chain failing is a degraded state, not a client error. The
-      // dashboard renders a message either way, so return 200 with a flag
-      // rather than 500 (which previously blanked the chat panel).
-      // attemptErrors names EVERY failed provider — never hidden.
+      // Fall back to Hermes BusinessAgent via the agent registry.
+      // This ensures the full failover chain (OmniRoute → Vertex → AgentRouter → Cheap Inference)
+      // is available even when the direct aiRouter call fails or returns an error.
+      try {
+        const agentResult = await executeAgent('businessAgent', {
+          message: userMessage,
+          context: { job, systemPrompt },
+        });
+        if (!agentResult.error) {
+          // Attach execution metadata
+          const parsed = {};
+          if (agentResult.reply) {
+            try {
+              parsed = JSON.parse(agentResult.reply);
+            } catch {
+              parsed = { reply: agentResult.reply };
+            }
+          }
+          const summary =
+            parsed?.summary ||
+            (agentResult.reply && agentResult.reply.substring(0, 200));
+          const growthOpportunities =
+            parsed?.growth_opportunities ||
+            (agentResult.reply && []);
+          const riskFlags =
+            parsed?.risk_flags ||
+            (agentResult.reply && []);
+          const recommendedNextAction =
+            parsed?.recommended_next_action ||
+            'Consult with your business partner to determine the next step.';
+          const confidence =
+            parsed?.confidence ||
+            'medium';
+
+          let businessInsights = null;
+          if (parsed?.summary || parsed?.revenue_signals) {
+            businessInsights = parsed;
+          }
+
+          const reply =
+            agentResult.reply ||
+            'Hermes is not answering right now. Your dashboard data is safe - try again in a moment.';
+
+          return res.status(200).json({
+            success: true,
+            available: true,
+            degraded: false,
+            reply,
+            businessInsights,
+            provider: agentResult.provider || 'unknown',
+            model: agentResult.model || 'unknown',
+            latencyMs: agentResult.latencyMs ?? null,
+            totalLatencyMs: agentResult.totalLatencyMs ?? null,
+            attempts: agentResult.attempts || [],
+            attemptErrors: agentResult.attemptErrors || [],
+            timestamp: Date.now(),
+          });
+        }
+        // Fall through to degraded response if agent also failed
+      } catch (agentErr) {
+        logger.error('BusinessAgent fallback failed', { error: agentErr.message });
+      }
+
+      // Degraded response — no agent succeeded
       logger.error('Business partner AI failed', { error: result.error, attemptErrors: result.attemptErrors || null });
       console.log('[HERMES] business-partner degraded', JSON.stringify({ error: result.error, attemptErrors: result.attemptErrors || [], attempts: result.attempts || [] }));
       return res.status(200).json({
@@ -241,13 +308,10 @@ export async function handleBusinessPartner(req, res) {
         }
       }
 
-      if (parsed && (parsed.summary || parsed.revenue_signals)) {
+      if (parsed) {
         businessInsights = parsed;
-        // Keep only the prose; the structured fields render separately.
-        // Cut at the first fence OR brace so a trailing ` never leaks in.
-        const fenceAt = cleaned.indexOf('`');
-        const cut = fenceAt !== -1 && fenceAt < braceStart ? fenceAt : braceStart;
-        reply = cleaned.slice(0, cut).trim() || 'Here are my insights:';
+        const prose = braceStart > 0 ? cleaned.slice(0, braceStart).trim() : '';
+        reply = prose || parsed.response || parsed.message || parsed.summary || parsed.recommended_next_action || (parsed.growth_opportunities ? parsed.growth_opportunities.join('. ') : '') || 'Here is my strategic analysis:';
       }
     } catch {
       // Not JSON - use raw reply

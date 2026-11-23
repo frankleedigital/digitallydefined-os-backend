@@ -25,11 +25,12 @@ export default async function handler(req, res) {
     'https://dashboard.digitallydefined.agency',
     'https://digitallydefined.online',
     'https://www.digitallydefined.online',
-    'https://digitallydefined.store',
-    'https://www.digitallydefined.store',
+  'https://dashboard.digitallydefined.agency',
+  'https://store.digitallydefined.agency',
     'http://localhost:3000',
     'http://localhost:3001',
     'http://localhost:5173',
+    'http://localhost:4173',
   ];
   const corsOrigin = allowed.includes(origin) ? origin : 'https://dashboard.digitallydefined.agency';
   res.setHeader('Access-Control-Allow-Origin', corsOrigin);

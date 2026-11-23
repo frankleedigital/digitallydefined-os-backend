@@ -15,7 +15,7 @@ import env from '../config/env.js';
 import constants from '../config/constants.js';
 import logger from '../utils/logger.js';
 
-const DEFAULT_TIMEOUT = constants.AI_TIMEOUT_MS;
+const DEFAULT_TIMEOUT = 25000;
 
 // Model resolution
 //
@@ -24,10 +24,7 @@ const DEFAULT_TIMEOUT = constants.AI_TIMEOUT_MS;
 // per-mode. Older code assumed mode freeMode/proMode/ultraMode chose the model;
 // it never did, so every call silently used env.omniroute.model.
 export function resolvePrimaryModel() {
-  // Direct Gemini API model — NEVER an OmniRoute omni/* or vertex/* id.
-  // gemini-2.5-flash and gemini-2.0-flash are retired by Google (404);
-  // gemini-3.5-flash verified live 2026-10-20.
-  return env.vertex.model || env.gemini.model || 'gemini-3.5-flash';
+  return env.vertex.model || env.gemini.model || 'gemini-3.5-flash-lite';
 }
 
 /** True when `id` is an OmniRoute-routed id that Vertex/Direct APIs cannot use. */
@@ -71,13 +68,13 @@ export function agnesModel() {
  *   fast      - short latency-sensitive summaries
  */
 export const JOB_MODELS = {
-  chat: process.env.AI_MODEL_CHAT || 'omni/free-best',
-  reasoning: process.env.AI_MODEL_REASONING || 'omni/premium-blueminds',
-  coding: process.env.AI_MODEL_CODING || 'omni/free-coding',
-  vision: process.env.AI_MODEL_VISION || 'omni/free-vision',
-  json: process.env.AI_MODEL_JSON || 'omni/free-best',
-  fast: process.env.AI_MODEL_FAST || 'omni/free-best',
-  fallback: process.env.AI_MODEL_FALLBACK || 'omni/free-fallback',
+  chat: process.env.AI_MODEL_CHAT || 'auto/best-chat',
+  reasoning: process.env.AI_MODEL_REASONING || 'auto/best-reasoning',
+  coding: process.env.AI_MODEL_CODING || 'auto/best-coding',
+  vision: process.env.AI_MODEL_VISION || 'auto/best-vision',
+  json: process.env.AI_MODEL_JSON || 'auto/best-chat',
+  fast: process.env.AI_MODEL_FAST || 'auto/best-fast',
+  fallback: process.env.AI_MODEL_FALLBACK || 'auto/best-free',
 };
 
 export const JOB_TYPES = Object.keys(JOB_MODELS);
@@ -111,7 +108,7 @@ export function isAgnesConfigured() {
   return !!(env.agnes.apiKey && env.agnes.baseUrl);
 }
 export function isOmniRouteConfigured() {
-  // OmniRoute is enabled when API key and base URL are provided.
+  if (String(process.env.OMNIROUTE_DISABLED || '').toLowerCase() === 'true') return false;
   return !!(env.omniroute.apiKey && env.omniroute.baseUrl && env.omniroute.baseUrl.length > 0);
 }
 
@@ -130,46 +127,75 @@ function failed(provider, error) {
   return { reply: '', provider, model: null, error };
 }
 
-// FALLBACK1: Vertex AI Gemini — direct Google Generative Language API.
+// FALLBACK1: Vertex AI Gemini — direct Google Generative Language API (OpenAI-compatible).
 // NEVER receives OmniRoute ids (omni/*, auto/*, vertex/*); they are
 // sanitized via resolveVertexModel(). Independent of OmniRoute.
 export async function callVertexGemini(model, prompt, options = {}) {
-  const { systemPrompt, jsonMode, timeout = DEFAULT_TIMEOUT } = options;
+  const { systemPrompt, jsonMode, timeout = 15000 } = options;
   const apiKey = env.gemini.apiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '';
   if (!apiKey) return failed('vertex-gemini', 'GEMINI_API_KEY not configured');
 
-  const modelId = resolveVertexModel(model);
-  const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(modelId) + ':generateContent';
+  const modelId = resolveVertexModel(model) || 'gemini-3.5-flash-lite';
+  const endpoint = (process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta/openai').replace(/\/+$/, '') + '/chat/completions';
 
-  const body = {
-    contents: [{ role: 'user', parts: [{ text: String(prompt).trim() }] }],
-  };
-  if (systemPrompt) body.systemInstruction = { parts: [{ text: systemPrompt }] };
-  if (jsonMode) body.generationConfig = { responseMimeType: 'application/json' };
+  // Verified live Google Cloud Vertex/Gemini models (fastest sub-second latency)
+  const candidateModels = [
+    'gemini-3.5-flash-lite',
+    'gemini-3.1-flash-lite',
+  ];
 
-  try {
-    const response = await withTimeout(timeout, (signal) => fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'x-goog-api-key': apiKey,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-      signal,
-    }));
-    if (!response.ok) {
-      const errText = await response.text().catch(() => '');
-      return failed('vertex-gemini', 'Vertex Gemini error: ' + response.status + ' ' + errText.slice(0, 200));
+  const messages = [];
+  if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+  messages.push({ role: 'user', content: String(prompt).trim() });
+
+  let lastError = null;
+  for (const targetModel of candidateModels) {
+    const body = {
+      model: targetModel,
+      messages,
+      stream: false,
+    };
+    if (jsonMode) {
+      body.response_format = { type: 'json_object' };
     }
-    const data = await response.json();
-    const parts = data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts;
-    const reply = Array.isArray(parts) ? parts.map((p) => p.text || '').join('') : '';
-    if (!reply) return failed('vertex-gemini', 'Vertex Gemini returned an empty response');
-    return { reply, provider: 'vertex-gemini', model: modelId, error: null };
-  } catch (error) {
-    if (error.name === 'AbortError') return failed('vertex-gemini', 'Vertex Gemini request timed out');
-    return failed('vertex-gemini', 'Vertex Gemini request failed: ' + (error.message || String(error)));
+
+    try {
+      const response = await withTimeout(timeout, (signal) => fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'User-Agent': 'DigitallyDefined-Backend/1.0 (+https://digitallydefined.store)',
+        },
+        body: JSON.stringify(body),
+        signal,
+      }));
+
+      if (!response.ok) {
+        const errText = await response.text().catch(() => '');
+        lastError = `Gemini (${targetModel}) error: ${response.status} ${errText.slice(0, 200)}`;
+        continue;
+      }
+
+      const data = await response.json();
+      const reply = data && data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
+      if (!reply) {
+        lastError = `Gemini (${targetModel}) returned an empty response`;
+        continue;
+      }
+
+      return { reply, provider: 'vertex-gemini', model: data.model || targetModel, error: null };
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        lastError = `Gemini (${targetModel}) request timed out`;
+      } else {
+        lastError = `Gemini (${targetModel}) request failed: ${error.message || String(error)}`;
+      }
+    }
   }
+
+  return failed('vertex-gemini', lastError || 'All Gemini models failed');
 }
 
 // FALLBACK2: AgentRouter (OpenAI-compatible chat/completions).

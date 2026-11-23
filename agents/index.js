@@ -28,10 +28,10 @@ export const agents = {
    */
   hermes_brand_builder: {
     name: "Hermes Brand Builder",
-    description: "Applies DigitallyDefined's official brand system to all design outputs.",
+    description: "Active brand enforcement and implementation system. Directly refactors non-compliant copy, components, and code into production-ready Soft Brutalist outputs.",
     systemPrompt: hermesBrandBuilderPrompt,
     category: "design",
-    version: "1.0.0"
+    version: "2.0.0"
   },
 
   /**

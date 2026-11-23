@@ -180,6 +180,18 @@ export async function handleDispatch(req, res) {
     }
   }
 
+  // Leads — everyone who raised their hand, segmented by persona.
+  if (action === 'leads' || action === 'leads.list') {
+    try {
+      const quizMod = await import('./quizDispatch.js');
+      const handler = quizMod.handleLeads || quizMod.default?.handleLeads;
+      return await handler(req, res);
+    } catch (err) {
+      logger.error('Leads dispatch failed', { error: err.message });
+      return res.status(500).json({ success: false, error: err.message || 'Leads lookup failed', timestamp: Date.now() });
+    }
+  }
+
   // Intelligence & personalize — real composed pipeline.
   if (action === 'intelligence' || action === 'personalize' || action === 'agent.intelligence') {
     try {
@@ -250,12 +262,66 @@ export async function handleDispatch(req, res) {
     return res.status(200).json({ success: true, data: { content: body.content || null }, provider: null, model: null, timestamp: Date.now() });
   }
 
-  // Subscribe — wires to Brevo (real) in a later phase; emits canonical envelope.
+  // Subscribe — writes the contact to Brevo (real). Emits canonical envelope.
+  // Reuses the same Brevo contact contract as the shared Brevo helper
+  // (supabase/functions/_shared/brevo-email.ts): POST /v3/contacts with
+  // updateEnabled for upsert, so an existing contact never fails the signup.
   if (action === 'subscribe') {
-    const email = body.email || '';
+    const email = String(body.email || '').trim().toLowerCase();
     if (!email) return res.status(400).json({ ok: false, error: 'Email required' });
     logger.info('Subscribe', { email });
-    return res.status(200).json({ ok: true, success: true, message: 'Subscribed', data: { email, provider: 'brevo' }, timestamp: Date.now() });
+
+    const apiKey = String(process.env.BREVO_API_KEY || '').trim();
+    const listId = Number(process.env.BREVO_LIST_ID || 0);
+
+    // Not configured -> acknowledge without failing the signup form, matching
+    // the shared Brevo helper's DEV/SKIP behaviour.
+    if (!apiKey) {
+      return res.status(200).json({
+        ok: true, success: true, message: 'Subscribed',
+        data: { email, provider: 'brevo', mode: 'dev', brevoUsed: false },
+        timestamp: Date.now(),
+      });
+    }
+
+    try {
+      const brevoRes = await fetch('https://api.brevo.com/v3/contacts', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Api-Key': apiKey,
+        },
+        body: JSON.stringify({
+          email,
+          updateEnabled: true,
+          ...(Number.isFinite(listId) && listId > 0 ? { listIds: [listId] } : {}),
+          attributes: { SOURCE: body.source || 'dashboard' },
+        }),
+        signal: AbortSignal.timeout(30000),
+      });
+
+      if (!brevoRes.ok) {
+        const text = await brevoRes.text().catch(() => '');
+        logger.error('Brevo contact sync failed', { status: brevoRes.status, body: text.slice(0, 200) });
+        return res.status(502).json({
+          ok: false, success: false,
+          error: `Brevo contact sync failed: ${brevoRes.status}`,
+        });
+      }
+
+      return res.status(200).json({
+        ok: true, success: true, message: 'Subscribed',
+        data: { email, provider: 'brevo', mode: 'live', brevoUsed: true },
+        timestamp: Date.now(),
+      });
+    } catch (err) {
+      logger.error('Brevo contact sync exception', { error: err.message });
+      return res.status(502).json({
+        ok: false, success: false,
+        error: 'Brevo contact sync failed',
+      });
+    }
   }
 
   // License verify — delegated to premium service (real Gumroad verification).

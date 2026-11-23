@@ -371,7 +371,7 @@ const getCandidates = (): Candidate[] => {
     return [];
   }
   // Normalize: accept base URL with or without a trailing "/v1".
-  const rawBase = (Deno.env.get("OMNIROUTE_BASE_URL") || "https://api.omniroute.ai/v1").trim();
+  const rawBase = (Deno.env.get("OMNIROUTE_BASE_URL") || "http://localhost:20128/v1").trim();
   const baseUrl = rawBase.replace(/\/+$/, "").replace(/\/v1$/, "") + "/v1";
   const model = (Deno.env.get("OMNIROUTE_MODEL") || "auto").trim();
   return [{

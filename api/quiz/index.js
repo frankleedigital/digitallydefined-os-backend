@@ -19,6 +19,7 @@ const ALLOWED_ORIGINS = new Set([
   'https://www.digitallydefined.online',
   'http://localhost:3000',
   'http://localhost:5173',
+  'http://localhost:4173',
 ]);
 
 export default async function handler(req, res) {

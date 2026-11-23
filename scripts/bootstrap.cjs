@@ -63,7 +63,7 @@ const CONFIG = {
     apiKey: envVars.BREVO_API_KEY || process.env.BREVO_API_KEY,
     listId: envVars.BREVO_LIST_ID || process.env.BREVO_LIST_ID || '2',
     baseUrl: 'https://api.brevo.com/v3',
-    testEmail: 'francesca@digitallydefined.online',
+    testEmail: 'francesca@digitallydefined.agency',
   },
   backend: {
     url: envVars.VITE_HERMES_ENDPOINT || process.env.VITE_HERMES_ENDPOINT || `https://${envVars.SUPABASE_URL?.replace(/^https?:\/\//, '') || 'dijjlppdljpcgyoakdnq.supabase.co'}/functions/v1/hermes`,

@@ -52,28 +52,59 @@ export function isBrevoConfigured() { return !!env.brevo.apiKey; }
 export function getBrevoStatus() { return { configured: isBrevoConfigured(), apiKeySet: !!env.brevo.apiKey }; }
 
 export async function fetchBrevoStats(timeoutMs = constants.FETCH_TIMEOUT_MS) {
-  if (!env.brevo.apiKey) return { error: 'Brevo not configured', totalSubscribers: 0, emailOpenRate: 0, emailClickRate: 0, topCampaigns: [] };
-  // Call real Brevo API for accurate stats
+  if (!env.brevo.apiKey) return { error: 'Brevo not configured', totalSubscribers: 0, emailOpenRate: null, emailClickRate: null, topCampaigns: [] };
+  // Real Brevo data. The previous implementation called /v3/partners/statistics,
+  // a reseller-only endpoint that a normal account cannot read — so the
+  // dashboard had no real subscriber numbers and someone filled the gap with
+  // invented ones.
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  const headers = { 'api-key': env.brevo.apiKey, 'Content-Type': 'application/json' };
   try {
-    const response = await fetch('https://api.brevo.com/v3/partners/statistics', {
-      headers: { 'api-key': env.brevo.apiKey },
-      signal: controller.signal,
+    const [contactsRes, campaignsRes] = await Promise.all([
+      fetch('https://api.brevo.com/v3/contacts?limit=1', { headers, signal: controller.signal }),
+      fetch('https://api.brevo.com/v3/emailCampaigns?limit=5', { headers, signal: controller.signal }),
+    ]);
+    if (!contactsRes.ok) {
+      const body = await contactsRes.json().catch(() => ({}));
+      throw new Error(body?.message || 'Brevo contacts request failed');
+    }
+    const contactsData = await contactsRes.json().catch(() => ({}));
+    const campaignsData = campaignsRes.ok ? await campaignsRes.json().catch(() => ({})) : {};
+
+    const totalSubscribers = Number(contactsData?.count || 0);
+    const campaigns = Array.isArray(campaignsData?.campaigns) ? campaignsData.campaigns : [];
+    const withStats = campaigns.filter((c) => Number(c?.stats?.sent || 0) > 0);
+
+    const topCampaigns = campaigns.slice(0, 5).map((c) => {
+      const sent = Number(c?.stats?.sent || 0);
+      const opened = Number(c?.stats?.uniqueOpened || 0);
+      const clicked = Number(c?.stats?.uniqueClicked || 0);
+      return {
+        name: c?.name || c?.subject || 'Campaign',
+        openRate: sent > 0 ? (opened / sent) * 100 : null,
+        clickRate: sent > 0 ? (clicked / sent) * 100 : null,
+      };
     });
-    if (!response.ok) throw new Error('Brevo API error: ' + response.status);
-    const data = await response.json();
+
+    const avg = (pick) => (withStats.length
+      ? withStats.reduce((sum, c) => {
+          const sent = Number(c?.stats?.sent || 0);
+          return sum + (sent > 0 ? (pick(c) / sent) * 100 : 0);
+        }, 0) / withStats.length
+      : null);
+
     return {
-      totalSubscribers: data.totalSubscribers || 0,
-      emailOpenRate: data.openRate || null,
-      emailClickRate: data.clickRate || null,
-      topCampaigns: data.topCampaigns || [],
+      totalSubscribers,
+      emailOpenRate: avg((c) => Number(c?.stats?.uniqueOpened || 0)),
+      emailClickRate: avg((c) => Number(c?.stats?.uniqueClicked || 0)),
+      topCampaigns,
       error: null,
     };
   } catch (error) {
-    if (error.name === 'AbortError') return { error: 'Brevo request timed out', totalSubscribers: 0, emailOpenRate: 0, emailClickRate: 0, topCampaigns: [] };
+    if (error.name === 'AbortError') return { error: 'Brevo request timed out', totalSubscribers: 0, emailOpenRate: null, emailClickRate: null, topCampaigns: [] };
     logger.error('Brevo fetch error', error);
-    return { error: error.message || 'Brevo fetch failed', totalSubscribers: 0, emailOpenRate: 0, emailClickRate: 0, topCampaigns: [] };
+    return { error: error.message || 'Brevo fetch failed', totalSubscribers: 0, emailOpenRate: null, emailClickRate: null, topCampaigns: [] };
   } finally { clearTimeout(timeoutId); }
 }
 

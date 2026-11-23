@@ -9,6 +9,7 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:5173',
+  'http://localhost:4173',
   ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
 ];
 
@@ -111,7 +112,7 @@ const FETCH_TIMEOUT_MS = 5000;
 
 // Accept base URL with or without a trailing "/v1"; always resolve to "<origin>/v1/chat/completions".
 function omnirouteEndpoint(raw) {
-  const base = String(raw || process.env.OMNIROUTE_BASE_URL || 'https://api.omniroute.ai/v1')
+  const base = String(raw || process.env.OMNIROUTE_BASE_URL || 'http://localhost:20128/v1')
     .trim()
     .replace(/\/+$/, '')
     .replace(/\/v1$/, '');
@@ -123,7 +124,7 @@ function omnirouteEndpoint(raw) {
 // Required env: OMNIROUTE_API_KEY. Optional: OMNIROUTE_BASE_URL, OMNIROUTE_MODEL.
 const AI_PROVIDERS = {
   omniroute: {
-    baseUrl: process.env.OMNIROUTE_BASE_URL || 'https://api.omniroute.ai/v1',
+    baseUrl: process.env.OMNIROUTE_BASE_URL || 'http://localhost:20128/v1',
     keyEnv: 'OMNIROUTE_API_KEY',
     models: ['auto'], // OmniRoute auto-selects best available model
     defaultModel: 'auto',
@@ -682,7 +683,7 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
   if (omnirouteKey) {
     providers.push({
       name: 'omniroute',
-      url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL || 'https://api.omniroute.ai/v1'),
+      url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL || 'http://localhost:20128/v1'),
       key: omnirouteKey,
       model: omnirouteModel,
     });

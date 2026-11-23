@@ -4,7 +4,7 @@
  * upstream providers on its side. No direct provider calls.
  *
  * Required secret: OMNIROUTE_API_KEY
- * Optional: OMNIROUTE_BASE_URL (default https://api.omniroute.ai/v1), OMNIROUTE_MODEL
+ * Optional: OMNIROUTE_BASE_URL (default http://localhost:20128/v1), OMNIROUTE_MODEL
  */
 
 export function getBestModel(_quality: "high" | "medium" | "low"): string {
@@ -16,7 +16,7 @@ export async function run(modelName: string, payload: Record<string, unknown> = 
   if (!OMNIROUTE_KEY) throw new Error("OMNIROUTE_API_KEY is not configured");
 
   // Normalize: accept base URL with or without a trailing "/v1".
-  const rawBase = (Deno.env.get('OMNIROUTE_BASE_URL') || 'https://api.omniroute.ai/v1').trim();
+  const rawBase = (Deno.env.get('OMNIROUTE_BASE_URL') || 'http://localhost:20128/v1').trim();
   const baseUrl = rawBase.replace(/\/+$/, "").replace(/\/v1$/, "") + '/v1';
   const model = modelName && modelName !== 'auto' ? modelName : getBestModel("medium");
 

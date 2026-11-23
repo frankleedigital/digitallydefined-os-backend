@@ -27,7 +27,7 @@ try {
 // Normalize any configured base URL (with or without a trailing "/v1")
 // into the canonical chat-completions endpoint.
 export function omnirouteEndpoint(raw?: string | null): string {
-  const base = (raw ?? Deno.env.get('OMNIROUTE_BASE_URL') ?? 'https://api.omniroute.ai/v1')
+  const base = (raw ?? Deno.env.get('OMNIROUTE_BASE_URL') ?? 'http://localhost:20128/v1')
     .trim()
     .replace(/\/+$/, '')
     .replace(/\/v1$/, '');

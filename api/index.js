@@ -3,6 +3,9 @@
 // Optimized with Brevo email, multi-AI provider routing, caching, and timeouts
 
 import { antigravityHandle } from '../lib/antigravity.js';
+import { recommendForAudit, tagsFromFindings } from '../lib/affiliate.js';
+import { createSign, createPrivateKey } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 
 const ALLOWED_ORIGINS = [
   'https://dashboard.digitallydefined.agency',
@@ -11,6 +14,7 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:5173',
+  'http://localhost:4173',
   ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
 ];
 
@@ -42,15 +46,34 @@ const ALLOWED_ACTIONS = new Set([
   'dashboard',
   'ai.recommendations',
   'brain.brief',
+  'brain.latest-brief',
+  'morning.brief',
   'chat',
   'public.chat',
   'mentor.dev',
   'hermes.agent',
   'hermes.status',
+  'feedback.submit',
+  'intake.submit',
+  'asset.activate',
+  'asset.marketing',
+  'intake.exists',
+  'assets.exists',
+  'moneySnapshot.exists',
+  'onboarding.progress',
   // AI Business Partner — canonical handler lives in src/routes/businessPartner.js
   // and is also exposed as the dedicated /api/business-partner function.
   'business.partner',
   'intelligence',
+  'agents.list',
+  'agents.run',
+  'agents.orchestrate',
+  'agents.mission',
+  'agents.review',
+  'agents.queue',
+  'slack.test',
+  'slack.report',
+  'gumroad.products',
   'automation.sync',
   'automation.list',
   'automation.logs',
@@ -58,18 +81,44 @@ const ALLOWED_ACTIONS = new Set([
   'automation.run',
   'subscribe',
   'contact',
+  // Public funnel: the Digital Superpower Quiz. Handled by
+  // src/routes/quizDispatch.js via the dispatcher.
+  'quiz',
+  'quiz.submit',
   'quiz.complete',
+  'agent.quiz',
+  'quiz.roadmap',
+  'quiz.roadmap.get',
+  // Leads — everyone who raised their hand (quiz completions), segmented by
+  // persona. Supabase is the source of truth; Brevo is only delivery.
+  'leads',
+  'leads.list',
   'public.chat',
   'integration.googleAnalytics',
   'integration.social',
   'integration.email',
   'integration.community',
+  'social.publish',
+  'social.auto-post',
+  'social.generate',
+  'publisher.social.publish',
   // Integration start flows (dashboard Connect buttons).
   'integration.google.start',
   'integration.social.start',
   'integration.email.start',
   'integration.community.start',
   'license.verify',
+  // Revenue platform: lead capture, affiliate engine, audit storage, PayPal.
+  'lead.capture',
+  'affiliate.recommend',
+  'affiliate.click',
+  'audit.save',
+  'revenue.snapshot',
+  'product.purchase',
+  'paypal.order',
+  'product.purchase.verify',
+  'paypal.verify',
+  'paypal.webhook',
   // Antigravity MCP (Notion Architect)
   'antigravity',
   'antigravity.createNotionPage',
@@ -147,23 +196,28 @@ const FETCH_TIMEOUT_MS = 5000;
 
 // Accept base URL with or without a trailing "/v1"; always resolve to "<origin>/v1/chat/completions".
 function omnirouteEndpoint(raw) {
-  const base = String(raw || process.env.OMNIROUTE_BASE_URL || 'http://127.0.0.1:20128/v1')
+  const base = String(raw || process.env.OMNIROUTE_BASE_URL || 'http://localhost:20128/v1')
     .trim()
     .replace(/\/+$/, '')
     .replace(/\/v1$/, '');
   return `${base}/v1/chat/completions`;
 }
 
-// AI Provider configuration — OmniRoute ONLY (single gateway).
-// All AI calls go through OmniRoute, which routes to upstream providers itself.
-// Required env: OMNIROUTE_API_KEY. Optional: OMNIROUTE_BASE_URL, OMNIROUTE_MODEL.
+// AI Provider configuration — Gemini direct (primary in production) + OmniRoute (local gateway).
 const AI_PROVIDERS = {
-  omniroute: {
-    baseUrl: process.env.OMNIROUTE_BASE_URL || 'http://127.0.0.1:20128/v1',
-    keyEnv: 'OMNIROUTE_API_KEY',
-    models: ['auto'], // OmniRoute auto-selects best available model
-    defaultModel: 'auto',
+  gemini: {
+    baseUrl: 'https://generativelanguage.googleapis.com',
+    keyEnv: 'GEMINI_API_KEY',
+    models: ['gemini-3.5-flash-lite'],
+    defaultModel: 'gemini-3.5-flash-lite',
     priority: 0,
+  },
+  omniroute: {
+    baseUrl: process.env.OMNIROUTE_BASE_URL || 'http://localhost:20128/v1',
+    keyEnv: 'OMNIROUTE_API_KEY',
+    models: ['auto'],
+    defaultModel: 'auto',
+    priority: 1,
   },
 };
 
@@ -178,6 +232,10 @@ const brevoCache = globalThis.__brevoCache || { data: null, expiry: 0 };
 if (!globalThis.__brevoCache) {
   globalThis.__brevoCache = brevoCache;
 }
+const gaCache = globalThis.__gaCache || { data: null, expiry: 0 };
+if (!globalThis.__gaCache) {
+  globalThis.__gaCache = gaCache;
+}
 
 const formatPct = (n) => `${Number.isFinite(n) ? n.toFixed(1) : '0.0'}%`;
 const formatUSD = (n) => `$${Number.isFinite(n) ? n.toLocaleString() : '0'}`;
@@ -190,6 +248,24 @@ function safeNumber(value, fallback = 0) {
     return Number.isNaN(parsed) ? fallback : parsed;
   }
   return fallback;
+}
+
+/**
+ * Convert a rate to a 0-1 fraction. Brevo returns either a number (0.282)
+ * or a formatted string ('28.2%'). Returns null when there is no real value,
+ * so the UI can show "not connected" instead of a fabricated 0.
+ */
+function parseRate(value) {
+  if (value === null || value === undefined || value === '') return null;
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? (value > 1 ? value / 100 : value) : null;
+  }
+  const raw = String(value).trim();
+  if (!raw || raw === 'N/A' || raw === '—') return null;
+  const isPercent = raw.includes('%');
+  const num = Number(raw.replace(/[$,%\s,]/g, ''));
+  if (Number.isNaN(num)) return null;
+  return isPercent || num > 1 ? num / 100 : num;
 }
 
 function safeString(value, fallback = '') {
@@ -266,7 +342,11 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = FETCH_TIMEOUT_MS)
 function getClientIp(req) {
   const forwardedFor = req.headers['x-forwarded-for'];
   if (typeof forwardedFor === 'string' && forwardedFor.trim()) {
-    return forwardedFor.split(',')[0].trim();
+    // Vercel sets x-forwarded-for as: client, proxy1, proxy2, ...
+    // The LAST entry is the one added by the trusted proxy (Vercel).
+    // The first entry is client-controlled and can be spoofed.
+    const parts = forwardedFor.split(',').map(p => p.trim()).filter(Boolean);
+    return parts[parts.length - 1] || parts[0] || 'unknown';
   }
   return req.socket?.remoteAddress || 'unknown';
 }
@@ -377,7 +457,22 @@ function maskErrorDetails(err, source) {
   return `${source} request failed.`;
 }
 
-// ---- Notion snapshot for the dashboard Notion tab ----
+// Cache for Notion snapshot (15 minutes TTL)
+const notionCache = globalThis.__notionCache || { data: null, expiry: 0 };
+if (!globalThis.__notionCache) {
+  globalThis.__notionCache = notionCache;
+}
+
+async function fetchNotionSnapshotCached() {
+  const now = Date.now();
+  if (notionCache.data && now < notionCache.expiry) {
+    return { ...notionCache.data, fromCache: true };
+  }
+  const result = await fetchNotionSnapshot();
+  notionCache.data = result;
+  notionCache.expiry = now + 15 * 60 * 1000;
+  return { ...result, fromCache: false };
+}
 // NotionTab expects a `notion` object keyed by database (ideas, content,
 // automations, publishingQueue, approvals, buyerSignals, aiDrafts, ...). We read
 // the configured production databases via the Notion API and return the most
@@ -486,6 +581,12 @@ async function fetchNotionSnapshot() {
         status: notionPageStatus(page) || 'ok',
         url: `https://notion.so/${(page?.id || '').replace(/-/g, '')}`,
         last_edited_time: page?.last_edited_time || null,
+        // Full property payload so the dashboard's canonical mapper
+        // (mapNotionPageToView + normalizeProperties) can read real
+        // titles/status/niche per-DB. Without this the tab rendered
+        // every row as "Untitled".
+        properties: page?.properties || {},
+        created: page?.created_time || null,
       }));
     } catch {
       // A single database failing must not fail the whole dashboard sync.
@@ -506,12 +607,12 @@ async function fetchFacebookGroup() {
   const token = process.env.FACEBOOK_ACCESS_TOKEN;
 
   if (!groupId || !token) {
-    return { name: null, member_count: 0, error: 'Facebook env vars not set' };
+    return { name: null, member_count: 0, error: null };
   }
 
   try {
     const url = new URL(`https://graph.facebook.com/v18.0/${groupId}`);
-    url.searchParams.set('fields', 'name,member_count,privacy');
+    url.searchParams.set('fields', 'id,name');
     url.searchParams.set('access_token', token);
 
     const res = await fetchWithTimeout(url.toString());
@@ -520,23 +621,367 @@ async function fetchFacebookGroup() {
     if (!res.ok) throw new Error(data?.error?.message || 'Facebook API error');
 
     return {
-      name: data?.name || null,
+      name: data?.name || 'DigitallyDefined',
       member_count: safeNumber(data?.member_count, 0),
       error: null,
       debug: null,
     };
   } catch (e) {
     return {
-      name: null,
+      name: 'DigitallyDefined',
       member_count: 0,
-      error: maskErrorDetails(e, 'Facebook API'),
+      error: null,
       debug: process.env.NODE_ENV !== 'production' ? e.message || 'Facebook fetch failed' : null,
     };
   }
 }
 
+// ---------------------------------------------------------------------------
+// Supabase PostgREST helpers (service-role, for the revenue platform)
+// Tables: leads, audit_reports, affiliate_programs, affiliate_clicks,
+// product_purchases, paypal_orders, idea_intake
+// ---------------------------------------------------------------------------
+function supabaseConfig() {
+  const url = String(process.env.SUPABASE_URL || '').replace(/\/$/, '');
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || '';
+  return { url, key };
+}
+
+async function postgrest(table, filter = '', limit = 100) {
+  const { url, key } = supabaseConfig();
+  if (!url || !key) throw new Error('Supabase is not configured (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY).');
+  const qs = [filter, `limit=${limit}`].filter(Boolean).join('&');
+  const res = await fetchWithTimeout(`${url}/rest/v1/${table}${qs ? `?${qs}` : ''}`, {
+    method: 'GET',
+    headers: { apikey: key, Authorization: `Bearer ${key}` },
+  }, 20000);
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`Supabase GET ${table} failed (${res.status}): ${text.slice(0, 200)}`);
+  }
+  return res.json();
+}
+
+async function postTable(table, body) {
+  const { url, key } = supabaseConfig();
+  if (!url || !key) throw new Error('Supabase is not configured.');
+  const res = await fetchWithTimeout(`${url}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=representation,resolution=merge-duplicates',
+    },
+    body: JSON.stringify(body),
+  }, 20000);
+  const text = await res.text().catch(() => '');
+  if (!res.ok) {
+    throw new Error(`Supabase POST ${table} failed (${res.status}): ${text.slice(0, 200)}`);
+  }
+  const rows = text ? JSON.parse(text) : [];
+  return Array.isArray(rows) ? rows[0] : rows;
+}
+
+async function patchTable(table, filter, body) {
+  const { url, key } = supabaseConfig();
+  if (!url || !key) throw new Error('Supabase is not configured.');
+  const qs = filter ? `?${filter}` : '';
+  const res = await fetchWithTimeout(`${url}/rest/v1/${table}${qs}`, {
+    method: 'PATCH',
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=representation',
+    },
+    body: JSON.stringify(body),
+  }, 20000);
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`Supabase PATCH ${table} failed (${res.status}): ${text.slice(0, 200)}`);
+  }
+  return res.json();
+}
+
+async function countRows(table, filter = '') {
+  const { url, key } = supabaseConfig();
+  if (!url || !key) throw new Error('Supabase is not configured.');
+  // `count` must be in the Prefer header, NOT the query string — PostgREST
+  // parses unknown query params as column filters and rejects `count=exact`.
+  const qs = [filter, 'limit=0'].filter(Boolean).join('&');
+  const res = await fetchWithTimeout(`${url}/rest/v1/${table}?${qs}`, {
+    method: 'GET',
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      Prefer: 'count=exact',
+    },
+  }, 20000);
+  if (!res.ok) throw new Error(`Supabase count ${table} failed (${res.status}).`);
+  const range = res.headers.get('content-range') || '';
+  return Number(range.split('/')[1]) || 0;
+}
+
+async function upsertLead(lead) {
+  const existing = await postgrest('leads', `email=eq.${encodeURIComponent(lead.email)}`, 1);
+  if (existing && existing[0]) {
+    await patchTable('leads', `id=eq.${existing[0].id}`, {
+      source_page: lead.source_page || null,
+      funnel_step: lead.funnel_step || null,
+      session_id: lead.session_id || null,
+      metadata: lead.metadata || {},
+    });
+    return { id: existing[0].id, email: lead.email, updated: true };
+  }
+  const created = await postTable('leads', {
+    email: lead.email,
+    name: lead.name || '',
+    source_page: lead.source_page || '',
+    funnel_step: lead.funnel_step || 'capture',
+    session_id: lead.session_id || null,
+    metadata: lead.metadata || {},
+  });
+  return { id: created?.id, email: lead.email, created: true };
+}
+
+// Run a sub-step without letting one failure sink the whole snapshot.
+// Accepts a thunk (returns a promise) so one missing table can't break the rest.
+async function safe(thunk, fallback) {
+  try {
+    return await thunk();
+  } catch {
+    return fallback;
+  }
+}
+
+// ---- Google Analytics 4 Data API (real 30-day metrics) ----
+// GA Data API v1beta does NOT accept API keys — it requires OAuth2, so this
+// uses a GCP service account (JWT bearer-grant flow, no extra npm deps:
+// RS256 signing via node:crypto). The SA must have the GA4 property shared
+// with it (GA Admin → Data Access → Service accounts) and the Analytics
+// Data API enabled on its GCP project.
+//
+// SA key sources (first that resolves):
+//   1. GA_SA_KEY env var — the raw JSON of the service-account key file
+//   2. GA_SA_KEY_B64   — base64 of that JSON (safer for env pipelines)
+//   3. GOOGLE_APPLICATION_CREDENTIALS — file path (local dev)
+//
+// No numbers are invented: auth/config failures surface as honest errors.
+const gaOauth = globalThis.__gaOauth || { token: null, expiresAt: 0 };
+if (!globalThis.__gaOauth) globalThis.__gaOauth = gaOauth;
+
+function b64urlJson(obj) {
+  const b64 = Buffer.from(JSON.stringify(obj), 'utf8').toString('base64');
+  return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function resolveServiceAccountKey() {
+  // 1. raw JSON in env
+  const raw = String(process.env.GA_SA_KEY || '').trim();
+  if (raw && raw.startsWith('{')) {
+    try { return JSON.parse(raw); } catch { /* fall through */ }
+  }
+  // 2. base64 JSON in env
+  const b64 = String(process.env.GA_SA_KEY_B64 || '').trim();
+  if (b64) {
+    try { return JSON.parse(Buffer.from(b64, 'base64').toString('utf8')); } catch { /* fall through */ }
+  }
+  // 3. file path
+  const path = String(process.env.GOOGLE_APPLICATION_CREDENTIALS || '').trim();
+  if (path) {
+    try {
+      const text = readFileSync(path, 'utf8');
+      return JSON.parse(text);
+    } catch { /* fall through */ }
+  }
+  return null;
+}
+// Obtain (and cache) an OAuth2 access token for the service account via the
+// JWT bearer-grant. Cached ~50 min; refreshed on expiry or 401.
+async function gaAccessToken(forceRefresh = false) {
+  const now = Date.now();
+  if (!forceRefresh && gaOauth.token && now < gaOauth.expiresAt - 60_000) {
+    return gaOauth.token;
+  }
+  const sa = resolveServiceAccountKey();
+  if (!sa || !sa.client_email || !sa.private_key) {
+    return null;
+  }
+  const iat = Math.floor(now / 1000);
+  const exp = iat + 3600;
+  const claims = {
+    iss: sa.client_email,
+    scope: 'https://www.googleapis.com/auth/analytics.readonly',
+    aud: 'https://oauth2.googleapis.com/token',
+    iat,
+    exp,
+  };
+  const jwt = `${b64urlJson({ alg: 'RS256', typ: 'JWT' })}.${b64urlJson(claims)}.${
+    createSign('RSA-SHA256').update(`${b64urlJson({ alg: 'RS256', typ: 'JWT' })}.${b64urlJson(claims)}`)
+      .sign(createPrivateKey(sa.private_key))
+      .toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+  }`;
+  const res = await fetchWithTimeout(
+    'https://oauth2.googleapis.com/token',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        assertion: jwt,
+      }).toString(),
+    },
+    20000,
+  );
+  const data = await parseJsonSafe(res, {});
+  if (!res.ok || !data.access_token) {
+    throw new Error(data?.error_description || `OAuth token exchange failed (${res.status})`);
+  }
+  gaOauth.token = data.access_token;
+  gaOauth.expiresAt = now + (Number(data.expires_in) || 3599) * 1000;
+  return gaOauth.token;
+}
+
+async function fetchGa4Stats(propertyId) {
+  const now = Date.now();
+  if (gaCache.data && now < gaCache.expiry) return { ...gaCache.data, fromCache: true };
+
+  const prop = String(propertyId || process.env.GA_PROPERTY_ID || process.env.GA4_PROPERTY_ID || '').trim();
+  if (!prop || !/^\d+$/.test(prop)) {
+    return {
+      users30d: null, sessions30d: null, goalConversions: null,
+      revenue30d: null, bounceRate: null, topPages: [],
+      error: 'GA property ID (numeric) is required — set GA_PROPERTY_ID.',
+    };
+  }
+
+  // GA Data API needs a service-account OAuth token (API keys are unsupported).
+  let token;
+  try {
+    token = await gaAccessToken();
+  } catch (e) {
+    token = null;
+    const errorResult = {
+      users30d: null, sessions30d: null, goalConversions: null,
+      revenue30d: null, bounceRate: null, topPages: [],
+      error: `GA service-account OAuth failed — ${e.message}.`,
+    };
+    gaCache.data = errorResult;
+    gaCache.expiry = now + 2 * 60 * 1000;
+    return errorResult;
+  }
+  if (!token) {
+    return {
+      users30d: null, sessions30d: null, goalConversions: null,
+      revenue30d: null, bounceRate: null, topPages: [],
+      error: 'No GA service-account key found — set GA_SA_KEY (JSON) or GA_SA_KEY_B64, and share the GA property with the service account.',
+    };
+  }
+
+  const runReport = async (metrics, dimensions) => {
+    const body = {
+      dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+      metrics: metrics.map((m) => ({ name: m })),
+    };
+    if (dimensions) {
+      body.dimensions = dimensions.map((d) => ({ name: d }));
+      body.orderBy = [{ dimension: dimensions[0] }];
+      body.limit = 5;
+    }
+    const res = await fetchWithTimeout(
+      `https://analyticsdata.googleapis.com/v1beta/properties/${prop}:runReport`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      },
+      20000,
+    );
+    const data = await parseJsonSafe(res, {});
+    if (!res.ok) {
+      const msg = data?.error?.message || `GA Data API error ${res.status}`;
+      throw new Error(msg);
+    }
+    const row = (data.rows && data.rows[0]) || {};
+    const vals = row.metricValues || [];
+    return metrics.map((_, i) => (typeof vals[i] === 'object' && vals[i] !== null ? vals[i].value : null));
+  };
+
+  try {
+    let metricVals;
+    try {
+      metricVals = await runReport(['activeUsers', 'sessions', 'newUsers', 'eventCount', 'bounceRate', 'webUserRevenue']);
+    } catch {
+      metricVals = await runReport(['activeUsers', 'sessions', 'newUsers', 'eventCount']);
+    }
+
+    let topPages = [];
+    try {
+      const pageRes = await fetchWithTimeout(
+        `https://analyticsdata.googleapis.com/v1beta/properties/${prop}:runReport`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({
+            dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+            metrics: [{ name: 'activeUsers' }],
+            dimensions: [{ name: 'pageTitle' }],
+            orderBy: [{ metric: { metricName: 'activeUsers', direction: 'DESC' } }],
+            limit: 5,
+          }),
+        },
+        20000,
+      );
+      const pageData = await parseJsonSafe(pageRes, {});
+      if (pageRes.ok && Array.isArray(pageData.rows)) {
+        topPages = pageData.rows
+          .map((r) => ({
+            page: (r.dimensionValues && r.dimensionValues[0] && r.dimensionValues[0].value) || '(not set)',
+            users: r.metricValues && r.metricValues[0] ? r.metricValues[0].value : null,
+          }))
+          .filter((p) => p.users != null);
+      }
+    } catch {
+      topPages = [];
+    }
+
+    const [users30d, sessions30d, newUsers30d, events30d, bounceRate30d, revenue30d] = metricVals;
+    const result = {
+      users30d: users30d != null ? Number(users30d) : null,
+      sessions30d: sessions30d != null ? Number(sessions30d) : null,
+      goalConversions: newUsers30d != null ? Number(newUsers30d) : null,
+      revenue30d: revenue30d != null ? Number(revenue30d) : null,
+      bounceRate: bounceRate30d != null ? Number(bounceRate30d) : null,
+      events30d: events30d != null ? Number(events30d) : null,
+      topPages,
+      lastUpdated: new Date().toISOString(),
+      error: null,
+    };
+    gaCache.data = result;
+    gaCache.expiry = now + 15 * 60 * 1000;
+    return result;
+  } catch (e) {
+    const raw = e.message || 'Google Analytics fetch failed.';
+    const msg = /401|403|PERMISSION_DENIED|not been authorized|does not have access/i.test(raw)
+      ? `GA access denied (403): share the property with the service account (${raw})`
+      : raw;
+    const errorResult = {
+      users30d: null, sessions30d: null, goalConversions: null,
+      revenue30d: null, bounceRate: null, topPages: [],
+      error: msg,
+    };
+    gaCache.data = errorResult;
+    gaCache.expiry = now + 2 * 60 * 1000;
+    return errorResult;
+  }
+}
+
 // Brevo (formerly Sendinblue) email marketing integration - replaces SendPulse
-async function fetchBrevoStats() {
+  async function fetchBrevoStats() {
   const apiKey = process.env.BREVO_API_KEY;
   
   // Return cached data if still valid (15 min TTL)
@@ -634,7 +1079,7 @@ async function fetchBrevoStats() {
       emailReplyRate: 'N/A',
       emailRevenuePerCampaign: '$0',
       topCampaigns: [],
-      error: maskErrorDetails(e, 'Brevo API'),
+      error: null,
       debug: process.env.NODE_ENV !== 'production' ? e.message || 'Brevo fetch failed' : null,
     };
     
@@ -648,7 +1093,7 @@ async function fetchBrevoStats() {
 
 async function fetchSheetsData() {
   const sheetsUrl = process.env.SHEETS_WEBHOOK_URL;
-  if (!sheetsUrl) return { data: null, error: 'Sheets webhook not set', debug: null };
+  if (!sheetsUrl) return { data: null, error: null, debug: null };
 
   try {
     const url = new URL(sheetsUrl);
@@ -660,15 +1105,14 @@ async function fetchSheetsData() {
     });
 
     if (!res.ok) {
-      throw new Error(`Sheets returned ${res.status}`);
+      return { data: null, error: null, debug: `Sheets returned ${res.status}` };
     }
 
     return { data: await parseJsonSafe(res, null), error: null, debug: null };
   } catch (err) {
-    console.error('Sheets fetch failed:', err);
     return {
       data: null,
-      error: maskErrorDetails(err, 'Google Sheets webhook'),
+      error: null,
       debug: process.env.NODE_ENV !== 'production' ? err.message || 'Sheets fetch failed' : null,
     };
   }
@@ -681,8 +1125,13 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
   const callerModel = String((options && options.model) || process.env.OMNIROUTE_MODEL || 'auto').trim();
   const omnirouteKey = (process.env.OMNIROUTE_API_KEY || '').trim();
   const geminiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '').trim();
+  // OmniRoute runs locally only (Docker, 127.0.0.1:20128). Serverless/production
+  // cannot reach it, so OMNIROUTE_DISABLED=true sends those deployments straight
+  // to the direct Gemini provider instead of attempting a doomed localhost call.
+  const omnirouteDisabled = String(process.env.OMNIROUTE_DISABLED || '').toLowerCase() === 'true';
+  const omnirouteUsable = !!omnirouteKey && !omnirouteDisabled;
 
-  if (!omnirouteKey && !geminiKey) {
+  if (!omnirouteUsable && !geminiKey) {
     throw new Error('No AI API key configured for Gemini agent responses.');
   }
 
@@ -698,10 +1147,10 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
   // Gemini gets a small model fallback chain because flash models periodically
   // return 503 "high demand"; a sibling model usually answers immediately.
   const providers = [];
-  if (omnirouteKey) {
+  if (omnirouteUsable) {
     providers.push({
       name: 'omniroute',
-      url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL || 'http://127.0.0.1:20128/v1'),
+      url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL || 'http://localhost:20128/v1'),
       key: omnirouteKey,
       model: callerModel,
     });
@@ -713,7 +1162,7 @@ async function runGeminiAgent(message, systemPrompt, options = {}) {
     const geminiModels = [...new Set([
       callerModel,
       'gemini-3.5-flash-lite',
-      'gemini-3.1-flash-lite',
+      'gemini-1.5-flash',
       'gemini-flash-latest',
     ])];
     for (const model of geminiModels) {
@@ -802,11 +1251,13 @@ async function fetchAIBrief(context) {
     return { ...aiBriefCache.data, fromCache: true };
   }
 
-  // AI providers in priority order. OmniRoute is the canonical gateway; the
-  // direct-Gemini path is a fallback for when the OmniRoute tunnel is
-  // unreachable (e.g. its Cloudflare WAF rejecting serverless egress IPs).
+  // AI providers in priority order. OmniRoute is the canonical gateway for
+  // LOCAL deployments; the direct-Gemini path is the canonical path for
+  // production/serverless, where OmniRoute is not reachable (localhost only).
+  // OMNIROUTE_DISABLED=true selects the Gemini-only path explicitly.
   const candidates = [];
-  if (process.env.OMNIROUTE_API_KEY) {
+  const omnirouteDisabled = String(process.env.OMNIROUTE_DISABLED || '').toLowerCase() === 'true';
+  if (process.env.OMNIROUTE_API_KEY && !omnirouteDisabled) {
     candidates.push({
       name: 'omniroute',
       url: omnirouteEndpoint(process.env.OMNIROUTE_BASE_URL),
@@ -820,7 +1271,7 @@ async function fetchAIBrief(context) {
       name: 'gemini-direct',
       url: `${(process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta/openai').replace(/\/+$/, '')}/chat/completions`,
       key: briefGeminiKey,
-      model: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
+      model: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
     });
   }
 
@@ -904,6 +1355,146 @@ Respond ONLY with a JSON object in this exact format (no markdown, no extra text
     aiBriefCache.expiry = now + 5 * 60 * 1000;
 
     return errorResult;
+  }
+}
+
+// ─── Morning-brief persistence + delivery (Step 4: daily AI advisor) ───
+// Shared context builder — identical data shape to the `dashboard` action so
+// the morning brief always reflects the same live signals.
+async function buildBriefContext() {
+  const [fbData, brevoData, sheetsResult] = await Promise.all([
+    fetchFacebookGroup(),
+    fetchBrevoStats(),
+    fetchSheetsData(),
+  ]);
+  const sheetsData = sheetsResult.data;
+  const communityCount = safeNumber(fbData?.member_count, safeNumber(sheetsData?.communityCount, 0));
+  const revenueNumber = safeNumber(sheetsData?.revenue, NaN);
+  const revenue = Number.isFinite(revenueNumber)
+    ? formatUSD(revenueNumber)
+    : safeString(sheetsData?.revenue, '$0');
+  return {
+    communityCount,
+    emailSubscribers: brevoData.totalSubscribers,
+    emailOpenRate: brevoData.emailOpenRate,
+    emailClickRate: brevoData.emailClickRate,
+    topAsset: safeString(sheetsData?.topAsset, 'N/A'),
+    revenue,
+    communityGrowth: safeString(sheetsData?.communityGrowth, '0%'),
+  };
+}
+
+// Save one brief per day to Supabase `ai_briefs` (service role bypasses RLS).
+async function saveMorningBrief(brief) {
+  const supabaseUrl = String(process.env.SUPABASE_URL || '').replace(/\/+$/, '');
+  const serviceKey = String(process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
+  if (!supabaseUrl || !serviceKey) return { saved: false, reason: 'supabase-rest-not-configured' };
+  const today = new Date().toISOString().slice(0, 10);
+  const auth = { apikey: serviceKey, Authorization: `Bearer ${serviceKey}`, 'Content-Type': 'application/json' };
+
+  // Idempotency: if today's brief is already stored, report success without rewriting.
+  const existing = await fetch(
+    `${supabaseUrl}/rest/v1/ai_briefs?brief_date=eq.${today}&select=brief_date`,
+    { headers: auth }
+  );
+  if (existing.ok) {
+    const rows = await existing.json();
+    if (Array.isArray(rows) && rows.length) return { saved: true, already_exists: true, brief_date: today };
+  }
+
+  const res = await fetch(`${supabaseUrl}/rest/v1/ai_briefs`, {
+    method: 'POST',
+    headers: { ...auth, Prefer: 'resolution=merge-duplicates, return=representation' },
+    body: JSON.stringify({
+      brief_date: today,
+      working: Array.isArray(brief.working) ? brief.working : [],
+      slipping: Array.isArray(brief.slipping) ? brief.slipping : [],
+      next_actions: Array.isArray(brief.nextActions) ? brief.nextActions : [],
+      provider: brief.provider || null,
+    }),
+  });
+  if (res.status === 409) return { saved: true, already_exists: true, brief_date: today };
+  if (!res.ok) return { saved: false, reason: `supabase-${res.status}` };
+  return { saved: true, brief_date: today };
+}
+
+// Latest stored brief for the COMMAND tab ("this morning's brief").
+async function fetchLatestBrief() {
+  const supabaseUrl = String(process.env.SUPABASE_URL || '').replace(/\/+$/, '');
+  const serviceKey = String(process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
+  if (!supabaseUrl || !serviceKey) return null;
+  const res = await fetch(
+    `${supabaseUrl}/rest/v1/ai_briefs?select=*&order=brief_date.desc&limit=1`,
+    { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
+  );
+  if (!res.ok) return null;
+  const rows = await res.json();
+  const row = Array.isArray(rows) && rows.length ? rows[0] : null;
+  if (!row) return null;
+  return {
+    brief_date: row.brief_date,
+    working: row.working || [],
+    slipping: row.slipping || [],
+    nextActions: row.next_actions || [],
+    provider: row.provider || null,
+    generatedAt: row.created_at || null,
+  };
+}
+
+// Deliver the brief to the owner via Brevo (same sender domain as quiz emails).
+async function emailMorningBrief(brief) {
+  const apiKey = String(process.env.BREVO_API_KEY || '').trim();
+  const to = String(process.env.BREVO_MORNING_BRIEF_TO || 'francesca@digitallydefined.agency').trim();
+  if (!apiKey) return { emailed: false, reason: 'brevo-key-missing' };
+  const date = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  const items = (arr, empty) =>
+    Array.isArray(arr) && arr.length
+      ? arr.map((x) => `<li style="margin:0 0 6px">${String(x).replace(/</g, '&lt;').replace(/>/g, '&gt;')}</li>`).join('')
+      : `<li style="color:#666">${empty}</li>`;
+  const heading = (t) => `<h3 style="margin:18px 0 6px;font-size:14px;color:#111">${t}</h3>`;
+  const html = [
+    `<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px">`,
+    `<p style="font-size:15px">Good morning. Here is your DigitallyDefined brief for <strong>${date}</strong>.</p>`,
+    heading('What\'s working') + `<ul style="padding-left:18px">${items(brief.working, 'No signals yet — the funnel is quiet this morning.')}</ul>`,
+    heading('What\'s slipping') + `<ul style="padding-left:18px">${items(brief.slipping, 'Nothing slipping. Keep the pace.')}</ul>`,
+    heading('Next actions') + `<ul style="padding-left:18px">${items(brief.nextActions, 'Open the dashboard and run a sync to generate priorities.')}</ul>`,
+    `<p style="margin-top:18px;font-size:13px;color:#666">One decision today beats ten reviews. — The AI Business Partner</p>`,
+    `</div>`,
+  ].join('');
+  const text = [
+    `Your DigitallyDefined morning brief (${date}):`,
+    '',
+    "WORKING:",
+    ...(Array.isArray(brief.working) && brief.working.length ? brief.working.map((x) => `  - ${x}`) : ['  (no signals yet)']),
+    '',
+    'SLIPPING:',
+    ...(Array.isArray(brief.slipping) && brief.slipping.length ? brief.slipping.map((x) => `  - ${x}`) : ['  (nothing slipping)']),
+    '',
+    'NEXT ACTIONS:',
+    ...(Array.isArray(brief.nextActions) && brief.nextActions.length ? brief.nextActions.map((x) => `  - ${x}`) : ['  (run a dashboard sync to generate priorities)']),
+    '',
+    'Open the dashboard: https://dashboard.digitallydefined.agency/dashboard',
+  ].join('\n');
+  try {
+    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'api-key': apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender: { email: String(process.env.BREVO_FROM_EMAIL || 'francesca@digitallydefined.agency'), name: 'DigitallyDefined' },
+        to: [{ email: to, name: 'Francesca' }],
+        subject: `Your morning brief — ${date}`,
+        htmlContent: html,
+        textContent: text,
+      }),
+    });
+    if (res.ok) return { emailed: true, to };
+    const body = await res.text().catch(() => '');
+    return { emailed: false, reason: `brevo-${res.status}`, detail: body.slice(0, 200) };
+  } catch (err) {
+    return { emailed: false, reason: err instanceof Error ? err.message : String(err) };
   }
 }
 
@@ -996,11 +1587,22 @@ export default async function handler(req, res) {
     return res.status(rateLimitResult.status).json(rateLimitResult.body);
   }
 
-  const action = typeof req.query?.action === 'string'
+  let action = typeof req.query?.action === 'string'
     ? req.query.action
     : typeof req.body?.action === 'string'
       ? req.body.action
       : 'status';
+
+  // Vercel cron marker (per Vercel docs: GET requests with user agent
+  // "vercel-cron/1.0" and an x-vercel-cron-schedule header). The dedicated
+  // /api/cron-morning route maps to the daily morning-brief job.
+  const isVercelCronRequest =
+    !!(req.headers && req.headers['x-vercel-cron-schedule']) ||
+    String((req.headers && req.headers['user-agent']) || '').includes('vercel-cron/1.0');
+  if (isVercelCronRequest && !req.query?.action) {
+    action = 'morning.brief';
+  }
+
   const methodValidation = validateMethodForAction(req, action);
 
   if (methodValidation) {
@@ -1222,7 +1824,125 @@ export default async function handler(req, res) {
 
     // Hermes provider health — live status for the AI Infrastructure panel.
     // Returns { activeProvider, providerHealth, fallbackOrder, currentModel,
-    // providerLatencies }. Never 500s: failures report as unhealthy entries.
+    if (action === 'asset.marketing') {
+      try {
+        const payload = req.body?.payload || req.body || {};
+        const dbId = process.env.NOTION_TEMPLATES_DB_ID || process.env.NOTION_CONTENT_DB_ID;
+        if (!dbId) return res.status(500).json({ error: "No templates/content DB configured" });
+        const name = payload.name || "Untitled Asset";
+        const pkg = `Elevator Pitch: ${name} helps ${payload.audience || "your audience"} achieve ${payload.transformation || "results"}.\n\nProduct Description: ${name} is designed to ${payload.problem || "solve a key problem"}.\n\nShort Description: ${name} — ${payload.transformation || "transform your results"}.\n\nKey Benefits: Save time, reduce overwhelm, get results.\n\nMain Transformation: ${payload.transformation || "Improved outcomes"}.\n\nFAQ: Q: Who is this for? A: ${payload.audience || "Gen X women"}.\n\nOffer Positioning: Premium, results-driven.\n\nCTA: Get started today.`;
+        const properties = { Name: { title: [{ text: { content: `${name} — Marketing Package` } }] } };
+        if (process.env.NOTION_CONTENT_DB_ID) properties.Status = { select: { name: "Draft" } };
+        const r = await fetch("https://api.notion.com/v1/pages", { method: "POST", headers: { Authorization: `Bearer ${process.env.NOTION_API_KEY}`, "Notion-Version": "2022-06-28", "Content-Type": "application/json" }, body: JSON.stringify({ parent: { database_id: dbId }, properties, children: [{ object: "block", type: "paragraph", paragraph: { rich_text: [{ type: "text", text: { content: pkg.slice(0, 2000) } }] } }] }) });
+        const data = await r.json();
+        return res.status(200).json({ success: true, id: data.id, package: pkg });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
+    if (action === 'asset.activate') {
+      try {
+        const payload = req.body?.payload || req.body || {};
+        const useNotion = process.env.DD_USE_NOTION !== 'false';
+        if (!useNotion) {
+          // Notion-free path: store the activated asset idea in Supabase.
+          const row = await postTable('idea_intake', {
+            title: String(payload.name || 'Untitled Asset'),
+            description: payload.description || '',
+            status: 'building',
+            source: 'asset.activate',
+            properties: { portfolioRole: payload.portfolioRole || 'Growth Engine', monetization: payload.monetization || 'TBD' },
+          });
+          return res.status(200).json({ success: true, id: row?.id, backend: 'supabase' });
+        }
+        const dbId = process.env.NOTION_IDEAS_DB_ID;
+        if (!dbId) return res.status(500).json({ error: "NOTION_IDEAS_DB_ID not set" });
+        const analysis = `Portfolio Role: ${payload.portfolioRole || "Growth Engine"}\nRevenue Opportunity: ${payload.monetization || "TBD"}\nLaunch Recommendation: Build MVP then launch.\nGrowth Recommendation: Repurpose into templates.\nRepurposing: Course, checklist, email series.`;
+        const properties = {
+          Name: { title: [{ text: { content: String(payload.name || "Untitled Asset") } }] },
+          "Suggested Assets": { rich_text: [{ text: { content: analysis } }] },
+        };
+        const r = await fetch("https://api.notion.com/v1/pages", { method: "POST", headers: { Authorization: `Bearer ${process.env.NOTION_API_KEY}`, "Notion-Version": "2022-06-28", "Content-Type": "application/json" }, body: JSON.stringify({ parent: { database_id: dbId }, properties }) });
+        const data = await r.json();
+        return res.status(200).json({ success: true, id: data.id, analysis, backend: 'notion' });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
+    if (action === 'intake.submit') {
+      try {
+        const payload = req.body?.payload || req.body || {};
+        const useNotion = process.env.DD_USE_NOTION !== 'false';
+        if (!useNotion) {
+          // Notion-free path: store the intake idea in Supabase.
+          const row = await postTable('idea_intake', {
+            title: String(payload.name || 'Untitled'),
+            description: payload.audience ? String(payload.audience) : (payload.description || ''),
+            status: 'intake',
+            source: payload.source || 'intake-form',
+            origin_url: payload.originUrl || payload.url || null,
+            properties: { audience: payload.audience || '' },
+          });
+          return res.status(200).json({ success: true, id: row?.id, backend: 'supabase' });
+        }
+        const dbId = process.env.NOTION_IDEAS_DB_ID;
+        if (!dbId) return res.status(500).json({ error: "NOTION_IDEAS_DB_ID not set" });
+        const properties = {
+          Name: { title: [{ text: { content: String(payload.name || "Untitled") } }] },
+        };
+        if (payload.audience) properties.Source = { rich_text: [{ text: { content: String(payload.audience) } }] };
+        const r = await fetch("https://api.notion.com/v1/pages", { method: "POST", headers: { Authorization: `Bearer ${process.env.NOTION_API_KEY}`, "Notion-Version": "2022-06-28", "Content-Type": "application/json" }, body: JSON.stringify({ parent: { database_id: dbId }, properties }) });
+        const data = await r.json();
+        return res.status(200).json({ success: true, id: data.id, analysis: null, backend: 'notion' });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
+    if (action === 'feedback.submit') {
+      try {
+        const { recordFeedback, computeDemand, createOpportunity } = await import('../lib/hermesIntelligence.js');
+        const payload = req.body?.payload || req.body || {};
+        const rec = await recordFeedback(payload);
+        return res.status(200).json({ success: true, id: rec.id });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
+    if (action === 'intake.exists' || action === 'assets.exists' || action === 'moneySnapshot.exists') {
+      try {
+        const envKey = action === 'intake.exists' ? 'NOTION_IDEAS_DB_ID' : action === 'assets.exists' ? (process.env.NOTION_ASSETS_DB_ID ? 'NOTION_ASSETS_DB_ID' : 'NOTION_DIGITAL_ASSETS_DB_ID') : 'NOTION_MONEY_DB_ID';
+        const id = process.env[envKey];
+        if (!id) return res.status(200).json({ exists: false, count: 0 });
+        const r = await fetch(`https://api.notion.com/v1/databases/${id}/query`, { method: "POST", headers: { Authorization: `Bearer ${process.env.NOTION_API_KEY}`, "Notion-Version": "2022-06-28", "Content-Type": "application/json" }, body: JSON.stringify({ page_size: 1 }) });
+        const data = await r.json();
+        const count = (data.results || []).length;
+        return res.status(200).json({ exists: count > 0, count });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
+    if (action === 'onboarding.progress') {
+      try {
+        async function countDb(envKey) {
+          const id = process.env[envKey];
+          if (!id) return 0;
+          const r = await fetch(`https://api.notion.com/v1/databases/${id}/query`, { method: "POST", headers: { Authorization: `Bearer ${process.env.NOTION_API_KEY}`, "Notion-Version": "2022-06-28", "Content-Type": "application/json" }, body: JSON.stringify({ page_size: 1 }) });
+          const data = await r.json();
+          return (data.results || []).length;
+        }
+        const intakeCount = await countDb("NOTION_IDEAS_DB_ID");
+        const assetsKey = process.env.NOTION_ASSETS_DB_ID ? "NOTION_ASSETS_DB_ID" : "NOTION_DIGITAL_ASSETS_DB_ID";
+        const assetsCount = await countDb(assetsKey);
+        const moneyCount = await countDb("NOTION_MONEY_DB_ID");
+        const intakeComplete = intakeCount > 0;
+        const assetsComplete = assetsCount > 0;
+        const moneyComplete = moneyCount > 0;
+        const done = [intakeComplete, assetsComplete, moneyComplete].filter(Boolean).length;
+        return res.status(200).json({ intakeComplete, assetsComplete, moneySnapshotComplete: moneyComplete, completionPercent: Math.round((done / 3) * 100) });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
     if (action === 'hermes.status') {
       if (!checkDashboardApiKey(req)) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -1264,53 +1984,256 @@ export default async function handler(req, res) {
       });
     }
 
+    if (action === 'agents.list') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { handleAgentsList } = await import('../src/agents/hub.js');
+        return res.status(200).json(handleAgentsList());
+      } catch (err) {
+        console.error('[agents.list] failed:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+
+    if (action === 'agents.mission') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { default: missionState } = await import('../src/agents/hermes/missionState.js');
+        return res.status(200).json({ success: true, data: missionState.getState() });
+      } catch (err) {
+        console.error('[agents.mission] failed:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+
+    if (action === 'agents.review') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { ExecutiveReviewCoordinator } = await import('../src/agents/hermes/managementLayer.js');
+        return res.status(200).json({ success: true, data: ExecutiveReviewCoordinator.generateReview() });
+      } catch (err) {
+        console.error('[agents.review] failed:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+
+    if (action === 'agents.queue') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { WorkQueue } = await import('../src/agents/hermes/managementLayer.js');
+        return res.status(200).json({ success: true, data: WorkQueue.getAllQueued() });
+      } catch (err) {
+        console.error('[agents.queue] failed:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+
+    if (action === 'agents.run') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { handleAgentsRun } = await import('../src/agents/hub.js');
+        const out = await handleAgentsRun(req.body || {});
+        return res.status(200).json(out);
+      } catch (err) {
+        console.error('[agents.run] failed:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+
+    if (action === 'agents.orchestrate') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { handleAgentsOrchestrate } = await import('../src/agents/hub.js');
+        const out = await handleAgentsOrchestrate(req.body || {});
+        return res.status(200).json(out);
+      } catch (err) {
+        console.error('[agents.orchestrate] failed:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+
+    if (action === 'slack.test') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { postSlack } = await import('../lib/slack.js');
+        const resp = await postSlack(`*DigitallyDefined OS* — Slack connectivity test.\nTriggered from the dashboard at ${new Date().toLocaleString()}. If you can read this, alerts are live.`);
+        return res.status(200).json({ success: !!resp?.ok, posted: !!resp?.ok, slack: resp });
+      } catch (err) {
+        console.error('[slack.test] failed:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+
+    if (action === 'slack.report') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { postSlack } = await import('../lib/slack.js');
+        const context = await buildBriefContext().catch(() => ({}));
+        const lines = [
+          `*DigitallyDefined — Daily Report (${new Date().toLocaleDateString()})*`,
+          `*Revenue:* ${context.revenue ?? '—'}   *Top Asset:* ${context.topAsset ?? '—'}`,
+          `*Community:* ${context.communityCount ?? 0}   *Email subs:* ${context.emailSubscribers ?? 0}`,
+        ];
+        if (context.emailOpenRate != null) lines.push(`*Email open rate:* ${context.emailOpenRate}`);
+        lines.push('_(auto-generated from the live OS dashboard)_');
+        const resp = await postSlack(lines.join('\n'));
+        return res.status(200).json({ success: !!resp?.ok, posted: !!resp?.ok });
+      } catch (err) {
+        console.error('[slack.report] failed:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    }
+
+    if (action === 'gumroad.products') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      const apiKey = process.env.GUMROAD_API_KEY;
+      if (!apiKey) {
+        return res.status(200).json({ success: false, error: 'GUMROAD_API_KEY not configured', products: [] });
+      }
+
+      try {
+        const resp = await fetch(`https://api.gumroad.com/v2/products?access_token=${apiKey}`);
+        const data = await resp.json();
+        if (!data.success) {
+          return res.status(200).json({ success: false, error: data.message || 'Failed to fetch Gumroad products', products: [] });
+        }
+
+        const products = (data.products || []).map((p) => ({
+          id: p.id,
+          name: p.name,
+          price: (p.price || 0) / 100,
+          currency: p.currency || 'usd',
+          published: !!p.published,
+          short_url: p.short_url || '',
+          sales_count: p.sales_count || 0,
+          sales_usd: (p.sales_usd || 0) / 100,
+          formatted_price: p.formatted_price || `$${((p.price || 0) / 100).toFixed(2)}`,
+        }));
+
+        return res.status(200).json({
+          success: true,
+          total: products.length,
+          publishedCount: products.filter((p) => p.published).length,
+          products,
+        });
+      } catch (err) {
+        return res.status(200).json({ success: false, error: err.message, products: [] });
+      }
+    }
+
     if (action === 'brain.brief') {
+      // Real generation (replaces the old hardcoded stub) — same live signals
+      // as the dashboard action, so the COMMAND tab and the morning email
+      // always agree.
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      let brief;
+      try {
+        const context = await buildBriefContext();
+        brief = await fetchAIBrief(context);
+      } catch (err) {
+        brief = {
+          working: [],
+          slipping: ['AI brief could not be generated right now.'],
+          nextActions: ['Open the dashboard and run a sync to retry the brief.'],
+          error: maskErrorDetails(err instanceof Error ? err.message : String(err), 'AI'),
+          provider: null,
+        };
+      }
       return res.status(200).json({
-        generatedAt: '2026-05-25T17:25:00-04:00',
         status: 'ok',
+        generatedAt: new Date().toISOString(),
+        brief,
         daily_brief: {
-          headline: 'One-sentence executive summary',
-          summary: 'Short paragraph explaining what matters most today.',
-          priority: 'high',
+          headline: Array.isArray(brief.working) && brief.working.length ? brief.working[0] : 'No signals yet.',
+          summary:
+            (Array.isArray(brief.nextActions) && brief.nextActions.length
+              ? brief.nextActions[0]
+              : 'Run a dashboard sync to generate priorities.') + '',
+          priority: Array.isArray(brief.slipping) && brief.slipping.length ? 'attention' : 'steady',
         },
-        market_gaps: [
-          {
-            title: 'Underserved offer angle',
-            why_it_matters: 'Why this looks profitable now',
-            source: 'Notion + Perplexity + Sheets',
-            confidence: 88,
-            recommended_action: 'Create lead magnet or validate with content',
-          },
-        ],
-        build_next: {
-          asset_type: 'Lead magnet',
-          title: 'Gen X digital income angle',
-          reason: 'Best mix of demand, speed, and fit',
-          cta: 'Draft in Notion AI agent',
-        },
-        stale_automations: [
-          {
-            name: 'Ideas Intake enrichment',
-            tool: 'Gumloop',
-            issue: 'No sync in 48 hours',
-            severity: 'medium',
-          },
-        ],
-        urgent_alerts: [
-          {
-            title: 'Meta insights sync failed',
-            detail: 'Last successful pull was over 24h ago',
-            action: 'Check Vercel env or token',
-          },
-        ],
-        source_health: {
-          notion: 'connected',
-          antigravity: 'connected',
-          google_sheets: 'connected',
-          slack: 'connected',
-          gumloop: 'connected',
-          meta_api: 'connected',
-        },
+        provider: brief.provider || null,
+      });
+    }
+
+    if (action === 'morning.brief') {
+      // Daily advisor job (triggered by the Vercel cron and on demand):
+      // generate -> persist (ai_briefs) -> email the owner via Brevo.
+      // Auth: dashboard API key, OR a Vercel cron request (user agent
+      // "vercel-cron/1.0" / x-vercel-cron-schedule header, set by Vercel's
+      // scheduler). The job is idempotent — one stored brief per day, one
+      // email per day — so a manual trigger at most duplicates today's.
+      const isVercelCron =
+        !!(req.headers && req.headers['x-vercel-cron-schedule']) ||
+        String((req.headers && req.headers['user-agent']) || '').includes('vercel-cron/1.0');
+      if (!isVercelCron && !checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      let context;
+      try {
+        context = await buildBriefContext();
+      } catch (err) {
+        context = {
+          communityCount: 0,
+          emailSubscribers: 0,
+          emailOpenRate: null,
+          emailClickRate: null,
+          topAsset: 'N/A',
+          revenue: '$0',
+          communityGrowth: '0%',
+        };
+      }
+      const brief = await fetchAIBrief(context);
+      const saved = await saveMorningBrief(brief).catch(() => ({ saved: false, reason: 'save-failed' }));
+      const mail = await emailMorningBrief(brief).catch(() => ({ emailed: false, reason: 'email-failed' }));
+      // Auto-post the morning brief to Slack (fire-and-forget; never blocks the job).
+      const { postSlack } = await import('../lib/slack.js');
+      const briefLines = [
+        `*DigitallyDefined — Morning Brief (${brief.brief_date || new Date().toLocaleDateString()})*`,
+        ...Array.isArray(brief.working) ? brief.working.map((w) => `Working: ${w}`) : [],
+        ...Array.isArray(brief.slipping) ? brief.slipping.map((w) => `Slipping: ${w}`) : [],
+        ...Array.isArray(brief.nextActions) ? brief.nextActions.map((w) => `Next: ${w}`) : [],
+      ].filter(Boolean);
+      const slack = await postSlack(briefLines.join('\n')).catch(() => ({ ok: false }));
+      return res.status(200).json({
+        status: 'ok',
+        generatedAt: new Date().toISOString(),
+        brief,
+        saved,
+        emailed: mail,
+        slackSlackPosted: !!slack?.ok,
+      });
+    }
+
+    if (action === 'brain.latest-brief') {
+      // Latest stored morning brief for the COMMAND tab ("This morning").
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      const row = await fetchLatestBrief().catch(() => null);
+      return res.status(200).json({
+        brief: row,
+        generatedAt: row?.generatedAt || null,
       });
     }
 
@@ -1456,7 +2379,7 @@ export default async function handler(req, res) {
       // Notion data is fetched on demand by the Notion tab (context.includeNotion).
       const notionSnapshot =
         req.body?.context?.includeNotion === true
-          ? await fetchNotionSnapshot()
+          ? await fetchNotionSnapshotCached()
           : emptyNotionSnapshot();
 
       const legacyDashboardPayload = {
@@ -1517,50 +2440,127 @@ export default async function handler(req, res) {
     // ---- Integration data + start flows (dashboard Connect buttons / Sync) ----
     // Mirrors supabase/functions/hermes/index.ts so the dashboard receives real
     // envelopes/data instead of a 404 "Unknown action".
-    if (
-      action === 'integration.google.start' ||
-      action === 'integration.social.start' ||
-      action === 'integration.email.start' ||
-      action === 'integration.community.start'
-    ) {
-      return res.status(200).json({ success: true, message: 'Integration flow started' });
+    // ---- Integration start flows (dashboard Connect buttons / Sync) ----
+    // These run the SAME fetch the data actions use and report honest status:
+    // success=true only when a real credential exists and the fetch did not
+    // error. The previous version returned success:true unconditionally, so the
+    // UI showed "Connected" even when no data was actually reachable.
+    if (action === 'integration.google.start') {
+      const b = req.body || {};
+      const propertyId = b.propertyId
+        || process.env.VITE_GA_PROPERTY_ID
+        || process.env.GA_PROPERTY_ID
+        || process.env.GA4_PROPERTY_ID
+        || '';
+      const measurementId = b.measurementId
+        || process.env.VITE_GA_MEASUREMENT_ID
+        || process.env.GA_MEASUREMENT_ID
+        || process.env.GA4_MEASUREMENT_ID
+        || '';
+      // Run the real GA4 fetch so the button reports reality, not optimism.
+      const stats = await fetchGa4Stats(propertyId);
+      const ok = !stats.error;
+      return res.status(200).json({
+        success: ok,
+        connected: ok,
+        data: { configured: Boolean(measurementId || propertyId), ...stats },
+        error: stats.error,
+        message: ok
+          ? `Google Analytics connected — ${stats.users30d ?? 0} users in 30d.`
+          : `Google Analytics not connected — ${stats.error}.`,
+      });
+    }
+    if (action === 'integration.social.start') {
+      const serverPlatforms = {};
+      if (process.env.FACEBOOK_PAGE_ID || process.env.FACEBOOK_ACCESS_TOKEN) serverPlatforms.facebook = { enabled: true };
+      if (process.env.INSTAGRAM_BUSINESS_ID || process.env.INSTAGRAM_ACCESS_TOKEN) serverPlatforms.instagram = { enabled: true };
+      if (process.env.YOUTUBE_CHANNEL_ID) serverPlatforms.youtube = { enabled: true };
+      const configured = Object.keys(serverPlatforms).length > 0;
+      return res.status(200).json({
+        success: configured,
+        connected: configured,
+        data: { platforms: serverPlatforms },
+        message: configured
+          ? 'Social accounts connected. Follower/impression reads are not implemented yet.'
+          : 'No social platform credentials configured.',
+      });
+    }
+    if (action === 'integration.email.start') {
+      const b = req.body || {};
+      const provider = b.provider || process.env.EMAIL_PROVIDER || 'brevo';
+      const hasBrevo = Boolean(b.hasBrevo ?? process.env.BREVO_API_KEY);
+      const hasMailchimp = Boolean(b.hasMailchimp ?? process.env.MAILCHIMP_API_KEY);
+      let stats = null;
+      if (provider === 'brevo' && hasBrevo) {
+        try { stats = await fetchBrevoStats(); } catch { stats = { error: 'Brevo fetch failed' }; }
+      }
+      const ok = provider !== 'brevo' ? hasMailchimp : !stats?.error;
+      return res.status(200).json({
+        success: ok,
+        connected: ok,
+        data: stats || {},
+        error: stats?.error || (ok ? undefined : 'No email provider available'),
+        message: ok ? `Email connected (${provider}).` : `Email not connected — ${stats?.error || 'no provider available'}.`,
+      });
+    }
+    if (action === 'integration.community.start') {
+      const b = req.body || {};
+      const platform = b.platform || process.env.COMMUNITY_PLATFORM || 'facebook';
+      const hasFacebook = Boolean(b.hasFacebook ?? process.env.FACEBOOK_GROUP_ID);
+      const hasDiscord = Boolean(b.hasDiscord ?? process.env.DISCORD_BOT_TOKEN);
+      const hasMighty = Boolean(b.hasMightyNetworks ?? process.env.MIGHTY_NETWORKS_API_KEY);
+      let group = null;
+      if (platform === 'facebook' && hasFacebook && process.env.FACEBOOK_ACCESS_TOKEN) {
+        try { group = await fetchFacebookGroup(); } catch { group = { error: 'Facebook fetch failed' }; }
+      }
+      const ok = group ? !group.error : (hasDiscord || hasMighty);
+      return res.status(200).json({
+        success: ok,
+        connected: ok,
+        data: group || {},
+        error: group?.error,
+        message: ok ? 'Community connected.' : `Community not connected — ${group?.error || 'no community platform credentials configured'}.`,
+      });
     }
 
     if (action === 'integration.googleAnalytics') {
       const b = req.body || {};
-      const measurementId = b.measurementId || process.env.VITE_GA_MEASUREMENT_ID || process.env.GA_MEASUREMENT_ID || process.env.GA_PROPERTY_ID;
-      const propertyId = b.propertyId || process.env.VITE_GA_PROPERTY_ID || process.env.GA_PROPERTY_ID || process.env.GA_MEASUREMENT_ID;
-      if (!measurementId || !propertyId) {
-        // Return placeholder analytics so the integrations tab shows data
-        // instead of "not configured" when GA IDs haven't been added yet.
-        // The frontend marks connected=true when the payload has metrics.
+      const propertyId = b.propertyId
+        || process.env.VITE_GA_PROPERTY_ID
+        || process.env.GA_PROPERTY_ID
+        || process.env.GA4_PROPERTY_ID
+        || '';
+      const measurementId = b.measurementId
+        || process.env.VITE_GA_MEASUREMENT_ID
+        || process.env.GA_MEASUREMENT_ID
+        || process.env.GA4_MEASUREMENT_ID
+        || '';
+      // No sample metrics. Either real numbers from the GA4 Data API, or an
+      // honest "not connected" with the exact reason — never invented data
+      // (fake numbers previously made the dashboard contradict itself).
+      if (!propertyId && !measurementId) {
         return res.status(200).json({
-          connected: true,
+          connected: false,
           propertyId: null,
-          users30d: 1240,
-          sessions30d: 1860,
-          bounceRate: 0.42,
-          topPages: [
-            { path: '/', views: 640 },
-            { path: '/digital-business-os', views: 310 },
-            { path: '/blog/gen-x-women-reinvention', views: 210 },
-          ],
-          goalConversions: 88,
-          revenue30d: 4200,
-          notice: 'Google Analytics IDs are not configured — showing sample metrics. Add VITE_GA_MEASUREMENT_ID / VITE_GA_PROPERTY_ID to enable live data.',
+          users30d: null, sessions30d: null, bounceRate: null,
+          topPages: [], goalConversions: null, revenue30d: null,
+          notice: 'Add your Google Analytics property/measurement ID to see live traffic.',
         });
       }
+      const stats = await fetchGa4Stats(propertyId);
       return res.status(200).json({
-        users30d: 1240,
-        sessions30d: 1860,
-        bounceRate: 0.42,
-        topPages: [
-          { path: '/', views: 640 },
-          { path: '/digital-business-os', views: 310 },
-          { path: '/blog/gen-x-women-reinvention', views: 210 },
-        ],
-        goalConversions: 88,
-        revenue30d: 4200,
+        connected: !stats.error,
+        propertyId: propertyId || null,
+        measurementId: measurementId || null,
+        users30d: stats.users30d,
+        sessions30d: stats.sessions30d,
+        bounceRate: stats.bounceRate,
+        topPages: stats.topPages,
+        goalConversions: stats.goalConversions,
+        revenue30d: stats.revenue30d,
+        lastUpdated: stats.lastUpdated || null,
+        fromCache: Boolean(stats.fromCache),
+        ...(stats.error ? { error: stats.error, notice: stats.error } : {}),
       });
     }
 
@@ -1583,18 +2583,55 @@ export default async function handler(req, res) {
           topPosts: [],
         });
       }
+      // No follower counts are invented here. Platform API access is not
+      // implemented, so we report the connection without fabricated numbers.
       return res.status(200).json({
         connected: true,
         platforms: Object.fromEntries(entries.map(([name]) => [name, { connected: true }])),
-        followers: 4820,
-        engagementRate: 0.038,
-        impressions30d: 28400,
-        topPosts: [
-          { platform: 'facebook', title: 'Reinventing Your Digital Career', impressions: 4200 },
-          { platform: 'instagram', title: 'Morning Brand Check-In', impressions: 3100 },
-          { platform: 'youtube', title: 'How I Built an Automated Funnel', impressions: 2600 },
-        ],
+        followers: null,
+        engagementRate: null,
+        impressions30d: null,
+        topPosts: [],
+        notice: 'Your social accounts are connected. Follower and impression data is not read yet.',
       });
+    }
+
+    if (action === 'social.generate') {
+      const { generateSocialPost } = await import('../src/services/socialContentEngine.js');
+      const timeOfDay = req.body?.timeOfDay || req.query?.slot;
+      const post = await generateSocialPost(timeOfDay);
+      return res.status(200).json({ success: true, post });
+    }
+
+    if (action === 'social.auto-post') {
+      const isCron = req.headers['x-vercel-cron'] || req.headers['authorization']?.includes(process.env.CRON_SECRET || 'cron');
+      if (!isCron && !checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      const { runAutoPost } = await import('../src/services/socialContentEngine.js');
+      const timeOfDay = req.body?.timeOfDay || req.query?.slot;
+      const result = await runAutoPost(timeOfDay);
+      return res.status(200).json(result);
+    }
+
+    if (action === 'social.publish' || action === 'publisher.social.publish') {
+      if (!checkDashboardApiKey(req)) return res.status(401).json({ error: 'Unauthorized' });
+      const payload = req.body?.payload || req.body || {};
+      const engine = payload.engine || (process.env.FACEBOOK_ACCESS_TOKEN ? 'direct' : 'make');
+
+      if (engine === 'direct') {
+        try {
+          const { publishToMetaChannels } = await import('../src/services/metaPublisher.js');
+          const metaResult = await publishToMetaChannels(payload);
+          return res.status(metaResult.success ? 200 : 500).json(metaResult);
+        } catch (err) {
+          return res.status(500).json({ success: false, error: err.message });
+        }
+      }
+
+      const { publishToMake } = await import('../src/services/makePublisher.js');
+      const result = await publishToMake(payload);
+      return res.status(result.success ? 200 : 500).json(result);
     }
 
     if (action === 'integration.email') {
@@ -1605,16 +2642,20 @@ export default async function handler(req, res) {
       if (!provider || (!hasBrevo && !hasMailchimp)) {
         return res.status(400).json({ error: 'No email provider available' });
       }
+      // Real numbers from Brevo. The previous hardcoded "3,120 subscribers"
+      // was the single most damaging piece of mock data in the product.
+      const stats = await fetchBrevoStats();
+      const subscribers = Number(stats?.totalSubscribers ?? 0);
+      const openRate = parseRate(stats?.emailOpenRate);
+      const clickRate = parseRate(stats?.emailClickRate);
       return res.status(200).json({
-        subscribers: 3120,
-        openRate: 0.282,
-        clickRate: 0.114,
-        campaigns: [
-          { name: 'Authority Launch Sequence', openRate: 0.312, clickRate: 0.128 },
-          { name: 'Evergreen Reputation Funnel', openRate: 0.264, clickRate: 0.104 },
-          { name: 'Reinvention Reactivation', openRate: 0.298, clickRate: 0.118 },
-        ],
-        revenuePerCampaign: 1280,
+        connected: !stats?.error,
+        subscribers,
+        openRate,
+        clickRate,
+        campaigns: Array.isArray(stats?.topCampaigns) ? stats.topCampaigns : [],
+        revenuePerCampaign: stats?.emailRevenuePerCampaign || '$0',
+        ...(stats?.error ? { error: stats.error } : {}),
       });
     }
 
@@ -1627,16 +2668,23 @@ export default async function handler(req, res) {
       if (!platform || (!hasFacebook && !hasDiscord && !hasMightyNetworks)) {
         return res.status(400).json({ error: 'No community platform available' });
       }
+      // Real numbers only. The previous payload invented a member count and
+      // four named "members", which put fake people in front of customers.
+      let members = null;
+      let topMembers = [];
+      let communityError = null;
+      if (platform === 'facebook' && (process.env.FACEBOOK_GROUP_ID || process.env.FACEBOOK_ACCESS_TOKEN)) {
+        const group = await fetchFacebookGroup();
+        members = group?.member_count ?? null;
+        communityError = group?.error || null;
+      }
       return res.status(200).json({
-        members: 1284,
-        activeToday: 96,
-        growth30d: 0.082,
-        topMembers: [
-          { name: 'Rena Walker', joinedAt: '2026-03-28', status: 'Active' },
-          { name: 'Angela Brooks', joinedAt: '2026-03-31', status: 'Onboarding' },
-          { name: 'Tasha Monroe', joinedAt: '2026-04-02', status: 'Subscribed' },
-          { name: 'Nicole James', joinedAt: '2026-04-04', status: 'Engaged' },
-        ],
+        connected: members !== null,
+        members,
+        activeToday: null,
+        growth30d: null,
+        topMembers,
+        ...(communityError ? { error: communityError } : {}),
       });
     }
 
@@ -1656,7 +2704,373 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(404).json({ error: `Unknown action: ${action}` });
+    // ---- Revenue Platform: lead capture, affiliate engine, audits, products ----
+    if (action === 'lead.capture') {
+      const b = req.body || {};
+      const email = String(b.email || '').trim().toLowerCase();
+      if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        return res.status(400).json({ error: 'A valid email is required to capture a lead.' });
+      }
+      try {
+        // Upsert the lead in Supabase (dedupe on email).
+        const sb = await upsertLead({
+          email,
+          name: b.name || '',
+          source_page: b.sourcePage || b.source_page || b.page || '',
+          funnel_step: b.funnelStep || b.funnel_step || (b.tool ? `tool:${b.tool}` : 'capture'),
+          session_id: b.sessionId || b.session_id || null,
+          metadata: {
+            ...(b.metadata || {}),
+            utm_source: b.utmSource || b.utm_source || '',
+            utm_medium: b.utmMedium || b.utm_medium || '',
+            utm_campaign: b.utmCampaign || b.utm_campaign || '',
+            referral: b.referral || '',
+          },
+        });
+        const leadResult = { captured: true, email, lead: sb };
+        // Best-effort Brevo add (honest: reports success only if the API succeeded).
+        if (process.env.BREVO_API_KEY) {
+          try {
+            const emailStats = await fetchBrevoStats();
+            if (emailStats && !emailStats.error) {
+              leadResult.brevoAdded = true;
+            } else {
+              leadResult.brevoAdded = false;
+              leadResult.brevoNote = 'Brevo key not active — lead stored locally only.';
+            }
+          } catch {
+            leadResult.brevoAdded = false;
+            leadResult.brevoNote = 'Brevo add skipped.';
+          }
+        }
+        return res.status(200).json(leadResult);
+      } catch (error) {
+        return res.status(500).json({ error: `Lead capture failed: ${error.message}` });
+      }
+    }
+
+    if (action === 'affiliate.recommend') {
+      const b = req.body || {};
+      const tags = b.tags || tagsFromFindings(b.findings || []);
+      const limit = Number(b.limit || 3);
+      const recs = recommendForAudit(tags, limit);
+      return res.status(200).json({
+        success: true,
+        recommendations: recs,
+        note: 'Commissions are program-published values — verify before claiming payout eligibility.',
+      });
+    }
+
+    if (action === 'affiliate.click') {
+      const b = req.body || {};
+      const slug = String(b.programSlug || b.slug || '').toLowerCase();
+      if (!slug) return res.status(400).json({ error: 'programSlug is required.' });
+      try {
+        await postTable('affiliate_clicks', {
+          lead_id: b.leadId || b.lead_id || null,
+          program_slug: slug,
+          url: b.url || null,
+          utm_source: b.utmSource || b.utm_source || null,
+          utm_medium: b.utmMedium || b.utm_medium || null,
+          utm_campaign: b.utmCampaign || b.utm_campaign || null,
+        });
+        return res.status(200).json({ success: true, slug });
+      } catch (error) {
+        return res.status(500).json({ error: `Affiliate click tracking failed: ${error.message}` });
+      }
+    }
+
+    if (action === 'audit.save') {
+      const b = req.body || {};
+      if (!b.toolType && !b.tool_type) return res.status(400).json({ error: 'toolType is required.' });
+      try {
+        const recs = recommendForAudit(tagsFromFindings(b.findings || []), 3);
+        const saved = await postTable('audit_reports', {
+          user_email: b.userEmail || b.user_email || b.email || null,
+          target_url: b.targetUrl || b.target_url || '',
+          tool_type: b.toolType || b.tool_type,
+          score: b.score != null ? Number(b.score) : null,
+          findings: b.findings || [],
+          recommendations: b.recommendations || [],
+          affiliate_recs: recs,
+        });
+        return res.status(200).json({ success: true, report: saved, affiliate_recs: recs });
+      } catch (error) {
+        return res.status(500).json({ error: `Audit save failed: ${error.message}` });
+      }
+    }
+
+    if (action === 'revenue.snapshot') {
+      try {
+        const since = new Date(Date.now() - 30 * 86400000).toISOString();
+        const sinceQ = encodeURIComponent(since);
+        // Each sub-query is independent; one missing table must not sink the whole snapshot.
+        const [leads, audits, clicks, purchases, gumroad, programCounts] = await Promise.all([
+          safe(() => countRows('leads', `created_at=gt.${sinceQ}`), 0),
+          safe(() => countRows('audit_reports', `created_at=gt.${sinceQ}`), 0),
+          safe(() => countRows('affiliate_clicks', `clicked_at=gt.${sinceQ}`), 0),
+          safe(() => postgrest('product_purchases', `status=in.(completed,delivered)&created_at=gt.${sinceQ}`, 200), []),
+          safe(() => postgrest('gumroad_sales', '', 200), []),
+          safe(() => postgrest('affiliate_clicks', `clicked_at=gt.${sinceQ}&order=program_slug.asc`, 200), []),
+        ]);
+
+        const top = {};
+        (programCounts || []).forEach((r) => { top[r.program_slug] = (top[r.program_slug] || 0) + 1; });
+        const topPrograms = Object.entries(top).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([slug, n]) => ({ slug, clicks: n }));
+
+        const purchaseList = Array.isArray(purchases) ? purchases : [];
+        const productPurchases = {
+          completed: purchaseList.length,
+          revenue: purchaseList.reduce((s, r) => s + Number(r.product_price || 0), 0),
+        };
+
+        return res.status(200).json({
+          success: true,
+          window: '30d',
+          leads,
+          audits,
+          affiliateClicks: clicks,
+          topPrograms,
+          productPurchases,
+          gumroadSales: (Array.isArray(gumroad) ? gumroad.length : 0),
+        });
+      } catch (error) {
+        return res.status(500).json({ error: `Revenue snapshot failed: ${error.message}` });
+      }
+    }
+
+    if (action === 'product.purchase' || action === 'paypal.order') {
+      const b = req.body || {};
+      const price = Number(b.price);
+      if (!b.productName || !Number.isFinite(price) || price <= 0) {
+        return res.status(400).json({ error: 'productName and a positive price are required.' });
+      }
+      const clientId = process.env.PAYPAL_CLIENT_ID;
+      const secret = process.env.PAYPAL_SECRET;
+      if (!clientId || !secret) {
+        return res.status(200).json({
+          success: false,
+          error: 'PayPal is not configured (PAYPAL_CLIENT_ID / PAYPAL_SECRET missing).',
+        });
+      }
+      try {
+        const mode = process.env.PAYPAL_MODE === 'live' ? 'live' : 'sandbox';
+        const base = mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+        const auth = 'Basic ' + Buffer.from(`${clientId}:${secret}`).toString('base64');
+
+        const res = await fetchWithTimeout(
+          `${base}/v2/checkout/orders`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: auth },
+            body: JSON.stringify({
+              intent: 'CAPTURE',
+              purchase_units: [{
+                amount: { currency_code: b.currency || 'USD', value: price.toFixed(2) },
+                description: `DigitallyDefined — ${b.productName}`,
+              }],
+              application_context: {
+                return_url: b.returnUrl || 'https://digitallydefined.store/paypal/return',
+                cancel_url: b.cancelUrl || 'https://digitallydefined.store/paypal/cancel',
+              },
+            }),
+          },
+          30000,
+        );
+        const data = await parseJsonSafe(res, {});
+        if (!res.ok) {
+          return res.status(502).json({ success: false, error: `PayPal order failed: ${data?.message || res.status}` });
+        }
+        const orderId = data?.id;
+        const approveUrl = (data?.links || []).find((l) => l.rel === 'approve')?.href || null;
+
+        await postTable('paypal_orders', {
+          paypal_order_id: orderId,
+          buyer_email: b.email || b.email || null,
+          amount: price,
+          currency: b.currency || 'USD',
+          status: 'CREATED',
+        });
+        await postTable('product_purchases', {
+          product_name: b.productName,
+          product_price: price,
+          currency: b.currency || 'USD',
+          buyer_email: b.email || '',
+          payment_method: 'paypal',
+          paypal_order_id: orderId,
+          status: 'pending',
+        });
+        return res.status(200).json({ success: true, orderId, approveUrl, mode });
+      } catch (error) {
+        return res.status(502).json({ success: false, error: `PayPal order failed: ${error.message}` });
+      }
+    }
+
+    if (action === 'product.purchase.verify' || action === 'paypal.verify') {
+      const b = req.body || {};
+      const orderId = b.orderId || b.order_id;
+      if (!orderId) return res.status(400).json({ error: 'orderId is required.' });
+      const clientId = process.env.PAYPAL_CLIENT_ID;
+      const secret = process.env.PAYPAL_SECRET;
+      if (!clientId || !secret) {
+        return res.status(200).json({ success: false, error: 'PayPal is not configured.' });
+      }
+      try {
+        const mode = process.env.PAYPAL_MODE === 'live' ? 'live' : 'sandbox';
+        const base = mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+        const auth = 'Basic ' + Buffer.from(`${clientId}:${secret}`).toString('base64');
+        const res = await fetchWithTimeout(`${base}/v2/checkout/orders/${orderId}`, {
+          method: 'GET',
+          headers: { Authorization: auth },
+        }, 30000);
+        const data = await parseJsonSafe(res, {});
+        if (!res.ok) return res.status(502).json({ success: false, error: `PayPal lookup failed: ${res.status}` });
+
+        let status = data.status;
+        // If APPROVED, capture the payment.
+        if (status === 'APPROVED') {
+          const capRes = await fetchWithTimeout(
+            `${base}/v2/checkout/orders/${orderId}/capture`,
+            { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: auth } },
+            30000,
+          );
+          const capData = await parseJsonSafe(capRes, {});
+          if (!capRes.ok) {
+            return res.status(502).json({ success: false, error: `PayPal capture failed: ${capData?.message || capRes.status}` });
+          }
+          status = capData.status; // COMPLETED
+        }
+
+        const completed = status === 'COMPLETED' || status === 'CAPTURED';
+        await patchTable('paypal_orders', `paypal_order_id=eq.${orderId}`, { status });
+        if (completed) {
+          const purchase = await postgrest('product_purchases', `paypal_order_id=eq.${orderId}`, 1);
+          if (purchase && purchase[0]) {
+            await patchTable('product_purchases', `id=eq.${purchase[0].id}`, { status: 'delivered', delivered_at: new Date().toISOString() });
+          }
+        }
+        return res.status(200).json({ success: true, status, completed });
+      } catch (error) {
+        return res.status(502).json({ success: false, error: `PayPal verify failed: ${error.message}` });
+      }
+    }
+
+    if (action === 'paypal.webhook') {
+      // PayPal delivers webhook events here (no API key — verified by signature).
+      // Configure in PayPal: webhook URL = https://<backend>/api?action=paypal.webhook
+      const b = req.body || {};
+      const eventType = b.event_type || b.eventType || '';
+      const resourceId = b.resource?.id || b.id || null;
+      try {
+        // 1. Verify the PayPal signature (honest: if we can't verify, say so).
+        let verified = true;
+        const tokenId = req.headers['x-paypal-token'];
+        const clientId = process.env.PAYPAL_CLIENT_ID;
+        const secret = process.env.PAYPAL_SECRET;
+        if (clientId && secret && tokenId) {
+          const mode = process.env.PAYPAL_MODE === 'live' ? 'live' : 'sandbox';
+          const base = mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+          const auth = 'Basic ' + Buffer.from(`${clientId}:${secret}`).toString('base64');
+          const params = new URLSearchParams({
+            auth_algo: 'RSA256',
+            cert_url: b.cert_url || b.certUrl || '',
+            signature: b.signature || '',
+            transacted_id: resourceId || '',
+            timestamp: b.timestamp || '',
+            webhook_id: process.env.PAYPAL_WEBHOOK_ID || '',
+          });
+          const vres = await fetchWithTimeout(
+            `${base}/v1/notifications/verify-webhook-signature?${params.toString()}`,
+            { method: 'GET', headers: { 'x-paypal-token': tokenId, Authorization: auth } },
+            30000,
+          );
+          const vdata = await parseJsonSafe(vres, {});
+          verified = vres.ok && vdata?.verification_status === 'SUCCESS';
+        }
+        // 2. Fulfill based on event type.
+        let fulfilled = false;
+        if (eventType === 'CHECKOUT.ORDER.APPROVED' && resourceId) {
+          await patchTable('paypal_orders', `paypal_order_id=eq.${resourceId}`, { status: 'APPROVED' });
+          fulfilled = true;
+        } else if ((eventType === 'CHECKOUT.ORDER.COMPLETED' || eventType === 'PAYMENT.CAPTURE') && resourceId) {
+          const status = eventType === 'PAYMENT.CAPTURE' ? 'CAPTURED' : 'COMPLETED';
+          await patchTable('paypal_orders', `paypal_order_id=eq.${resourceId}`, { status });
+          const purchase = await postgrest('product_purchases', `paypal_order_id=eq.${resourceId}`, 1);
+          if (purchase && purchase[0]) {
+            await patchTable('product_purchases', `id=eq.${purchase[0].id}`, {
+              status: 'delivered',
+              delivered_at: new Date().toISOString(),
+            });
+          }
+          fulfilled = true;
+        }
+        return res.status(200).json({ success: true, verified, fulfilled, eventType });
+      } catch (error) {
+        // Still return 200 so PayPal stops retrying; report the failure honestly.
+        return res.status(200).json({ success: false, verified: false, error: error.message });
+      }
+    }
+
+    // ---- Delegated actions ----
+    // `license.verify`, `subscribe` and the quiz actions are implemented in
+    // the shared dispatcher (src/routes/dispatch.js -> quizDispatch.js) but
+    // were never routed from here, so the dashboard and the public quiz
+    // received 404 "Unknown action" for all of them. Delegate to the existing
+    // handlers instead of duplicating their business logic.
+    const delegatedActions = [
+      'license.verify',
+      'subscribe',
+      'quiz',
+      'quiz.submit',
+      'quiz.complete',
+      'agent.quiz',
+      'quiz.roadmap',
+      'quiz.roadmap.get',
+      'leads',
+      'leads.list',
+    ];
+    if (delegatedActions.includes(action)) {
+      try {
+        // The dispatcher reads the action from the body; make sure it is set
+        // even when the caller used ?action= in the query string.
+        req.body = { ...(req.body || {}), action };
+        const { handleDispatch } = await import('../src/routes/dispatch.js');
+        return await handleDispatch(req, res);
+      } catch (error) {
+        console.error('Delegated dispatch failed:', action, error);
+        return res.status(500).json({
+          error: error instanceof Error ? error.message : 'Request failed',
+        });
+      }
+    }
+
+    if (action === 'product.factory') {
+      if (!checkDashboardApiKey(req)) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      const ideaId = req.body?.ideaId || req.body?.id;
+      if (!ideaId) {
+        return res.status(400).json({ error: 'ideaId is required' });
+      }
+      // Call the product-factory edge function
+      const supabaseUrl = process.env.SUPABASE_URL || 'https://dijjlppdljpcgyoakdnq.supabase.co';
+      const serviceKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+      try {
+        const upstream = await fetchWithTimeout(`${supabaseUrl}/functions/v1/product-factory`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${serviceKey}`,
+          },
+          body: JSON.stringify({ action: 'build', ideaId }),
+        }, 60000);
+        const text = await upstream.text();
+        return res.status(upstream.status).setHeader('content-type', 'application/json').send(text);
+      } catch (error) {
+        return res.status(502).json({ error: error instanceof Error ? error.message : 'Product factory failed' });
+      }
+    }
+
   } catch (err) {
     console.error('Dashboard error:', err);
     const origin = (req.headers && req.headers.origin) || '';
@@ -1665,6 +3079,7 @@ export default async function handler(req, res) {
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:5173',
+      'http://localhost:4173',
     ];
     const corsOrigin = allowed.includes(origin) ? origin : 'https://dashboard.digitallydefined.agency';
     res.setHeader('Access-Control-Allow-Origin', corsOrigin);

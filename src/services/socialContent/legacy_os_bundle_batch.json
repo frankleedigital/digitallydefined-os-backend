@@ -1,0 +1,43 @@
+{
+  "campaign": "Legacy OS Bundle — Traffic to Gumroad",
+  "destination": "https://legacyos.digitallydefined.store",
+  "createdAt": "2026-11-26",
+  "notes": "No-BS Big Bestie voice. Publish slots spaced at least 24h apart to avoid page spam. Facebook Page channel live. Instagram + Threads channels dead until token re-auth (see dd-social-media-automation-v2 skill). Instagram requires a square mediaUrl — use the Legacy OS 800x800 thumbnail.",
+  "published": [
+    {
+      "slot": "Launch",
+      "postId": "1050373128164124_122103118070554876",
+      "url": "https://www.facebook.com/1050373128164124_122103118070554876",
+      "publishedAt": "2026-11-26"
+    },
+    {
+      "slot": "Pain Point - Caregiving",
+      "postId": "1050373128164124_122103118094554876",
+      "url": "https://www.facebook.com/1050373128164124_122103118094554876",
+      "publishedAt": "2026-11-26"
+    },
+    {
+      "slot": "Pain Point - Financial Autonomy",
+      "postId": "1050373128164124_122103118118554876",
+      "url": "https://www.facebook.com/1050373128164124_122103118118554876",
+      "publishedAt": "2026-11-26"
+    }
+  ],
+  "pending": [
+    {
+      "slot": "Component - Legacy Command Center",
+      "platforms": ["facebook", "instagram"],
+      "content": "Your family operation runs on chaos right now. It doesn't have to.\n\nThe Legacy Command Center (inside the Legacy OS Bundle) is mission control for everything: appointments, budgets, delegated responsibilities, and the documents that matter — all in one place, so the day something happens, you're not digging through drawers.\n\nCreate the structure when everything feels chaotic, not after. Grab the full bundle here: https://legacyos.digitallydefined.store"
+    },
+    {
+      "slot": "Privacy-First Angle",
+      "platforms": ["facebook", "instagram"],
+      "content": "Here's what nobody tells you about 'digital legacy' tools: your family's financial details don't belong in someone else's cloud.\n\nEverything in the Legacy OS Bundle runs privacy-first — direct, on-device, no accounts you have to babysit. Plan your future, protect your family, and keep your data yours.\n\nNo fluff. No data brokers. Just a system that works: https://legacyos.digitallydefined.store"
+    },
+    {
+      "slot": "Bonus - Scam Response Plan",
+      "platforms": ["facebook", "instagram"],
+      "content": "The 96-Hour Financial Scam Emergency Response Plan is included in the Legacy OS Bundle — and it's the part I wish every family had.\n\nWhen a 'too good to be true' offer or a panic call from a parent hits, you don't get to think slowly. This plan tells you exactly what to do in the first 96 hours: who to call, what to freeze, how to verify, when to escalate.\n\nOne bad day shouldn't erase a lifetime of work. Get the plan + the whole system: https://legacyos.digitallydefined.store"
+    }
+  ]
+}
