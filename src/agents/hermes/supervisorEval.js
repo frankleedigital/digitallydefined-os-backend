@@ -28,16 +28,36 @@ export function evaluate(result, ctx, am) {
 
 export function detectOpps(result, aid, ctx) {
   const opps = [];
-  const s = JSON.stringify(result).toLowerCase();
+
+  const textParts = [];
+  if (result.data && typeof result.data === 'string') textParts.push(result.data);
+  else if (result.data && typeof result.data === 'object') textParts.push(JSON.stringify(result.data));
+  if (result.reply && typeof result.reply === 'string') textParts.push(result.reply);
+  if (result.text && typeof result.text === 'string') textParts.push(result.text);
+  if (result.message && typeof result.message === 'string') textParts.push(result.message);
+
+  const s = textParts.join(' ').toLowerCase();
   const found = ['opportunity', 'gap', 'underserved', 'quick win', 'revenue', 'monetiz'].filter(x => s.includes(x));
-  if (found.length > 0 && result && result.data) {
-    opps.push({
-      title: `Opportunity from ${aid}`, type: 'revenue', source_agent: aid, score: 50,
-      confidence: 'medium', status: 'open',
-      evidence: [...(result.evidence || [])],
-      components: { detection: 100, evidence: result.evidence ? 50 : 0 }
-    });
-  }
+
+  if (found.length === 0) return opps;
+
+  const rawEvidence = Array.isArray(result.evidence) ? result.evidence : [];
+  const realEvidence = rawEvidence.filter((e) => e && typeof e === 'object' && e.table && e.id != null && e.table !== 'agent_registry');
+
+  if (realEvidence.length === 0) return opps;
+
+  const opp = {
+    title: `Opportunity from ${aid}`,
+    type: 'revenue',
+    source_agent: aid,
+    score: 50,
+    confidence: 'medium',
+    status: 'open',
+    evidence: realEvidence,
+    components: { detection: 100, evidence: 50 }
+  };
+
+  opps.push(opp);
   return opps;
 }
 
