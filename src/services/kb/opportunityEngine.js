@@ -37,15 +37,15 @@ export function scoreOpportunity(components = {}) {
 }
 
 /**
- * Validate + build a ledger row. C2 is enforced here: no real evidence -> the
- * row is marked low-confidence and the caller is told it is not "real".
+ * Validate + build a ledger row. C2 is enforced here: only evidence that
+ * resolves to a non-registry source row makes an opportunity "real".
  */
 export function buildOpportunityRecord({ title, type = 'revenue', source_agent, targetAssetId, components, evidence: ev, status = 'open' }) {
   const evList = Array.isArray(ev) ? ev : [];
-  const { valid, resolved } = validateEvidence(evList, { min: 1 });
-  
-  // Synthetic evidence check: if ALL evidence is from agent_registry, it's synthetic
-  const hasRealEvidence = evList.some(e => e.table !== 'agent_registry');
+  const { valid } = validateEvidence(evList, { min: 1 });
+  const hasRealEvidence = evList.some(
+    (item) => item && typeof item === 'object' && item.table && item.id != null && item.table !== 'agent_registry'
+  );
   const isReal = valid && hasRealEvidence;
   const { confidence, reasons } = confidenceFromEvidence(evList);
   const { score, missing } = scoreOpportunity(components);
@@ -56,11 +56,11 @@ export function buildOpportunityRecord({ title, type = 'revenue', source_agent, 
       target_asset_id: targetAssetId || null,
       score,
       components: { ...(components || {}), _missing: missing },
-      confidence: isReal ? confidence : 'low', // C2: no resolvable evidence -> always low
+      confidence: isReal ? confidence : 'low',
       status,
       evidence: evList,
     },
-    isReal: valid,                       // false => do not treat as a scored opportunity
+    isReal,
     confidence,
     confidenceReasons: reasons,
     missingComponents: missing,
