@@ -263,8 +263,8 @@ create table if not exists public.decision_log (
   evidence       jsonb not null default '[]'::jsonb,  -- C1/C5
   created_at     timestamptz not null default now(),
   closed_at      timestamptz
-
-
+);
+alter table public.decision_log enable row level security;
 -- ---------------------------------------------------------------------------
 -- 10. weekly_reports — extend with structured, evidence-linked priorities.
 --      (table already exists from 003; add columns idempotently)
@@ -298,19 +298,10 @@ alter table public.ai_briefs add column if not exists decisions jsonb;
 -- RLS: the KB is written exclusively by service_role. Revoke anon/authenticated
 -- write access on every KB table so the browser can never mutate it.
 -- ----------------------------------------------------------------------------
-revoke all on public.agent_registry, public.agent_telemetry, public.business_assets,
-  public.product_registry, public.integration_status, public.automation_status,
-  public.automation_execution, public.sop_docs, public.opportunity_ledger,
-  public.problem_ledger, public.decision_log, public.weekly_reports, public.ai_briefs
-  from anon, authenticated;
-
-);
 alter table public.decision_log enable row level security;
 grant all on public.decision_log to service_role;
 create index if not exists decision_log_ref_idx on public.decision_log (ref_type, ref_id);
 
-  active        boolean not null default true
-);
 alter table public.sop_docs enable row level security;
 grant all on public.sop_docs to service_role;
 
@@ -347,4 +338,14 @@ alter table public.automation_execution enable row level security;
 grant all on public.automation_execution to service_role;
 create index if not exists automation_execution_worker_idx on public.automation_execution (worker_id, created_at desc);
 create index if not exists automation_execution_status_idx on public.automation_execution (status);
+
+-- ----------------------------------------------------------------------------
+-- RLS: the KB is written exclusively by service_role. Revoke anon/authenticated
+-- write access on every KB table so the browser can never mutate it.
+-- ----------------------------------------------------------------------------
+revoke all on public.agent_registry, public.agent_telemetry, public.business_assets,
+  public.product_registry, public.integration_status, public.automation_status,
+  public.automation_execution, public.sop_docs, public.opportunity_ledger,
+  public.problem_ledger, public.decision_log, public.weekly_reports, public.ai_briefs
+  from anon, authenticated;
 
