@@ -45,9 +45,6 @@ export const AUTHED_ACTIONS = [
   "mentor.dev",
   "hermes.agent",
   "intelligence",
-  "agents.list",
-  "agents.run",
-  "agents.orchestrate",
   "automation.list",
   "automation.logs",
   "automation.events",
@@ -66,18 +63,6 @@ export const AUTHED_ACTIONS = [
   // Model switching (dashboard selector -> backend-clean -> Hermes runtime)
   "hermes.setActiveModel",
   "hermes.getActiveModel",
-  // Antigravity MCP (Notion Architect)
-  "antigravity",
-  "antigravity.createNotionPage",
-  "antigravity.updateDatabase",
-  "antigravity.buildTemplate",
-  "antigravity.reconcileDatabase",
-  "antigravity.runAutomation",
-  "antigravity.status",
-  "antigravity.queryDatabase",
-  "antigravity.getPage",
-  "antigravity.patch",
-  "antigravity.phase21.rollout",
 ] as const;
 
 /** GET-only actions (system probes). */
@@ -121,3 +106,4 @@ export function isKnownAction(action: string): boolean {
     (AUTHED_ACTIONS as readonly string[]).includes(action)
   );
 }
+  // agents.* and antigravity.* are Vercel-only (api/index.js). See VERCEL_ONLY_ACTIONS.md.
