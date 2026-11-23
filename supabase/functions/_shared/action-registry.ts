@@ -74,7 +74,10 @@ export const AUTHED_ACTIONS = [
   "antigravity.reconcileDatabase",
   "antigravity.runAutomation",
   "antigravity.status",
-  "puter.run_agent",
+  "antigravity.queryDatabase",
+  "antigravity.getPage",
+  "antigravity.patch",
+  "antigravity.phase21.rollout",
 ] as const;
 
 /** GET-only actions (system probes). */
