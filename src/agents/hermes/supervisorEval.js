@@ -28,16 +28,38 @@ export function evaluate(result, ctx, am) {
 
 export function detectOpps(result, aid, ctx) {
   const opps = [];
-  const s = JSON.stringify(result).toLowerCase();
+
+  // Collect candidate text from multiple sources for opportunity detection
+  const textParts = [];
+  if (result.data && typeof result.data === 'string') textParts.push(result.data);
+  if (result.reply && typeof result.reply === 'string') textParts.push(result.reply);
+  if (result.text && typeof result.text === 'string') textParts.push(result.text);
+  if (result.message && typeof result.message === 'string') textParts.push(result.message);
+
+  const s = textParts.join(' ').toLowerCase();
   const found = ['opportunity', 'gap', 'underserved', 'quick win', 'revenue', 'monetiz'].filter(x => s.includes(x));
-  if (found.length > 0 && result && result.data) {
-    opps.push({
-      title: `Opportunity from ${aid}`, type: 'revenue', source_agent: aid, score: 50,
-      confidence: 'medium', status: 'open',
-      evidence: [...(result.evidence || [])],
-      components: { detection: 100, evidence: result.evidence ? 50 : 0 }
-    });
+
+  if (found.length === 0) return opps;
+
+  // Build evidence array from result + agent attribution
+  const evidence = [];
+  if (Array.isArray(result.evidence)) {
+    evidence.push(...result.evidence);
   }
+  evidence.push({ table: 'agent_registry', id: aid, note: `Agent ${aid} detected opportunity` });
+
+  const opp = {
+    title: `Opportunity from ${aid}`,
+    type: 'revenue',
+    source_agent: aid,
+    score: 50,
+    confidence: 'medium',
+    status: 'open',
+    evidence,
+    components: { detection: 100, evidence: result.evidence ? 50 : 0 }
+  };
+
+  opps.push(opp);
   return opps;
 }
 

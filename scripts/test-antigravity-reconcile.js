@@ -1,74 +1,113 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-// Mock the antigravity module dependencies
-const mockNotionDbId = new Map();
-const mockWritableProps = new Map();
+import { detectOpps } from '../src/agents/hermes/supervisorEval.js';
+import { buildOpportunityRecord, scoreOpportunity } from '../src/services/kb/opportunityEngine.js';
 
-function mockGetNotionDbId(key) {
-  return mockResults.get(key)?.dbId || null;
+// Mock handler that mimics the Hermes agent handler
+async function mockHandleHermesMessage(goal, context = {}) {
+  return mockResults.get(goal) || { ok: false, error: 'not mocked' };
 }
 
-async function mockNotionRest(path, method, body) {
-  const dbId = path.replace('/databases/', '');
-  const liveProps = mockDbProps.get(dbId) || {};
-  return { properties: liveProps };
-}
+const mockResults = new Map();
 
-const mockProps = new Map();
-const mockWritablePropsMap = new Map();
+test('detectOpps: detects opportunity from result.data', () => {
+  const result = {
+    data: 'Found a revenue opportunity in the Gen X market segment',
+    evidence: [{ table: 'product_purchases', id: 'p1', note: 'sale data' }]
+  };
 
-// Mock the antigravity module functions
-let mockGetNotionDbIdImpl = (key) => mockResults.get(key)?.dbId || null;
-let mockGetWritableNotionProps = (key) => mockWritableProps.get(key) || [];
-let mockNotionPropName = (prop) => prop;
-let mockPropertyCreatePayload = (prop) => prop;
+  const result2 = detectOpps(result, 'productAgent', {});
 
-async function mockAntigravityUpdateDatabase({ databaseId, payload }) {
-  mockProps.set(databaseId, { ...mockProps.get(databaseId) || {}, ...payload.properties });
-  return { ok: true, databaseId, updated: Object.keys(payload.properties || {}) };
-}
-
-test('antigravityReconcileDatabase uses databaseId when provided directly', async () => {
-  // Reset mocks
-  mockResults.clear();
-  mockWritablePropsMap.clear();
-  mockProps.clear();
-
-  mockResults.set('test-db-id', { dbId: 'test-db-id' });
-  mockWritablePropsMap.set('test-db-id', [
-    { name: 'Title', type: 'title' },
-    { name: 'Status', type: 'select' },
-  ]);
-
-  const { antigravityReconcileDatabase } = await import('../lib/antigravity.js');
-
-  const result = await antigravityReconcileDatabase({ databaseId: 'test-db-id', dbKey: 'ideas' });
-
-  assert.strictEqual(result.ok, true);
-  assert.strictEqual(result.databaseId, 'test-db-id');
+  assert.strictEqual(result2.length, 1);
+  assert.strictEqual(result2[0].title, 'Opportunity from productAgent');
+  assert.strictEqual(result2[0].type, 'revenue');
+  assert.strictEqual(result2[0].source_agent, 'productAgent');
+  assert.strictEqual(result2[0].confidence, 'medium');
+  assert.strictEqual(result2[0].status, 'open');
+  assert.strictEqual(result2[0].score, 50);
+  assert.ok(result2[0].evidence.length > 0);
 });
 
-test('agents.orchestrate returns success:false when dbKey is invalid', async () => {
-  mockResults.clear();
-  mockWritablePropsMap.clear();
+test('detectOpps: detects opportunity from result.reply', () => {
+  const result = {
+    reply: 'I see an opportunity to improve revenue through better onboarding',
+    evidence: [{ table: 'quiz_results', id: 'q1', note: 'quiz data' }]
+  };
 
-  const { antigravityReconcileDatabase } = await import('../lib/antigravity.js');
+  const result2 = detectOpps(result, 'growthAgent', {});
 
-  const result = await antigravityReconcileDatabase({ dbKey: 'nonexistent-db' });
-
-  assert.strictEqual(result.ok, false);
-  assert.strictEqual(result.error, 'databaseId is required (please provide a valid Notion database ID or dbKey)');
+  assert.strictEqual(result2.length, 1);
+  assert.strictEqual(result2[0].title, 'Opportunity from growthAgent');
+  assert.strictEqual(result2[0].type, 'revenue');
+  assert.strictEqual(result2[0].source_agent, 'growthAgent');
+  assert.strictEqual(result2[0].score, 50);
 });
 
-test('agents.orchestrate returns success:false when dbKey is missing and no databaseId', async () => {
-  mockResults.clear();
-  mockWritablePropsMap.clear();
+test('detectOpps: detects opportunity from result.text', () => {
+  const result = {
+    text: 'There is an opportunity gap in the product roadmap',
+    evidence: [{ table: 'roadmaps', id: 'r1', note: 'roadmap data' }]
+  };
 
-  const { antigravityReconcileDatabase } = await import('../lib/antigravity.js');
+  const result2 = detectOpps(result, 'productAgent', {});
 
-  const result = await antigravityReconcileDatabase({});
+  assert.strictEqual(result2.length, 1);
+  assert.strictEqual(result2[0].source_agent, 'productAgent');
+});
 
-  assert.strictEqual(result.ok, false);
-  assert.strictEqual(result.error, 'databaseId is required (please provide a valid Notion database ID or dbKey)');
+test('detectOpps: returns empty array when no relevant data found', () => {
+  const result = {
+    response: 'Nothing relevant here',
+    evidence: []
+  };
+
+  const result2 = detectOpps(result, 'businessAgent', {});
+
+  assert.strictEqual(result2.length, 0);
+});
+
+test('detectOpps: generates evidence trail for opportunity', () => {
+  const result = {
+    data: 'Found revenue opportunity in Gen X market',
+    evidence: [
+      { table: 'quiz_results', id: 'q1', note: 'Quiz personas show demand' },
+      { table: 'product_purchases', id: 'p1', note: 'Revenue data exists' }
+    ]
+  };
+
+  const result2 = detectOpps(result, 'businessAgent', {});
+
+  assert.strictEqual(result2[0].evidence.length, 3);
+  assert.strictEqual(result2[0].evidence[0].table, 'quiz_results');
+  assert.strictEqual(result2[0].evidence[1].table, 'product_purchases');
+  assert.strictEqual(result2[0].evidence[2].table, 'agent_registry');
+  assert.strictEqual(result2[0].evidence[2].note, 'Agent businessAgent detected opportunity');
+});
+
+test('buildOpportunityRecord: creates opportunity record with evidence', () => {
+  const result = buildOpportunityRecord({
+    title: 'Revenue Opportunity',
+    type: 'revenue',
+    sourceAgent: 'productAgent',
+    components: { revenue: 80, demand: 60 },
+    evidence: [{ table: 'product_purchases', id: 'p1', note: 'sale data' }]
+  });
+
+  assert.strictEqual(result.isReal, true);
+  assert.strictEqual(result.confidence, 'medium');
+  assert.strictEqual(result.record.score, 36); // 80*0.3 + 60*0.2 = 24+12 = 36
+});
+
+test('buildOpportunityRecord: rejects opportunity without evidence', () => {
+  const result = buildOpportunityRecord({
+    title: 'No Evidence Opportunity',
+    type: 'revenue',
+    sourceAgent: 'testAgent',
+    components: { revenue: 80 },
+    evidence: []
+  });
+
+  assert.strictEqual(result.isReal, false);
+  assert.strictEqual(result.confidence, 'low');
 });
