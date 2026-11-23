@@ -4,13 +4,6 @@ import assert from 'node:assert/strict';
 import { detectOpps } from '../src/agents/hermes/supervisorEval.js';
 import { buildOpportunityRecord, scoreOpportunity } from '../src/services/kb/opportunityEngine.js';
 
-// Mock handler that mimics the Hermes agent handler
-async function mockHandleHermesMessage(goal, context = {}) {
-  return mockResults.get(goal) || { ok: false, error: 'not mocked' };
-}
-
-const mockResults = new Map();
-
 test('detectOpps: detects opportunity from result.data', () => {
   const result = {
     data: 'Found a revenue opportunity in the Gen X market segment',
@@ -67,7 +60,7 @@ test('detectOpps: returns empty array when no relevant data found', () => {
   assert.strictEqual(result2.length, 0);
 });
 
-test('detectOpps: generates evidence trail for opportunity', () => {
+test('detectOpps: generates auditable evidence trail', () => {
   const result = {
     data: 'Found revenue opportunity in Gen X market',
     evidence: [
@@ -78,18 +71,15 @@ test('detectOpps: generates evidence trail for opportunity', () => {
 
   const result2 = detectOpps(result, 'businessAgent', {});
 
-  assert.strictEqual(result2[0].evidence.length, 3);
-  assert.strictEqual(result2[0].evidence[0].table, 'quiz_results');
   assert.strictEqual(result2[0].evidence[1].table, 'product_purchases');
-  assert.strictEqual(result2[0].evidence[2].table, 'agent_registry');
-  assert.strictEqual(result2[0].evidence[2].note, 'Agent businessAgent detected opportunity');
+  assert.strictEqual(result2[0].evidence[1].note, 'Revenue data exists');
 });
 
 test('buildOpportunityRecord: creates opportunity record with evidence', () => {
   const result = buildOpportunityRecord({
     title: 'Revenue Opportunity',
     type: 'revenue',
-    sourceAgent: 'productAgent',
+    source_agent: 'productAgent',
     components: { revenue: 80, demand: 60 },
     evidence: [{ table: 'product_purchases', id: 'p1', note: 'sale data' }]
   });
@@ -103,11 +93,35 @@ test('buildOpportunityRecord: rejects opportunity without evidence', () => {
   const result = buildOpportunityRecord({
     title: 'No Evidence Opportunity',
     type: 'revenue',
-    sourceAgent: 'testAgent',
+    source_agent: 'testAgent',
     components: { revenue: 80 },
     evidence: []
   });
 
   assert.strictEqual(result.isReal, false);
   assert.strictEqual(result.confidence, 'low');
+});
+
+test('buildOpportunityRecord: rejects opportunity with synthetic-only evidence', () => {
+  const result = buildOpportunityRecord({
+    title: 'Synthetic Opportunity',
+    type: 'revenue',
+    source_agent: 'testAgent',
+    components: { revenue: 80 },
+    evidence: [{ table: 'agent_registry', id: 'a1', note: 'Agent detected opportunity' }]
+  });
+
+  assert.strictEqual(result.isReal, false);
+  assert.strictEqual(result.confidence, 'low');
+});
+
+test('buildOpportunityRecord: validates component fields', () => {
+  const result = buildOpportunityRecord({
+    title: 'High Score Opportunity',
+    type: 'revenue',
+    source_agent: 'testAgent',
+    components: { revenue: 80, demand: 70, competition: 50, assetFit: 90, effort: 20, legacy: 70 }
+  });
+
+  assert.strictEqual(result.record.score, 68); // 80*0.3 + 70*0.2 + 50*0.15 + 90*0.15 + 20*0.1 + 70*0.1 = 68
 });

@@ -41,12 +41,11 @@ export function detectOpps(result, aid, ctx) {
 
   if (found.length === 0) return opps;
 
-  // Build evidence array from result + agent attribution
+  // Build evidence array from real data only — synthetic attribution does not count
   const evidence = [];
   if (Array.isArray(result.evidence)) {
     evidence.push(...result.evidence);
   }
-  evidence.push({ table: 'agent_registry', id: aid, note: `Agent ${aid} detected opportunity` });
 
   const opp = {
     title: `Opportunity from ${aid}`,
