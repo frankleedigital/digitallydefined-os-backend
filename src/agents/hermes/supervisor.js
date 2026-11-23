@@ -87,7 +87,7 @@ export class HermesSupervisor {
     const k = kw(goal);
     const c = [];
     for (const [aid, am] of Object.entries(agentRegistry)) {
-      if (!am.active) continue;
+      if (am.active === false) continue;
       const cm = capMatch(am, k);
       const t = await telScore(aid);
       const d = dataAvail(am, ctx);
