@@ -125,3 +125,36 @@ test('buildOpportunityRecord: validates component fields', () => {
 
   assert.strictEqual(result.record.score, 68); // 80*0.3 + 70*0.2 + 50*0.15 + 90*0.15 + 20*0.1 + 70*0.1 = 68
 });
+
+test('detectOpps: structured data object produces opportunity with real evidence', () => {
+  const result = {
+    data: { summary: 'Found revenue opportunity in Gen X market' },
+    evidence: [{ table: 'product_purchases', id: 'p2', note: 'purchase data' }]
+  };
+  const result2 = detectOpps(result, 'productAgent', {});
+  assert.strictEqual(result2.length, 1);
+  assert.strictEqual(result2[0].source_agent, 'productAgent');
+});
+
+test('detectOpps: returns empty for missing evidence', () => {
+  const result = { reply: 'Found a revenue opportunity here', evidence: [] };
+  const result2 = detectOpps(result, 'productAgent', {});
+  assert.strictEqual(result2.length, 0);
+});
+
+test('detectOpps: returns empty for registry-only evidence', () => {
+  const result = { reply: 'Found a revenue opportunity here', evidence: [{ table: 'agent_registry', id: 'a1' }] };
+  const result2 = detectOpps(result, 'productAgent', {});
+  assert.strictEqual(result2.length, 0);
+});
+
+test('buildOpportunityRecord: sourceAgent alias maps to source_agent', () => {
+  const result = buildOpportunityRecord({
+    title: 'Alias Test',
+    sourceAgent: 'growthAgent',
+    components: { revenue: 50 },
+    evidence: [{ table: 'product_purchases', id: 'p3' }]
+  });
+  assert.strictEqual(result.record.source_agent, 'growthAgent');
+});
+

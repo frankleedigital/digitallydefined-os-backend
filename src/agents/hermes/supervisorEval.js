@@ -29,9 +29,9 @@ export function evaluate(result, ctx, am) {
 export function detectOpps(result, aid, ctx) {
   const opps = [];
 
-  // Collect candidate text from multiple sources for opportunity detection
   const textParts = [];
   if (result.data && typeof result.data === 'string') textParts.push(result.data);
+  else if (result.data && typeof result.data === 'object') textParts.push(JSON.stringify(result.data));
   if (result.reply && typeof result.reply === 'string') textParts.push(result.reply);
   if (result.text && typeof result.text === 'string') textParts.push(result.text);
   if (result.message && typeof result.message === 'string') textParts.push(result.message);
@@ -41,11 +41,12 @@ export function detectOpps(result, aid, ctx) {
 
   if (found.length === 0) return opps;
 
-  // Build evidence array from real data only — synthetic attribution does not count
-  const evidence = [];
-  if (Array.isArray(result.evidence)) {
-    evidence.push(...result.evidence);
-  }
+  const rawEvidence = Array.isArray(result.evidence) ? result.evidence : [];
+  // Real evidence = resolvable table+id AND not synthetic agent_registry attribution
+  const realEvidence = rawEvidence.filter((e) => e && typeof e === 'object' && e.table && e.id != null && e.table !== 'agent_registry');
+
+  // C2: no resolvable real evidence -> do not create a ledger opportunity
+  if (realEvidence.length === 0) return opps;
 
   const opp = {
     title: `Opportunity from ${aid}`,
@@ -54,8 +55,8 @@ export function detectOpps(result, aid, ctx) {
     score: 50,
     confidence: 'medium',
     status: 'open',
-    evidence,
-    components: { detection: 100, evidence: result.evidence ? 50 : 0 }
+    evidence: realEvidence,
+    components: { detection: 100, evidence: 50 }
   };
 
   opps.push(opp);
