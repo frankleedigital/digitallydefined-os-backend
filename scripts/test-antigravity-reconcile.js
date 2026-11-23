@@ -9,9 +9,7 @@ test('detectOpps: detects opportunity from result.data', () => {
     data: 'Found a revenue opportunity in the Gen X market segment',
     evidence: [{ table: 'product_purchases', id: 'p1', note: 'sale data' }]
   };
-
   const result2 = detectOpps(result, 'productAgent', {});
-
   assert.strictEqual(result2.length, 1);
   assert.strictEqual(result2[0].title, 'Opportunity from productAgent');
   assert.strictEqual(result2[0].type, 'revenue');
@@ -27,9 +25,7 @@ test('detectOpps: detects opportunity from result.reply', () => {
     reply: 'I see an opportunity to improve revenue through better onboarding',
     evidence: [{ table: 'quiz_results', id: 'q1', note: 'quiz data' }]
   };
-
   const result2 = detectOpps(result, 'growthAgent', {});
-
   assert.strictEqual(result2.length, 1);
   assert.strictEqual(result2[0].title, 'Opportunity from growthAgent');
   assert.strictEqual(result2[0].type, 'revenue');
@@ -42,9 +38,7 @@ test('detectOpps: detects opportunity from result.text', () => {
     text: 'There is an opportunity gap in the product roadmap',
     evidence: [{ table: 'roadmaps', id: 'r1', note: 'roadmap data' }]
   };
-
   const result2 = detectOpps(result, 'productAgent', {});
-
   assert.strictEqual(result2.length, 1);
   assert.strictEqual(result2[0].source_agent, 'productAgent');
 });
@@ -54,9 +48,7 @@ test('detectOpps: returns empty array when no relevant data found', () => {
     response: 'Nothing relevant here',
     evidence: []
   };
-
   const result2 = detectOpps(result, 'businessAgent', {});
-
   assert.strictEqual(result2.length, 0);
 });
 
@@ -68,9 +60,7 @@ test('detectOpps: generates auditable evidence trail', () => {
       { table: 'product_purchases', id: 'p1', note: 'Revenue data exists' }
     ]
   };
-
   const result2 = detectOpps(result, 'businessAgent', {});
-
   assert.strictEqual(result2[0].evidence[1].table, 'product_purchases');
   assert.strictEqual(result2[0].evidence[1].note, 'Revenue data exists');
 });
@@ -83,10 +73,9 @@ test('buildOpportunityRecord: creates opportunity record with evidence', () => {
     components: { revenue: 80, demand: 60 },
     evidence: [{ table: 'product_purchases', id: 'p1', note: 'sale data' }]
   });
-
   assert.strictEqual(result.isReal, true);
   assert.strictEqual(result.confidence, 'medium');
-  assert.strictEqual(result.record.score, 36); // 80*0.3 + 60*0.2 = 24+12 = 36
+  assert.strictEqual(result.record.score, 36);
 });
 
 test('buildOpportunityRecord: rejects opportunity without evidence', () => {
@@ -97,7 +86,6 @@ test('buildOpportunityRecord: rejects opportunity without evidence', () => {
     components: { revenue: 80 },
     evidence: []
   });
-
   assert.strictEqual(result.isReal, false);
   assert.strictEqual(result.confidence, 'low');
 });
@@ -110,7 +98,6 @@ test('buildOpportunityRecord: rejects opportunity with synthetic-only evidence',
     components: { revenue: 80 },
     evidence: [{ table: 'agent_registry', id: 'a1', note: 'Agent detected opportunity' }]
   });
-
   assert.strictEqual(result.isReal, false);
   assert.strictEqual(result.confidence, 'low');
 });
@@ -122,8 +109,7 @@ test('buildOpportunityRecord: validates component fields', () => {
     source_agent: 'testAgent',
     components: { revenue: 80, demand: 70, competition: 50, assetFit: 90, effort: 20, legacy: 70 }
   });
-
-  assert.strictEqual(result.record.score, 68); // 80*0.3 + 70*0.2 + 50*0.15 + 90*0.15 + 20*0.1 + 70*0.1 = 68
+  assert.strictEqual(result.record.score, 68);
 });
 
 test('detectOpps: structured data object produces opportunity with real evidence', () => {
@@ -157,4 +143,3 @@ test('buildOpportunityRecord: sourceAgent alias maps to source_agent', () => {
   });
   assert.strictEqual(result.record.source_agent, 'growthAgent');
 });
-

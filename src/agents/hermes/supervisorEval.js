@@ -42,10 +42,8 @@ export function detectOpps(result, aid, ctx) {
   if (found.length === 0) return opps;
 
   const rawEvidence = Array.isArray(result.evidence) ? result.evidence : [];
-  // Real evidence = resolvable table+id AND not synthetic agent_registry attribution
   const realEvidence = rawEvidence.filter((e) => e && typeof e === 'object' && e.table && e.id != null && e.table !== 'agent_registry');
 
-  // C2: no resolvable real evidence -> do not create a ledger opportunity
   if (realEvidence.length === 0) return opps;
 
   const opp = {
