@@ -54,6 +54,7 @@ const ALLOWED_ACTIONS = new Set([
   'hermes.agent',
   'hermes.status',
   'feedback.submit',
+  'hermes.signal',
   'intake.submit',
   'asset.activate',
   'asset.marketing',
@@ -1864,6 +1865,7 @@ export default async function handler(req, res) {
         };
         const r = await fetch("https://api.notion.com/v1/pages", { method: "POST", headers: { Authorization: `Bearer ${process.env.NOTION_API_KEY}`, "Notion-Version": "2022-06-28", "Content-Type": "application/json" }, body: JSON.stringify({ parent: { database_id: dbId }, properties }) });
         const data = await r.json();
+        try { const { recordDemandSignal } = await import('../lib/hermesIntelligence.js'); await recordDemandSignal({ type: 'asset', source: payload.name || 'asset', count: 1, trend: 'stable', revenueOpportunity: payload.monetization || '' }); } catch { /* best-effort */ }
         return res.status(200).json({ success: true, id: data.id, analysis, backend: 'notion' });
       } catch (err) {
         return res.status(500).json({ error: err.message });
@@ -1893,6 +1895,7 @@ export default async function handler(req, res) {
         if (payload.audience) properties.Source = { rich_text: [{ text: { content: String(payload.audience) } }] };
         const r = await fetch("https://api.notion.com/v1/pages", { method: "POST", headers: { Authorization: `Bearer ${process.env.NOTION_API_KEY}`, "Notion-Version": "2022-06-28", "Content-Type": "application/json" }, body: JSON.stringify({ parent: { database_id: dbId }, properties }) });
         const data = await r.json();
+        try { const { recordDemandSignal } = await import('../lib/hermesIntelligence.js'); await recordDemandSignal({ type: 'intake', source: payload.name || 'intake', count: 1, trend: 'stable', revenueOpportunity: payload.audience || '' }); } catch { /* best-effort */ }
         return res.status(200).json({ success: true, id: data.id, analysis: null, backend: 'notion' });
       } catch (err) {
         return res.status(500).json({ error: err.message });
@@ -1900,12 +1903,23 @@ export default async function handler(req, res) {
     }
     if (action === 'feedback.submit') {
       try {
-        const { recordFeedback, recordFeatureRequest, createOpportunity } = await import('../lib/hermesIntelligence.js');
+        const { recordFeedback, recordFeatureRequest, recordDemandSignal } = await import('../lib/hermesIntelligence.js');
         const payload = req.body?.payload || req.body || {};
         const rec = await recordFeedback(payload);
         if (payload.requestedFeature) {
           try { await recordFeatureRequest({ request: payload.requestedFeature, product: payload.product || '', audience: payload.audience || '' }); } catch { /* best-effort */ }
         }
+        try { await recordDemandSignal({ type: 'feedback', source: payload.product || 'dashboard', count: 1, trend: 'stable', revenueOpportunity: payload.feedback || '' }); } catch { /* best-effort */ }
+        return res.status(200).json({ success: true, id: rec.id });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
+    if (action === 'hermes.signal') {
+      try {
+        const { recordDemandSignal } = await import('../lib/hermesIntelligence.js');
+        const payload = req.body?.payload || req.body || {};
+        const rec = await recordDemandSignal(payload);
         return res.status(200).json({ success: true, id: rec.id });
       } catch (err) {
         return res.status(500).json({ error: err.message });
