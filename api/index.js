@@ -1900,9 +1900,12 @@ export default async function handler(req, res) {
     }
     if (action === 'feedback.submit') {
       try {
-        const { recordFeedback, computeDemand, createOpportunity } = await import('../lib/hermesIntelligence.js');
+        const { recordFeedback, recordFeatureRequest, createOpportunity } = await import('../lib/hermesIntelligence.js');
         const payload = req.body?.payload || req.body || {};
         const rec = await recordFeedback(payload);
+        if (payload.requestedFeature) {
+          try { await recordFeatureRequest({ request: payload.requestedFeature, product: payload.product || '', audience: payload.audience || '' }); } catch { /* best-effort */ }
+        }
         return res.status(200).json({ success: true, id: rec.id });
       } catch (err) {
         return res.status(500).json({ error: err.message });

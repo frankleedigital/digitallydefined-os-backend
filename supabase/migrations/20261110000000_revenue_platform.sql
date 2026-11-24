@@ -45,7 +45,7 @@ grant all on public.affiliate_programs to service_role;
 -- ---------------------------------------------------------------------------
 create table if not exists public.affiliate_clicks (
   id uuid primary key default gen_random_uuid(),
-  lead_id uuid references public.leads(id) on delete set null,
+  lead_id uuid references public.website_leads(id) on delete set null,
   program_slug text not null,
   url text,
   utm_source text,
